@@ -1,0 +1,90 @@
+\documentclass[aspectratio=1610]{beamer}
+% \documentclass[handout]{beamer} % no animation version
+
+% Theme and settings
+\usetheme{Madrid}
+\usecolortheme{seagull}
+\usepackage{amsmath, amssymb}
+\usepackage{listings}
+
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, positioning, calc, patterns, patterns.meta, backgrounds}
+
+
+\newcommand{\sssColor}{green}
+\newcommand{\ssColor}{red}
+\newcommand{\sColor}{blue}
+
+\newlength{\y}
+\newcommand{\width}{6mm}
+\newcommand{\height}{3.3mm}
+
+\newcommand{\vgap}{
+    \addtolength{\y}{-\height}
+    \addtolength{\y}{-1mm}
+}
+\newcommand{\vGap}{
+    \addtolength{\y}{-\height}
+    \addtolength{\y}{-3mm}
+}
+
+% Define TikZ styles for "XOR"
+\tikzset{    
+    % shape
+    block_style/.style={minimum width = #1*\width, minimum height = \height, inner sep = 0pt, anchor = west},
+    block/.style={draw, block_style = #1},
+    inblock/.style={ultra thin, block = #1}, % dash pattern=on 1pt off 1pt, 
+    zero_pad/.style={block_style = #1, gray},
+    XOR/.style={draw, circle, minimum size=1.3*\height, 
+        append after command={
+            [shorten >=\pgflinewidth, shorten <=\pgflinewidth,]
+            (\tikzlastnode.north) edge (\tikzlastnode.south)
+            (\tikzlastnode.east) edge (\tikzlastnode.west)
+        }
+    },
+    MULT/.style={draw, circle, minimum size=1.3*\height,
+        append after command={
+            [shorten >=\pgflinewidth, shorten <=\pgflinewidth]
+            (\tikzlastnode.north west) edge (\tikzlastnode.south east)
+            (\tikzlastnode.north east) edge (\tikzlastnode.south west)
+        }
+    },
+    HMAC/.style={draw, ellipse, minimum width = \width, minimum height = \height, inner sep = 0pt, anchor = center},
+    arrow/.style={->, shorten <= 1pt, shorten >= 2pt},
+    arrowB/.style={->, shorten <= 2pt, shorten >= 4pt, color = lightgray},
+    % display
+    gray/.style={fill = gray, fill opacity=0.3},
+    green/.style={fill = green, fill opacity=0.3},
+    red/.style={fill = red, fill opacity=0.3},
+    one/.style={pattern = north east lines, pattern color = \sColor},
+    two/.style={pattern = north west lines, pattern color = \ssColor},
+    three/.style={pattern = grid, pattern color = \sssColor},
+}
+
+\title{Sphinx Packets}
+\subtitle{Decentralized Header Construction}
+\author{Aurélien Chassagne}
+\date{February 18, 2025} % \today
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Outline slide
+% \begin{frame}{Outline}
+% \tableofcontents
+% \end{frame}
+
+\scriptsize
+\section{Original schema}
+\include{Text/0.introduction}
+\include{Text/1.original_schema}
+\include{Text/2.HMAC_problem}
+\include{Text/3.XOR_problem}
+\include{Text/4.piecewise}
+
+\end{document}

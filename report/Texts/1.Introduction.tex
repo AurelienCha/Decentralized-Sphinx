@@ -1,0 +1,20 @@
+\section{Introduction}
+
+The Nym mixnet \cite{nym} is a privacy-preserving network designed to routes each packet through a different path.
+At its core, the Nym mixnet relies on the Sphinx \cite{sphinx} packet format and Coconut \cite{coconut} anonymous credentials to allow clients to securely and anonymously interact with various applications.
+While these mechanisms enhance privacy and security, they are vulnerable to misuse by dishonest users who might exploit valid Coconut credentials to deceive the system by altering the hidden destination within the Sphinx header.
+Such misuse would be detected only at the final node of the mixnet preventing the user from accessing another application. 
+However, prior mixnodes would have already wasted computational resources processing an invalid packet. 
+This vulnerability enables Denial of Service (DoS) attack by exhausting mixnodes computational power with illegitimate packets.
+\newline
+
+This paper aims to address the critical challenge of ensuring trust in the generation of Sphinx headers, thereby preventing such misuse. 
+Two potential solutions are proposed: 
+\begin{itemize}
+    \item \textbf{Multi-Party Computation (MPC)}:
+    used to decentralize the generation of Sphinx headers among trusted third parties while ensuring they learn nothing about the destination or the path.
+    % even when colliding ?
+    % Honest-but-curious model
+    \item \textbf{Zero-Knowledge Proofs (ZKP)}: used to prove that the hidden destination encoded in the Sphinx header actually corresponds to an address authorized by the user’s anonymous credentials without revealing the actual destination. 
+\end{itemize}
+By exploring these approaches, the paper seeks to enhance the trustworthiness of the Nym mixnet.

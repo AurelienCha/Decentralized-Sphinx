@@ -1,0 +1,16 @@
+# Code
+src/__pycache__/.
+src/not_used/.
+
+# Latex
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.nav
+*.snm
+*slides/main.toc

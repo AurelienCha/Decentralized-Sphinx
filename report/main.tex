@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{amsmath} % begin{aligned}
+\usepackage{todonotes} % \todo and \todo[inline]
+
+\newcommand{\xor}{\oplus}
+\newcommand{\toref}[1]{\todo[color=yellow]{#1}}
+\newcommand{\tothink}[1]{\todo[color=pink]{#1}}
+
+\title{Generating trusted sphinx packets}
+\author{aurelien.chassagne }
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\input{Texts/1.Introduction}
+\input{Texts/1.Mixnet}
+\input{Texts/2.Sphinx}
+%\input{Texts/3.ZKP}
+\input{Texts/4.MPC}
+
+\bibliographystyle{acm}
+\bibliography{bib.bib}
+
+\end{document}

@@ -1,0 +1,4 @@
+DEBUG = False
+
+NBR_MIXNODES = 10
+NBR_TTP = 2

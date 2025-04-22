@@ -1,0 +1,197 @@
+\begin{frame}{Adapting HMAC}
+
+\begin{columns} 
+\onslide<2->  
+\begin{column}{0.5\textwidth}
+    {\small \textbf{Main problem:} Decentralizing a \textbf{\color{red}Hash} ?} \newline
+
+    \begin{itemize}
+        \setlength\itemsep{2mm}
+        \onslide<3->
+        \item Need \textbf{homomorphic properties} \newline 
+        to split computation and aggregate results.
+        \onslide<4->
+        \item Secure homomorphic hash \textbf{seems impractical} \newline
+        (no promising solutions found).
+        \onslide<5->
+        \item Exploring \textbf{homomorphic encryption} as an alternative.
+        \only<6> {
+            \begin{enumerate}\scriptsize
+                \setlength\itemsep{3mm}
+                \item \textbf{RSA}
+                \item \textbf{ElGamal}
+                \item \textbf{Paillier}
+            \end{enumerate}
+        } \only<9> {
+            \begin{enumerate}\scriptsize
+                \setlength\itemsep{3mm}
+                \item \textbf{RSA}\vspace{2mm}\newline
+                $\begin{aligned}
+                    {\mathcal {E}}(m_{1}) \cdot {\mathcal {E}}(m_{2})
+                    &=m_{1}^{e}m_{2}^{e}\;{\bmod {\;}}n\\[6pt]
+                    &=(m_{1}m_{2})^{e}\;{\bmod {\;}}n\\[6pt]
+                    &={\mathcal {E}}(m_{1}\cdot m_{2})
+                \end{aligned}$
+                \item \textbf{ElGamal}
+                \item \textbf{Paillier}
+            \end{enumerate}
+        } \only<8> {
+            \begin{enumerate}\scriptsize
+                \setlength\itemsep{3mm}
+                \item \textbf{RSA}
+                \item \textbf{ElGamal}\vspace{2mm}\newline
+                $\begin{aligned}
+                    {\mathcal {E}}(m_{1}) \cdot {\mathcal {E}}(m_{2}) 
+                    &=({\color{orange}g^{r_{1}},}\; m_{1}\cdot h^{r_{1}})({\color{orange}g^{r_{2}},}\; m_{2}\cdot h^{r_{2}})\\[6pt]
+                    &=({\color{orange}g^{r_{1}+r_{2}},}\; (m_{1}\cdot m_{2})h^{r_{1}+r_{2}})\\[6pt]
+                    &={\mathcal {E}}(m_{1}\cdot m_{2})
+                \end{aligned}$
+                \item \textbf{Paillier}
+            \end{enumerate}\vspace{4mm}
+            \textbf{\color{orange}Limitation:} Increase ciphertext size...
+        } \only<7> {
+            \begin{enumerate}\scriptsize
+                \setlength\itemsep{3mm}
+                \item \textbf{RSA}
+                \item \textbf{ElGamal}
+                \item \textbf{Paillier}\vspace{2mm}\newline
+                $\begin{aligned}
+                    {\mathcal {E}}(m_{1}) {\color{red}\cdot} {\mathcal {E}}(m_{2})
+                    &=(g^{m_{1}}r_{1}^{n})(g^{m_{2}}r_{2}^{n})\;{\bmod {\;}}n^{2}\\[6pt]
+                    &=g^{m_{1}+m_{2}}(r_{1}r_{2})^{n}\;{\bmod {\;}}n^{2}\\[6pt]
+                    &={\mathcal {E}}(m_{1} {\color{red}+} m_{2}).
+                \end{aligned}$
+            \end{enumerate}\vspace{4mm}
+            \textbf{\color{red}Problem:} Mix of different operations... order matters!
+        } \only<10> {
+            \begin{enumerate}\scriptsize
+                \setlength\itemsep{3mm}
+                \item \textbf{RSA}
+                \item \textbf{ElGamal}
+                \item \textbf{Paillier}
+            \end{enumerate}
+        }
+        \end{itemize}\vspace{5mm}
+        \only<10> {
+            \small \textbf{Selected solution: {\color{green}RSA} for integrity tag}\vspace{4mm}\newline
+            \tiny
+            \textbf{NB:} $s_i$ is different for each TTP but RSA required the same $e$...\newline
+            Thus, create a new shared secret $s'_i$ common to all TTP
+        }
+\end{column}
+
+\onslide<1->
+\begin{column}{0.5\textwidth}
+\centering
+\begin{tikzpicture}
+    \setlength{\y}{0cm}
+
+    \node (ip) [block=1] at (0, \y) {IP};
+    \vgap
+    \node (s3_) [block=7] at (0, \y) {};
+    \node [inblock=1] at (0, \y) {$s_3$};
+    \node [inblock=6, gray] at (\width, \y) {}; 
+    \vgap
+    \node (s2_) [block=7] at (- 2*\width, \y) {};
+    \node [inblock=3, gray] at (- 2*\width, \y) {}; 
+    \node [inblock=4] at (3*\width - 2*\width, \y) {$s_2$}; 
+    \vgap
+    \node (s1_) [block=7] at (- 2*\width, \y) {};
+    \node [inblock=3, gray] at (- 2*\width, \y) {}; 
+    \node [inblock=2] at (3*\width - 2*\width, \y) {$s_1$};
+    \node [inblock=2, gray] at (5*\width - 2*\width, \y) {};
+    \vgap 
+    \node (B3) [block=5] at (0, \y) {$\beta_3$}; 
+
+    \node (xor3) [XOR] at (-3*\width, \y) {}; 
+    \vGap
+    \onslide <1-9> {\node (hmac3) [HMAC] at (1.5*\width, \y) {\tiny HMAC};}
+    \onslide <2-9> {\node (hmac3) [HMAC, red] at (1.5*\width, \y) {\tiny HMAC};}
+    \onslide <10-> {\node (hmac3) [HMAC, green] at (1.5*\width, \y) {\tiny RSA};}
+    \vGap
+ 
+    \node (n3) [block=1] at (0, \y) {$n_3$}; 
+    \node (y3) [block=1] at (\width, \y) {$\gamma_3$}; 
+    \node (b3) [block=5] at (2*\width, \y) {$\beta_3$}; 
+    \vgap
+    \node (s2) [block=7] at (0, \y) {$s_2$};
+    \vgap
+    \node (B2) [block=5] at (0, \y) {$\beta_2$}; 
+    \node (zero2) [zero_pad=2] at (5*\width, \y) {0}; 
+
+    \node (xor2) [XOR] at (-\width, \y) {}; 
+    \vGap
+    \onslide <1-9> {\node (hmac2) [HMAC] at (1.5*\width, \y) {\tiny HMAC};}
+    \onslide <2-9> {\node (hmac2) [HMAC, red] at (1.5*\width, \y) {\tiny HMAC};}
+    \onslide <10-> {\node (hmac2) [HMAC, green] at (1.5*\width, \y) {\tiny RSA};}
+    \vGap
+
+    \node (n2) [block=1] at (0, \y) {$n_2$}; 
+    \node (y2) [block=1] at (\width, \y) {$\gamma_2$}; 
+    \node (b2) [block=5] at (2*\width, \y) {$\beta_2$}; 
+    \vgap
+    \node (s1) [block=7] at (0, \y) {$s_1$};
+    \vgap
+    \node (B1) [block=5] at (0, \y) {$\beta_1$};
+    \node (zero1) [zero_pad=2]  at (5*\width, \y) {0}; 
+
+    \node (xor1) [XOR]  at (-\width, \y) {}; 
+    \vGap
+    \onslide <1-9> {\node (hmac1) [HMAC] at (1.5*\width, \y) {\tiny HMAC};}
+    \onslide <2-9> {\node (hmac1) [HMAC, red] at (1.5*\width, \y) {\tiny HMAC};}
+    \onslide <10-> {\node (hmac1) [HMAC, green] at (1.5*\width, \y) {\tiny RSA};}
+    \vGap
+
+    \node (n1) [block=1]  at (0, \y) {$n_1$}; 
+    \node (y1) [block=1]  at (\width, \y) {$\gamma_1$}; 
+    \node (b1) [block=5]  at (2*\width, \y) {$\beta_1$}; 
+
+    %% XOR ARROWS %%
+    % 3
+    \draw[arrow] (ip.west) -- ++(-3*\width, 0) -- (xor3.north);
+    \draw[arrow] (s3_.west) -- ++(-3*\width, 0) -- (xor3.north);
+    \draw[arrow] (s2_.west) -- ++(-\width, 0) -- (xor3.north);
+    \draw[arrow] (s1_.west) -- ++(-\width, 0) -- (xor3.north);
+    \draw[arrow] (xor3.east) -- (B3.west);
+    % 2
+    \draw[arrow] (n3.west) -- ++(-\width, 0) -- (xor2.north);
+    \draw[arrow] (s2.west) -- ++(-\width, 0) -- (xor2.north);
+    \draw[arrow] (xor2.east) -- (B2.west);
+    % 1
+    \draw[arrow] (n2.west) -- ++(-\width, 0) -- (xor1.north);
+    \draw[arrow] (s1.west) -- ++(-\width, 0) -- (xor1.north);
+    \draw[arrow] (xor1.east) -- (B1.west);
+
+    %% HMAC ARROWS %%
+    % 3
+    \onslide<1-9> {\node[left=\width of hmac3] (input_hmac3) {$s_3$};}
+    \onslide<10-> {\node[left=\width of hmac3] (input_hmac3) {$s'_3$};}
+    \draw[arrow, shorten >= 6pt] (input_hmac3) -- (hmac3.west);
+    \draw[arrow] (B3.south -| 1.5*\width, 0) -- (hmac3.north);
+    \draw[arrow] (hmac3.south) -- (y3.north);
+    % 2
+    \onslide<1-9> {\node[left=\width of hmac2] (input_hmac2) {$s_2$};}
+    \onslide<10-> {\node[left=\width of hmac2] (input_hmac2) {$s'_2$};}
+    \draw[arrow, shorten >= 6pt] (input_hmac2) -- (hmac2.west);
+    \draw[arrow] (B2.south -| 1.5*\width, 0) -- (hmac2.north);
+    \draw[arrow] (hmac2.south) -- (y2.north);
+    % 1
+    \onslide<1-9> {\node[left=\width of hmac1] (input_hmac1) {$s_1$};}
+    \onslide<10-> {\node[left=\width of hmac1] (input_hmac1) {$s'_1$};}
+    \draw[arrow, shorten >= 6pt] (input_hmac1) -- (hmac1.west);
+    \draw[arrow] (B1.south -| 1.5*\width, 0) -- (hmac1.north);
+    \draw[arrow] (hmac1.south) -- (y1.north);
+
+    %% BETA ARROWS %%
+    % 3
+    \draw[arrowB] (B3.south) -- (b3.north);
+    % 2
+    \draw[arrowB] (B2.south) -- (b2.north);
+    % 1
+    \draw[arrowB] (B1.south) -- (b1.north);
+
+\end{tikzpicture}
+\end{column}
+
+\end{columns}
+\end{frame}
