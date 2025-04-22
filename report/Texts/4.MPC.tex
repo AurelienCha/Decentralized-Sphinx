@@ -6,6 +6,7 @@ The first approach to ensuring trust in the Sphinx header is to prevent user man
 We consider TTPs as \textit{honest-but-curious}.\tothink{What if malicous TTP...}
 This means that they follow the protocol correctly but may attempt to infer additional information from the data they process.
 Our design aims to ensure that TTPs must not be able to infer any information about the shared secrets $s_i$ nor the mixnodes involved in the path, even when TTP are colliding (assuming that at least one TTP remains honest).
+\todo{JT: In the Nym ecosystem, who are the TTPs, who operates them, what exactly are they trusted for?}
 \newline
 
 
@@ -36,6 +37,8 @@ The third and retained approach is similar to the second one.
 Instead of partial computations at each layer, each TTP computes a full Sphinx header using only its assigned partial destination. 
 These partial headers are then returned to the user, who aggregates them to produce the final Sphinx header.
 Although this approach requires less interaction with the TTPs, it introduces additional constraints as discussed in section \toref{ref section}.
+\todo{JT: I think we should only focus on the third approach.
+There could be a section "Alternative Designs" where we discuss your other approaches.}
 
 The overall decentralized scheme is illustrated in Figure \ref{fig:overall_schema}. 
 The user begins by splitting the destination into several parts, such that their combination (e.g., via XOR) reconstructs the original address. 
@@ -57,6 +60,7 @@ These partial headers are then returned to the user, who aggregates them to form
 %This approach would require a hash function with homomorphic properties, which inherently weakens the collusion resistance and potentially compromises the second pre-image resistance of a secure hash.
 %%%%%%%%%%%%%%%
 
+\todo{I'd rather specify the requirements for the hash here.}
 The main issue with the choosen approach is that we have to compute integrity tag on partial header such 
 that combining those partial integrity tag gives the integrity tag of the final header.
 However, even if breaking this homomorphic hash is feasible, if it remains computationally hard enough (e.g., requiring several hours), it could still be considered sufficiently secure for our purposes.
@@ -85,13 +89,3 @@ However, even if breaking this homomorphic hash is feasible, if it remains compu
 % 2̶)̶ ̶U̶s̶i̶n̶g̶ ̶p̶a̶r̶t̶i̶a̶l̶ ̶s̶_̶i̶ ̶o̶n̶ ̶p̶a̶r̶t̶i̶a̶l̶ ̶b̶e̶t̶a̶_̶i̶ ̶=̶=̶>̶ ̶i̶.̶e̶.̶ ̶d̶i̶f̶f̶e̶r̶e̶n̶t̶ ̶m̶e̶s̶s̶a̶g̶e̶,̶ ̶d̶i̶f̶f̶e̶r̶e̶n̶t̶ ̶s̶e̶c̶r̶e̶t̶
         %̶ ̶e̶.̶g̶.̶ ̶(̶s̶_̶i̶1̶ ̶*̶ ̶b̶'̶_̶i̶1̶)̶ ̶*̶ ̶(̶s̶_̶i̶2̶ ̶*̶ ̶b̶'̶_̶i̶2̶)̶ ̶*̶ ̶(̶.̶.̶.̶)̶ ̶=̶=̶>̶ ̶b̶'̶ ̶m̶u̶s̶t̶ ̶b̶e̶ ̶t̶h̶e̶ ̶f̶r̶e̶s̶h̶ ̶c̶o̶m̶p̶u̶t̶e̶d̶ ̶b̶ ̶(̶n̶o̶t̶ ̶t̶h̶e̶ ̶p̶r̶e̶v̶i̶o̶u̶s̶ ̶o̶n̶e̶)̶
         % /!\ LEAK INFORMATION (about s_i) /!\
-
-
-Bonjour,
-
-C'est juste un email pour vous informer de mon avancement.
-J'ai commencé la mise au propre par la partie 'facile', càd brièvement expliquer les pre-requis (mixnet et sphinx).
-Ma recherche à proprement parlé (section 4: MPC) n'est pas très avancée car je commencais à me perdre donc j'ai préferé relire et énumerer les differentes pistes/possibilités envisagées avec les pro et cons.
-Afin d'obtenir rapidement du contenu, je compte mettre au propre en priorité les possibilités plus 'facile' et laisser pour plus tard les alternatives plus compliqués qui nécéssiterait d'appronfondir encore un peu la recherche (si les alternatives plus simples ne sont pas assez convaincantes).
-
-NB: En relisant à posterioris certaines possibilités, je me suis rendu compte que certaines possibilités mises de côtés peuvent finalement être intéressante pour simplifier le problème donc je compte vite réévaluer leur pertinence.
