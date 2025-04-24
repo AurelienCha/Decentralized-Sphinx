@@ -1,6 +1,7 @@
 from setup import *
-from header import *
+from header import Header
 
+print("????", G_i)
 class TTP:
 
     def __init__(self):

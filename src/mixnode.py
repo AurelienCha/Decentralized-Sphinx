@@ -1,6 +1,6 @@
 from setup import *
-from header import *
-from elligator import *
+from header import Header, Block
+from elligator import hash_to_point, point_to_hash
 import secrets
 
 

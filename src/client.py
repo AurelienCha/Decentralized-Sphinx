@@ -1,17 +1,21 @@
-from random import sample, randint
+from random import randint, sample, choices
 
 from setup import *
-from elligator import *
-from header import *
+from elligator import hash_to_point, point_to_hash
+from header import Block#, Header
 
 
 class Client:
 
-    def __init__(self):
-        pass # TODO
+    def __init__(self, mixnet=mixnet, TTPs=TTPs):
+        self.mixnet = mixnet
+        self.TTPs = TTPs
 
     def send_packet(self, dest, path=None, x=None):
-        path = path if path else sample(sorted(mixnet), 3) # Path of 3 mixnodes
+        if len(self.mixnet) >= 3: # Path of 3 mixnodes
+            path = path if path else sample(sorted(self.mixnet), 3) # without replacement
+        else: # NOTE: only for the testing part
+            path = path if path else choices(sorted(self.mixnet), k=3) # with replacement
         x = x if x else randint(1, N) # N = curve order (i.e. nbr pts on curve)
         return self.build_header(x, dest, path)
 
@@ -59,7 +63,7 @@ class Client:
         split_nodes = list(zip(*[self.split(n, NBR_TTP) for n in path])) # zip(*matrix) = transpose
         split_secrets = list(zip(*[self.split(point_to_hash(S), NBR_TTP) for S in shared_secrets]))
         
-        split_headers = [ttp.generate_header(split_alpha[i], split_dest[i], split_nodes[i], split_secrets[i]) for (i, ttp) in enumerate(TTPs)]
+        split_headers = [ttp.generate_header(split_alpha[i], split_dest[i], split_nodes[i], split_secrets[i]) for (i, ttp) in enumerate(self.TTPs)]
         header = sum(split_headers)
 
         return header
@@ -71,7 +75,7 @@ class Client:
             b = hash((alpha.y + S.y).to_bytes(32)) # TODO CHECK
             return (x * b, S)
         
-        PK = [mixnet[ip].get_key() for ip in path]
+        PK = [self.mixnet[ip].get_key() for ip in path]
 
         x1, S1 = _compute_single_secret(x, PK[0])
         x2, S2 = _compute_single_secret(x1, PK[1])
@@ -81,7 +85,6 @@ class Client:
 
 
     # def _build_header_alone(self, alpha, dest, N, s):
-    #     # TODO verify if 'alpha' is the entire value (or a piece)
     #     """
     #     N = list of piece of mixnode IP (Point) and destionation
     #     s = list of piece of shared secrets (Scalar)
