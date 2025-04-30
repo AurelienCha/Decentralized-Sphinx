@@ -1,14 +1,13 @@
 from tqdm import tqdm
-import random
 
+from utils import random_ip
 from setup import mixnet
 from client import Client
 
-
-for _ in tqdm(range(pow(10,4))):
+for _ in tqdm(range(pow(10,4)), ascii="░▒█", dynamic_ncols=True, position=0, leave=True):
 
     # ---  Client / TTP Side  (aka. encryption)  ---
-    destination = random.randint(1,pow(2,128))      # 1) Generate a random IP destination
+    destination = random_ip()                      # 1) Generate a random IP destination
     header = Client().send_packet(destination)      # 2) Simulate a Client sending a packet (by default with random path and nounce)
     
     # ---  Mixnode Side  (aka. decryption)  ---

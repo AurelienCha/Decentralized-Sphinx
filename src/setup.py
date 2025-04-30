@@ -2,6 +2,8 @@ import datetime
 import random
 import math
 
+from utils import random_ip
+
 NBR_MIXNODES = 20
 NBR_TTP = 3
 
@@ -27,7 +29,7 @@ Generate a dictionary of mixnodes with unique IPv6 addresses (i.e. random 128 bi
 """
 ip_pool = set()
 while len(ip_pool) < NBR_MIXNODES:
-    ip_pool.add(random.randint(1, pow(2,128)))  # IPv6 are 128-bits addresses
+    ip_pool.add(random_ip())
 mixnet = {ip: Mixnode(ip=ip) for ip in ip_pool}
 
 ###################

@@ -1,6 +1,7 @@
 import hashlib
 import datetime
 import secrets
+import random
     
 def truncated_hash(bytes_: bytes, it: int = 1, bits: int = 255) -> int:
     """
@@ -35,3 +36,9 @@ def rnd_padding(ip: int, pad_size: int = 124) -> int:
     """
     padding = bin(secrets.randbits(pad_size))[2:].zfill(pad_size)
     return int(padding + f"{ip:0128b}", 2)
+
+def random_ip() -> int:
+    """
+    Return a simulated random IPv6 address (128-bit)
+    """
+    return random.randint(1,pow(2,128)) 
