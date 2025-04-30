@@ -1,96 +1,101 @@
-from ecpy.curves import Point
-from setup import *
+from __future__ import annotations
+from typing import List, Tuple, Optional
 
-class Block:
-
-        def __init__(self, sign, point):
-            self.sign = sign
-            self.point = point
-
-        def __str__(self):
-            return f"{"-" if self.sign else "+"}{self.point.x}"
-
-        def to_bin(self):
-            # Format as a 256-bit binary string
-            return f"{((self.sign << 255) | self.point.x):0256b}"
-
-        def __add__(self, other):
-            if isinstance(other, Point):
-                return Block(self.sign, self.point + other) 
-            elif not isinstance(other, Block):
-                raise TypeError(f"unsupported operand type(s) for +: 'Block' and '{type(other)}'")
-            return Block(self.sign ^ other.sign, self.point + other.point)
-
-        def __sub__(self, other):
-            if isinstance(other, Point):
-                return Block(self.sign, self.point - other) 
-            elif not isinstance(other, Block):
-                raise TypeError(f"unsupported operand type(s) for -: 'Block' and '{type(other)}'")
-            return Block(self.sign ^ other.sign, self.point - other.point)
-
-        def __radd__(self, other):
-            if other == 0:
-                return self
-            if not isinstance(other, Block):
-                raise TypeError(f"unsupported operand type(s) for -: 'Block' and '{type(other)}'")
-            return self.__add__(other)
-
-        def __eq__(self, other):
-            return self.sign==other.sign and self.point==other.point
-
+from ecc import Point
 
 class Header:
+    """
+    Represents a cryptographic Sphinx header (n, alpha, beta, gamma) 
+    """
     
-    def __init__(self, n=None, alpha=None, beta=5*[None], gamma=None):
+    def __init__(self, beta: List[int], gamma: int, n: Optional[int] = None, alpha: Optional[int] = None):
+        """
+        Initialize a Header 
+        NOTE: Points are used in their compressed form (i.e. 256-bit integer)
+
+        Args:
+            n (Optional[int]): IP of the next hop
+            alpha (Optional[int]): A compressed Point to recompute shared secrets   =>  i.e. Cryptographic group element    (α)
+            beta (List[int]]): A list of compressed Points (256-bit int)            =>  i.e. Encrypted routing information  (β)
+            gamma (int): A compressed point for integrity check                     =>  i.e. Integrity tag                  (γ)
+        """
         self.n = n
         self.alpha = alpha
         self.beta = beta
         self.gamma = gamma
 
-    def __str__(self):
-        return f"""
-        n     : {self.n}
-        alpha : {self.alpha}
-        beta  :     {self.beta[0]}
-                    {self.beta[1]}
-                    {self.beta[2]}
-                    {self.beta[3]}
-                    {self.beta[4]}
-        gamma : {self.gamma}
+    def __add__(self, other: Header) -> Header:
         """
-
-    def to_bin(self):return f"""
-        n     : {self.n.to_bin()}
-        alpha : {self.alpha.to_bin()}
-        beta  : {self.beta[0].to_bin()}
-                {self.beta[1].to_bin()}
-                {self.beta[2].to_bin()}
-                {self.beta[3].to_bin()}
-                {self.beta[4].to_bin()}
-        gamma : {self.gamma.to_bin()}
+        Left-side addition between two headers:
+        - beta: Point-wise addition
+        - gamma: Point addition
         """
-
-    def __add__(self, other):
         if not isinstance(other, Header):
             raise TypeError(f"unsupported operand type(s) for +: 'Header' and '{type(other)}'")
-        n = (self.n + other.n) % N
-        a = self.alpha + other.alpha
-        g = self.gamma + other.gamma
-        b = [bs + bo for (bs, bo) in zip(self.beta, other.beta)]
-        return Header(n=n, alpha=a, beta=b, gamma=g)
+        g = (Point(self.gamma) + Point(other.gamma)).zip()
+        b = [(Point(bs) + Point(bo)).zip() for (bs, bo) in zip(self.beta, other.beta)]
+        return Header(beta=b, gamma=g)
 
-    def __radd__(self, other):
+    def __radd__(self, other: List[Header]) -> Header:
+        """
+        Right-side addition to enables sum()
+        """
         if other == 0:
             return self
         if not isinstance(other, Header):
             raise TypeError(f"unsupported operand type(s) for -: 'Header' and '{type(other)}'")
         return self.__add__(other)
 
-    def __eq__(self, other):
-        return self.n==other.n and self.alpha==other.alpha and self.gamma==other.gamma and all([bs==bo for (bs, bo) in zip(self.beta, other.beta)])
+    def __eq__(self, other: Header) -> bool:
+        """
+        Check equality between two headers.
+        """
+        return (
+            self.n==other.n and 
+            self.alpha==other.alpha and 
+            self.gamma==other.gamma and 
+            all([bs==bo for (bs, bo) in zip(self.beta, other.beta)])
+        )
 
-    def set_alpha(self, alpha):
-        self.alpha = alpha
+    def set_alpha(self, alpha: Point) -> None:
+        """
+        Set the alpha field from a Point (that will be compressed)
+        """
+        self.alpha = alpha.zip()
     
-    def get_content(self):
-        return self.n, self.alpha, self.beta, self.gamma
+    def set_n(self, n: int) -> None:
+        """
+        Set the n field (next hop) with an IP address (128-bit int)
+        """
+        self.n = n
+    
+    def unzip(self) -> Tuple[int, Point, List[Point], Point]:
+        """
+        Extract information form header (i.e. uncompressed Points)
+        """
+        return self.n, Point(self.alpha), [Point(b) for b in self.beta], Point(self.gamma)
+
+    # NOTE: Print / Debug purpose (not used)
+    #
+    # def __str__(self):
+    #     return f"""
+    #     n     : {self.n}
+    #     alpha : {self.alpha}
+    #     beta  :     {self.beta[0]}
+    #                 {self.beta[1]}
+    #                 {self.beta[2]}
+    #                 {self.beta[3]}
+    #                 {self.beta[4]}
+    #     gamma : {self.gamma}
+    #     """
+    #
+    # def to_bin(self):return f"""
+    #     n     : {self.n}
+    #     alpha : {self.alpha:0256b}
+    #     beta  : {self.beta[0]:0256b}
+    #             {self.beta[1]:0256b}
+    #             {self.beta[2]:0256b}
+    #             {self.beta[3]:0256b}
+    #             {self.beta[4]:0256b}
+    #     gamma : {self.gamma:0256b}
+    #     """

@@ -1,32 +1,40 @@
-from datetime import date
-from math import log
-from utils import hash
-from random import randint
+import datetime
+import random
+import math
 
-from config import *
+NBR_MIXNODES = 20
+NBR_TTP = 3
 
 ##############################
-# 7 'independant' Generators # => needed otherwise 'unlinkability' is not respected (see notebook notes)
+# 7 'independant' Generators # 
 ##############################
-from config_curve import *
-seed = date.today().isoformat().encode('utf-8')
-size_N = int(log(N,2))
-G_i = [hash(seed, it=i, bits=size_N)*G for i in range(1,8)]
+from ecc import N, G
+from utils import truncated_hash
+"""
+Generate random and independent curve generators G_i based on a seed (updated every day)
+NOTE: Need 7 different G_i, one for each 'block' (i.e. Point) in the header (to preserve 'unlinkability' property)
+"""
+seed = datetime.date.today().isoformat().encode('utf-8')
+size_N = int(math.log(N,2))
+G_i = [truncated_hash(seed, it=i, bits=size_N) * G for i in range(1,8)]
 
 #####################
 # MIXNET GENERATION #
 #####################
 from mixnode import Mixnode
+"""
+Generate a dictionary of mixnodes with unique IPv6 addresses (i.e. random 128 bits) => dict[IP, mixnode]
+"""
 ip_pool = set()
 while len(ip_pool) < NBR_MIXNODES:
-    ip_pool.add(randint(1, pow(2,128)))  # IPv6 are 128-bits addresses
-mixnet = {}
-for ip in ip_pool:
-    mixnet[ip] = Mixnode(ip=ip) 
+    ip_pool.add(random.randint(1, pow(2,128)))  # IPv6 are 128-bits addresses
+mixnet = {ip: Mixnode(ip=ip) for ip in ip_pool}
 
 ###################
 # TTPs GENERATION #
 ###################
 from ttp import TTP
+"""
+Generate a list of TTPs
+"""
 TTPs = [TTP() for _ in range(NBR_TTP)] 
-

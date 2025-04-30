@@ -1,43 +1,75 @@
-from setup import *
-from header import Header, Block
-from elligator import hash_to_point, point_to_hash
 import secrets
 
+from setup import G_i
+from ecc import N, G, Point, curve
+from elligator import point_to_hash
+from utils import truncated_hash
+from header import Header
 
 class Mixnode:
+    """
+    Represents a mixnet node with elliptic curve asymmetric keys
 
-    def __init__(self, ip):
+    Attributes:
+        ip (int): The mixnode's IP address
+        sk (int): The mixnode's private key
+        pk (Point): The mixnode's public key
+    """
+
+    def __init__(self, ip: int):
+        """
+        Initialize a Mixnode with a unique IP address and ECC key pair
+        """
         self.ip = ip
-        # Secret key
-        self._sk = secrets.randbelow(N)  # N is the curve order (i.e. nbr points on the curve)
-        # Public key
-        self.pk =  self._sk * G
+        # NOTE: N is the curve order (i.e. nbr points on the curve)
+        self.sk = secrets.randbelow(N)          # secret key (int)
+        self.PK =  self.sk * G                  # Public Key (Point)
 
-    def process_packet(self, header):
-        n, alpha, beta, gamma = header.get_content()
+    def process_packet(self, header: Header) -> Header:
+        """
+        Process an incoming packet (header) and return the updated outgoing packet (header)
+        1) Extract information from the header
+        2) Recompute shared secret
+        3) Integrity check
+        4) Update encrypted information (β)
+        5) Update cryptographic element (α)
 
+        Args:
+            header (Header): The incoming packet header
+
+        Returns:
+            Header: The transformed outgoing packet header 
+        """
+        # 1) Extract information from the header
+        n, alpha, beta, gamma = header.unzip()
         if n != self.ip:
             raise ValueError(f"Packet reaching the wrong mixnode (IP={self.ip}), it should have reached {n}")
 
-        # recompute share secret s
-        S = self._sk * alpha
-        s = point_to_hash(Block(0,S)) # TODO variety of sign (/!\ need modification in Client as well)
-        # check integrity
+        # 2) Recompute shared secret
+        S = self.sk * alpha         # Shared secret in Point version
+        s = point_to_hash(S)        # Shared secret in integer version
+        
+        # 3) Integrity check
         assert gamma == sum(beta) + s * G
 
-        # beta padding
-        beta += [curve.infinity, curve.infinity]
-
-        # XOR
-        for i in range(len(beta)):
+        # 4) Update encrypted information (β)
+        beta += [Point(curve.infinity), Point(curve.infinity)]  # Padding
+        for i in range(len(beta)):                              # Block-wise 'XOR' operations
             beta[i] = beta[i] - s * G_i[i]
 
-        # update alpha
-        alpha = hash((alpha.y + S.y).to_bytes(32)) * alpha
-        return Header(n=point_to_hash(beta[0]), alpha=alpha, beta=beta[2:], gamma=beta[1])
+        # 5) Update cryptographic element (α)
+        alpha = truncated_hash((alpha.y() + S.y()).to_bytes(32)) * alpha
 
-    def get_key(self):
-        return self.pk
+        return Header(
+            n = point_to_hash(beta[0]) % pow(2,128), 
+            alpha = alpha.zip(), 
+            beta = [b.zip() for b in beta[2:]], 
+            gamma = beta[1].zip())
 
-    def get_ip(self):
+    def get_key(self) -> Point:
+        """Returns the public key of the mixnode (Point)"""
+        return self.PK
+
+    def get_ip(self) -> int:
+        """Returns the IP address of the mixnode (int)"""
         return self.ip

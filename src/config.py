@@ -1,2 +1,0 @@
-NBR_MIXNODES = 20
-NBR_TTP = 3

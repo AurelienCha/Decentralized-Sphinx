@@ -1,32 +1,20 @@
-import pandas as pd
+from tqdm import tqdm
+import random
 
-from setup import *
+from setup import mixnet
 from client import Client
 
-from tqdm import tqdm
+
 for _ in tqdm(range(pow(10,4))):
-    DESTINATION = randint(1,N)
-    header = Client().send_packet(DESTINATION)
 
-    for _ in range(3): # path of length 3
-        # print(_ , header)
-        mixnode = mixnet[header.n]
-        header = mixnode.process_packet(header)
-    # print(header)
-    assert DESTINATION == header.n
+    # ---  Client / TTP Side  (aka. encryption)  ---
+    destination = random.randint(1,pow(2,128))      # 1) Generate a random IP destination
+    header = Client().send_packet(destination)      # 2) Simulate a Client sending a packet (by default with random path and nounce)
+    
+    # ---  Mixnode Side  (aka. decryption)  ---
+    for _ in range(3):                              
+        mixnode = mixnet[header.n]                  # 3) Extract the next mixnode IP from the header
+        header = mixnode.process_packet(header)     # 4) Simulate the reception and processing of the header by the mixnode
 
-    # data of Player and their performance
-    data = {
-        'n': header.n,
-        'alpha': header.alpha.x,
-        'beta0': header.beta[0].x,
-        'beta1': header.beta[1].x,
-        'beta2': header.beta[2].x,
-        'beta3': header.beta[3].x,
-        'beta4': header.beta[4].x,
-        'gamma': header.gamma.x,
-    }
-
-    # Make data frame of above data
-    df = pd.DataFrame([data])
-    df.to_csv('src/results/output.csv', mode='a', index=False, header=False)
+    # ---  Verification / Corectness  ---
+    assert destination == header.n
