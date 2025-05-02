@@ -2,6 +2,8 @@ from __future__ import annotations
 from typing import Union
 from sympy.ntheory.residue_ntheory import sqrt_mod
 
+
+from utils import track_operation # decorator
 from ecpy.curves import Curve
 from ecpy.curves import Point as ECCPoint
 
@@ -48,6 +50,7 @@ class Point:
         """
         return self.point.y
 
+    @track_operation
     def __add__(self, Q: Point) -> Point:
         """
         Left-side addition between two elliptic curve points (P + Q)
@@ -63,7 +66,8 @@ class Point:
         if Q == 0:
             return self
         return self.__add__(Q)
-
+    
+    @track_operation
     def __sub__(self, Q: Point) -> Point:
         """
         Subtraction between two elliptic curve points (P - Q)
@@ -72,6 +76,7 @@ class Point:
             raise TypeError(f"unsupported operand type(s) for -: 'Point' and '{type(Q)}'")
         return Point(self.point - Q.point)
 
+    @track_operation
     def __mul__(self, n: int) -> Point:
         """
         Left-side scalar multiplication of a point (P * n)

@@ -1,12 +1,13 @@
 from typing import List, Tuple, Optional
 import random
 
+from param import NBR_TTP
 from ecc import p, N, G, Point
 from utils import truncated_hash
 from elligator import hash_to_point, point_to_hash
 from mixnode import Mixnode
 from ttp import TTP
-from setup import G_i, mixnet, TTPs, NBR_TTP
+from setup import G_i, mixnet, TTPs
 
 class Client:
     """
@@ -54,7 +55,7 @@ class Client:
         Returns:
             List[Point]: A list of m Points summing to the input point.
         """
-        shares = [random.randint(1,N-1) * G for _ in range(m-1)]
+        shares = [random.randint(1,N-1) * G for _ in range(m-1)]  # NOTE: Need a random Point, so we could use hash_to_point() (elligator): for the moment EC multiplication is ~2.5 time slower than hash_to_point() because ecpy lib is not efficient...
         shares.append(point - sum(shares))
         return shares
 

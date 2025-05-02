@@ -3,8 +3,9 @@ from tqdm import tqdm
 from utils import random_ip
 from setup import mixnet
 from client import Client
+from ecc import Point
 
-for _ in tqdm(range(pow(10,4)), ascii="░▒█", dynamic_ncols=True, position=0, leave=True):
+for it in tqdm(range(pow(10,3)), ascii="░▒█", dynamic_ncols=True, position=0, leave=True):
 
     # ---  Client / TTP Side  (aka. encryption)  ---
     destination = random_ip()                      # 1) Generate a random IP destination

@@ -1,5 +1,6 @@
 from sympy.ntheory.residue_ntheory import sqrt_mod
 
+from utils import track_operation # decorator
 from ecc import  A, Z, p, G, curve, ECCPoint, Point, is_negative
 from utils import rnd_padding
 
@@ -19,6 +20,7 @@ def is_square(n: int) -> bool:
     """
     return legendre(n) != -1
 
+@track_operation
 def hash_to_point(r: int) -> Point:
     """
     Maps an integer to an elliptic curve point using a modified Elligator2 method.
@@ -39,6 +41,7 @@ def hash_to_point(r: int) -> Point:
 
     return Point(ECCPoint(u, v, curve))
 
+@track_operation
 def point_to_hash(P: Point) -> int:
     """
     Maps a curve point to an integer representation.

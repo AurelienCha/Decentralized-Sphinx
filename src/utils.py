@@ -2,7 +2,26 @@ import hashlib
 import datetime
 import secrets
 import random
-    
+import inspect
+
+from param import COUNT_OPERATIONS
+operation_log = []
+
+def track_operation(func): # Decorator
+    def wrapper(*args, **kwargs):
+        if COUNT_OPERATIONS: # Save stack
+            for (op, file, fct) in [(func.__name__, f.filename.split('/')[-1], f.function) for f in inspect.stack()[1:-1]]:
+                if file in ['client.py', 'mixnode.py', 'ttp.py', 'setup.py', 'elligator.py']:
+                    operation_log.append((op, file, fct))
+                    break
+        return func(*args, **kwargs)
+    return wrapper
+
+def extract_operation_log():
+    global operation_log
+    log, operation_log = operation_log, []
+    return log
+
 def truncated_hash(bytes_: bytes, it: int = 1, bits: int = 255) -> int:
     """
     Implementation of a truncated SHA-256 hash with an option for multiple iterations (i.e. hash(hash(...)))

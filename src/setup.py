@@ -2,10 +2,8 @@ import datetime
 import random
 import math
 
+from param import NBR_MIXNODES, NBR_TTP
 from utils import random_ip
-
-NBR_MIXNODES = 20
-NBR_TTP = 3
 
 ##############################
 # 7 'independant' Generators # 
