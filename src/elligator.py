@@ -4,6 +4,15 @@ from utils import track_operation # decorator
 from ecc import  A, Z, p, G, curve, ECCPoint, Point, is_negative
 from utils import rnd_padding
 
+"""
+NOTE: Time comparison in seconds (absolu and relatif)
+EC multiplication (ecpy):       0.0021968028545379637       (1)
+point_to_hash:                  0.001901822566986084        (0.8657229132133841)
+point_to_hash (ideal):          0.0010171916484832764       (0.46303274159629326)
+hash_to_point:                  0.0008252565860748291       (0.37566256087572264)
+EC add (ecpy):                  0.0006737375259399414       (0.3066900266212752)
+"""
+
 def legendre(n: int) -> int:
     """Legendre symbol:
 
