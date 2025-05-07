@@ -1,7 +1,7 @@
 from sympy.ntheory.residue_ntheory import sqrt_mod
 
 from utils import track_operation # decorator
-from ecc import  A, Z, p, G, curve, ECCPoint, Point, is_negative
+from ecc import  A, Z, p, G, curve, ECCPoint, Point, is_negative, N
 from utils import rnd_padding
 
 """

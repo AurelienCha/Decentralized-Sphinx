@@ -7,7 +7,7 @@ from utils import truncated_hash
 from elligator import hash_to_point, point_to_hash
 from mixnode import Mixnode
 from ttp import TTP
-from setup import G_i, mixnet, TTPs
+from setup import mixnet, TTPs
 
 class Client:
     """
