@@ -1,5 +1,8 @@
-\documentclass{article}
+\documentclass[runningheads]{llncs}
 
+\usepackage[T1]{fontenc}
+
+\usepackage{graphicx}
 \usepackage{graphicx} % Required for inserting images
 \usepackage{hyperref}
 \usepackage{float}
@@ -11,21 +14,37 @@
 \newcommand{\toref}[1]{\todo[color=yellow]{#1}}
 \newcommand{\tothink}[1]{\todo[color=pink]{#1}}
 
-\title{Generating trusted sphinx packets}
-\author{aurelien.chassagne }
-\date{\today}
 
 \begin{document}
+	
+	\title{Generating trusted sphinx packets}
+	
+	\author{Aurelien Chassagne\inst{1}\orcidID{0000-1111-2222-3333} \and
+		Iness Ben Guirat\inst{1}\orcidID{1111-2222-3333-4444} \and
+		Jan Tobias M\"ulberg\inst{1}\orcidID{2222--3333-4444-5555}\and
+		Jean Michel Dricot\inst{1}\orcidID{1111-2222-3333-4444}}
+	
+	\authorrunning{A. Chassagne et al.}
+	
+	\institute{Université Libre de Bruxelles
+		\email{\{abc,lncs\}@ulb.be}}
+	\maketitle 
+	
+	\begin{abstract}
+		abstract
+		
+		\keywords{mixnet  \and sphinx \and malicious users}
+	\end{abstract}
 
-\maketitle
 
 \input{Texts/1.Introduction}
+\input{Texts/Related_Work}
 \input{Texts/1.Mixnet}
 \input{Texts/2.Sphinx}
 % %\input{Texts/3.ZKP}
 \input{Texts/4.MPC}
 
-\bibliographystyle{acm}
-\bibliography{bib.bib}
+\bibliographystyle{splncs04}
+\bibliography{mybibliography}
 
 \end{document}
