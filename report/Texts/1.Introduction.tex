@@ -1,22 +1,25 @@
 \section{Introduction}
 
-The Nym mixnet \cite{nym} is a privacy-preserving network designed to routes each packet through a different path.
-At its core, the Nym mixnet relies on the Sphinx \cite{sphinx} packet format and Coconut \cite{coconut} anonymous credentials to allow clients to securely and anonymously interact with various applications.
-While these mechanisms enhance privacy and security, they are vulnerable to misuse by dishonest users who might exploit valid Coconut credentials to deceive the system by altering the hidden destination within the Sphinx header.
+Mix network, or mixnet, is an overlay network of servers (called mix nodes) that routes messages anonymously from senders
+to receivers~\cite{chaum-mix,cypherpunk-remailer,piotrowska2017loopix,nym-network-whitepaper,minion-design, van2015vuvuzela,mixmaster-spec,chaum2016cmix}. Although mixnet shares similarities with Tor~\cite{onion-routing96}, they differ in two main key aspects: (i) the routing in Tor is circuit-based (meaning that all packets sent by a user follow the same path for the entire session) and in mixnets is packet-based (meaning that each packet follows a different path) and (ii) packets in Tor are forwarded immediately upon receipt by the Tor nodes while in mixnets packets are delayed for a certain amount of time $t$ in order to mitigate timing analysis attacks. These two techniques ensure that mixnets are resilient against a strong adversary who observes the entire input and outputs of the network typically called a Global Passive Adversary (GPA).
+Based on Loopix~\cite{piotrowska2017loopix}, Nym Technologies is a mixnet-based system that allow users to send traffic anonymously.
+Nym is a paid service where services can be integrated on the Nym network to enjoy privacy on the network level against a fee. Users of these services are then allowed to use the nym mixnet by using Nym credentials that are based on the Coconut credential~\cite{coconut}. 
+
+For example let's say Signal is integrated with Nym, and Signal users who want their traffic to be anonymous instead of sending traffic directly to the Signal server, traffic will be first routed through the mixnet such that an adversary who observes the signal server and/or the device of the user can not correlate the sender with signal server and evetually the final recepient. Signal (service provider) can add an option for user who want to pay and issue a certified attribute to those users. Users then encode this attributes into a credential and sends it to validators. If the proof is valid, validators return partial signatures. Once the user collects a threshold number of these signatures, they aggregate them to form a valid credential and re-randomize it to ensure unlinkability from previous interactions. The user can then present this credential to a verifier to prove their right to access a service to show that the credential meets all necessary payment and authentication conditions. To prevent double-spending, the verifier checks that the credential has not already been used by consulting the blockchain and then commits the credential's serial number to the blockchain upon acceptance.
+
+However, nothing prevents users from cheating users who might exploit valid Nym credentials to deceive the system by altering the hidden destination within the Sphinx header. For example, a user can obtain an certification from the Signal service provider, construct a valid credential and then use it to route traffic to another service provider they didn't pay for or simply not allowed (an illegal website).
 Such misuse would be detected only at the final node of the mixnet preventing the user from accessing another application. 
 However, prior mixnodes would have already wasted computational resources processing an invalid packet. 
 This vulnerability enables Denial of Service (DoS) attack by exhausting mixnodes computational power with illegitimate packets.
 \newline
-\todo{JT: Can we enumerate security objectives or requirements?
-So that we can come back to them in the eval section?}
-
-This paper aims to address the critical challenge of ensuring trust in the generation of Sphinx headers, thereby preventing such misuse. 
-Two potential solutions are proposed: 
+In this paper we aim to address the following objectives:
 \begin{itemize}
-    \item \textbf{Multi-Party Computation (MPC)}:
-    used to decentralize the generation of Sphinx headers among trusted third parties while ensuring they learn nothing about the destination or the path.
-    % even when colliding ?
-    % Honest-but-curious model
-    \item \textbf{Zero-Knowledge Proofs (ZKP)}: used to prove that the hidden destination encoded in the Sphinx header actually corresponds to an address authorized by the user’s anonymous credentials without revealing the actual destination. 
+	\item Cheating users: Users's traffic is only allowed to be routed if the traffic belongs to the same service provider from the credential
+	\item even if the majority of headers issuers are colluding, they do not know whcih service provider the user is communicating with.
+	\item the spinx headers can not be altered.
+	\item Verifiers can verify that the headers has not been altered with without revealing the service provider.
+	\item Unlinkability between  sphinx packets.
 \end{itemize}
-By exploring these approaches, the paper seeks to enhance the trustworthiness of the Nym mixnet.
+
+
+In this paper we present a solution based on decentralizing the generation of Sphinx headers among trusted third parties while ensuring they learn nothing about the destination or the path. Future work include how can we use Zero-Knowledge Proofs (ZKP) to prove that the hidden destination encoded in the Sphinx header actually corresponds to an address authorized by the user’s anonymous credentials without revealing the actual destination. 
