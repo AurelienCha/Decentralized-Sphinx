@@ -1,5 +1,6 @@
-\section{Sphinx}\label{sec:sphinx}
-
+\section{Our Solution}\label{sec:scheme}
+\subsection{Sphinx}
+\todo{Iness: This entire subsection explains the original sphinx packet format, I think it's too much and can be reduced to 20\%. The rest can be eithger be deleted or used on how you construct the decentralized scheme}
 Sphinx packets consist of a header and an encrypted payload. 
 The header itself contains a \textit{cryptographic element $\alpha$} (e.g. $g^x$ or an elliptic curve point), \textit{encrypted routing information $\beta$}, and an \textit{integrity tag $\gamma$}, as illustrated in Figure \ref{fig:sphinx_structure}.
 
@@ -68,7 +69,7 @@ We should also compare computational overheads from attack vs. the new protocol 
 
 
 
-\section{Multi-Party Computation (MPC)}
+\subsection{Multi-Party Computation (MPC)}
 
 The first approach to ensuring trust in the Sphinx header is to prevent user manipulation by decentralizing the header construction to Trusted Third Parties (TTP) through the use of Multi-Party Computaftion (MPC).
 
@@ -114,11 +115,11 @@ The user begins by splitting the destination into several parts, such that their
 Each part is sent to a different TTP, along with the required cryptographic material. 
 The TTPs independently generate Sphinx headers using a modified version of the protocol. \toref{(see section ...)} 
 These partial headers are then returned to the user, who aggregates them to form the final Sphinx header, ready for transmission through the mixnet.
-
+\todo{Iness: Is there a reason why the arrows have different colors? If not than change to all black, Change "App" with "Service provider", Also I prefer a white background over black}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{Images/sphinx_ttp.png}
-    \caption{Overview of the decentralized scheme\todo{Iness: Is there a reason why the arrows have different colors? If not than change to all black, Change "App" with "Service provider", Also I prefer a white background over black}}
+    \includegraphics[width=0.5\linewidth]{Images/sphinx\_ttp.png}
+    \caption{Overview of the decentralized scheme}
     \label{fig:overall_schema}
 \end{figure}
 
