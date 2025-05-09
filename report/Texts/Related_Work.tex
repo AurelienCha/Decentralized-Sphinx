@@ -5,5 +5,4 @@ However, certain open research problems remain open. For example how can we ensu
 Tor solves the problem with having exit policy that simply drop traffic at the last node. However Tor routing is circuit-based meaning that all traffic from a specefic user session follow one path and hence packets are encrypted using symetric cryptographhy which is cheap, so even if traffic is dropped that is not a problem.
 
 However unlike tor, mixnets can be expensive due to the routing type which is packet based , meaning that every packet takes a different path and hence layered encrypted using public key cryptography. This means that if packets are dropped at the lost nodes when not allowed, this waste a huge amount of cryptographic power. Additionally unlike tor where relay are volunteer based, nodes in mixnets such as Nym are economically incentivized based on the bandwidth they routed so if packets are dropped at the end this is not great.
-
-\subsection{Sphinx}
+\todo{Iness: add a simple graph here of a mixnet}
