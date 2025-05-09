@@ -19,30 +19,25 @@
 	
 	\title{Generating trusted sphinx packets}
 	
-	\author{Aurelien Chassagne\inst{1}\orcidID{0000-1111-2222-3333} \and
-		Iness Ben Guirat\inst{1}\orcidID{1111-2222-3333-4444} \and
-		Jan Tobias M\"ulberg\inst{1}\orcidID{2222--3333-4444-5555}\and
-		Jean Michel Dricot\inst{1}\orcidID{1111-2222-3333-4444}}
+	\author{Anonymous}
+	\authorrunning{Anonymous}
+	\institute{}
 	
-	\authorrunning{A. Chassagne et al.}
-	
-	\institute{Université Libre de Bruxelles
-		\email{\{abc,lncs\}@ulb.be}}
 	\maketitle 
 	
 	\begin{abstract}
-		abstract
-		
+		We propose a decentralized scheme that prevent mixnets users from sending traffic that does not match the service provider of an anonymous credential. Our scheme is of direct use in the Nym network where users construct an anonymous credential given they receive a certificate of them paying for that service provider. Our scheme prevent users from cheating by using a credential for a free service and send traffic for a paid service. Our solution works even if the majority of the third parties collude. Finally we evaluate the performance of our solution.
 		\keywords{mixnet \and sphinx \and malicious users}
 	\end{abstract}
 
 
-\input{Texts/1.Introduction}
+\input{Texts/Introduction}
 \input{Texts/Related_Work}
-\input{Texts/1.Mixnet}
-\input{Texts/2.Sphinx}
+\input{Texts/System_Model}
+\input{Texts/Our_Solution}
 % %\input{Texts/3.ZKP}
-\input{Texts/4.MPC}
+\input{Texts/Evaluations}
+\input{Texts/Conclusion}
 
 \bibliographystyle{splncs04}
 \bibliography{bib}
