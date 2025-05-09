@@ -1,0 +1,19 @@
+\section{System and Threat Model}~\label{sec:sys_model}
+\subsection{System Model}
+
+
+
+For example let's say Signal is integrated with Nym, and Signal users who want their traffic to be anonymous instead of sending traffic directly to the Signal server, traffic will be first routed through the mixnet such that an adversary who observes the signal server and/or the device of the user can not correlate the sender with signal server and evetually the final recepient. Signal (service provider) can add an option for user who want to pay and issue a certified attribute to those users. Users then encode this attributes into a credential and sends it to validators. If the proof is valid, validators return partial signatures. Once the user collects a threshold number of these signatures, they aggregate them to form a valid credential and re-randomize it to ensure unlinkability from previous interactions. The user can then present this credential to a verifier to prove their right to access a service to show that the credential meets all necessary payment and authentication conditions. To prevent double-spending, the verifier checks that the credential has not already been used by consulting the blockchain and then commits the credential's serial number to the blockchain upon acceptance.
+For example, a user can obtain an certification from the Signal service provider, construct a valid credential and then use it to route traffic to another service provider they didn't pay for or simply not allowed (an illegal website).
+Such misuse would be detected only at the final node of the mixnet preventing the user from accessing another application. 
+However, prior mixnodes would have already wasted computational resources processing an invalid packet. 
+This vulnerability enables Denial of Service (DoS) attack by exhausting mixnodes computational power with illegitimate packets.
+
+Additionally, each encryption layer includes an integrity tag, which prevents tampering and improves the network’s resistance against malicious mixnodes and active adversaries.
+This means that each packet follows a different path rather than using the same intermediate nodes during the whole communication.
+ 
+To further prevent correlation, mixnet relies on fixed-size packet format such as Sphinx packet (section \ref{sec:sphinx}), making it difficult for external observers to link incoming and outgoing messages at any given node.
+In summary, mixnets provide stronger privacy guarantees than onion routing at the cost of increased latency.
+
+
+\subsection{Threat Model}
