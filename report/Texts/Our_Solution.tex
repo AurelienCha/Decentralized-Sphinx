@@ -1,5 +1,4 @@
-\section{Our Solution}\label{sec:scheme}
-\subsection{Sphinx}
+\section{Sphinx}
 \todo{Iness: This entire subsection explains the original sphinx packet format, I think it's too much and can be reduced to 20\%. The rest can be eithger be deleted or used on how you construct the decentralized scheme}
 Sphinx packets consist of a header and an encrypted payload. 
 The header itself contains a \textit{cryptographic element $\alpha$} (e.g. $g^x$ or an elliptic curve point), \textit{encrypted routing information $\beta$}, and an \textit{integrity tag $\gamma$}, as illustrated in Figure \ref{fig:sphinx_structure}.
@@ -67,95 +66,321 @@ This design choice guarantees fixed-size headers, enabling fixed-size packets wh
 \todo[inline]{JT: Now maybe follow up with an example of the attack from the introduction?
 We should also compare computational overheads from attack vs. the new protocol design.}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Our solution %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newpage
+\section{Our Solution - Multi-Party Computation (MPC)}\label{sec:scheme}
+\todo[inline, color=blue!30]
+{
+    [NOTE] - To do or improve
+        \newline- Carefully select variable's notation, e.g. h, h(), H() and hash();
+        \newline\hspace*{1cm} - Don't like $\alpha$ notation since it should be capital letter (point)
+        \newline\hspace*{1cm} - Should use $\Gamma$ instead of $\gamma$ notation (point)
+        \newline\hspace*{1cm} - And what about $\beta$, $b$, $x$, ...
+        \newline- Do or improve schemas;
+        \newline- Clarify that we work with a path of length 3 (could be generalized)
+}
 
-\subsection{Multi-Party Computation (MPC)}
-
-The first approach to ensuring trust in the Sphinx header is to prevent user manipulation by decentralizing the header construction to Trusted Third Parties (TTP) through the use of Multi-Party Computaftion (MPC).
-
-We consider TTPs as \textit{honest-but-curious}.\tothink{What if malicous TTP...}
-This means that they follow the protocol correctly but may attempt to infer additional information from the data they process.
-Our design aims to ensure that TTPs must not be able to infer any information about the shared secrets $s_i$ nor the mixnodes involved in the path, even when TTP are colliding (assuming that at least one TTP remains honest).
-\todo{JT: In the Nym ecosystem, who are the TTPs, who operates them, what exactly are they trusted for?}
+The first approach to ensure trust in the Sphinx header is to prevent user manipulation by decentralizing the header construction to Trusted Third Parties (TTP) through the use of Multi-Party Computaftion (MPC).
 \newline
 
+We consider TTPs as \textit{honest-but-curious}.
+This means that they follow the protocol correctly but may attempt to infer additional information from the data they process.
+Our design ensures that TTPs cannot infer any information about the shared secrets $ s_i $ or the involved mixnodes, even when TTPs collude (except one).
+\todo{JT: In the Nym ecosystem, who are the TTPs, who operates them, what exactly are they trusted for?}
 
-% Overall path selection:
-% 1) Users choose the path
-% 2) TTP randomly choose the path (without knowing it)
+\subsection{Development Path / Thinking path}
 
-% Overall schema 
-% 1̶)̶ ̶O̶n̶e̶ ̶T̶T̶P̶ ̶p̶e̶r̶ ̶l̶a̶y̶e̶r̶
-% 2) TTP do a layer, then aggregate, then next layer  => What if user send h(s_i) ?! (TODO)
-% 3) TTP do the whole computation then aggregate
-To decentralize the construction of the Sphinx header, we first examined how to partition and distribute the computation. 
-Three approaches were considered.
+Before introducing our decentralized schema, we briefly outline the key decisions that shaped our implementation.
+\newline
 
-The first and most naive approach involves that each TTP computes a different layer of the header. 
-This approach reveals two consecutive nodes in the path and one of the corresponding shared secrets ($s_i$) at each TTP, leading to serious security concerns in the case of collusion.
+\noindent We considered three main approaches to decentralize the Sphinx header computation:
+\begin{enumerate}
+    \item \textbf{Distributed:} Each TTP computes a distinct layer (sequential approach);
+    \item \textbf{Partially decentralized:} All TTPs compute a layer based on partial information, aggregate their results to compute the integrity hash, redistribute the outcome, and repeat the process with the next layer;
+    \item \textbf{Fully decentralized:} All TTPs compute the full Sphinx header using partial information, and their results are aggregated at the end.
+\end{enumerate}
 
-In a second approach, the user sends to each TTP a piece of the destination address.
-Each TTP computes the same layer on its partial destination.
-The resulting partial headers of this layer are aggregated to compute the integrity tag. 
-This process is repeated layer by layer. 
-However, computing the integrity tag at the end of each layer requires knowledge of the shared secret $s_i$. 
-\tothink{User could send $h(s_i)$ to TPP such that it could computes the integrity check without getting useful information...}
-If a TTP does it, it reintroduces the same problem as the first approach.
-If the user does it, he could potentially cheat.
+The first approach compromises privacy, as each TTP learns two consecutive nodes in the path and one of the associated shared secrets, raising serious security concerns.
+The second approach increases communication overhead and allows the aggregating TTP to observe the intermediate Sphinx header at specific stages, which could enable packet tracking if the aggregator colludes.
+Finally, the third approach was selected for its stronger privacy guarantees, despite its added complexity.
+\newline
 
-The third and retained approach is similar to the second one.
-Instead of partial computations at each layer, each TTP computes a full Sphinx header using only its assigned partial destination. 
-These partial headers are then returned to the user, who aggregates them to produce the final Sphinx header.
-Although this approach requires less interaction with the TTPs, it introduces additional constraints as discussed in section \toref{ref section}.
-\todo{JT: I think we should only focus on the third approach.
-There could be a section "Alternative Designs" where we discuss your other approaches.}
+% hash -> Homomorphic encryption
+The main challenge in the fully decentralized setting lies in the integrity tag which relies on a hash function. 
+Although a homomorphic hash would be ideal to support decentralized hash, such construction remains poorly studied and potentially weaken its security due to the homomorphic additive or multiplicative nature (easier for collisions).
+As a practical workaround, we substitute the hash with a one-way homomorphic encryption scheme (only encryption, not decryption). 
+More specifically, a homomorphic encryption with mutually commutative operators (like RSA and ElGamal but not Paillier) due to the nested structure of the integrity tag, which contains previous tags.
+\todo[color=blue!30]{Should I develop why ?}
 
-The overall decentralized scheme is illustrated in Figure \ref{fig:overall_schema}. 
-The user begins by splitting the destination into several parts, such that their combination (e.g., via XOR) reconstructs the original address. 
-Each part is sent to a different TTP, along with the required cryptographic material. 
-The TTPs independently generate Sphinx headers using a modified version of the protocol. \toref{(see section ...)} 
-These partial headers are then returned to the user, who aggregates them to form the final Sphinx header, ready for transmission through the mixnet.
-\todo{Iness: Is there a reason why the arrows have different colors? If not than change to all black, Change "App" with "Service provider", Also I prefer a white background over black}
+%%% Size -> ECC -> 1 Point per element -> cut in chunks
+To improve efficiency, we switch from RSA-like primitives to elliptic curve cryptography (ECC), which offers more compact representations while keeping these homomorphic properties.
+By abstracting away encryption layers, the final header is structured as follows: 
+\[
+[\text{node 1, integrity 1, node 2, integrity 2, node 3, integrity 3, destination}]
+\]
+\todo[color=blue!30]{adding a figure to illustrate ?}
+Since deriving all these information from just one or two EC points seems impractical, we represent each piece of information by an EC point.
+To achieve this, we split the encoded string into chunks as represented by Figure \ref{fig:chunked_schema}, each corresponding to a single EC point.
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{Images/sphinx\_ttp.png}
+    \includegraphics[width=0.6\linewidth]{Images/chunked_structure.png}
+    \caption{Chunked representation of the schema}
+    \label{fig:chunked_schema}
+\end{figure}
+
+\todo[color=blue!20]{Nice guidelines ref: RFC9380 (Hashing to Elliptic Curves)}
+One remaining challenge when encoding information into elliptic curve (EC) points is the decoding process.  
+Some type of data such as IP addresses (destination or mixnodes) requires both an encoding method that maps an integer to a point and a corresponding decoding method that retrieves the integer from the point.
+In this article, we refer to these two processes respectively as \textit{integer-to-point} noted $H()$, and \textit{point-to-integer} noted $h()$.
+\newline
+
+A classical approach to achieve such a mapping involves the x-coordinate of the point.
+The point-to-integer function simply returns the x-coordinate of the point.
+The integer-to-point function computes the y-coordinate where x is the integer.
+However, a randomly chosen x-coordinate will lie on the curve only about 50\% of the time.  
+A simple workaround is to increment the x-coordinate until a valid point is found.  
+Yet, this technique introduces a problem in our context since the x-coordinates correspond to IP addresses. 
+Nearby IPs could map to the same point, potentially leading to collisions that compromise correctness of the mixnet.
+This risk could be mitigated by padding the IP with a random fixed-length binary string.
+\newline
+
+From our knowledge, a second alternative exists: the Elligator 2 algorithm.  
+Elligator provides a method to map any integer to a pseudorandom point on a Montgomery curve in a uniform and reversible way.  
+More precisely, the reverse mapping (point-to-integer) requires that the point satisfies specific mathematical conditions, which occur with roughly 50\% probability for a random point.  
+Again, a simple workaround is to increment the point by adding the curve's generator until the point fulfills these conditions.
+
+Note that all points derived from integers using Elligator are guaranteed to be reversible.  
+Thus, a point representing an IP address (which originally comes from an integers) can always be correctly decoded.  
+Only random points used as shared secrets may require few extra point additions to meet these conditions which represents a negligeable computational overhead.
+\newline
+
+To summarize, we need a mapping that is as bijective as possible but we face a trade-off between two imperfect scenarios:
+\begin{itemize}
+    \item A complete and easily reversible point-to-integer mapping (i.e. using x-coordinates), but only partial coverage for integer-to-point.
+    \item A complete integer-to-point mapping (i.e. using Elligator), but only partial coverage for point-to-integer.
+\end{itemize}
+
+Elligator seems a better solution since it guarantees stronger security/privacy by providing a more uniformly distributed output.
+Moreover the complete integer-to-point is more important (to prevent IP collision) and we can deal with partial point-to-integer mapping in our use case.
+
+\newpage
+\todo[inline, color=blue!30]{
+    It feels a bit heavy with too much details and remarks. 
+    The whole previous page could be reduced to this shorter alternative.
+    Which one is better ?
+    \newline
+
+    [Alternative shorter version]: \newline
+    One remaining challenge lies in encoding and decoding information to and from elliptic curve points. 
+    Specifically, we require a pseudorandom mapping between integers field and curve points group.
+    
+    Traditional methods achieve this by directly mapping integers to the x-coordinates of points on the curve. 
+    However, this approach could leaks information by introducing bias since nearby integers result in nearby points.
+    
+    To address this, we adopt Elligator, which offers stronger privacy guarantees. 
+    Unlike the traditional approach, Elligator produces a uniformly distributed output which is computationally indistinguishable from truly random curve points. 
+    This uniformity is critical in our context, where preserving anonymity and avoiding linkability are core goals.
+}
+
+\subsection{Protocol description}
+
+The overall decentralized scheme is illustrated in Figure~\ref{fig:overall_schema}.  
+The client first computes a sequence of shared secrets and then splits these secrets, along with the IP addresses of the mixnodes in the path and the final destination, into $m$ shares.  
+Each set of shares is sent to a different TTP, along with the necessary cryptographic element ($\alpha$).  
+Each TTP independently computes a \textit{partial} Sphinx header using the received shares.  
+The client then aggregates these partial headers to reconstruct the final header, ready for transmission through the mixnet.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Images/sphinx_ttp.png}
     \caption{Overview of the decentralized scheme}
     \label{fig:overall_schema}
 \end{figure}
 
-%%%%%%%%%%%%%%%
-%One major challenge in decentralizing the original sphinx schema (Figure \ref{fig:header_cipher}) lies in the integrity tag, which is computed as the HMAC of the header $\beta_i$ using shared secret $s_i$. 
-%To ensure security, no third party should have access to $s_i$, as collusion among third parties could lead to the recovery of all $s_i$, enabling them to decrypt the header and payload.
-%To address this, third parties could compute a portion of the HMAC using a fragment of the shared secret $s_i$, and then combine these partial HMACs to produce the final HMAC. 
-%This approach would require a hash function with homomorphic properties, which inherently weakens the collusion resistance and potentially compromises the second pre-image resistance of a secure hash.
-%%%%%%%%%%%%%%%
-
-\todo{I'd rather specify the requirements for the hash here.}
-The main issue with the choosen approach is that we have to compute integrity tag on partial header such 
-that combining those partial integrity tag gives the integrity tag of the final header.
-However, even if breaking this homomorphic hash is feasible, if it remains computationally hard enough (e.g., requiring several hours), it could still be considered sufficiently secure for our purposes.
-% TODO: VERIFY WHY NEED TO BE PER CHUNK
-% What append if size secret bigger than chunk size (more random ?)
+\noindent In summary, the protocol is divided into four main steps:
+\begin{itemize}
+    \item \textbf{Setup}: fixes random points as \textit{generators} (once but should be refreshed);
+    \item \textbf{Client}: \textit{splits and shares} the necessary information to TTPs;
+    \item \textbf{TTP}: \textit{encrypts} the routing information into a partial header;
+    \item \textbf{Mixnode}: \textit{decrypts} and forwards the header.
+\end{itemize}
 
 
-% ALPHA - 3 possibilities
-% 1) Sending 1 alpha that is derived at each mixnode to generate a new alpha (efficient and clean but maybe not random enough)
-    %  a) $\alpha_{i+1} = \alpha_i^{hash(\alpha_i, s_i)}$  -> article version
-    %  b) $\alpha_{i+1} = G^{hash(\alpha_i, s_i)}$  --> Avoid "(x*b) % (mod-1)" in the exp -> less constraints
-    %  c) $\alpha_{i+1} = \alpha_i^{2 s_i+1}$
-    %  D) $\alpha_{i+1} = G^{\alpha_i (2 s_i+1)}$
-% 2) Sending 1 alpha (unchanged) that is encrypted at each mixnode for the next one node (slower)
-% 3) Sending 3 alpha (esay, robust but not size efficent) 
+\subsubsection{Setup}
 
-% BETA
-% 1) compute by chunk
-% 2) compute the whole ==> Possible ? If yes/no on which cases 
+In our protocol, routing information is divided into seven chunks (see Figure \ref{fig:chunked_schema}), each one encoded into an elliptic curve point. 
+These points will later be encrypted by adding a masking point of the form $ P = s G $, where $ s $ is a shared secret and $ G $ is the base generator of the curve.
+However, using the same masking point $ P $ for all the seven chunks compromises the \textit{unlinkability} property
+(see security note in the TTP step \ref{note:security_why_indep_generators}).
 
-% GAMMA
-% 0) User sends hash(s_i) if computed by layer
-% 1) Using a different secret (s'_i) for integrity that is common to all TTP (for RSA) ==> i.e. different message, same secret
-        % Pro: Easier
-        % Con: Need an extra secret to send and key to handle
-% 2̶)̶ ̶U̶s̶i̶n̶g̶ ̶p̶a̶r̶t̶i̶a̶l̶ ̶s̶_̶i̶ ̶o̶n̶ ̶p̶a̶r̶t̶i̶a̶l̶ ̶b̶e̶t̶a̶_̶i̶ ̶=̶=̶>̶ ̶i̶.̶e̶.̶ ̶d̶i̶f̶f̶e̶r̶e̶n̶t̶ ̶m̶e̶s̶s̶a̶g̶e̶,̶ ̶d̶i̶f̶f̶e̶r̶e̶n̶t̶ ̶s̶e̶c̶r̶e̶t̶
-        %̶ ̶e̶.̶g̶.̶ ̶(̶s̶_̶i̶1̶ ̶*̶ ̶b̶'̶_̶i̶1̶)̶ ̶*̶ ̶(̶s̶_̶i̶2̶ ̶*̶ ̶b̶'̶_̶i̶2̶)̶ ̶*̶ ̶(̶.̶.̶.̶)̶ ̶=̶=̶>̶ ̶b̶'̶ ̶m̶u̶s̶t̶ ̶b̶e̶ ̶t̶h̶e̶ ̶f̶r̶e̶s̶h̶ ̶c̶o̶m̶p̶u̶t̶e̶d̶ ̶b̶ ̶(̶n̶o̶t̶ ̶t̶h̶e̶ ̶p̶r̶e̶v̶i̶o̶u̶s̶ ̶o̶n̶e̶)̶
-        % /!\ LEAK INFORMATION (about s_i) /!\
+To mitigate this, we use a set of seven \textit{independent} generators $ G_i $, one for each chunk. 
+By \textit{independent}, we mean that the scalar relationship between any two generators is unknown. 
+Therefore no one knows the scalars $ x_i \in \mathbb{Z}_N $ such that $ G_i = x_i G $.
+
+In principle, this setup phase can be executed only once. 
+However, to preserve unlinkability, the set of generators should be refreshed periodically. 
+Every entity (clients, mixnodes, and TTPs) must run the setup phase to ensure they use the same set of generators.
+
+To achieve synchronized and deterministic generator values across the system, we derive them from a common seed. 
+This seed is computed as the hash of the current timestamp, truncated to the chosen refresh interval. 
+To produce distinct seeds for each generator we rehash the seed, or simply increment it since Elligator already provides a uniform (i.e. pseudorandom) integers to points mapping.
+\todo[color=blue!30]{In the current implementation, instead of incrementing the seed, we rehash it for each i. However, since Elligator produces uniformly distributed outputs, incrementing may be equally secure and more efficient.}
+
+A subtlety with Elligator is that it can map integers to points outside of the base generator's subgroup.
+Thus, an extra step is required to \textit{clear the cofactor} by multiplying the resulting point by the cofactor $ h $ (for Curve25519, $ h = 8 $).
+
+\noindent The final formula for generating the $ i^{th} $ chunk’s generator is:
+$$
+G_i = h \cdot H(\text{hash}(\text{timestamp}) + i), \quad \text{for } i = 1, \dots, 7
+$$
+
+
+\subsubsection{Client}
+% 1) Define a destination
+% 2) Select a random path
+% 3) Select a random salt $x$ (nounce) 
+% 4) Generate a chain of shared secret for the path's mixnode
+% 5) Transform IP addresses (path's mixnodes and destination) into Point with Elligator and the split those point into shares.
+% 6) Split the shared secrets (int) into shares.
+% 7) Send sets of shares (mixnodes IPs, destination IP, shared secrets) to different TTP.
+% 8) TTP will compute from those shares a partial header and send it to the client. Afterwards, the client aggregate these partial headers.
+  
+To send a message to a specific destination, the client first randomly chooses a path through the mixnet and generates a nonce.
+Using this nonce and the public keys of each mixnode along the path, the client derives a chain of shared secret integers $ (s_1, s_2, s_3) $ as follows:
+\todo[inline,color=blue!30]
+{
+    Does it seems strange to transform the shared secret point into integer ?
+    Should I explain why we need integer form ? 
+    It might be a bit heavy and add too much details...
+}
+$$
+\begin{aligned}
+    \alpha_i    &= x_i \, G \\
+    S_i         &= x_i \, \text{PK}_i \\
+    s_i         &= h(S_i) \\
+    b_i         &= \text{hash} ( {\alpha_i}_y \ \| \ {S_i}_y ) \\
+    x_{i+1}     &= x_i \, b_i \quad (\text{mod}\ N)
+\end{aligned}
+$$
+\todo[color=blue!30]{Order of equation lines ? and names of variables (espacially $x_i$ and $b_i$) ?}
+where $ x_1 $ is the client's nonce, $ \text{PK}_i $ is the public key of the $ i^{th} $ mixnode in the path, 
+$ N $ is the prime order of the elliptic curve group, $ \| $ is  the concatenation operator and subscript $ y $ refers to the $ y $-coordinate of the point.
+The scalar $ b_i $ acts as a pseudo-randomizer to update the secret $ x_i $ for the next hop, 
+ensuring that each cryptographic element $ \alpha_i $ remains unlinkable across mixnodes.
+
+The IP addresses of the mixnodes and the destination are padded with random bits
+then mapped to elliptic curve points using Elligator, allowing later recovery of these addresses.
+\todo[color=red!40]{Test code: to verify if the padding is still necessary or optionnal and if limited (max size N)}
+Both the resulting IP points and the shared secrets are split into shares and distributed to $ m $ different TTPs. 
+\todo[inline, color=blue!30]{Should I mention how to split point (or integer) into $ m $ shares ? 
+It is just taking $ m - 1 $ random points (or integers), sum them and compute the difference with the original point (or integer).}
+
+
+Each TTP then independently computes a partial header from the received shares and returns it to the client. 
+The client aggregates these partial headers by performing chunkwise point additions to reconstruct the complete encrypted header.
+Finally, the client sends the header along with $ \alpha_1 $ to the first mixnode from the path. 
+\todo[color=blue!30]{Do we need to remind that the user need to encrypt his message using these shared secrets (as in original article) or is uninteresting/obvious enough ?}
+
+\subsubsection{TTP}
+% 1) Receive partial destination, path's nodes and partial shared secret
+% 2) First
+% 3) For each layer
+Each TTP receives from the client:
+\begin{itemize}
+    \item a share of the destination address (as an elliptic curve point),
+    \item a share of each mixnode address in the path (as elliptic curve points),
+    \item a share of each shared secrets (as integers).
+\end{itemize}
+
+The TTP constructs a partial encrypted header by layering routing information in reverse path order, starting from the last mixnode.
+
+At each layer, two new chunks are introduced: the next mixnode’s address (as an EC point) and an integrity tag.  
+To preserve a fixed-length header while allowing mixnodes to reverse the operation (as in the original design), four additional \emph{filler chunks} are appended.  
+These filler chunks are carefully computed such that at each layer, after applying the corresponding masking points ($s_i \ G_j$), the last two chunks cancel out and become identity point (i.e. point at infinity).  
+This mechanism allows these two chunks to be safely truncated at each layer, ensuring a consistent header size while preserving reversibility for mixnodes.
+
+To initialize the header, the TTP encrypts the destination point using the shared secret of the last mixnode and append the required filler chunks. 
+Let $ \Delta $ be the partial destination point, $ s_i $ the shared secret corresponding to the $ i^\text{th} $ mixnode in the path, and $ G_j $ the $ j^\text{th} $ chunk's generator. 
+The chunks for the last layer (layer 3, assuming a 3-hop path) are computed as follows:
+
+\[
+\begin{aligned}
+    {\beta_3}_1 &= \Delta       + s_3 \ G_1 \\
+    {\beta_3}_2 &= - (s_2 \ G_4 + s_1 \ G_6) \\
+    {\beta_3}_3 &= - (s_2 \ G_5 + s_1 \ G_7) \\
+    {\beta_3}_4 &= - s_2 \ G_6 \\
+    {\beta_3}_5 &= - s_2 \ G_7 \\
+\end{aligned}
+\]
+The integrity tag for this layer is computed as:
+\[
+\gamma_3 = s_3 \ G + \sum_{j=1}^{5} {\beta_3}_j
+\]
+Subsequent layers (for $ i = 2 $ and $ i = 1 $) are computed as:
+\[
+\begin{aligned}
+    {\beta_i}_1 &= N_{i+1} + s_i \ G_1\\
+    {\beta_i}_2 &= \gamma_{i+1} + s_i \ G_2 \\
+    {\beta_i}_3 &= {\beta_{i+1}}_1 + s_i \ G_3 \\
+    {\beta_i}_4 &= {\beta_{i+1}}_2 + s_i \ G_4 \\
+    {\beta_i}_5 &= {\beta_{i+1}}_3 + s_i \ G_5 \\
+\end{aligned}
+\]
+with the corresponding integrity tag:
+\[
+\gamma_i = s_i \ G + \sum_{j=1}^{5} {\beta_i}_j
+\]
+Here, $ N_{i+1} $ represents the elliptic curve point corresponding to the $ (i+1)^\text{th} $ mixnode in the path.
+
+When the first layer is finally computed, it is appended with the first mixnode’s point $ N_1 $ and the integrity tag $ \gamma_1 $.
+Finally, the TTP returns the constructed partial header to the client.
+
+\paragraph{\textbf{Security Note.}}\label{note:security_why_indep_generators}
+To preserve unlinkability, it is essential that the generators $ (G_1, \dots, G_7) $ are \textit{independent}, meaning that their scalar relationships are unknown and cannot be derived.
+If the same generator $ G' $ were used across chunks (or their scalar relationships known), an adversary could compute the chunkwise difference between consecutive layers: $ {\beta_i}_j - {\beta_{i+1}}_j = s_i \ G' $.
+Since the shared secret $ s_i $ remains consistent within a layer, the resulting differences would reveal a predictable pattern (uniform or preserved scalar relationships).
+This consistency could allow an adversary to correlate incoming and outgoing packets at a mixnode, thereby breaking the unlinkability property.
+Using independent generators for each chunk prevents such correlations and is therefore critical to the protocol's security.  
+  
+
+\subsubsection{Mixnode}
+% 1) Extract information from the header
+% 2) Recompute shared secret
+% 3) Integrity check
+% 4) Update encrypted information (β)
+% 5) Update cryptographic element (α)
+
+
+When a packet arrives at a mixnode, it begins by extracting the relevant header fields, namely the cryptographic element $ \alpha $ and the integrity tag $ \gamma $.  
+The mixnode then recomputes the shared secret point $ S $ using its private key $ \text{sk} $ and the cryptographic element $ \alpha $:  
+\[
+S = \text{sk} \ \alpha
+\]
+This point is subsequently mapped to a shared secret integer $ s $ using Elligator.
+This shared secret integer is then used to verify the integrity tag: 
+\[
+\gamma \overset{\text{?}}{=} s \ G + \sum_{j=1}^{5} \beta_j
+\]
+The integrity tag is constructed as the sum of the chunks, offset by a secret point derived from the shared secret integer. 
+This ensures that only the client and intended mixnode can create, modify, or verify it.
+
+\noindent If the integrity check passes, the mixnode pads the header by appending two \textit{identity} chunks (i.e. point at infinity) and then updates it as:
+\[
+\beta'_j = \beta_j - s \ G_j \qquad \forall j = 1, \dots, 7
+\]
+
+The first chunk ($ \beta'_1 $), encodes the next mixnode’s IP address. 
+This point is mapped back to an integer using Elligator and the random padding is removed by keeping the last 128 bits (i.e. size of IP address).
+
+\noindent The second chunk ($ \beta'_2 $) is the new integrity tag ($ \gamma' $) for the remaining five chunks that form the new encrypted routing information ($ \beta' $).
+
+To maintain unlinkability, the cryptographic element $ \alpha $ must be updated for the next hop. 
+As in the client's step, it is computed using the $y$-coordinates of both $ \alpha $ and $ S $:
+\[
+\alpha' = \text{hash}(\alpha_y \ \| \ S_y) \ \alpha
+\]
+Finally, the mixnode forwards the updated header $ (\alpha', \gamma', \beta') $ to the next node.
