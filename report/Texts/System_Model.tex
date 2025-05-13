@@ -1,6 +1,8 @@
 \section{System and Threat Model}~\label{sec:sys_model}
 In this section we describe the system model and the adversary we consider.
 \subsection{System Model}
+\todo{Aurelien: I think we could try to be more concise on this subsection because it feels quite heavy (especially the second half speaking of coconut and blockchain).
+But for the moment, this part is a bit tricky since we haven't really focus on credentials...}
 We abstract the Nym mixnet to the components that are relevant for our work. We consider a mixnet, where each user have a gateway that shows a credential and if accepted their traffic is allowed. 
 To prevent correlation, mixnet relies on fixed-size packet format such as Sphinx packet (section \ref{sec:sphinx}), making it difficult for external observers to link incoming and outgoing messages at any given node.
  The nym credential is constructed by the user and issued by a third decentralized party after obtainng a certificae that proove payement.
@@ -12,11 +14,13 @@ This vulnerability enables Denial of Service (DoS) attack by exhausting mixnodes
 
 Additionally, each encryption layer includes an integrity tag, which prevents tampering and improves the network’s resistance against malicious mixnodes and active adversaries.
 
-\subsection{Threat Model}
+\subsection{Threat Model} 
 We consider different types of adversaries:
+\todo{Aurelien: I feel like the bullet points are mixing a bit threat model (GPA, malicious user and honest-but-curious TTP) with desired properties (collusion resistant, integrity, unlinkability, ...)}
 \begin{itemize}
 	\item A GPA: an adversary who is able to observe all the inputs and outputs of the network. This adversary should not be able to correlate an input with an output based on the packet's appearance. This is achieved by the bitwise unlinkability of the sphinx packets.
-	\item When constructing the headers: By using a Trusted Third party that constructs the headers we need to make sure that the even if the majority of the entities collude, no one should know the final destination of the user.
-	\item 	An adversary who captures the headers is not able to change headers without intervinging with the integrity check and hence mixes are able to know that the integrity check has been tampered with.
+	\item When constructing the headers: By using a Trusted Third Party that constructs the headers we need to make sure that even if the majority of the entities collude, no one should know the final destination of the user.
+	\item An adversary who captures the headers is not able to change headers without intervinging with the integrity check and hence mixes are able to know that the integrity check has been tampered with.
+	\todo{Aurelien: 'Intervinging' ?}
 	\item Malicious users: Users can not cheat and create their own headers and putting the final destination different from the one they have the credential for.
 \end{itemize}
