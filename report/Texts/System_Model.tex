@@ -1,8 +1,8 @@
 \section{System and Threat Model}~\label{sec:sys_model}
 
-We observed that aversarial interactions on mixnets can increase the use of
+We observed that adversarial interactions on mixnets can increase the use of
 computational resources and network resources, thus reducing the
-availability and negatively affecting evonomic viability of mixnet
+availability and negatively affecting economic viability of mixnet
 services. Our work seeks to mitigate these challenges. Below we describe
 the system model and the adversary we consider, and derive privacy and
 security requirements for our solution.
@@ -23,14 +23,14 @@ credential and if accepted their traffic is allowed.  To prevent
 correlation, mixnet relies on fixed-size packet format such as Sphinx
 packet (section \ref{sec:sphinx}), making it difficult for external
 observers to link incoming and outgoing messages at any given node.  The
-nym credential is constructed by the user and issued by a third
-decentralized party after obtainng a certificae that proove payement.  For
+Nym credential is constructed by the user and issued by a third
+decentralized party after obtaining a certificate that proves payment.  For
 example let's say Signal is integrated with Nym, and Signal users who want
 their traffic to be anonymous instead of sending traffic directly to the
 Signal server, traffic will be first routed through the mixnet such that an
 adversary who observes the signal server and/or the device of the user can
-not correlate the sender with signal server and evetually the final
-recepient. Signal (service provider) can add an option for user who want to
+not correlate the sender with signal server and eventually the final
+recipient. Signal (service provider) can add an option for user who want to
 pay and issue a certified attribute to those users. Users then encode this
 attributes into a credential and sends it to validators. If the proof is
 valid, validators return partial signatures. Once the user collects a
@@ -60,8 +60,7 @@ We consider different types of adversaries:
 \begin{itemize}
 	\item A GPA: an adversary who is able to observe all the inputs and outputs of the network. This adversary should not be able to correlate an input with an output based on the packet's appearance. This is achieved by the bitwise unlinkability of the sphinx packets.
 	\item When constructing the headers: By using a Trusted Third Party that constructs the headers we need to make sure that even if the majority of the entities collude, no one should know the final destination of the user.
-	\item An adversary who captures the headers is not able to change headers without intervinging with the integrity check and hence mixes are able to know that the integrity check has been tampered with.
-	\todo{Aurelien: 'Intervinging' ?}
+	\item An adversary who captures the headers is not able to change headers without intervening with the integrity check and hence mixes are able to know that the integrity check has been tampered with.
 	\item Malicious users: Users can not cheat and create their own headers and putting the final destination different from the one they have the credential for.
 \end{itemize}
 
@@ -70,13 +69,13 @@ We consider different types of adversaries:
 
 \begin{objectives}
 %
-        \item Cheating users: Users's traffic is only allowed to be routed
+        \item Cheating users: Users' traffic is only allowed to be routed
 if the traffic belongs to the same service provider from the credential
 %
         \item even if the majority of headers issuers are colluding, they
 do not know which service provider the user is communicating with.
 %
-        \item the spinx headers can not be altered.
+        \item the Spinx headers can not be altered.
 %
         \item Verifiers can verify that the headers has not been altered
 without revealing the service provider.

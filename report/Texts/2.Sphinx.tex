@@ -23,7 +23,7 @@ This layered encryption ensures that each mixnode can only decrypt its own layer
     \label{fig:sphinx_header}
 \end{figure}
 
-To encrypt the routing information, the nym client\todo{previously "user" but JT prefers "nym client"} first chooses a nonce $x$ and compute $\alpha = g^x$ as the \textit{cryptographic element} of the header.
+To encrypt the routing information, the Nym client\todo{previously "user" but JT prefers "Nym client"} first chooses a nonce $x$ and compute $\alpha = g^x$ as the \textit{cryptographic element} of the header.
 Since each mixnode $i$ has a private key $x_i$ and a public key $y_i = g^{x_i}$, the user can create a shared secret $s_i$ with mixnode $i$ as followed: $s_i = y_i^x = (g^{x_i})^x$. 
 Then the mixnode $i$ receiving the packet will get $\alpha$ allowing him to compute the shared secret as followed: $s_i = \alpha^{x_i} = (g^x)^{x_i}$.
 
