@@ -5,13 +5,15 @@ Since Chaum’s seminal work on untraceable email in 1981~\cite{chaum-mix}, ther
 However, certain open research problems remain open. For example how can we ensure that certain traffic are not allowed (for whatever reason and we will specify the exact reason for our work) without compromising ?
 Tor solves the problem with having exit policy that simply drop traffic at the last node. However Tor routing is circuit-based meaning that all traffic from a specefic user session follow one path and hence packets are encrypted using symetric cryptographhy which is cheap, so even if traffic is dropped that is not a problem.
 
-However unlike Tor, mixnets can be expensive due to the routing type which
-is packet based, meaning that every packet takes a different path and
-hence layered encrypted using public key cryptography. This means that if
-packets are dropped at the last nodes when not allowed, this waste a huge
-amount of cryptographic power. Additionally unlike Tor where relay are
-volunteer based, nodes in mixnets such as Nym are economically incentivized
-based on the bandwidth they routed so if packets are dropped at the end
-this is not great.
-%
-\todo{Iness: add a simple graph here of a mixnet}
+However, and beyond Tor, mixnets can impose substantial computational
+overheads due to packet based routing where every packet takes a different
+path and hence layered public-key cryptography is used. This implies that
+that, if packets are dropped at the last node of the mix, which is
+traditionally the only place where service contracts can be validated,
+computational resources required by the mix to propoagate a packet to its
+final node are wasted. Additionally, and unlike Tor where relaying traffic
+happens on a volunteering base, nodes in mixnets such as Nym are
+economically incentivized through payment per relayed bandwidth. Thus,
+dropping packets at an the exit node impacts the economic viability of the
+mixnet service.
+
