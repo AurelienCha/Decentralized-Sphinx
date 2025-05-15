@@ -5,7 +5,7 @@ ISPELLPAT = -ktexskip1 +cref,Cref,url
 all: main.pdf
 
 main.pdf: ${TEX} bib.bib
-	latexmk -pdf main.tex main.pdf
+	latexmk -pdf main.tex
 
 spelling: ${TEX}
 	for file in ${TEX}; do \
