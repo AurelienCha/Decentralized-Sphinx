@@ -1,5 +1,8 @@
 \documentclass[runningheads]{llncs}
 
+\usepackage[american]{babel}
+\usepackage[english=american]{csquotes}
+
 \usepackage[T1]{fontenc}
 \usepackage{cite}
 \usepackage{graphicx}
@@ -9,7 +12,9 @@
 \usepackage{xcolor}
 \usepackage{amsmath} % begin{aligned}
 \usepackage{amsfonts} % \mathbb{}
-\usepackage{todonotes} % \todo and \todo[inline]
+\usepackage[textsize=footnotesize, textwidth=40mm]{todonotes} % \todo and \todo[inline]
+\presetkeys{todonotes}{fancyline}{}
+\setlength{\marginparwidth}{40mm}
 \usepackage{paralist}
 \usepackage{enumitem}
 
@@ -38,6 +43,8 @@
 		\keywords{mixnet \and sphinx \and malicious users}
 	\end{abstract}
 
+\todo[inline]{Target: CBT Workshop on Cryptocurrencies and Blockchain
+Technology; deadline: 2025-06-17; \url{https://cbtworkshop.org/}}
 
 \input{Texts/Introduction}
 \input{Texts/Related_Work}
@@ -46,6 +53,8 @@
 % %\input{Texts/3.ZKP}
 \input{Texts/Evaluations}
 \input{Texts/Conclusion}
+
+\todo[inline]{CBT: About 15 pages till here, 16 pages in total.}
 
 \bibliographystyle{splncs04}
 \bibliography{bib}
