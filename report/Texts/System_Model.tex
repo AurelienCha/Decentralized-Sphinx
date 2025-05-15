@@ -1,6 +1,9 @@
 \section{System and Threat Model}~\label{sec:sys_model}
+
 In this section we describe the system model and the adversary we consider.
+
 \subsection{System Model}
+
 \todo{Aurelien: I think we could try to be more concise on this subsection because it feels quite heavy (especially the second half speaking of coconut and blockchain).
 But for the moment, this part is a bit tricky since we haven't really focus on credentials...}
 We abstract the Nym mixnet to the components that are relevant for our work. We consider a mixnet, where each user have a gateway that shows a credential and if accepted their traffic is allowed. 
@@ -15,6 +18,7 @@ This vulnerability enables Denial of Service (DoS) attack by exhausting mixnodes
 Additionally, each encryption layer includes an integrity tag, which prevents tampering and improves the network’s resistance against malicious mixnodes and active adversaries.
 
 \subsection{Threat Model} 
+
 We consider different types of adversaries:
 \todo{Aurelien: I feel like the bullet points are mixing a bit threat model (GPA, malicious user and honest-but-curious TTP) with desired properties (collusion resistant, integrity, unlinkability, ...)}
 \begin{itemize}
@@ -24,3 +28,31 @@ We consider different types of adversaries:
 	\todo{Aurelien: 'Intervinging' ?}
 	\item Malicious users: Users can not cheat and create their own headers and putting the final destination different from the one they have the credential for.
 \end{itemize}
+
+\subsection{Security \& Privacy Objectives}
+\label{sec:sp-objectives}
+
+\begin{objectives}
+%
+        \item Cheating users: Users's traffic is only allowed to be routed
+if the traffic belongs to the same service provider from the credential
+%
+        \item even if the majority of headers issuers are colluding, they
+do not know which service provider the user is communicating with.
+%
+        \item the spinx headers can not be altered.
+%
+        \item Verifiers can verify that the headers has not been altered
+without revealing the service provider.
+%
+        \item Unlinkability between  sphinx packets, the original sphinx
+packet that is constructed in a centralized way provide the
+\textit{unlinkability} property, meaning that an adversary can not know
+that two packets are connected to the same user. Our scheme that
+decentralize the headers creation aim at providing this same property.
+%
+\end{objectives}
+\todo{Some objectives may need a bit of explanation re. why they matter,
+for others I'm not sure how they can be evaluated.}
+
+

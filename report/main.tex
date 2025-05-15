@@ -10,6 +10,13 @@
 \usepackage{amsmath} % begin{aligned}
 \usepackage{amsfonts} % \mathbb{}
 \usepackage{todonotes} % \todo and \todo[inline]
+\usepackage{paralist}
+\usepackage{enumitem}
+
+% Enumerator for Objectives
+\newlist{objectives}{enumerate}{2}
+\setlist[objectives,1]{label=O\arabic*.,ref=O\arabic*}
+\setlist[objectives,2]{label=(\alph*),ref=\thequestionsi(\alph*)}
 
 \newcommand{\xor}{\oplus}
 \newcommand{\toref}[1]{\todo[color=yellow]{#1}}
