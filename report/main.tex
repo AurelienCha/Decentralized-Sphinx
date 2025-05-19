@@ -10,11 +10,12 @@
 \usepackage{amsmath} % begin{aligned}
 \usepackage{amsfonts} % \mathbb{}
 \usepackage{todonotes} % \todo and \todo[inline]
+\usepackage{tabularx}
 
 \newcommand{\xor}{\oplus}
 \newcommand{\toref}[1]{\todo[color=yellow]{#1}}
 \newcommand{\tothink}[1]{\todo[color=pink]{#1}}
-
+\newcommand{\bigO}[1]{$\mathcal{O}(#1)$}
 
 \begin{document}
 	
@@ -32,13 +33,12 @@
 	\end{abstract}
 
 
-\input{Texts/Introduction}
-\input{Texts/Related_Work}
-\input{Texts/System_Model}
-\input{Texts/Our_Solution}
-% %\input{Texts/3.ZKP}
-\input{Texts/Evaluations}
-\input{Texts/Conclusion}
+\input{Texts/1.Introduction}
+\input{Texts/2.Related_Work}
+\input{Texts/3.System_Model}
+\input{Texts/4.Our_Solution}
+\input{Texts/5.Evaluations}
+\input{Texts/6.Conclusion}
 
 \bibliographystyle{splncs04}
 \bibliography{bib}
