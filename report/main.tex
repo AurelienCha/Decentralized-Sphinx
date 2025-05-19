@@ -1,5 +1,8 @@
 \documentclass[runningheads]{llncs}
 
+\usepackage[american]{babel}
+\usepackage[english=american]{csquotes}
+
 \usepackage[T1]{fontenc}
 \usepackage{cite}
 \usepackage{graphicx}
@@ -9,8 +12,17 @@
 \usepackage{xcolor}
 \usepackage{amsmath} % begin{aligned}
 \usepackage{amsfonts} % \mathbb{}
-\usepackage{todonotes} % \todo and \todo[inline]
 \usepackage{tabularx}
+\usepackage[textsize=footnotesize, textwidth=40mm]{todonotes} % \todo and \todo[inline]
+\presetkeys{todonotes}{fancyline}{}
+\setlength{\marginparwidth}{40mm}
+\usepackage{paralist}
+\usepackage{enumitem}
+
+% Enumerator for Objectives
+\newlist{objectives}{enumerate}{2}
+\setlist[objectives,1]{label=O\arabic*.,ref=O\arabic*}
+\setlist[objectives,2]{label=(\alph*),ref=\thequestionsi(\alph*)}
 
 \newcommand{\xor}{\oplus}
 \newcommand{\toref}[1]{\todo[color=yellow]{#1}}
@@ -32,6 +44,8 @@
 		\keywords{mixnet \and sphinx \and malicious users}
 	\end{abstract}
 
+\todo[inline]{Target: CBT Workshop on Cryptocurrencies and Blockchain
+Technology; deadline: 2025-06-17; \url{https://cbtworkshop.org/}}
 
 \input{Texts/1.Introduction}
 \input{Texts/2.Related_Work}
@@ -39,6 +53,8 @@
 \input{Texts/4.Our_Solution}
 \input{Texts/5.Evaluations}
 \input{Texts/6.Conclusion}
+
+\todo[inline]{CBT: About 15 pages till here, 16 pages in total.}
 
 \bibliographystyle{splncs04}
 \bibliography{bib}

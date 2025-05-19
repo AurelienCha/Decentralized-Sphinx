@@ -1,5 +1,5 @@
 \section{Sphinx}
-\todo{Iness: This entire subsection explains the original sphinx packet format, I think it's too much and can be reduced to 20\%. The rest can be eithger be deleted or used on how you construct the decentralized scheme}
+\todo{Iness: This entire subsection explains the original sphinx packet format, I think it's too much and can be reduced to 20\%. The rest can be either be deleted or used on how you construct the decentralized scheme}
 Sphinx packets consist of a header and an encrypted payload. 
 The header itself contains a \textit{cryptographic element $\alpha$} (e.g. $g^x$ or an elliptic curve point), \textit{encrypted routing information $\beta$}, and an \textit{integrity tag $\gamma$}, as illustrated in Figure \ref{fig:sphinx_structure}.
 
@@ -23,7 +23,7 @@ This layered encryption ensures that each mixnode can only decrypt its own layer
     \label{fig:sphinx_header}
 \end{figure}
 
-To encrypt the routing information, the nym client\todo{previously "user" but JT prefers "nym client"} first chooses a nonce $x$ and compute $\alpha = g^x$ as the \textit{cryptographic element} of the header.
+To encrypt the routing information, the Nym client\todo{previously "user" but JT prefers "Nym client"} first chooses a nonce $x$ and compute $\alpha = g^x$ as the \textit{cryptographic element} of the header.
 Since each mixnode $i$ has a private key $x_i$ and a public key $y_i = g^{x_i}$, the user can create a shared secret $s_i$ with mixnode $i$ as followed: $s_i = y_i^x = (g^{x_i})^x$. 
 Then the mixnode $i$ receiving the packet will get $\alpha$ allowing him to compute the shared secret as followed: $s_i = \alpha^{x_i} = (g^x)^{x_i}$.
 
@@ -149,13 +149,13 @@ This risk could be mitigated by padding the IP with a random fixed-length binary
 \newline
 
 From our knowledge, a second alternative exists: the Elligator 2 algorithm.  
-Elligator provides a method to map any integer to a pseudorandom point on a Montgomery curve in a uniform and reversible way.  
+Elligator provides a method to map any integer to a pseudo-random point on a Montgomery curve in a uniform and reversible way.  
 More precisely, the reverse mapping (point-to-integer) requires that the point satisfies specific mathematical conditions, which occur with roughly 50\% probability for a random point.  
 Again, a simple workaround is to increment the point by adding the curve's generator until the point fulfills these conditions.
 
 Note that all points derived from integers using Elligator are guaranteed to be reversible.  
 Thus, a point representing an IP address (which originally comes from an integers) can always be correctly decoded.  
-Only random points used as shared secrets may require few extra point additions to meet these conditions which represents a negligeable computational overhead.
+Only random points used as shared secrets may require few extra point additions to meet these conditions which represents a negligible computational overhead.
 \newline
 
 To summarize, we need a mapping that is as bijective as possible but we face a trade-off between two imperfect scenarios:
@@ -176,7 +176,7 @@ Moreover the complete integer-to-point is more important (to prevent IP collisio
 
     [Alternative shorter version]: \newline
     One remaining challenge lies in encoding and decoding information to and from elliptic curve points. 
-    Specifically, we require a pseudorandom mapping between integers field and curve points group.
+    Specifically, we require a pseudo-random mapping between integers field and curve points group.
     
     Traditional methods achieve this by directly mapping integers to the x-coordinates of points on the curve. 
     However, this approach could leaks information by introducing bias since nearby integers result in nearby points.
@@ -227,7 +227,7 @@ Every entity (clients, mixnodes, and TTPs) must run the setup phase to ensure th
 
 To achieve synchronized and deterministic generator values across the system, we derive them from a common seed. 
 This seed is computed as the hash of the current timestamp, truncated to the chosen refresh interval. 
-To produce distinct seeds for each generator we rehash the seed, or simply increment it since Elligator already provides a uniform (i.e. pseudorandom) integers to points mapping.
+To produce distinct seeds for each generator we rehash the seed, or simply increment it since Elligator already provides a uniform (i.e. pseudo-random) integers to points mapping.
 \todo[color=blue!30]{In the current implementation, instead of incrementing the seed, we rehash it for each i. However, since Elligator produces uniformly distributed outputs, incrementing may be equally secure and more efficient.}
 
 A subtlety with Elligator is that it can map integers to points outside of the base generator's subgroup.
@@ -242,7 +242,7 @@ $$
 \subsubsection{Client}
 % 1) Define a destination
 % 2) Select a random path
-% 3) Select a random salt $x$ (nounce) 
+% 3) Select a random salt $x$ (nonce) 
 % 4) Generate a chain of shared secret for the path's mixnode
 % 5) Transform IP addresses (path's mixnodes and destination) into Point with Elligator and the split those point into shares.
 % 6) Split the shared secrets (int) into shares.
@@ -341,7 +341,7 @@ Finally, the TTP returns the constructed partial header to the client.
 
 \paragraph{\textbf{Security Note.}}\label{note:security_why_indep_generators}
 To preserve unlinkability, it is essential that the generators $ (G_1, \dots, G_7) $ are \textit{independent}, meaning that their scalar relationships are unknown and cannot be derived.
-If the same generator $ G' $ were used across chunks (or their scalar relationships known), an adversary could compute the chunkwise difference between consecutive layers: $ {\beta_i}_j - {\beta_{i+1}}_j = s_i \ G' $.
+If the same generator $ G' $ were used across chunks (or their scalar relationships known), an adversary could compute the chunk-wise difference between consecutive layers: $ {\beta_i}_j - {\beta_{i+1}}_j = s_i \ G' $.
 Since the shared secret $ s_i $ remains consistent within a layer, the resulting differences would reveal a predictable pattern (uniform or preserved scalar relationships).
 This consistency could allow an adversary to correlate incoming and outgoing packets at a mixnode, thereby breaking the unlinkability property.
 Using independent generators for each chunk prevents such correlations and is therefore critical to the protocol's security.  
