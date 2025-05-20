@@ -15,7 +15,7 @@ from header import Header
 data_directory = 'src/results/data'
 
 def test():
-    iterations = pow(10,4)
+    iterations = 49221 # pow(10,5)
     # worst_case(iterations, 'csv')
     # ideal_case(iterations, 'csv')
     # normal_case(iterations, 'csv')
