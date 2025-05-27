@@ -1,0 +1,155 @@
+
+\centering
+\begin{tikzpicture}
+    % \tiny
+    \setlength{\y}{0cm}
+
+    \node (ip) [block=1] at (0, \y) {$\mathrm{\Delta}$};
+    \vgap
+    \node (s3_) [block=7] at (0, \y) {};
+    \node [inblock=1] at (0, \y) {\sG{3}{1}};
+    \foreach \j in {1,...,6} {
+        \node [inblock=1, gray] at (\j*\width, \y) {}; 
+    }
+    \vgap
+    \node (s2_) [block=7] at (- 2*\width, \y) {};
+    \foreach \j in {0,...,2} {
+        \node [inblock=1, gray] at (-\j*\width, \y) {}; 
+    } 
+    \foreach \j in {4,...,7} {
+        \node [inblock=1] at (\j*\width - 3*\width, \y) {\sG{2}{\j}}; 
+    }
+    \vgap
+    \node (s1_) [block=7] at (- 2*\width, \y) {};
+    \foreach \j in {0,...,2} {
+        \node [inblock=1, gray] at (-\j*\width, \y) {}; 
+    }
+    \foreach \j in {4,...,5} {
+        \node [inblock=1] at (\j*\width - 3*\width, \y) {\sG{1}{\j}}; 
+    }
+    \foreach \j in {3,...,4} {
+        \node [inblock=1, gray] at (\j*\width, \y) {}; 
+    }
+    \vgap 
+    \foreach \j in {1,...,5} {
+        \node (B3\j) [inblock=1] at (\j*\width-\width, \y) {\B{3}{\j}}; 
+    }
+    \node (xor3) [] at (-3*\width, \y) {\normalsize $ + $}; 
+    \vGap
+    \node (hmac3) [HMAC, fill=white] at (1.5*\width, \y) {\hmac};
+    \vGap
+
+    \node (n3) [block=1] at (0, \y) {\N{3}}; 
+    \node (y3) [block=1] at (\width, \y) {\C{3}}; 
+    \foreach \j in {1,...,5} {
+        \node (b3\j) [inblock=1] at (\width + \j*\width, \y) {\B{3}{\j}}; 
+    }
+    \vgap
+    \foreach \j in {1,...,7} {
+        \node (s2\j) [inblock=1] at (\j*\width-\width, \y) {\sG{2}{\j}};
+    }
+    \vgap
+    \foreach \j in {1,...,5} {
+        \node (B2\j) [inblock=1] at (\j*\width-\width, \y) {\B{2}{\j}}; 
+    }
+    \node (zero2) [zero_pad=2] at (5*\width, \y) {0}; 
+
+    \node (xor2) [] at (-\width, \y) {\normalsize $ + $}; 
+    \vGap
+    \node (hmac2) [HMAC, fill=white] at (1.5*\width, \y) {\hmac};
+    \vGap
+
+    \node (n2) [block=1] at (0, \y) {\N{2}}; 
+    \node (y2) [block=1] at (\width, \y) {\C{2}}; 
+    \foreach \j in {1,...,5} {
+        \node (b2\j) [inblock=1] at (\width + \j*\width, \y) {\B{2}{\j}}; 
+    }
+    \vgap
+    \foreach \j in {1,...,7} {
+        \node (s1\j) [inblock=1] at (\j*\width-\width, \y) {\sG{1}{\j}};
+    }    
+    \vgap
+    \foreach \j in {1,...,5} {
+        \node (B1\j) [inblock=1] at (\j*\width-\width, \y) {\B{1}{\j}};
+    }
+    \node (zero1) [zero_pad=2]  at (5*\width, \y) {0}; 
+
+    \node (xor1) []  at (-\width, \y) {\normalsize $ + $ }; 
+    \vGap
+    \node (hmac1) [HMAC, fill=white]  at (1.5*\width, \y) {\hmac};
+    \vGap
+
+    \node (n1) [block=1]  at (0, \y) {\N{1}}; 
+    \node (y1) [block=1]  at (\width, \y) {\C{1}};
+    \foreach \j in {1,...,5} {
+        \node (b1\j) [inblock=1]  at (\width + \j*\width, \y) {\B{1}{\j}}; 
+    }
+
+    %% XOR ARROWS %%
+    % 3
+    \draw[arrow] (ip.west) -- ++(-3*\width, 0) -- (xor3.north);
+    \draw[arrow] (s3_.west) -- ++(-3*\width, 0) -- (xor3.north);
+    \draw[arrow] (s2_.west) -- ++(-\width, 0) -- (xor3.north);
+    \draw[arrow] (s1_.west) -- ++(-\width, 0) -- (xor3.north);
+    \draw[arrow] (xor3.east) -- (B31.west);
+    % 2
+    \draw[arrow] (n3.west) -- ++(-\width, 0) -- (xor2.north);
+    \draw[arrow] (s21.west) -- ++(-\width, 0) -- (xor2.north);
+    \draw[arrow] (xor2.east) -- (B21.west);
+    % 1
+    \draw[arrow] (n2.west) -- ++(-\width, 0) -- (xor1.north);
+    \draw[arrow] (s11.west) -- ++(-\width, 0) -- (xor1.north);
+    \draw[arrow] (xor1.east) -- (B11.west);
+
+    %% HMAC ARROWS %%
+    % 3
+    \node[left=\width of hmac3] (input_hmac3) {\sG{3}{}};
+    \draw[arrow] (input_hmac3) -- (hmac3.west);
+    \draw [decorate, decoration={brace, amplitude=3pt, mirror, aspect=0.3, raise=2pt}] (B31.south west) -- (B35.south east);
+    
+    \draw[arrow] (hmac3.south) -- (y3.north);
+    % 2
+    \node[left=\width of hmac2] (input_hmac2) {\sG{2}{}};
+    \draw[arrow] (input_hmac2) -- (hmac2.west);
+    \draw [decorate, decoration={brace, amplitude=3pt, mirror, aspect=0.3, raise=2pt}] (B21.south west) -- (B25.south east);
+    \draw[arrow] (hmac2.south) -- (y2.north);
+    % 1
+    \node[left=\width of hmac1] (input_hmac1) {\sG{1}{}};
+    \draw[arrow] (input_hmac1) -- (hmac1.west);
+    \draw [decorate, decoration={brace, amplitude=3pt, mirror, aspect=0.3, raise=2pt}] (B11.south west) -- (B15.south east);
+    \draw[arrow] (hmac1.south) -- (y1.north);
+
+    %% BETA ARROWS %%
+    \begin{pgfonlayer}{background}
+        % 3
+        \foreach \j in {1,...,5} {
+            \draw[->, dashed, very thin, color=lightgray] (B3\j.south) -- ([xshift=-1pt, yshift=+1pt] b3\j.north);
+        }
+        % 2
+        \foreach \j in {1,...,5} {
+            \draw[->, dashed, very thin, color=lightgray] (B2\j.south) -- ([xshift=-1pt, yshift=+1pt] b2\j.north);
+        }
+        % 1
+        \foreach \j in {1,...,5} {
+            \draw[->, dashed, very thin, color=lightgray] (B1\j.south) -- ([xshift=-1pt, yshift=+1pt] b1\j.north);
+        }
+    \end{pgfonlayer}
+
+    %% TEST ANNOTATION %%
+    \color{lightgray}
+    \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=2*\width+30pt}]
+        ([xshift=4*\width] ip.north east) -- (B35.south east) node[midway, xshift=110pt]{Eq. \ref{eq:last_layer}};
+    \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=30pt}]
+            (b35.north east) -- (zero2.south east) node[midway, xshift=70pt]{Eq. \ref{eq:layer_i} ($i=2$)};
+    \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=30pt}]
+            (b25.north east) -- (zero1.south east) node[midway, xshift=70pt]{Eq. \ref{eq:layer_i} ($i=1$)};
+    % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=10pt}]
+    %         ([xshift=2*\width, yshift=-2pt] B35.south east) -- ([yshift=2pt] b35.north east) node[midway, xshift=30pt]{Eq. \ref{eq:integrity}};
+    % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=10pt}]
+    %         ([xshift=2*\width, yshift=-2pt] B25.south east) -- ([yshift=2pt] b25.north east) node[midway, xshift=30pt]{Eq. \ref{eq:integrity}};
+    % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=10pt}]
+    %         ([xshift=2*\width, yshift=-2pt] B15.south east) -- ([yshift=2pt] b15.north east) node[midway, xshift=30pt]{Eq. \ref{eq:integrity}};
+    \node[right=6*\width+10pt of hmac3] {Eq. \ref{eq:integrity}};
+    \node[right=6*\width+10pt of hmac2] {Eq. \ref{eq:integrity}};
+    \node[right=6*\width+10pt of hmac1] {Eq. \ref{eq:integrity}};
+\end{tikzpicture}

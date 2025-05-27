@@ -1,0 +1,69 @@
+\centering
+\begin{tikzpicture}
+    %% INPUT
+    \node (L0) at (0,0) {};
+    \node (A) [block=1] at (L0) {\A{i}};
+    \node (B) [block=5] at ($(A.east) + (\width, 0)$)  {\B{i}{}};
+    \node (C) [block=1] at ($(B.east) + (2*\width, 0)$) {\C{i}};
+
+    %% LINE 1 (shared secret, check integrity & decrypt)
+    \node (L1) at ($(L0) - (0, 2.5*\height)$) {};
+    \node (sk) [block=1] at ($(L1) - (2*\width, 0)$) {$sk_i$};
+    \node (ss) [op] at ($(A |- L1) - (0.25*\width, 0)$) {\ref{eq:derive_secret}};
+    \node (S) [block=1] at (A.east |- L1)  {$S$};
+    \node (check) [op] at ($(C |- L1) + (0, 2pt)$)  {\ref{eq:integrity_check}};
+ 
+    %% LINE 2 (decryption & blind)
+    \node (L2) at ($(L1) - (0, 2.1*\height)$) {};
+    \foreach \j in {1,...,5} {
+        \node (B\j) [inblock=1, xshift=\j*\width] at ($(B.west |- L2) - (\width, 0)$) {\B{i}{\j}};
+    }
+    \node (pad) [zero_pad=2] at (B5.east) {0}; 
+    \foreach \j in {1,...,7} {
+        \node (sG\j) [inblock=1, xshift=\j*\width] at ($(B1.west) - (\width, 1.2*\height)$) {\sG{}{\j}};
+    } 
+    \node (N'_) [block=1] at ($(sG1.west) - (0, 2*\height)$) {\N{i+1}};
+    \node (C'_) [block=1] at (N'_.east) {\C{i+1}};
+    \node (B'_) [block=5] at (C'_.east)  {\B{i+1}{}};
+    \node (xor) [op] at ($(check |- sG1) - (0, \height)$) {\ref{eq:decrypt}};
+    \node (blind) [op] at ($(A |- xor) + (0.25*\width, 0)$) {\ref{eq:update_alpha}};
+    
+    %% BOX
+    \node (mixnode) [draw=red, dashed, fit=(sk) (B'_) (check)] {};
+    \node[xshift=4pt, yshift=10pt] at (sk.north) {\color{red} \textbf{Mixnode $i$}};
+
+    %% OUTPUT
+    \node (L) at ($(mixnode.south) - (0, 2.5*\height)$) {};
+    \node[] (N') at (sk |- L.north) {Next};
+    \node[yshift=-7pt] at (sk |- L.north) {mixnode};
+    \node (A') [block=1] at (A.west |- L) {\A{i+1}};
+    \node (B') [block=5] at (B.west |- L)  {\B{i+1}{}};
+    \node (C') [block=1] at (C.west |- L) {\C{i+1}};
+
+    %% ARROW
+    % (6) shared secret
+    \draw[arrow] (A.south -| ss) -- (ss);
+    \draw[arrow] (sk) -- (ss);
+    \draw[arrow] (ss) -- (S);
+    % (7) check
+    \draw[arrow] (B.south) |- (check.+153);
+    \draw[arrow] (C) -- (check);
+    \draw[arrow] (S.east |- check.-153) -- (check.-153);
+    % (8) xor
+    \draw[arrow] (pad) -| (xor);
+    \draw[arrow] (sG7) -| (xor);
+    \draw[arrow] (xor) |- (B'_);
+    % (9) blind
+    \draw[arrow] (A.south -| blind) -- (blind);
+    \draw[arrow] (S) |- (blind);
+    \draw[arrow] (blind) -- (blind |- A'.north);
+    % xor block
+    \draw[arrow] (B) -- (B.south |- B1.north);
+    \draw[arrow] (S) |- (sG1);
+    % output
+    \node (tmp) at ($(mixnode.south) - (0, 0.5*\height)$) {};
+    \draw[arrow] (N'_) -- (N'_ |- tmp) -| (N');
+    \draw[arrow] (C'_) -- (C'_ |- tmp) -| (C');
+    \draw[arrow] (B'_) -- ($(B'_ |- tmp) - (0, 7pt)$) -| (B');
+
+\end{tikzpicture}

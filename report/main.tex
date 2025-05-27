@@ -24,10 +24,56 @@
 \setlist[objectives,1]{label=O\arabic*.,ref=O\arabic*}
 \setlist[objectives,2]{label=(\alph*),ref=\thequestionsi(\alph*)}
 
+
 \newcommand{\xor}{\oplus}
 \newcommand{\toref}[1]{\todo[color=yellow]{#1}}
 \newcommand{\tothink}[1]{\todo[color=pink]{#1}}
 \newcommand{\bigO}[1]{$\mathcal{O}(#1)$}
+\usepackage{relsize}
+\newcommand{\ALPHA}{\mathlarger{\mathlarger{\alpha}}}
+\newcommand{\BETA}{\mathlarger{\mathlarger{\beta}}}
+\newcommand{\GAMMA}{\mathlarger{\mathlarger{\mathlarger{\gamma}}}}
+\newcommand{\DELTA}{\mathlarger{\mathlarger{\delta}}}
+
+\newcommand{\sG}[2]{$s_\text{\tiny {#1}}\textcolor{lightgray}{G_\text{\tiny {#2}}}$}
+\newcommand{\A}[1]{${\mathlarger{\mathlarger{\alpha}}}_\text{\tiny {#1}}$}
+\newcommand{\B}[2]{${\mathlarger{\beta}}_\text{\tiny {#1}\textcolor{lightgray}{#2}}$}
+\newcommand{\C}[1]{$\mathlarger{\mathlarger{\gamma}}_{\text{\tiny {#1}}}$}
+\newcommand{\D}[1]{$\mathlarger{\mathlarger{\delta}}_{\text{\tiny {#1}}}$}
+\newcommand{\N}[1]{$N_\text{\tiny {#1}}$}
+
+\newlength{\y}
+\newcommand{\width}{10mm}
+\newcommand{\height}{5.4mm}
+
+\newcommand{\vgap}{
+    \addtolength{\y}{-\height}
+    \addtolength{\y}{-1mm}
+}
+\newcommand{\vGap}{
+    \addtolength{\y}{-\height}
+    \addtolength{\y}{-3mm}
+}
+% \newcommand{\hmac}{Eq. \ref{eq:integrity}}
+\newcommand{\hmac}{\footnotesize $\sum$}
+
+% Define TikZ styles
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, positioning, calc, patterns, patterns.meta, backgrounds, fit}
+\usetikzlibrary{decorations.pathreplacing}
+\tikzset{    
+    % shape
+    block_style/.style={minimum width = #1*\width, minimum height = \height, inner sep = 0pt, anchor = west},
+    block/.style={draw, block_style = #1},
+    inblock/.style={ultra thin, block = #1}, % dash pattern=on 1pt off 1pt, 
+    zero_pad/.style={block_style = #1, gray},
+    HMAC/.style={draw, ellipse, minimum width = \width, minimum height = \height, inner sep = 0pt, anchor = center},
+    arrow/.style={->, shorten <= 1pt, shorten >= 2pt},
+    op/.style={draw, circle, inner sep=1pt},
+    % arrowB/.style={->, shorten <= 2pt, shorten >= 4pt, color = lightgray},
+    % display
+    gray/.style={fill = gray, fill opacity=0.3}
+}
 
 \begin{document}
 	
