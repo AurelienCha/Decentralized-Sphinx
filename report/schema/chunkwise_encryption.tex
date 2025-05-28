@@ -1,88 +1,90 @@
-
 \centering
 \begin{tikzpicture}
     % \tiny
     \setlength{\y}{0cm}
 
-    \node (ip) [block=1] at (0, \y) {$\mathrm{\Delta}$};
+    \node (ip) [block=1] at (0, \y) {\D};
     \vgap
     \node (s3_) [block=7] at (0, \y) {};
-    \node [inblock=1] at (0, \y) {\sG{3}{1}};
+    \node [block=1] at (0, \y) {\sG{3}{1}};
     \foreach \j in {1,...,6} {
-        \node [inblock=1, gray] at (\j*\width, \y) {}; 
+        \node [block=1, fill=unHighlight, fill opacity=0.3] at (\j*\width, \y) {}; 
     }
     \vgap
     \node (s2_) [block=7] at (- 2*\width, \y) {};
     \foreach \j in {0,...,2} {
-        \node [inblock=1, gray] at (-\j*\width, \y) {}; 
+        \node [block=1, fill=unHighlight, fill opacity=0.3] at (-\j*\width, \y) {}; 
     } 
     \foreach \j in {4,...,7} {
-        \node [inblock=1] at (\j*\width - 3*\width, \y) {\sG{2}{\j}}; 
+        \node [block=1] at (\j*\width - 3*\width, \y) {\sG{2}{\j}}; 
     }
     \vgap
     \node (s1_) [block=7] at (- 2*\width, \y) {};
     \foreach \j in {0,...,2} {
-        \node [inblock=1, gray] at (-\j*\width, \y) {}; 
+        \node [block=1, fill=unHighlight, fill opacity=0.3] at (-\j*\width, \y) {}; 
     }
     \foreach \j in {4,...,5} {
-        \node [inblock=1] at (\j*\width - 3*\width, \y) {\sG{1}{\j}}; 
+        \node [block=1] at (\j*\width - 3*\width, \y) {\sG{1}{\j}}; 
     }
     \foreach \j in {3,...,4} {
-        \node [inblock=1, gray] at (\j*\width, \y) {}; 
+        \node [block=1, fill=unHighlight, fill opacity=0.3] at (\j*\width, \y) {}; 
     }
     \vgap 
     \foreach \j in {1,...,5} {
-        \node (B3\j) [inblock=1] at (\j*\width-\width, \y) {\B{3}{\j}}; 
+        \node (B3\j) [block=1] at (\j*\width-\width, \y) {\B{3}{\j}}; 
     }
     \node (xor3) [] at (-3*\width, \y) {\normalsize $ + $}; 
     \vGap
-    \node (hmac3) [HMAC, fill=white] at (1.5*\width, \y) {\hmac};
+    \node (hmac3) [HMAC] at (1.5*\width, \y) {\hmac};
     \vGap
 
+    \node [block=7] at (0, \y) {};
     \node (n3) [block=1] at (0, \y) {\N{3}}; 
     \node (y3) [block=1] at (\width, \y) {\C{3}}; 
     \foreach \j in {1,...,5} {
-        \node (b3\j) [inblock=1] at (\width + \j*\width, \y) {\B{3}{\j}}; 
+        \node (b3\j) [block=1] at (\width + \j*\width, \y) {\B{3}{\j}}; 
     }
     \vgap
     \foreach \j in {1,...,7} {
-        \node (s2\j) [inblock=1] at (\j*\width-\width, \y) {\sG{2}{\j}};
+        \node (s2\j) [block=1] at (\j*\width-\width, \y) {\sG{2}{\j}};
     }
     \vgap
     \foreach \j in {1,...,5} {
-        \node (B2\j) [inblock=1] at (\j*\width-\width, \y) {\B{2}{\j}}; 
+        \node (B2\j) [block=1] at (\j*\width-\width, \y) {\B{2}{\j}}; 
     }
     \node (zero2) [zero_pad=2] at (5*\width, \y) {0}; 
 
     \node (xor2) [] at (-\width, \y) {\normalsize $ + $}; 
     \vGap
-    \node (hmac2) [HMAC, fill=white] at (1.5*\width, \y) {\hmac};
+    \node (hmac2) [HMAC] at (1.5*\width, \y) {\hmac};
     \vGap
 
+    \node [block=7] at (0, \y) {};
     \node (n2) [block=1] at (0, \y) {\N{2}}; 
     \node (y2) [block=1] at (\width, \y) {\C{2}}; 
     \foreach \j in {1,...,5} {
-        \node (b2\j) [inblock=1] at (\width + \j*\width, \y) {\B{2}{\j}}; 
+        \node (b2\j) [block=1] at (\width + \j*\width, \y) {\B{2}{\j}}; 
     }
     \vgap
     \foreach \j in {1,...,7} {
-        \node (s1\j) [inblock=1] at (\j*\width-\width, \y) {\sG{1}{\j}};
+        \node (s1\j) [block=1] at (\j*\width-\width, \y) {\sG{1}{\j}};
     }    
     \vgap
     \foreach \j in {1,...,5} {
-        \node (B1\j) [inblock=1] at (\j*\width-\width, \y) {\B{1}{\j}};
+        \node (B1\j) [block=1] at (\j*\width-\width, \y) {\B{1}{\j}};
     }
     \node (zero1) [zero_pad=2]  at (5*\width, \y) {0}; 
 
-    \node (xor1) []  at (-\width, \y) {\normalsize $ + $ }; 
+    \node (xor1) []  at (-\width, \y) {\normalsize $ + $}; 
     \vGap
-    \node (hmac1) [HMAC, fill=white]  at (1.5*\width, \y) {\hmac};
+    \node (hmac1) [HMAC]  at (1.5*\width, \y) {\hmac};
     \vGap
 
+    \node [block=7] at (0, \y) {};
     \node (n1) [block=1]  at (0, \y) {\N{1}}; 
     \node (y1) [block=1]  at (\width, \y) {\C{1}};
     \foreach \j in {1,...,5} {
-        \node (b1\j) [inblock=1]  at (\width + \j*\width, \y) {\B{1}{\j}}; 
+        \node (b1\j) [block=1]  at (\width + \j*\width, \y) {\B{1}{\j}}; 
     }
 
     %% XOR ARROWS %%
@@ -123,32 +125,26 @@
     \begin{pgfonlayer}{background}
         % 3
         \foreach \j in {1,...,5} {
-            \draw[->, dashed, very thin, color=lightgray] (B3\j.south) -- ([xshift=-1pt, yshift=+1pt] b3\j.north);
+            \draw[->, dashed, very thin, color=unHighlight!50] (B3\j.south) -- ([xshift=-1pt, yshift=+1pt] b3\j.north);
         }
         % 2
         \foreach \j in {1,...,5} {
-            \draw[->, dashed, very thin, color=lightgray] (B2\j.south) -- ([xshift=-1pt, yshift=+1pt] b2\j.north);
+            \draw[->, dashed, very thin, color=unHighlight!50] (B2\j.south) -- ([xshift=-1pt, yshift=+1pt] b2\j.north);
         }
         % 1
         \foreach \j in {1,...,5} {
-            \draw[->, dashed, very thin, color=lightgray] (B1\j.south) -- ([xshift=-1pt, yshift=+1pt] b1\j.north);
+            \draw[->, dashed, very thin, color=unHighlight!50] (B1\j.south) -- ([xshift=-1pt, yshift=+1pt] b1\j.north);
         }
     \end{pgfonlayer}
 
     %% TEST ANNOTATION %%
-    \color{lightgray}
+    \color{unHighlight!75}
     \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=2*\width+30pt}]
         ([xshift=4*\width] ip.north east) -- (B35.south east) node[midway, xshift=110pt]{Eq. \ref{eq:last_layer}};
     \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=30pt}]
             (b35.north east) -- (zero2.south east) node[midway, xshift=70pt]{Eq. \ref{eq:layer_i} ($i=2$)};
     \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=30pt}]
             (b25.north east) -- (zero1.south east) node[midway, xshift=70pt]{Eq. \ref{eq:layer_i} ($i=1$)};
-    % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=10pt}]
-    %         ([xshift=2*\width, yshift=-2pt] B35.south east) -- ([yshift=2pt] b35.north east) node[midway, xshift=30pt]{Eq. \ref{eq:integrity}};
-    % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=10pt}]
-    %         ([xshift=2*\width, yshift=-2pt] B25.south east) -- ([yshift=2pt] b25.north east) node[midway, xshift=30pt]{Eq. \ref{eq:integrity}};
-    % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=10pt}]
-    %         ([xshift=2*\width, yshift=-2pt] B15.south east) -- ([yshift=2pt] b15.north east) node[midway, xshift=30pt]{Eq. \ref{eq:integrity}};
     \node[right=6*\width+10pt of hmac3] {Eq. \ref{eq:integrity}};
     \node[right=6*\width+10pt of hmac2] {Eq. \ref{eq:integrity}};
     \node[right=6*\width+10pt of hmac1] {Eq. \ref{eq:integrity}};
