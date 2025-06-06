@@ -1,8 +1,9 @@
 from typing import List, Tuple
 
 from setup import G_i
-from ecc import G, Point
+from ecc import G, Point, p, N
 from header import Header
+from utils import my_hash
 
 class TTP:
     """
@@ -12,7 +13,7 @@ class TTP:
     def __init__(self):
         pass  # Reserved for future use
 
-    def generate_header(self, dest: Point, nodes: List[Point], s: List[int]) -> Header:
+    def generate_header(self, dest: Point, nodes: List[Point], s: List[int], h: List[int]) -> Header:
         """
         Generate a Sphinx header (multi-layer onion-style Header) using mixnodes and destination shares.
 
@@ -20,6 +21,7 @@ class TTP:
             dest (Point): (partial) destination address 
             nodes (List[Point]): List of (partial) mixnode IPs (2nd and 3rd hop)
             s (List[int]): List of (partial) shared secrets (1st, 2nd and 3rd hop)
+            h (List[int]): List of (global) hashed shared secrets (common to TTP and used for integrity)
 
         Returns:
             Header: The computed encrypted (partial) Header
@@ -27,7 +29,7 @@ class TTP:
         NOTE: Processing in reverse order (from destination to first hop)
         """
         
-        def _compute_initial_layer(dest: Point, s: List[int]) -> Tuple[List[Point], Point]:
+        def _compute_initial_layer(dest: Point, s: List[int], h) -> Tuple[List[Point], Point]:
             """
             Preprocessing of the header (Phi in the article (Φ)) and compute the first layer (which is slightly different)
 
@@ -46,13 +48,14 @@ class TTP:
                 -  s[1] * G_i[-2],
                 -  s[1] * G_i[-1]
             ]
-
-            gamma = sum(beta) + s[2] * G
+            
+            h = [h:=my_hash(h) if i>0 else h for i in range(5)]
+            gamma = s[2]*G + sum([h[i] * beta[i] for i in range(5)])
 
             return beta, gamma
 
 
-        def _compute_single_layer(IP: Point, beta: List[Point], gamma: Point, s: int) -> Tuple[List[Point], Point]:
+        def _compute_single_layer(IP: Point, beta: List[Point], gamma: Point, s: int, h) -> Tuple[List[Point], Point]:
             """
             Compute a single layer of the header
 
@@ -74,16 +77,17 @@ class TTP:
                 beta[2] + s * G_i[4] 
             ]
 
-            next_gamma = sum(next_beta) + s * G
+            h = [h:=my_hash(h) if i>0 else h for i in range(5)]
+            next_gamma = s*G + sum([h[i] * next_beta[i] for i in range(5)])
 
             return (next_beta, next_gamma)
 
         # Layer 3 (destination -> third mixnode)
-        beta, gamma = _compute_initial_layer(dest, s)
+        beta, gamma = _compute_initial_layer(dest, s, h[2])
         # Layer 2 (third -> second mixnode)
-        beta, gamma = _compute_single_layer(nodes[1], beta, gamma, s[1])  # NOTE: nodes[i] := IP of PREVIOUS layer
+        beta, gamma = _compute_single_layer(nodes[1], beta, gamma, s[1], h[1])  # NOTE: nodes[i] := IP of PREVIOUS layer
         # Layer 1 (second -> first mixnode)
-        beta, gamma = _compute_single_layer(nodes[0], beta, gamma, s[0])  # NOTE: s[i] := shared secret of NEXT layer
+        beta, gamma = _compute_single_layer(nodes[0], beta, gamma, s[0], h[0])  # NOTE: s[i] := shared secret of NEXT layer
 
         return Header(
             beta = [b.zip() for b in beta],  # NOTE: zip() return the compressed version of the point (256-bit)

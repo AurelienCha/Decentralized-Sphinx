@@ -1,9 +1,9 @@
 import secrets
 
 from setup import G_i
-from ecc import N, G, Point, curve
+from ecc import N, G, Point, curve, p
 from elligator import point_to_hash
-from utils import truncated_hash
+from utils import truncated_hash, my_hash
 from header import Header
 
 class Mixnode:
@@ -46,11 +46,13 @@ class Mixnode:
             raise ValueError(f"Packet reaching the wrong mixnode (IP={self.ip}), it should have reached {n}")
 
         # 2) Recompute shared secret
-        S = self.sk * alpha         # Shared secret in Point version
-        s = point_to_hash(S)        # Shared secret in integer version
-        
+        S = self.sk * alpha                 # Shared secret in Point version
+        s = point_to_hash(S)                # Shared secret in integer version
+
         # 3) Integrity check
-        assert gamma == sum(beta) + s * G
+        h = s
+        h = [h:=my_hash(h) for i in range(5)]
+        assert gamma == s*G + sum([h[i] * beta[i] for i in range(5)])
 
         # 4) Update encrypted information (β)
         beta += [Point(curve.infinity), Point(curve.infinity)]  # Padding

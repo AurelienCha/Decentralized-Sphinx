@@ -20,14 +20,15 @@ To achieve this, the encoded string is divided into fixed-size chunks, as illust
 For example, in the case of a path consisting of three mixnodes, the resulting header contains seven EC points: one destination, three mixnodes and three integrity tags.
 
 Therefore a method to encode and decode information to and from elliptic curve points is required. 
-Specifically, we require a pseudo-random mapping between integers field and curve points group.
+Specifically, we require a mapping from integers to curve points, noted \Map{}, and the inverse mapping from curve points to integers, noted \InverseMap{}, 
+such that $\InverseMap{\Map{x}} = x$ where $x$ is an integer.
 
 Traditional methods achieve this by directly mapping integers to the x-coordinates of points on the curve. 
 However, this approach could leaks information by introducing bias since nearby integers result in nearby points.
 
 To address this, we adopt Elligator, which offers stronger privacy guarantees. 
 Unlike the traditional approach, Elligator produces a uniformly distributed output which is computationally indistinguishable from truly random curve points. 
-This uniformity is critical in our context, where preserving anonymity and avoiding linkability are core goals. 
+This uniformity is in line with our objectives of preserving anonymity and avoiding linkability. 
 
 \subsection{Protocol description}
 
@@ -68,17 +69,16 @@ In principle, this setup phase can be executed only once.
 However, to preserve unlinkability, the set of generators should be refreshed periodically. 
 Every entity (clients, mixnodes, and TTPs) must run the setup phase to ensure they use the same set of generators.
 
-To achieve synchronized and deterministic generator values across the system, we derive them from a common seed. 
+To achieve synchronized and deterministic generators across the system, we derive them from a common seed. 
 This seed is computed as the hash of the current timestamp, truncated to the chosen refresh interval. 
-To produce distinct seeds for each generator we rehash the seed, or simply increment it since Elligator already provides a uniform (i.e. pseudo-random) integers to points mapping.
-\todo[color=blue!30]{In the current implementation, instead of incrementing the seed, we rehash it for each i. However, since Elligator produces uniformly distributed outputs, incrementing may be equally secure and more efficient.}
+To produce \textit{independent} generators, we simply increment the seed since Elligator already provides a uniform (i.e. pseudo-random) integers to points mapping.
 
 A subtlety with Elligator is that it can map integers to points outside of the base generator's subgroup.
-Thus, an extra step is required to \textit{clear the cofactor} by multiplying the resulting point by the cofactor (Curve25519's cofactor is $ 8 $).
+To ensure that points remain in the generator subgroup, an extra step is required to \textit{clear the cofactor} by multiplying the resulting point by the cofactor (Curve25519's cofactor is $ 8 $).
 
 \noindent The final formula for generating the $ j^{th} $ chunk’s generator is:
 \begin{equation}
-G_j = 8 \cdot H(\text{hash}(\text{timestamp}) + j), \quad \text{for } j = 1, \dots, 7
+G_j = 8 \cdot \Map{\hash{\text{timestamp}} + j}, \quad \text{for } j = 1, \dots, 7
 \end{equation}
 
 
@@ -98,29 +98,28 @@ Using this nonce and the public keys of each mixnode along the path, the client 
 (\s{1}, \s{2}, \s{3}) \quad \left\{ \quad
 \begin{aligned}
     \A{i}    &= x_i \, G \\
-    \S{i}    &= x_i \, \text{PK}_i \\
-    \s{i}    &= h(\S{i}) \\
-    r_i      &= \text{hash} ( {\A{i}}_y \ \| \ {\S{i}}_y ) \\
+    \S{i}    &= x_i \, \PK{i} \\
+    \s{i}    &= \InverseMap{\S{i}} \\
+    r_i      &= \hash{{\A{i}}_y \ \| \ {\S{i}}_y} \\
     x_{i+1}  &= x_i \, r_i \quad (\text{mod}\ n)
 \end{aligned}
 \right.
 \label{eq:shared_secret}
 \end{equation}
 \todo{Take a look if a schema could be interesting to illustrate Eq. \ref{eq:shared_secret}}
-where $ x_1 $ is the client's nonce, $ \text{PK}_i $ is the public key of the $ i^{th} $ mixnode in the path, 
-$ n $ is the subgroup order (i.e. $(n+1)G = G$), $ \| $ is  the concatenation operator and subscript $ y $ refers to the $ y $-coordinate of the point.
+where $ x_1 $ is the client's nonce, $ \PK{i} $ is the public key of the $ i^{th} $ mixnode in the path ($\PK{i} = \sk{i}\G{}$), 
+$ n $ is the subgroup order (i.e. $(n+1)\G{} = \G{}$), $ \| $ is  the concatenation operator and subscript $ y $ refers to the $ y $-coordinate of the point.
 The scalar $ r_i $ acts as a pseudo-randomizer to update the secret $ x_i $ for the next hop, 
 ensuring that each cryptographic element $ \A{i} $ remains unlinkable across mixnodes.
 
 The IP addresses of the mixnodes and the destination are padded with random bits
 then mapped to elliptic curve points using Elligator, allowing later recovery of these addresses.
-\todo[color=red!40]{Test code: to verify if the padding is still necessary or optionnal and if limited (max size N)}
 Both the resulting IP points and the shared secrets are split into shares and distributed to $ m $ different TTPs. 
+In addition, the client send the hash of each shared secret to these TTPs. % for integrity
 
 Each TTP then independently computes a partial header from the received shares and returns it to the client. 
 The client aggregates these partial headers by performing chunkwise point additions to reconstruct the complete encrypted header.
 Finally, the client sends the header along with \A{1} to the first mixnode from the path. 
-\todo[color=blue!30]{Do we need to remind that the user need to encrypt his message using these shared secrets (as in original article) or is uninteresting/obvious enough ?}
 
 \subsubsection{TTP}
 % 1) Receive partial destination, path's nodes and partial shared secret
@@ -128,20 +127,21 @@ Finally, the client sends the header along with \A{1} to the first mixnode from 
 % 3) For each layer
 Each TTP receives from the client:
 \begin{itemize}
-    \item a share of the destination address (EC point),
-    \item a share of each mixnode address in the path (EC points),
-    \item a share of each shared secrets (integers).
+    \item a share of the destination address (EC point noted $ \Delta $);
+    \item a share of each mixnode address in the path (EC points noted $ \N{i} $);
+    \item a share of each shared secrets (integers noted $ \s{i} $);
+    \item the hash of each shared secrets (integers noted $ \sHashed{i} $).
 \end{itemize}
 
 The TTP constructs a partial encrypted header by layering routing information in reverse path order, starting from the last mixnode, as illustrated by Figure \ref{fig:chunked_schema}.
 
-At each layer, two new chunks are introduced: the next mixnode’s address (as an EC point) and an integrity tag.  
+At each layer, two new chunks are introduced: the next mixnode’s \todo[color=purple!30]{what is the best formulation: "next mixnode" or "mixnode from previous layer" ?} address (\N{i+1}) and the integrity tag (\C{i+1}).  
 To preserve a fixed-length header while allowing mixnodes to reverse the operation (as in the original design), four additional \emph{filler chunks} are appended.  
-These filler chunks are carefully computed such that at each layer, after applying the corresponding masking points (\sG{i}{j}), the last two chunks cancel out and become identity point (i.e. point at infinity).  
+These filler chunks are carefully computed such that at each layer, after applying the corresponding masking points (\sG{i}{j}\hspace{-1mm}), the last two chunks cancel out and become identity point (i.e. point at infinity).  
 This mechanism allows these two chunks to be safely truncated at each layer, ensuring a consistent header size while preserving reversibility for mixnodes.
 
 To initialize the header, the TTP encrypts the destination point using the shared secret of the last mixnode and append the required filler chunks. 
-Let $ \Delta $ be the partial destination point, \s{i} the shared secret corresponding to the $ i^\text{th} $ mixnode in the path, and $ G_j $ the $ j^\text{th} $ chunk's generator. 
+Let $ \Delta $ be the partial destination point, \s{i} the partial shared secret corresponding to the $ i^\text{th} $ mixnode in the path, and $ G_j $ the $ j^\text{th} $ chunk's generator. 
 The chunks for the last layer (assuming a 3-hop path) are computed as follows:
 \begin{equation}
 \B{3}{} \quad \left\{ \quad
@@ -157,7 +157,8 @@ The chunks for the last layer (assuming a 3-hop path) are computed as follows:
 \end{equation}
 
 \noindent
-Subsequent layers (for $ i = 2 $ and $ i = 1 $) are computed as:
+Subsequent layers ($ i = 2 $ and $ i = 1 $) are computed with Eq. \ref{eq:layer_i} where \N{i+1} represents the 
+elliptic curve point corresponding to the $ (i+1)^\text{th} $ mixnode in the path and \C{i+1} is the integrity tag from previous layer.
 \begin{equation}
 \B{i}{} \quad \left\{ \quad
 \begin{aligned}
@@ -170,14 +171,19 @@ Subsequent layers (for $ i = 2 $ and $ i = 1 $) are computed as:
 \right.
 \label{eq:layer_i}
 \end{equation}
+\todo[color=purple!30]{$\B{i+1}{1}$ is a light notation for $\B{(i+1,}{1)}$, should I put the full notation for clarity ?}
 
 \noindent
-For each layer, the integrity tag is computed as:
+For each layer, the integrity tag is computed with Eq. \ref{eq:integrity} where \hashIt{\sHashed{i}}{j} means hashing $j$ times \sHashed{i} which is the hash of the $i^{th}$ mixnode's complete shared secret.
+The integrity tag consists in a pseudo-random weighted sum of the chunks, offset by a secret point derived from the shared secret integer.
+The pseudo-random weights (i.e. \hashIt{\sHashed{i}}{j-1}) ensure binding, preventing adversaries from modifying individual chunks.
+Without these weights, an attacker could add a random point P to one chunk and subtract P from another, thereby preserving the overall sum and bypassing the integrity check.
+The secret offset (i.e. \sG{i}{}) prevents curious TTPs from correlating integrity tags.
+Since TTPs are aware of these pseudo-random weights, omitting this offset would allow them to potentially link some incoming and outgoing mixnode's packets by simply verifying integrity tags.
 \begin{equation}
-\C{i} = \sG{i}{} + \sum_{j=1}^{5} \B{i}{j}
+\C{i} = \sG{i}{} + \sum_{j=1}^{5} \big( \hashIt{\sHashed{i}}{j-1} \, \B{i}{j} \big)
 \label{eq:integrity}
 \end{equation}
-Here, $ N_{i+1} $ represents the elliptic curve point corresponding to the $ (i+1)^\text{th} $ mixnode in the path.
 
 When the first layer is finally computed, it is appended with the integrity tag \C{1} and the first mixnode’s point $ N_1 $.
 Finally, the TTP returns the constructed partial header to the client.
@@ -185,13 +191,14 @@ Finally, the TTP returns the constructed partial header to the client.
 \begin{figure}[H]
     \centering
     \resizebox{0.9\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
-    \caption{Chunkwise header encryption (TTP side)}
+    \caption{Chunkwise header encryption (TTP side), where \eq[x] refers to Eq. x.}
     \label{fig:chunked_schema}
 \end{figure}
 
+
 \paragraph{\textbf{Security Note.}}\label{note:security_why_indep_generators}
-To preserve unlinkability, it is essential that the generators $ (G_1, \dots, G_7) $ are \textit{independent}, meaning that their scalar relationships are unknown and cannot be derived.
-If the same generator $ G $ were used across chunks (or their scalar relationships known), an adversary could compute the chunk-wise difference between consecutive layers: $ \B{i}{j} - \B{i+1}{j} = \sG{i}{} $.
+To preserve unlinkability, it is essential that the generators $ (\G{1}, \dots, \G{7}) $ are \textit{independent}, meaning that their scalar relationships are unknown and cannot be derived.
+If the same generator \G{} were used across chunks (or their scalar relationships known), an adversary could compute the chunk-wise difference between consecutive layers: $ \B{i}{j} - \B{i+1}{j} = \sG{i}{} $.
 Since the shared secret \s{i} remains consistent within a layer, the resulting differences would reveal a predictable pattern (uniform or preserved scalar relationships).
 This consistency could allow an adversary to correlate incoming and outgoing packets at a mixnode, thereby breaking the unlinkability property.
 Using independent generators for each chunk prevents such correlations and is therefore critical to the protocol's security.  
@@ -203,26 +210,22 @@ Using independent generators for each chunk prevents such correlations and is th
 % 3) Integrity check
 % 4) Update encrypted information (β)
 % 5) Update cryptographic element (α)
-\todo{add index notation + dashed cut Beta block in Figure.}
 
 When a packet arrives at mixnode $i$, it begins by extracting the relevant header fields, namely the cryptographic element \A{i} and the integrity tag \C{i}.  
 The mixnode then recomputes the shared secret point \S{i} using its private key \sk{i} and the cryptographic element \A{i}:  
 \begin{equation}
 \begin{aligned}
     \S{i} &= \sk{i} \, \A{i} \\
-    \s{i} &= \text{Elligator}(\S{i})\\
+    \s{i} &= \InverseMap{\S{i}}\\
 \end{aligned}
 \label{eq:derive_secret}
 \end{equation}
-This point is subsequently mapped to a shared secret integer \s{i} using Elligator.
-This shared secret integer is then used to verify the integrity tag: 
+This shared secret point is subsequently mapped to the shared integer \s{i} using Elligator inverse mapping.
+This shared integer is then used to verify the integrity tag (Eq. \ref{eq:integrity_check}).
 \begin{equation}
-\C{i} \overset{\text{?}}{=} \sG{i}{} + \sum_{j=1}^{5} \B{i}{j}
+\C{i} \overset{\text{?}}{=} \sG{i}{} + \sum_{j=1}^{5} \big( \hashIt{\s{i}}{j} \, \B{i}{j} \big)
 \label{eq:integrity_check}
 \end{equation}
-The integrity tag is constructed as the sum of the chunks, offset by a secret point derived from the shared secret integer. 
-This ensures that only the client and intended mixnode can create, modify, or verify it.
-\todo[color=red!50]{Actually, there is a vulnerability since an active adversary could randomly modify the the header and the integrity tag accordingly...}
 
 \noindent If the integrity check passes, the mixnode pads the header by appending two \textit{identity} chunks (i.e. point at infinity) and then updates it as:
 \begin{equation}

@@ -22,6 +22,10 @@ def extract_operation_log():
     log, operation_log = operation_log, []
     return log
 
+@track_operation
+def my_hash(value):
+    return int.from_bytes(hashlib.sha256(value.to_bytes(32)).digest())
+
 def truncated_hash(bytes_: bytes, it: int = 1, bits: int = 255) -> int:
     """
     Implementation of a truncated SHA-256 hash with an option for multiple iterations (i.e. hash(hash(...)))
@@ -32,8 +36,9 @@ def truncated_hash(bytes_: bytes, it: int = 1, bits: int = 255) -> int:
         bits (int, optional): Output bit size (≤ 256) := Defaults to 255
     """
 
+    @track_operation
     def _hash(bytes_, iterations):
-        if iterations > 1:
+        if iterations >= 1:
             bytes_ = _hash(bytes_, iterations-1)
         return hashlib.sha256(bytes_).digest()
 

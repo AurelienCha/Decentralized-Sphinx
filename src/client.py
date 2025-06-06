@@ -3,7 +3,7 @@ import random
 
 from param import NBR_TTP
 from ecc import p, N, G, Point
-from utils import truncated_hash
+from utils import truncated_hash, my_hash
 from elligator import hash_to_point, point_to_hash
 from mixnode import Mixnode
 from ttp import TTP
@@ -92,16 +92,17 @@ class Client:
             Header: The Sphinx header
         """
         # 1) Generate the chain of shared secrets 
-        shared_secrets = self.generate_shared_secrets(x, path) 
+        shared_secrets = [point_to_hash(S) for S in self.generate_shared_secrets(x, path)]
         n0, *path = path # first node don't need further processing since it is send in 'cleartext' (first hop)
 
         # 2) Spliting information (Destination IPs, Node's IPs, Shared secret)
         partial_dest = self.split_point(hash_to_point(dest), NBR_TTP)
         partial_nodes = list(zip(*[self.split_point(hash_to_point(n), NBR_TTP) for n in path]))  # zip(*matrix) := transpose
-        partial_secrets = list(zip(*[self.split_int(point_to_hash(S), NBR_TTP) for S in shared_secrets]))
-        
+        partial_secrets = list(zip(*[self.split_int(s, NBR_TTP) for s in shared_secrets]))
+        hash_secrets = [my_hash(s) for s in shared_secrets] # for integrity tag
+
         # 3) Send to TTP partial information (dest, nodes, secrets) to generate partial header 
-        split_headers = [ttp.generate_header(partial_dest[i], partial_nodes[i], partial_secrets[i]) for (i, ttp) in enumerate(self.TTPs)]
+        split_headers = [ttp.generate_header(partial_dest[i], partial_nodes[i], partial_secrets[i], hash_secrets) for (i, ttp) in enumerate(self.TTPs)]
         
         # 4) Aggregate partial headers, and set the first mixnode's IP (int) and Alpha (Point) 
         header = sum(split_headers)

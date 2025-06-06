@@ -22,10 +22,11 @@ To compute the total cost for sending one message, the TTP cost should be multip
     | >{\centering\arraybackslash}X  }
         & \textbf{Client} & \textbf{TTP} & \textbf{Mixnode} \\
         \hline
-        \textbf{EC Multiplication}              & \bigO{p \, m} & \bigO{p^{2}} & \bigO{p} \\
-        \textbf{EC Addition}                    & \bigO{p \, m} & \bigO{p^{2}} & \bigO{p} \\
-        \textbf{Point $\rightarrow$ Integer}    & \bigO{p} & 0 & 2 \\
-        \textbf{Integer $\rightarrow$ Point}    & \bigO{p} & 0 & 0 \\
+        \textbf{EC Multiplication}              & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
+        \textbf{EC Addition}                    & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
+        \textbf{Point $\rightarrow$ Integer}    & \bigO{p}      & 0             & 2 \\
+        \textbf{Integer $\rightarrow$ Point}    & \bigO{p}      & 0             & 0 \\
+        \textbf{Hash}                           & \bigO{p}      & \bigO{p^{2}}  & \bigO{p} \\
     \end{tabularx}
     \label{tab:operation_count}
     \newline
@@ -41,10 +42,11 @@ To compute the total cost for sending one message, the TTP cost should be multip
 %     | >{\centering\arraybackslash}X  }
 %         & \textbf{Client} & \textbf{TTP} & \textbf{Mixnode} \\
 %         \hline
-%         \textbf{EC Multiplication}              & $ p (m+1) $   & $ 3 p^2 - 3 p + 2 $   & $ 2 p + 4$ \\
-%         \textbf{EC Addition}                    & $ 3 p (m-1) $ & $ 5 p^2 - 7 p + 4 $   & $ 4 p $ \\
+%         \textbf{EC Multiplication}              & $ p (m+1) $   & $ 5p^2 - 4 p + 2 $   & $ 4p + 3$ \\
+%         \textbf{EC Addition}                    & $ 3 p (m-1) $ & $ 5p^2 - 7 p + 4 $   & $ 4p $ \\
 %         \textbf{Point $\rightarrow$ Integer}    & $ p $         & $ 0 $                 & $ 2 $ \\
 %         \textbf{Integer $\rightarrow$ Point}    & $ p $         & $ 0 $                 & $ 0 $ \\
+%         \textbf{Hash}                           & $ 2p - 1 $    & $ 2p^2 - p $          & $ 2p $ \\
 %     \end{tabularx}
 %     \label{tab:operation_count}
 %     \newline

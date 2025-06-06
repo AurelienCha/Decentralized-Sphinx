@@ -15,9 +15,9 @@ from elligator import hash_to_point
 Generate random and independent curve generators G_i based on a seed (updated every day)
 NOTE: Need 7 different G_i, one for each 'block' (i.e. Point) in the header (to preserve 'unlinkability' property)
 """
-seed = datetime.date.today().isoformat().encode('utf-8')
 size_N = int(math.log(N,2))
-G_i = [8 * hash_to_point(truncated_hash(seed, it=i, bits=size_N)) for i in range(1,8)]  # NOTE: multiply by 8 to stay in the same subfield (see 'clean cofactor' in Elligator 2)
+seed = truncated_hash(datetime.date.today().isoformat().encode('utf-8'), bits=size_N)
+G_i = [8 * hash_to_point(seed+i) for i in range(1,8)]  # NOTE: multiply by 8 to stay in the same subfield (see 'clean cofactor' in Elligator 2)
 
 #####################
 # MIXNET GENERATION #
