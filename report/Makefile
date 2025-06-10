@@ -1,5 +1,5 @@
 
-TEX = main.tex Texts/*.tex
+TEX = main.tex Texts/*.tex schema/*.tex
 ISPELLPAT = -ktexskip1 +cref,Cref,url
 
 all: main.pdf
