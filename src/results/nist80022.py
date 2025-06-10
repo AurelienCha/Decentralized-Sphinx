@@ -28,15 +28,10 @@ It contains 15 tests such as:
 Note: All the tests output the p-value (p): if p < 0.01, then test FAILED (i.e. not random)
 """
 
-from tqdm import tqdm
 import math
 import scipy
 
-def run_tests(runs: list, mode: str) -> list:
-    mode = '(bit-wise)' if mode == 'bit' else '(run-wise)'
-    return [all_tests(run) for run in tqdm(runs, ascii="░▒█", dynamic_ncols=True, desc=f"Processing data {mode}", position=1, leave=False)]
-
-def all_tests(bits: str) -> float:
+def run_tests(bits: str) -> float:
     return (monobit_test(bits),
             block_frequency_test(bits), 
             runs_test(bits),
