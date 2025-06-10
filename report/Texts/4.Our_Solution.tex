@@ -1,6 +1,6 @@
 \section{Our Solution - Multi-Party Computation (MPC)}\label{sec:scheme}
 
-Our approach to ensure trust in the Sphinx header is to prevent user manipulation by decentralizing the header construction to Trusted Third Parties (TTP) through the use of Multi-Party Computaftion (MPC).
+Our approach to ensure trust in the Sphinx header is to prevent user manipulation by decentralizing the header construction to Trusted Third Parties (TTP) through the use of Multi-Party Computation (MPC).
 \newline
 
 We consider TTPs as \textit{honest-but-curious}.
@@ -118,7 +118,7 @@ Both the resulting IP points and the shared secrets are split into shares and di
 In addition, the client send the hash of each shared secret to these TTPs. % for integrity
 
 Each TTP then independently computes a partial header from the received shares and returns it to the client. 
-The client aggregates these partial headers by performing chunkwise point additions to reconstruct the complete encrypted header.
+The client aggregates these partial headers by performing chunk-wise point additions to reconstruct the complete encrypted header.
 Finally, the client sends the header along with \A{1} to the first mixnode from the path. 
 
 \subsubsection{TTP}
@@ -191,7 +191,7 @@ Finally, the TTP returns the constructed partial header to the client.
 \begin{figure}[H]
     \centering
     \resizebox{0.9\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
-    \caption{Chunkwise header encryption (TTP side), where \eq[x] refers to Eq. x.}
+    \caption{Chunk-wise header encryption (TTP side), where \eq[x] refers to Eq. x.}
     \label{fig:chunked_schema}
 \end{figure}
 
