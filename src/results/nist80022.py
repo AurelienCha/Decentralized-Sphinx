@@ -30,6 +30,7 @@ Note: All the tests output the p-value (p): if p < 0.01, then test FAILED (i.e. 
 
 import math
 import scipy
+import sys
 
 def run_tests(bits: str) -> float:
     return (monobit_test(bits),
@@ -84,10 +85,14 @@ def runs_test(bits: str) -> float:
     """
     n = len(bits)
     pi = sum(1 if b == '1' else 0 for b in bits) / n
+    if pi == 0.0:
+        pi = sys.float_info.epsilon
+    elif pi == 1.0:
+        pi = 1.0 - sys.float_info.epsilon
     if abs(pi - 0.5) >= (2 / math.sqrt(n)):
         return 0.0  # Runs test need not be performed (i.e., the test should not have been run because of a failure to pass test 1, the Frequency (Monobit) test). 
     v_obs = 1 + sum(bits[i] != bits[i+1] for i in range(n - 1))
-    p_value = math.erfc(abs(v_obs - 2 * n * pi * (1 - pi)) / (2 * math.sqrt(2 * n) * pi * (1 - pi)))
+    p_value = math.erfc(abs(v_obs - 2 * n * pi * (1 - pi)) / (2 * math.sqrt(2 * n) * (pi) * (1 - pi)))
     return p_value #, v_obs
 
 def longest_run_of_ones_test(bits: str, block_size: int = 8) -> float:
