@@ -13,7 +13,7 @@ Instead of measuring raw execution time, which can vary significantly based on h
 Table \ref{tab:operation_count} count these operations per party for $ m $ TTPs and path of length $ p $. 
 To compute the total cost for sending one message, the TTP cost should be multiplied by $ m $ and the mixnode cost by $ p $.
 
-\begin{table}[h]
+\begin{table}[H]
     \begin{tabularx}{0.9\textwidth} { 
         l
     | >{\centering\arraybackslash}X 
@@ -56,62 +56,110 @@ To compute the total cost for sending one message, the TTP cost should be multip
 Since long paths are typically unnecessary, we can approximate \bigO{p} as constant (i.e. \bigO{1}). 
 A path of length $ p = 3 $ is generally sufficient to ensure strong anonymity. \todo{Aurelien: Iness do you have some source to support this ? If yes, could you cite here, thanks.}
 Consequently, the overall computational burden is more sensitive to the number of TTPs $ m $ rather than the path length. 
-Because our design remains secure as long as a single TTP is honest (i.e. does not collude), only a small number of TTPs may be required. 
+Since our design remains secure as long as a single TTP is honest (i.e. does not collude), only a small number of TTPs may be required. 
 A deeper analysis of how many TTPs are needed to ensure a desired level of trust remains an open question for future work.
 
 
 \subsection{Unlinkability assessment}
 
 Quantifying unlinkability is inherently challenging. 
-However, under the assumption that uniformly random packet headers prevent adversaries from correlating incoming and outgoing packets via cryptanalysis, 
+However, under the assumption that uniformly random packet headers prevent adversaries from correlating incoming and outgoing packets through cryptanalysis, 
 unlinkability can be approximated by assessing the statistical randomness of the headers.
 
-We rely on the NIST SP 800-22 statistical test suite \cite{NIST-SP80022}, which includes 15 tests designed to assess the quality of random number generators. 
-Each test returns a p-value representing how likely the data could be produced by a uniform source. 
-If the outputs are truly random, the distribution of p-values across many samples should itself be uniform.
+For this purpose, we rely on the NIST SP 800-22 statistical test suite \cite{NIST-SP80022}, which consists of 15 tests designed to evaluate the quality of random number generators. 
+\todo[]{Add a brief description of these tests (i.e. what is evaluating) -> no, too long (or for appendix)}
+Each test produces a p-value representing how likely the data could be produced by a uniform source. 
+If the data are truly random, the distribution of p-values across many samples should itself follow a uniform distribution.
 
-\todo[inline,color=blue!30]{Add a brief description of these tests (i.e. what is evaluating) -> no, too long (or for appendix)}
-\todo{TODO: For the moment, only the first 4 of the 15 NIST tests have been implemented.}
+We compare the statistical results of our implementation with those of the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}}.
+All graphs presented in this section correspond to the results of the NIST statistical test suite applied to {\color{red}20} distinct datasets.
+Each dataset is generated under a different setup configuration to assess the variability and robustness of our implementation.
+
+To generate a dataset, we simulate a network of 20 mixnodes and 3 trusted third parties (TTPs). 
+For each iteration, a random destination IP address and a path consisting of 3 mixnodes are selected. 
+The client then generates shares and distributes them to the three TTPs, which independently compute partial headers. 
+These headers are then aggregated and forwarded through the simulated mixnet.
+
+According to the NIST documentation, the statistical test suite requires input sequences of $1\,000\,000$ bits. 
+To meet this requirement, generated headers are concatenated until the total length reaches $1\,000\,000$ bits. 
+Each dataset contains 100 of those concatenated sequences.
 
 
-For our prototype, we simulate a network of 20 mixnodes and 3 TTPs.\newline 
-At each iteration:
-\begin{itemize}
-    \item A random destination IP and path of 3 mixnodes are selected;
-    \item The client generates shares and distributes them to the three TTPs;
-    \item TTPs independently compute partial headers, which are then aggregated and forwarded through the simulated mixnet.
-\end{itemize}
+NIST outlines two approaches for interpreting the empirical results of its statistical test suite. 
+The first approach analyzes the proportion of sequences that successfully pass a given statistical test. 
+The second examines whether the distribution of p-values is uniform, as would be expected from a truly random source.
 
-Each run produces 4 headers (one per hop).
-We perform 100 000 runs, resulting in a 400 000 x 1792 matrix (400 000 headers of 1792 bits).
-Then we apply the NIST tests to each:
-\begin{itemize}
-    \item header independently (i.e. row-wise) to obtain p-value distributions across headers (Figure \ref{fig:sp_800-22_hist_headerwise}).
-    \item bit independently (i.e. column-wise) to ensure no bias exists in specific bit positions (Figure \ref{fig:sp_800-22_hist_bitwise}).
-\end{itemize}
+\subsubsection{Proportion of successful sequences}
 
-For comparison, we conduct the same evaluation on the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}}, which produces 400 000 headers of 1634 bits. 
-Figures \ref{fig:sp_800-22_hist_headerwise} and \ref{fig:sp_800-22_hist_bitwise} compare header randomness of our implementation (in orange) with the original implementation (in blue).
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Images/25-05-19-runwise_comparison_400000h-20n-3m-3p5.png}
-    \caption{Distribution of NIST SP 800-22 p-values across 400 000 headers (headerwise evaluation).}
-    \label{fig:sp_800-22_hist_headerwise}
+    % \hspace*{-1cm}
+    \includegraphics[width=1.\linewidth]{Images/proportion.png}
+    \caption{Proportion of successful sequences from our implementation and the original Sphinx over the fifteen NIST SP 800-22 statistical tests (significance level = $0.01$).}
+    \label{fig:proportion}
 \end{figure}
+
+\subsubsection{Uniformity of P-values}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{Images/25-05-19-bitwise_comparison_400000h-20n-3m-3p5.png}
-    \caption{Distribution of NIST SP 800-22 p-values per bit across 400 000 headers (bitwise evaluation).}
-    \label{fig:sp_800-22_hist_bitwise}
+    \hspace*{-2cm}
+    \includegraphics[width=1.3\linewidth]{Images/hist_p-values.png}
+    \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.}
+    \label{fig:hist_p-values}
 \end{figure}
 
-Some deviations in the histograms arise from the limited size of the bitstrings (1634 or 1792 bits), which introduces quantization effects. 
-In particular, the slight distortion in the first test of Figure \ref{fig:sp_800-22_hist_headerwise} reflects the granularity of possible p-values for short inputs. 
-Variations in Figure \ref{fig:sp_800-22_hist_bitwise} are due to the small amount of p-values (1634 or 1792).
-Increasing the histogram bin size mitigates these artifacts and confirms that the underlying distributions remain approximately uniform.
+\begin{figure}[H]
+    \centering
+    % \hspace*{-1cm}
+    \includegraphics[width=1.\linewidth]{Images/p-values-of-p-values.png}
+    \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.}
+    \label{fig:p-values-of-p-values}
+\end{figure}
 
-In both evaluations, the distributions of p-values are approximately uniform, which suggests that headers are statistically indistinguishable from random data, 
-and therefore indicates strong linkability resistance, comparable to the original Sphinx implementation.
+
+
+
+%%%%%%%%
+
+% For our prototype, we simulate a network of 20 mixnodes and 3 TTPs.\newline 
+% At each iteration:
+% \begin{itemize}
+%     \item A random destination IP and path of 3 mixnodes are selected;
+%     \item The client generates shares and distributes them to the three TTPs;
+%     \item 
+% \end{itemize}
+
+% Each run produces 4 headers (one per hop).
+% We perform 100 000 runs, resulting in a 400 000 x 1792 matrix (400 000 headers of 1792 bits).
+% Then we apply the NIST tests to each:
+% \begin{itemize}
+%     \item header independently (i.e. row-wise) to obtain p-value distributions across headers (Figure \ref{fig:sp_800-22_hist_headerwise}).
+%     \item bit independently (i.e. column-wise) to ensure no bias exists in specific bit positions (Figure \ref{fig:sp_800-22_hist_bitwise}).
+% \end{itemize}
+
+% For comparison, we conduct the same evaluation on the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}}, which produces 400 000 headers of 1634 bits. 
+% Figures \ref{fig:sp_800-22_hist_headerwise} and \ref{fig:sp_800-22_hist_bitwise} compare header randomness of our implementation (in orange) with the original implementation (in blue).
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.9\linewidth]{Images/25-05-19-runwise_comparison_400000h-20n-3m-3p5.png}
+%     \caption{Distribution of NIST SP 800-22 p-values across 400 000 headers (headerwise evaluation).}
+%     \label{fig:sp_800-22_hist_headerwise}
+% \end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.9\linewidth]{Images/25-05-19-bitwise_comparison_400000h-20n-3m-3p5.png}
+%     \caption{Distribution of NIST SP 800-22 p-values per bit across 400 000 headers (bitwise evaluation).}
+%     \label{fig:sp_800-22_hist_bitwise}
+% \end{figure}
+
+% Some deviations in the histograms arise from the limited size of the bitstrings (1634 or 1792 bits), which introduces quantization effects. 
+% In particular, the slight distortion in the first test of Figure \ref{fig:sp_800-22_hist_headerwise} reflects the granularity of possible p-values for short inputs. 
+% Variations in Figure \ref{fig:sp_800-22_hist_bitwise} are due to the small amount of p-values (1634 or 1792).
+% Increasing the histogram bin size mitigates these artifacts and confirms that the underlying distributions remain approximately uniform.
+
+% In both evaluations, the distributions of p-values are approximately uniform, which suggests that headers are statistically indistinguishable from random data, 
+% and therefore indicates strong linkability resistance, comparable to the original Sphinx implementation.
 
 \subsection{Discussion}
 

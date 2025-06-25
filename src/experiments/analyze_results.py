@@ -22,6 +22,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+import math
 import os 
 
 def extract_data(file):
@@ -72,14 +73,11 @@ def gather_results(data_directory):
     return pd.concat([extract_data(file) for file in result_files])
 
 
-def plot_pvalue(df):
+def plot_pvalue(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
     plt.figure(figsize=(12, 6))
 
     # Boxplot
-    sns.boxplot(
-        x="TEST", y="P-VALUE", hue="Algo",
-        data=df, palette="Set2", fliersize=0, 
-    )
+    sns.boxplot(data=df, x="TEST", y="P-VALUE", hue="Algo", palette=colors, fliersize=3, )
 
     # Rotate x labels for readability
     plt.xticks(rotation=45, ha='right')
@@ -107,13 +105,12 @@ def plot_pvalue(df):
 
     sns.despine()
     plt.tight_layout()
-    plt.savefig('src/experiments/results/p-values.png')
+    plt.savefig('src/experiments/results/p-values-of-p-values.png')
     plt.show()
 
 
-def plot_hist_pvalues(df):
+def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
     fig, ax = plt.subplots(5, 3, figsize=(15, 10), sharex=True, sharey=True)
-    colors = {'decentralized': 'steelblue', 'original': 'darkorange'}
 
     # Group data
     mean_df = df[['TEST', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'Algo']].groupby(['TEST', 'Algo']).agg('sum')
@@ -136,8 +133,8 @@ def plot_hist_pvalues(df):
 
         # Plot on the correct subplot
         sns.histplot(
-            data=plot_df, ax=ax[row, col], x="p-value", hue="Algo",
-            bins=10, binrange=(0, 1), palette=colors,
+            data=plot_df, ax=ax[row, col], x="p-value", hue="Algo", palette=colors,
+            bins=10, binrange=(0, 1),
             alpha=.1, element="step", stat="density", common_norm=False,
             legend=False,  # Disable subplot legend
         )
@@ -161,16 +158,57 @@ def plot_hist_pvalues(df):
     # fig.text(0.5, 0.04, 'p-value', ha='center')  # Common x-label
     # fig.tight_layout(rect=[0, 0.03, 1, 0.95])    # Adjust for legend space
 
-    plt.savefig('src/experiments/results/hist_values.png')
+    plt.savefig('src/experiments/results/hist_p-values.png')
     plt.show()
     plt.close()
+
     
+def plot_proportion(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
+    plt.figure(figsize=(12, 6))
+
+    df = df[['TEST', 'Algo', 'PROPORTION']]
+    sns.boxplot(data=df, x='TEST', y='PROPORTION', hue='Algo', palette=colors, fliersize=3)
+    plt.xticks(rotation=45, ha='right')
+    plt.xlabel('')
+    plt.ylim(0.94,1.001)
+    plt.xlim(-0.5,14.7)
+
+    alpha = 0.01
+    p = 1 - alpha
+    m = 100 * (len(df) / 30)
+    delta = 3 * math.sqrt(p * (1 - p) / m)
+    p_min = p - delta
+    p_max = p + delta
+
+    plt.axhline(y=p_min, color='red', linestyle=':', linewidth=1)
+    plt.axhline(y=p_max, color='red', linestyle=':', linewidth=1)
+
+    plt.text(
+        x=14.7,
+        y=(p_min+p_max)/2,
+        s='Confidence Interval',
+        color='red',
+        fontsize=9,
+        ha='right',
+        va='center',
+        rotation=-90,
+        bbox=dict(facecolor='white', alpha=0.6, edgecolor='none')
+    )
+    plt.legend(loc='lower right')
+
+    sns.despine()
+    plt.tight_layout()
+    plt.savefig('src/experiments/results/proportion.png')
+    plt.show()
+    plt.close()
+
 
 def plot_results(data_directory = 'src/experiments/data/'):
+    colors = {'decentralized': 'steelblue', 'original': 'darkorange'}
     df = gather_results(data_directory)
-    plot_pvalue(df)
-    plot_hist_pvalues(df)
-
+    plot_pvalue(df, colors)
+    plot_hist_pvalues(df, colors)
+    plot_proportion(df, colors)
 
 if __name__ == "__main__":
     plot_results()

@@ -29,12 +29,12 @@ def run_nist_tests(data_directory, file, size_seq=str(NIST_LENGTH)):
     with open(f"{data_directory}/{file}.data", 'r') as f:
         nbr_seq = str(len(f.read()) // NIST_LENGTH)
     inputs = ["0", f"{data_directory}/{file}.data", "1", "0", nbr_seq, "0"]  # [file_option, file_name, all_test, modify_param, nbr_seq, '0=ASCII']
-    
+
     # Run NIST test suite (with stdbuf to force unbuffered output)
     print(f"     F I L E :   {data_directory}/{file}.data")
     process = subprocess.Popen(
 		["stdbuf", "-oL", "./assess", size_seq],
-        cwd="src/experiments/sts-2.1.2",
+        cwd=f"{data_directory}/../../sts-2.1.2",
 		stdin=subprocess.PIPE,
 		stdout=subprocess.PIPE,
 		stderr=subprocess.STDOUT,
@@ -62,4 +62,4 @@ def execute_tests(data_directory):
 
 
 if __name__ == "__main__":
-    execute_tests('/home/garuda/Documents/PhD/Code/Decentralized-Sphinx/src/experiments/data/.../')
+    execute_tests('/home/garuda/Documents/PhD/Code/Decentralized-Sphinx/src/experiments/data/2025-06-24__09:52:07/')

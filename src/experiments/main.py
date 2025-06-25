@@ -7,11 +7,12 @@ from analyze_results import plot_results
 
 if __name__ == "__main__":
     # Ensure the NIST C code is compiled
+    print("PATH:", os.getcwd())
     subprocess.run(["make", "-f", "makefile"], cwd="src/experiments/sts-2.1.2")
 
     data_directory = 'src/experiments/data/'
 
-    for _ in tqdm(range(10), ascii="░▒█", desc='Run simulation n°'):
+    for _ in tqdm(range(3), ascii="░▒█", desc='Run simulation n°'):
         test_directory = run_simulation(100, data_directory)
         execute_tests(os.path.join(os.getcwd(), test_directory))
 
@@ -26,11 +27,4 @@ if __name__ == "__main__":
     # 1010430
     # >>> 141*7168
     # 1010688
-
-
-
-
-
-
-
 
