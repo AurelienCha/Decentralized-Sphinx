@@ -72,7 +72,7 @@ Each test produces a p-value representing how likely the data could be produced 
 If the data are truly random, the distribution of p-values across many samples should itself follow a uniform distribution.
 
 We compare the statistical results of our implementation with those of the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}}.
-All graphs presented in this section correspond to the results of the NIST statistical test suite applied to {\color{red}20} distinct datasets.
+All graphs presented in this section correspond to the results of the NIST statistical test suite applied to 20 distinct datasets.
 Each dataset is generated under a different setup configuration to assess the variability and robustness of our implementation.
 
 To generate a dataset, we simulate a network of 20 mixnodes and 3 trusted third parties (TTPs). 
@@ -84,82 +84,53 @@ According to the NIST documentation, the statistical test suite requires input s
 To meet this requirement, generated headers are concatenated until the total length reaches $1\,000\,000$ bits. 
 Each dataset contains 100 of those concatenated sequences.
 
+NIST outlines two approaches for interpreting the empirical results of its statistical test suite.
+The first assesses the proportion of sequences that pass each statistical test, as shown in Fig.\ref{fig:proportion}.
+The second evaluates whether the distribution of p-values is statistically uniform, as would be expected from random sequences.
+These results are presented in Fig.\ref{fig:chisquare}.
 
-NIST outlines two approaches for interpreting the empirical results of its statistical test suite. 
-The first approach analyzes the proportion of sequences that successfully pass a given statistical test. 
-The second examines whether the distribution of p-values is uniform, as would be expected from a truly random source.
-
-\subsubsection{Proportion of successful sequences}
-
-\begin{figure}[H]
+\begin{figure}
     \centering
     % \hspace*{-1cm}
-    \includegraphics[width=1.\linewidth]{Images/proportion.png}
-    \caption{Proportion of successful sequences from our implementation and the original Sphinx over the fifteen NIST SP 800-22 statistical tests (significance level = $0.01$).}
+    \includegraphics[width=1.\linewidth]{Images/proportion_dot.png}
+    \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over the fifteen NIST SP 800-22 statistical tests (significance level = $0.01$).}
     \label{fig:proportion}
 \end{figure}
 
-\subsubsection{Uniformity of P-values}
+Figure \ref{fig:proportion} shows the proportion of sequences that successfully pass each statistical test for both our implementation and the original Sphinx implementation.  
+Following the NIST guidelines, the significance level is set to $ \alpha = 0.01 $, and the confidence interval is defined as:
+$$
+(1 - \alpha) \pm 3 \sqrt{\frac{\alpha (1 - \alpha)}{m}},
+$$
+where $ m $ denotes the number of samples.
 
-\begin{figure}[H]
+Our implementation fails only three tests: \textit{Nonperiodic Template Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
+In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Template Matching}.
+
+\begin{figure}
     \centering
-    \hspace*{-2cm}
-    \includegraphics[width=1.3\linewidth]{Images/hist_p-values.png}
+    % \hspace*{-2cm}
+    \includegraphics[width=1.\linewidth]{Images/hist_p-values.png}
     \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.}
     \label{fig:hist_p-values}
 \end{figure}
 
+Figure \ref{fig:hist_p-values} presents the distribution of p-values obtained for each test.  
+This figure is intended solely for visual inspection.   
+A Chi-square test is performed on each histogram to assess their uniformity.
+The results are shown in Figure \ref{fig:chisquare}, with a significance threshold of $0.0001$ as recommended by the NIST guidelines.
+
+Two Chi-square results stand out: the \textit{Frequency} and \textit{Cumulative Sums} tests.  
+Both were successful for our implementation, despite failing for the orignal Sphinx implementation.
+
 \begin{figure}[H]
     \centering
     % \hspace*{-1cm}
-    \includegraphics[width=1.\linewidth]{Images/p-values-of-p-values.png}
+    \includegraphics[width=1.\linewidth]{Images/chisquare.png}
     \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.}
-    \label{fig:p-values-of-p-values}
+    \label{fig:chisquare}
 \end{figure}
 
-
-
-
-%%%%%%%%
-
-% For our prototype, we simulate a network of 20 mixnodes and 3 TTPs.\newline 
-% At each iteration:
-% \begin{itemize}
-%     \item A random destination IP and path of 3 mixnodes are selected;
-%     \item The client generates shares and distributes them to the three TTPs;
-%     \item 
-% \end{itemize}
-
-% Each run produces 4 headers (one per hop).
-% We perform 100 000 runs, resulting in a 400 000 x 1792 matrix (400 000 headers of 1792 bits).
-% Then we apply the NIST tests to each:
-% \begin{itemize}
-%     \item header independently (i.e. row-wise) to obtain p-value distributions across headers (Figure \ref{fig:sp_800-22_hist_headerwise}).
-%     \item bit independently (i.e. column-wise) to ensure no bias exists in specific bit positions (Figure \ref{fig:sp_800-22_hist_bitwise}).
-% \end{itemize}
-
-% For comparison, we conduct the same evaluation on the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}}, which produces 400 000 headers of 1634 bits. 
-% Figures \ref{fig:sp_800-22_hist_headerwise} and \ref{fig:sp_800-22_hist_bitwise} compare header randomness of our implementation (in orange) with the original implementation (in blue).
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.9\linewidth]{Images/25-05-19-runwise_comparison_400000h-20n-3m-3p5.png}
-%     \caption{Distribution of NIST SP 800-22 p-values across 400 000 headers (headerwise evaluation).}
-%     \label{fig:sp_800-22_hist_headerwise}
-% \end{figure}
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.9\linewidth]{Images/25-05-19-bitwise_comparison_400000h-20n-3m-3p5.png}
-%     \caption{Distribution of NIST SP 800-22 p-values per bit across 400 000 headers (bitwise evaluation).}
-%     \label{fig:sp_800-22_hist_bitwise}
-% \end{figure}
-
-% Some deviations in the histograms arise from the limited size of the bitstrings (1634 or 1792 bits), which introduces quantization effects. 
-% In particular, the slight distortion in the first test of Figure \ref{fig:sp_800-22_hist_headerwise} reflects the granularity of possible p-values for short inputs. 
-% Variations in Figure \ref{fig:sp_800-22_hist_bitwise} are due to the small amount of p-values (1634 or 1792).
-% Increasing the histogram bin size mitigates these artifacts and confirms that the underlying distributions remain approximately uniform.
-
-% In both evaluations, the distributions of p-values are approximately uniform, which suggests that headers are statistically indistinguishable from random data, 
-% and therefore indicates strong linkability resistance, comparable to the original Sphinx implementation.
 
 \subsection{Discussion}
 
@@ -168,3 +139,53 @@ why they hold. If we have research questions from \ref{sec:related}, answer
 them. Summarize overheads impacts and discuss feasibility in the context of
 Nym.}
 
+\begin{table}[ht]
+\centering
+\caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
+\begin{tabular}{|l|cc|cc|}
+\hline
+                                & \multicolumn{2}{c|}{\textbf{Decentralized}}   & \multicolumn{2}{c|}{\textbf{Original}} \\
+\cline{2-5}
+                                & \textbf{\tiny Excessive}    & \textbf{\tiny Lacks}        & \textbf{\tiny Excessive} & \textbf{\tiny Lacks} \vspace*{-1.5mm} \\
+\textbf{Statistical Test}       & \textbf{\tiny Rejections}   & \textbf{\tiny Uniformity}   & \textbf{\tiny Rejections} & \textbf{\tiny Uniformity} \\
+\hline
+Frequency                       & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
+Block Frequency                 & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+Cumulative Sums                 & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
+Runs                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+Longest Run                     & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+Rank                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+Discrete Fourier Transform      & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+Nonperiodic Template Matchings  & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+Overlapping Template Matchings  & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
+Universal Statistical           & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+Approximate Entropy             & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+Random Excursions               & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+Random Excursions Variant       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+Serial                          & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+Linear Complexity               & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+\hline
+\end{tabular}
+\label{tab:test_summary}
+\end{table}
+
+% \begin{table}[ht]
+% \centering
+% \caption{Summary of statistical test anomalies.}
+% \begin{tabular}{|p{3.2cm}||>{\centering\arraybackslash}p{1.6cm}>{\centering\arraybackslash}p{1.6cm}|>{\centering\arraybackslash}p{1.6cm}>{\centering\arraybackslash}p{1.6cm}|}
+% \hline
+% \textbf{Statistical Test} 
+% & \multicolumn{2}{c|}{\textbf{Decentralized}} 
+% & \multicolumn{2}{c|}{\textbf{Original}} \\
+% \cline{2-5}
+% & \textbf{Excessive Rej.} & \textbf{Non-Uniform} 
+% & \textbf{Excessive Rej.} & \textbf{Non-Uniform} \\
+% \hline
+% Frequency                     & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+% Block Frequency               & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+% Cumulative Sums              & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+% % ... add more rows
+% \hline
+% \end{tabular}
+% \label{tab:stat_anomalies}
+% \end{table}
