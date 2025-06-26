@@ -43,7 +43,7 @@ The client then aggregates these partial headers to reconstruct the final header
     \includegraphics[width=0.8\linewidth]{Images/sphinx_ttp.png}
     \caption{[DRAFT] Overview of the decentralized scheme}
     \label{fig:overall_schema}
-\end{figure}\todo{draft image}
+\end{figure}
 
 \noindent In summary, the protocol is divided into four main steps:
 \begin{itemize}
@@ -135,7 +135,7 @@ Each TTP receives from the client:
 
 The TTP constructs a partial encrypted header by layering routing information in reverse path order, starting from the last mixnode, as illustrated by Figure \ref{fig:chunked_schema}.
 
-At each layer, two new chunks are introduced: the next mixnode’s \todo[color=purple!30]{what is the best formulation: "next mixnode" or "mixnode from previous layer" ?} address (\N{i+1}) and the integrity tag (\C{i+1}).  
+At each layer, two new chunks are introduced: the mixnode’s address (\N{i}) and the integrity tag (\C{i}).  
 To preserve a fixed-length header while allowing mixnodes to reverse the operation (as in the original design), four additional \emph{filler chunks} are appended.  
 These filler chunks are carefully computed such that at each layer, after applying the corresponding masking points (\sG{i}{j}\hspace{-1mm}), the last two chunks cancel out and become identity point (i.e. point at infinity).  
 This mechanism allows these two chunks to be safely truncated at each layer, ensuring a consistent header size while preserving reversibility for mixnodes.
