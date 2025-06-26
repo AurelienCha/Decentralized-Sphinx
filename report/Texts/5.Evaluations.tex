@@ -134,10 +134,11 @@ Both were successful for our implementation, despite failing for the orignal Sph
 
 \subsection{Discussion}
 
-\todo[inline]{Come back to \ref{sec:sp-objectives} objectives and explain
-why they hold. If we have research questions from \ref{sec:related}, answer
-them. Summarize overheads impacts and discuss feasibility in the context of
-Nym.}
+In terms of computational complexity, our implementation is slower than the original Sphinx implementation. 
+However, in the context of a mixnet where inherent latency is already expected, this additional delay is likely acceptable.
+
+Regarding unlinkability (i.e. output randomness), our implementation performs slightly better than the original implementation, as it passes more statistical tests, as shown in Table \ref{tab:test_summary}. 
+Since the original Sphinx implementation is widely considered as secure, and assuming no specific vulnerabilities exist in our design, we can reasonably infer that our approach maintains a comparable level of security.
 
 \begin{table}[ht]
 \centering
@@ -169,23 +170,19 @@ Linear Complexity               & \CIRCLE               & \CIRCLE               
 \label{tab:test_summary}
 \end{table}
 
-% \begin{table}[ht]
-% \centering
-% \caption{Summary of statistical test anomalies.}
-% \begin{tabular}{|p{3.2cm}||>{\centering\arraybackslash}p{1.6cm}>{\centering\arraybackslash}p{1.6cm}|>{\centering\arraybackslash}p{1.6cm}>{\centering\arraybackslash}p{1.6cm}|}
-% \hline
-% \textbf{Statistical Test} 
-% & \multicolumn{2}{c|}{\textbf{Decentralized}} 
-% & \multicolumn{2}{c|}{\textbf{Original}} \\
-% \cline{2-5}
-% & \textbf{Excessive Rej.} & \textbf{Non-Uniform} 
-% & \textbf{Excessive Rej.} & \textbf{Non-Uniform} \\
-% \hline
-% Frequency                     & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
-% Block Frequency               & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
-% Cumulative Sums              & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
-% % ... add more rows
-% \hline
-% \end{tabular}
-% \label{tab:stat_anomalies}
-% \end{table}
+
+\todo[inline]{Come back to \ref{sec:sp-objectives} objectives and explain
+why they hold. If we have research questions from \ref{sec:related}, answer
+them. Summarize overheads impacts and discuss feasibility in the context of
+Nym.}
+\todo{Aurelien: It is quite difficult to refer to these objectives because the paper in this state does "half" of the work.
+We only decentralized the construction of the Sphinx header. 
+After that, we still need to provide the actual "credentials".
+It's just way easier to do it now since we can "verify/link" the credential with "partial destination" 
+(with the original implementation we would have to somehow verify/link this credential to a destination that have been encrypted under multiple layer.)}
+
+We have proposed a decentralized scheme that delegates the construction of the Sphinx header to a set of Trusted Third Parties (TTPs), ensuring that no single TTP can infer meaningful information from the computation, even in the case of collusion (if at least one party remains honest). 
+Since these TTPs directly access partial destination IP information, it becomes significantly easier to issue anonymous credentials for specific usages, while preventing users from cheating on their intended destinations. 
+The detailed construction of such credentials, lies beyond the scope of this paper.
+
+Another future work is to evaluate the computational overhead introduced by the TTPs in comparison to the computational waste caused by malicious users in the original Sphinx implementation, in order to assess the overall trade-off.
