@@ -1,6 +1,6 @@
 import subprocess
-import time
 import shutil
+import time
 
 NIST_LENGTH = pow(10,6)
 
@@ -62,4 +62,4 @@ def execute_tests(data_directory):
 
 
 if __name__ == "__main__":
-    execute_tests('/home/garuda/Documents/PhD/Code/Decentralized-Sphinx/src/experiments/data/2025-06-24__09:52:07/')
+    execute_tests()

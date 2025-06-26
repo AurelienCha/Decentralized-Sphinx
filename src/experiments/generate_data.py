@@ -13,7 +13,7 @@ NIST_LENGTH = pow(10,6)
 
 def create_test_folder(data_directory):
     # Create the new folder
-    new_folder = datetime.now().strftime("%Y-%m-%d__%H:%M:%S")  # more precise: "%Y-%m-%d__%H:%M:%S__%f"
+    new_folder = datetime.now().strftime("%Y_%m_%d__%H_%M_%S")  # more precise: "%Y-%m-%d__%H:%M:%S__%f"
     new_folder_path = os.path.join(data_directory, new_folder)
     os.mkdir(new_folder_path)
     return new_folder_path

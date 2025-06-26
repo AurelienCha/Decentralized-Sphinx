@@ -16,6 +16,7 @@ NIST_TEST_NAME = {
     'LinearComplexity': 'Linear Complexity'
 }
 
+from scipy.stats import chisquare
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 import matplotlib.pyplot as plt
@@ -77,7 +78,7 @@ def plot_pvalue(df, colors={'decentralized': 'steelblue', 'original': 'darkorang
     plt.figure(figsize=(12, 6))
 
     # Boxplot
-    sns.boxplot(data=df, x="TEST", y="P-VALUE", hue="Algo", palette=colors, fliersize=3, )
+    sns.boxplot(data=df, x="TEST", y="P-VALUE", hue="Algo", palette=colors, fliersize=3)
 
     # Rotate x labels for readability
     plt.xticks(rotation=45, ha='right')
@@ -107,7 +108,6 @@ def plot_pvalue(df, colors={'decentralized': 'steelblue', 'original': 'darkorang
     plt.tight_layout()
     plt.savefig('src/experiments/results/p-values-of-p-values.png')
     plt.show()
-
 
 def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
     fig, ax = plt.subplots(5, 3, figsize=(15, 10), sharex=True, sharey=True)
@@ -161,9 +161,8 @@ def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'dar
     plt.savefig('src/experiments/results/hist_p-values.png')
     plt.show()
     plt.close()
-
-    
-def plot_proportion(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
+   
+def plot_proportion_box(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
     plt.figure(figsize=(12, 6))
 
     df = df[['TEST', 'Algo', 'PROPORTION']]
@@ -198,17 +197,101 @@ def plot_proportion(df, colors={'decentralized': 'steelblue', 'original': 'darko
 
     sns.despine()
     plt.tight_layout()
-    plt.savefig('src/experiments/results/proportion.png')
+    plt.savefig('src/experiments/results/proportion_boxplot.png')
     plt.show()
     plt.close()
 
+def plot_proportion_dot(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
+    plt.figure(figsize=(12, 6))
+
+    d = df[['TEST','PROPORTION','Algo']].groupby(['TEST','Algo']).mean()
+    d = d.reset_index()
+    g = sns.relplot(data=d, x='TEST', y='PROPORTION', hue='Algo', palette=colors, alpha=0.7)
+    g._legend.remove()
+    plt.legend(loc='lower right')
+    plt.xticks(rotation=45, ha='right')
+    plt.xlabel('')
+    plt.ylabel('Proportion')
+    plt.ylim(0.94,1.001)
+    plt.xlim(-0.5,14.5)
+
+    alpha = 0.01
+    p = 1 - alpha
+    m = 100 * (len(df) / 30)
+    delta = 3 * math.sqrt(p * (1 - p) / m)
+    p_min = p - delta
+    p_max = p + delta
+
+    plt.axhline(y=p_min, color='red', linestyle=':', linewidth=1)
+    plt.axhline(y=p_max, color='red', linestyle=':', linewidth=1)
+
+    # plt.text(
+    #     x=14.7,
+    #     y=(p_min+p_max)/2,
+    #     s='Confidence Interval',
+    #     color='red',
+    #     fontsize=9,
+    #     ha='right',
+    #     va='center',
+    #     rotation=-90,
+    #     bbox=dict(facecolor='white', alpha=0.6, edgecolor='none')
+    # )
+    plt.text(
+        x=14.5,
+        y=p_max,
+        s='Confidence Interval',
+        color='red',
+        fontsize=9,
+        ha='right',
+        va='center',
+        rotation=0,
+        bbox=dict(facecolor='white', alpha=0.6, edgecolor='none')
+    )
+
+    sns.despine()
+    plt.tight_layout()
+    plt.savefig('src/experiments/results/proportion_dot.png')
+    plt.show()
+    plt.close()
+
+def plot_chisquare(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
+
+    size = len(df)/30
+    df = df[['TEST', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10','Algo']]
+    df = df.groupby(['TEST','Algo']).sum().reset_index()
+
+    resultat = []
+    for _, row in df.iterrows():
+        test, algo, *values = row
+        chi_square = chisquare(values)
+        resultat.append([test, algo, chi_square[0], chi_square[1]])
+        
+    df = pd.DataFrame(resultat, columns=['TEST', 'Algo', 'STATISTIC', 'P-VALUE'])
+    ax = sns.barplot(data=df, x='TEST', y='P-VALUE', hue='Algo', palette=colors, alpha=0.7)
+    plt.axhline(y=0.0001, color='red', linestyle=':', linewidth=1)
+    plt.xticks(rotation=45, ha='right')
+    plt.ylabel('P-value')
+    ax.set_yscale('log')
+
+    handles, labels = plt.gca().get_legend_handles_labels()
+    threshold_line = Line2D([0], [0], color='red', linestyle=':', linewidth=1)
+    plt.legend(handles + [threshold_line], labels + ['threshold'], loc='lower right')
+
+    sns.despine()
+    plt.tight_layout()
+    plt.savefig('src/experiments/results/chisquare.png')
+    df.to_csv('src/experiments/results/chisquare.csv')
+    plt.show()
+    plt.close()
 
 def plot_results(data_directory = 'src/experiments/data/'):
     colors = {'decentralized': 'steelblue', 'original': 'darkorange'}
     df = gather_results(data_directory)
     plot_pvalue(df, colors)
     plot_hist_pvalues(df, colors)
-    plot_proportion(df, colors)
+    plot_proportion_box(df, colors)
+    plot_proportion_dot(df, colors)
+    plot_chisquare(df, colors)
 
 if __name__ == "__main__":
     plot_results()
