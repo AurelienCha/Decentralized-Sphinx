@@ -9,12 +9,12 @@ security requirements for our solution.
 
 \subsection{System Model}
 
-\todo{Aurelien: I think we could try to be more concise on this subsection
+\todo[inline]{Aurelien: I think we could try to be more concise on this subsection
 because it feels quite heavy (especially the second half speaking of
 coconut and blockchain).  But for the moment, this part is a bit tricky
 since we haven't really focus on credentials...}
 %
-\todo{Iness: add a simple graph here of a mixnet; purpose: illustrate
+\todo[inline]{Iness: add a simple graph here of a mixnet; purpose: illustrate
 system model, benign interactions, adversarial interactions.}
 %
 We abstract the Nym mixnet to the components that are relevant for our
@@ -56,7 +56,7 @@ Additionally, each encryption layer includes an integrity tag, which prevents ta
 \subsection{Threat Model} 
 
 We consider different types of adversaries:
-\todo{Aurelien: I feel like the bullet points are mixing a bit threat model (GPA, malicious user and honest-but-curious TTP) with desired properties (collusion resistant, integrity, unlinkability, ...)}
+\todo[inline]{Aurelien: I feel like the bullet points are mixing a bit threat model (GPA, malicious user and honest-but-curious TTP) with desired properties (collusion resistant, integrity, unlinkability, ...)}
 \begin{itemize}
 	\item A GPA: an adversary who is able to observe all the inputs and outputs of the network. This adversary should not be able to correlate an input with an output based on the packet's appearance. This is achieved by the bitwise unlinkability of the sphinx packets.
 	\item When constructing the headers: By using a Trusted Third Party that constructs the headers we need to make sure that even if the majority of the entities collude, no one should know the final destination of the user.
@@ -67,7 +67,7 @@ We consider different types of adversaries:
 \subsection{Security \& Privacy Objectives}
 \label{sec:sp-objectives}
 
-\begin{objectives}
+\begin{itemize}
 %
         \item Cheating users: Users' traffic is only allowed to be routed
 if the traffic belongs to the same service provider from the credential
@@ -86,8 +86,8 @@ packet that is constructed in a centralized way provide the
 that two packets are connected to the same user. Our scheme that
 decentralize the headers creation aim at providing this same property.
 %
-\end{objectives}
-\todo{Some objectives may need a bit of explanation re. why they matter,
+\end{itemize}
+\todo[inline]{Some objectives may need a bit of explanation re. why they matter,
 for others I'm not sure how they can be evaluated.}
 
 

@@ -13,26 +13,6 @@ Instead of measuring raw execution time, which can vary significantly based on h
 Table \ref{tab:operation_count} count these operations per party for $ m $ TTPs and path of length $ p $. 
 To compute the total cost for sending one message, the TTP cost should be multiplied by $ m $ and the mixnode cost by $ p $.
 
-\begin{table}[H]
-    \begin{tabularx}{0.9\textwidth} { 
-        l
-    | >{\centering\arraybackslash}X 
-    | >{\centering\arraybackslash}X 
-    | >{\centering\arraybackslash}X 
-    | >{\centering\arraybackslash}X  }
-        & \textbf{Client} & \textbf{TTP} & \textbf{Mixnode} \\
-        \hline
-        \textbf{EC Multiplication}              & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
-        \textbf{EC Addition}                    & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
-        \textbf{Point $\rightarrow$ Integer}    & \bigO{p}      & 0             & 2 \\
-        \textbf{Integer $\rightarrow$ Point}    & \bigO{p}      & 0             & 0 \\
-        \textbf{Hash}                           & \bigO{p}      & \bigO{p^{2}}  & \bigO{p} \\
-    \end{tabularx}
-    \label{tab:operation_count}
-    \newline
-    \caption{Number of expensive cryptographic operations per party, where $ p $ is the path length (e.g. $ p = 3 $), and $ m $ is the number of TTPs.}
-\end{table}
-% NOTE: Precision version
 % \begin{table}
 %     \begin{tabularx}{0.9\textwidth} { 
 %         l
@@ -42,19 +22,34 @@ To compute the total cost for sending one message, the TTP cost should be multip
 %     | >{\centering\arraybackslash}X  }
 %         & \textbf{Client} & \textbf{TTP} & \textbf{Mixnode} \\
 %         \hline
-%         \textbf{EC Multiplication}              & $ p (m+1) $   & $ 5p^2 - 4 p + 2 $   & $ 4p + 3$ \\
-%         \textbf{EC Addition}                    & $ 3 p (m-1) $ & $ 5p^2 - 7 p + 4 $   & $ 4p $ \\
-%         \textbf{Point $\rightarrow$ Integer}    & $ p $         & $ 0 $                 & $ 2 $ \\
-%         \textbf{Integer $\rightarrow$ Point}    & $ p $         & $ 0 $                 & $ 0 $ \\
-%         \textbf{Hash}                           & $ 2p - 1 $    & $ 2p^2 - p $          & $ 2p $ \\
+%         \textbf{EC Multiplication}              & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
+%         \textbf{EC Addition}                    & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
+%         \textbf{Point $\rightarrow$ Integer}    & \bigO{p}      & 0             & 2 \\
+%         \textbf{Integer $\rightarrow$ Point}    & \bigO{p}      & 0             & 0 \\
+%         \textbf{Hash}                           & \bigO{p}      & \bigO{p^{2}}  & \bigO{p} \\
 %     \end{tabularx}
 %     \label{tab:operation_count}
 %     \newline
-%     \caption{\vspace*{5mm} TODO: p = path size (3) and, m is nbr of TTP (3)}
+%     \caption{Number of expensive cryptographic operations per party, where $ p $ is the path length (e.g. $ p = 3 $), and $ m $ is the number of TTPs.}
 % \end{table}
+\begin{table}
+\caption{Number of expensive cryptographic operations per party, where $ p $ is the path length (e.g. $ p = 3 $), and $ m $ is the number of TTPs.}
+\label{tab:operation_count}
+    \begin{tabular}{lccc}
+        \toprule
+        & \textbf{Client} & \textbf{TTP} & \textbf{Mixnode} \\
+        \midrule
+        \textbf{EC Multiplication}              & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
+        \textbf{EC Addition}                    & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
+        \textbf{Point $\rightarrow$ Integer}    & \bigO{p}      & 0             & 2 \\
+        \textbf{Integer $\rightarrow$ Point}    & \bigO{p}      & 0             & 0 \\
+        \textbf{Hash}                           & \bigO{p}      & \bigO{p^{2}}  & \bigO{p} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 Since long paths are typically unnecessary, we can approximate \bigO{p} as constant (i.e. \bigO{1}). 
-A path of length $ p = 3 $ is generally sufficient to ensure strong anonymity. \todo{Aurelien: Iness do you have some source to support this ? If yes, could you cite here, thanks.}
+A path of length $ p = 3 $ is generally sufficient to ensure strong anonymity. \todo[inline]{Aurelien: Iness do you have some source to support this ? If yes, could you cite here, thanks.}
 Consequently, the overall computational burden is more sensitive to the number of TTPs $ m $ rather than the path length. 
 Since our design remains secure as long as a single TTP is honest (i.e. does not collude), only a small number of TTPs may be required. 
 A deeper analysis of how many TTPs are needed to ensure a desired level of trust remains an open question for future work.
@@ -67,7 +62,7 @@ However, under the assumption that uniformly random packet headers prevent adver
 unlinkability can be approximated by assessing the statistical randomness of the headers.
 
 For this purpose, we rely on the NIST SP 800-22 statistical test suite \cite{NIST-SP80022}, which consists of 15 tests designed to evaluate the quality of random number generators. 
-\todo[]{Add a brief description of these tests (i.e. what is evaluating) -> no, too long (or for appendix)}
+\todo[inline]{Add a brief description of these tests (i.e. what is evaluating) -> no, too long (or for appendix)}
 Each test produces a p-value representing how likely the data could be produced by a uniform source. 
 If the data are truly random, the distribution of p-values across many samples should itself follow a uniform distribution.
 
@@ -140,34 +135,33 @@ However, in the context of a mixnet where inherent latency is already expected, 
 Regarding unlinkability (i.e. output randomness), our implementation performs slightly better than the original implementation, as it passes more statistical tests, as shown in Table \ref{tab:test_summary}. 
 Since the original Sphinx implementation is widely considered as secure, and assuming no specific vulnerabilities exist in our design, we can reasonably infer that our approach maintains a comparable level of security.
 
-\begin{table}[ht]
-\centering
+\begin{table}
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
-\begin{tabular}{|l|cc|cc|}
-\hline
-                                & \multicolumn{2}{c|}{\textbf{Decentralized}}   & \multicolumn{2}{c|}{\textbf{Original}} \\
-\cline{2-5}
-                                & \textbf{\tiny Excessive}    & \textbf{\tiny Lacks}        & \textbf{\tiny Excessive} & \textbf{\tiny Lacks} \vspace*{-1.5mm} \\
-\textbf{Statistical Test}       & \textbf{\tiny Rejections}   & \textbf{\tiny Uniformity}   & \textbf{\tiny Rejections} & \textbf{\tiny Uniformity} \\
-\hline
-Frequency                       & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
-Block Frequency                 & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-Cumulative Sums                 & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
-Runs                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-Longest Run                     & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-Rank                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-Discrete Fourier Transform      & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-Nonperiodic Template Matchings  & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
-Overlapping Template Matchings  & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
-Universal Statistical           & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-Approximate Entropy             & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-Random Excursions               & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
-Random Excursions Variant       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
-Serial                          & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-Linear Complexity               & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-\hline
-\end{tabular}
 \label{tab:test_summary}
+    \begin{tabular}{|l|cc|cc|}
+    \toprule
+                                    & \multicolumn{2}{c|}{\textbf{Decentralized}}   & \multicolumn{2}{c|}{\textbf{Original}} \\
+    \cline{2-5}
+                                    & \textbf{\tiny Excessive}    & \textbf{\tiny Lacks}        & \textbf{\tiny Excessive} & \textbf{\tiny Lacks} \vspace*{-1.5mm} \\
+    \textbf{Statistical Test}       & \textbf{\tiny Rejections}   & \textbf{\tiny Uniformity}   & \textbf{\tiny Rejections} & \textbf{\tiny Uniformity} \\
+    \midrule
+    Frequency                       & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
+    Block Frequency                 & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+    Cumulative Sums                 & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
+    Runs                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+    Longest Run                     & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+    Rank                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+    Discrete Fourier Transform      & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+    Nonperiodic Template Match.  & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+    Overlapping Template Match.  & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
+    Universal Statistical           & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+    Approximate Entropy             & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+    Random Excursions               & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+    Random Excursions Variant       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+    Serial                          & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+    Linear Complexity               & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+    \bottomrule
+    \end{tabular}
 \end{table}
 
 
@@ -175,7 +169,7 @@ Linear Complexity               & \CIRCLE               & \CIRCLE               
 why they hold. If we have research questions from \ref{sec:related}, answer
 them. Summarize overheads impacts and discuss feasibility in the context of
 Nym.}
-\todo{Aurelien: It is quite difficult to refer to these objectives because the paper in this state does "half" of the work.
+\todo[inline]{Aurelien: It is quite difficult to refer to these objectives because the paper in this state does "half" of the work.
 We only decentralized the construction of the Sphinx header. 
 After that, we still need to provide the actual "credentials".
 It's just way easier to do it now since we can "verify/link" the credential with "partial destination" 

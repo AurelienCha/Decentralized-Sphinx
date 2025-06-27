@@ -6,8 +6,8 @@ Our approach to ensure trust in the Sphinx header is to prevent user manipulatio
 We consider TTPs as \textit{honest-but-curious}.
 This means that they follow the protocol correctly but may attempt to infer additional information from the data they process.
 Our design ensures that TTPs cannot infer any information about the shared secrets \s{i} or the involved mixnodes, even when TTPs collude (except one).
-\todo{JT: In the Nym ecosystem, who are the TTPs, who operates them, what exactly are they trusted for?}
-\newline
+\todo[inline]{JT: In the Nym ecosystem, who are the TTPs, who operates them, what exactly are they trusted for?}
+
 
 To facilitate explanation and illustration, we describe our solution such that each packet goes through a fixed-length path consisting of three mixnodes.
 However, the scheme is general and can be adapted to support arbitrary path lengths. 
@@ -40,7 +40,7 @@ The client then aggregates these partial headers to reconstruct the final header
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Images/sphinx_ttp.png}
+    \includegraphics[width=1.\linewidth]{Images/sphinx_ttp.png}
     \caption{[DRAFT] Overview of the decentralized scheme}
     \label{fig:overall_schema}
 \end{figure}
@@ -106,7 +106,7 @@ Using this nonce and the public keys of each mixnode along the path, the client 
 \right.
 \label{eq:shared_secret}
 \end{equation}
-\todo{Take a look if a schema could be interesting to illustrate Eq. \ref{eq:shared_secret}}
+\todo[inline]{Take a look if a schema could be interesting to illustrate Eq. \ref{eq:shared_secret}}
 where $ x_1 $ is the client's nonce, $ \PK{i} $ is the public key of the $ i^{th} $ mixnode in the path ($\PK{i} = \sk{i}\G{}$), 
 $ n $ is the subgroup order (i.e. $(n+1)\G{} = \G{}$), $ \| $ is  the concatenation operator and subscript $ y $ refers to the $ y $-coordinate of the point.
 The scalar $ r_i $ acts as a pseudo-randomizer to update the secret $ x_i $ for the next hop, 
@@ -171,7 +171,7 @@ elliptic curve point corresponding to the $ (i+1)^\text{th} $ mixnode in the pat
 \right.
 \label{eq:layer_i}
 \end{equation}
-\todo[color=purple!30]{$\B{i+1}{1}$ is a light notation for $\B{(i+1,}{1)}$, should I put the full notation for clarity ?}
+\todo[inline,color=purple!30]{$\B{i+1}{1}$ is a light notation for $\B{(i+1,}{1)}$, should I put the full notation for clarity ?}
 
 \noindent
 For each layer, the integrity tag is computed with Eq. \ref{eq:integrity} where \hashIt{\sHashed{i}}{j} means hashing $j$ times \sHashed{i} which is the hash of the $i^{th}$ mixnode's complete shared secret.
@@ -190,7 +190,7 @@ Finally, the TTP returns the constructed partial header to the client.
 
 \begin{figure}[H]
     \centering
-    \resizebox{0.9\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
+    \resizebox{1.\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
     \caption{Chunk-wise header encryption (TTP side), where \eq[x] refers to Eq. x.}
     \label{fig:chunked_schema}
 \end{figure}
@@ -248,7 +248,7 @@ Finally, the mixnode forwards the updated header (\A{i+1}, \C{i+1}, \B{i+1}{}) t
 
 \begin{figure}[H]
     \centering
-    \resizebox{0.9\linewidth}{!}{\input{schema/chunkwise_decryption.tex}}
+    \resizebox{1.\linewidth}{!}{\input{schema/chunkwise_decryption.tex}}
     \caption{Processing sphinx header at mixnode $i$, where \eq[x] refers to Eq. x.}
     \label{fig:mixnode_decryption}
 \end{figure}
