@@ -32,6 +32,7 @@ To compute the total cost for sending one message, the TTP cost should be multip
 %     \newline
 %     \caption{Number of expensive cryptographic operations per party, where $ p $ is the path length (e.g. $ p = 3 $), and $ m $ is the number of TTPs.}
 % \end{table}
+
 \begin{table}
 \caption{Number of expensive cryptographic operations per party, where $ p $ is the path length (e.g. $ p = 3 $), and $ m $ is the number of TTPs.}
 \label{tab:operation_count}
@@ -102,13 +103,13 @@ where $ m $ denotes the number of samples.
 Our implementation fails only three tests: \textit{Nonperiodic Template Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
 In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Template Matching}.
 
-\begin{figure}
+\begin{figure*}[ht]
     \centering
     % \hspace*{-2cm}
     \includegraphics[width=1.\linewidth]{Images/hist_p-values.png}
     \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.}
     \label{fig:hist_p-values}
-\end{figure}
+\end{figure*}
 
 Figure \ref{fig:hist_p-values} presents the distribution of p-values obtained for each test.  
 This figure is intended solely for visual inspection.   
@@ -118,13 +119,13 @@ The results are shown in Figure \ref{fig:chisquare}, with a significance thresho
 Two Chi-square results stand out: the \textit{Frequency} and \textit{Cumulative Sums} tests.  
 Both were successful for our implementation, despite failing for the orignal Sphinx implementation.
 
-\begin{figure}[H]
+\begin{figure*}[ht]
     \centering
     % \hspace*{-1cm}
     \includegraphics[width=1.\linewidth]{Images/chisquare.png}
     \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.}
     \label{fig:chisquare}
-\end{figure}
+\end{figure*}
 
 
 \subsection{Discussion}
@@ -138,6 +139,7 @@ Since the original Sphinx implementation is widely considered as secure, and ass
 \begin{table}
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
 \label{tab:test_summary}
+    \scalebox{0.9}{
     \begin{tabular}{|l|cc|cc|}
     \toprule
                                     & \multicolumn{2}{c|}{\textbf{Decentralized}}   & \multicolumn{2}{c|}{\textbf{Original}} \\
@@ -162,6 +164,7 @@ Since the original Sphinx implementation is widely considered as secure, and ass
     Linear Complexity               & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
     \bottomrule
     \end{tabular}
+    }
 \end{table}
 
 
