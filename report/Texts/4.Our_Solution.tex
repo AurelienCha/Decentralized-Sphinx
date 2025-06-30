@@ -176,12 +176,12 @@ elliptic curve point corresponding to the $ (i+1)^\text{th} $ mixnode in the pat
 \noindent
 For each layer, the integrity tag is computed with Eq. \ref{eq:integrity} where \hashIt{\sHashed{i}}{j} means hashing $j$ times \sHashed{i} which is the hash of the $i^{th}$ mixnode's complete shared secret.
 The integrity tag consists in a pseudo-random weighted sum of the chunks, offset by a secret point derived from the shared secret integer.
-The pseudo-random weights (i.e. \hashIt{\sHashed{i}}{j-1}) ensure binding, preventing adversaries from modifying individual chunks.
+The pseudo-random weights (i.e. \hashIt{\sHashed{i}}{j}) ensure binding, preventing adversaries from modifying individual chunks.
 Without these weights, an attacker could add a random point P to one chunk and subtract P from another, thereby preserving the overall sum and bypassing the integrity check.
 The secret offset (i.e. \sG{i}{}) prevents curious TTPs from correlating integrity tags.
 Since TTPs are aware of these pseudo-random weights, omitting this offset would allow them to potentially link some incoming and outgoing mixnode's packets by simply verifying integrity tags.
 \begin{equation}
-\C{i} = \sG{i}{} + \sum_{j=1}^{5} \big( \hashIt{\sHashed{i}}{j-1} \, \B{i}{j} \big)
+\C{i} = \sG{i}{} + \sum_{j=1}^{5} \big( \hashIt{\sHashed{i}}{j} \, \B{i}{j} \big)
 \label{eq:integrity}
 \end{equation}
 
