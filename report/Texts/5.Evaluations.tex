@@ -1,9 +1,9 @@
 \section{Evaluation}\label{sec:eval}
-
+\todo{delete github since anonymous submission}
 Our prototype implementation is available on \href{https://github.com/AurelienCha/Decentralized-Sphinx}{GitHub}\footnote{\url{https://github.com/AurelienCha/Decentralized-Sphinx}}.
 The implementation is written in Python 3.13 using the ECPy library for elliptic curve operations. 
 ECPy is well-suited for prototyping due to its simplicity, but it is significantly slower than many EC python libraries (approximately one order of magnitude slower). 
-Nevertheless, it remains one of the few Python libraries supporting Montgomery Curve25519, which is essential for our implementation.
+Nevertheless, it remains one of the few Python libraries supporting Montgomery Curve25519, which is essential for our implementation.~\todo{cite}
 
 We evaluate our system on two main axes: computational complexity and unlinkability (i.e. resistance to correlation between incoming and outgoing packets).
 
@@ -50,18 +50,18 @@ To compute the total cost for sending one message, the TTP cost should be multip
 \end{table}
 
 Since long paths are typically unnecessary, we can approximate \bigO{p} as constant (i.e. \bigO{1}). 
-A path of length $ p = 3 $ is generally sufficient to ensure strong anonymity. \todo[inline]{Aurelien: Iness do you have some source to support this ? If yes, could you cite here, thanks.}
+A path of length $ p = 3 $ is generally sufficient to ensure strong anonymity. \todo[inline]{Aurelien: Iness do you have some source to support this ? If yes, could you cite here, thanks.}\todo{rephrase, no proof that 3 is sufficient but it's the common practice in Nym and Tor, needs a little bit of an explanation}
 Consequently, the overall computational burden is more sensitive to the number of TTPs $ m $ rather than the path length. 
 Since our design remains secure as long as a single TTP is honest (i.e. does not collude), only a small number of TTPs may be required. 
 A deeper analysis of how many TTPs are needed to ensure a desired level of trust remains an open question for future work.
 
 
-\subsection{Unlinkability assessment}
-
+\subsection{Unlinkability Evaluation}
+\todo{Needs MUCH more explanation of the different tests (at least those that are different from the original sphinx packet), how they are different what do they mean etc}
 Quantifying unlinkability is inherently challenging. 
 However, under the assumption that uniformly random packet headers prevent adversaries from correlating incoming and outgoing packets through cryptanalysis, 
 unlinkability can be approximated by assessing the statistical randomness of the headers.
-
+\todo{good but needs firther explanation from Loopix paper where they introduced a probabilistic metric}
 For this purpose, we rely on the NIST SP 800-22 statistical test suite \cite{NIST-SP80022}, which consists of 15 tests designed to evaluate the quality of random number generators. 
 Each test produces a p-value representing how likely the data could be produced by a uniform source. 
 If the data are truly random, the distribution of p-values across many samples should itself follow a uniform distribution.
@@ -178,7 +178,8 @@ It's just way easier to do it now since we can "verify/link" the credential with
 (with the original implementation we would have to somehow verify/link this credential to a destination that have been encrypted under multiple layer.)}
 
 We have proposed a decentralized scheme that delegates the construction of the Sphinx header to a set of Trusted Third Parties (TTPs), ensuring that no single TTP can infer meaningful information from the computation, even in the case of collusion (if at least one party remains honest). 
-Since these TTPs directly access partial destination IP information, it becomes significantly easier to issue anonymous credentials for specific usages, while preventing users from cheating on their intended destinations. 
+Since these TTPs directly access partial destination IP information, it becomes significantly easier to issue anonymous credentials for specific usages, while preventing users from cheating on their intended destinations.
+\todo{move to Conclusion and Future work}
 The detailed construction of such credentials, lies beyond the scope of this paper.
 
 Another future work is to evaluate the computational overhead introduced by the TTPs in comparison to the computational waste caused by malicious users in the original Sphinx implementation, in order to assess the overall trade-off.
