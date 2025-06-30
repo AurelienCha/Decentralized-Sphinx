@@ -33,17 +33,25 @@ This uniformity is in line with our objectives of preserving anonymity and avoid
 \subsection{Protocol description}
 
 The overall decentralized scheme is illustrated in Figure~\ref{fig:overall_schema}.  
-The client first computes a sequence of shared secrets and then splits these secrets, along with the IP addresses of the mixnodes in the path and the final destination, into $m$ shares.  
-Each set of shares is sent to a different TTP, along with the necessary cryptographic element (\A{}).  
-Each TTP independently computes a \textit{partial} Sphinx header using the received shares.  
-The client then aggregates these partial headers to reconstruct the final header, ready for transmission through the mixnet.
+(1) The client first computes a sequence of shared secrets and then splits these secrets, along with the IP addresses of the mixnodes in the path and the final destination, into $m$ shares.  
+(2) Each set of shares is sent to a different TTP, along with the necessary cryptographic element (\A{}).  
+(3) Each TTP independently computes a \textit{partial} Sphinx header using the received shares.  
+(4) The client then aggregates these partial headers to reconstruct the final header, (5) ready for transmission through the mixnet.
 
-\begin{figure}[H]
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=1.\linewidth]{Images/sphinx_ttp.png}
+%     \caption{[DRAFT] Overview of the decentralized scheme}
+%     \label{fig:overall_schema}
+% \end{figure}
+
+\begin{figure}
     \centering
-    \includegraphics[width=1.\linewidth]{Images/sphinx_ttp.png}
-    \caption{[DRAFT] Overview of the decentralized scheme}
+    \resizebox{1.\linewidth}{!}{\input{schema/schema_overview.tex}}
+    \caption{Overview of the decentralized scheme}
     \label{fig:overall_schema}
 \end{figure}
+
 
 \noindent In summary, the protocol is divided into four main steps:
 \begin{itemize}
