@@ -26,6 +26,19 @@ import numpy as np
 import math
 import os 
 
+# Set Seaborn and Matplotlib font sizes
+sns.set_context("paper", font_scale=1.5)  # or "talk", "notebook", "poster"
+
+# Optional: Customize even more
+# plt.rcParams.update({
+#     "axes.titlesize": 16,
+#     "axes.labelsize": 14,
+#     "xtick.labelsize": 12,
+#     "ytick.labelsize": 12,
+#     "legend.fontsize": 12,
+#     "font.size": 14,
+# })
+
 def extract_data(file):
 
     def extract_results(lines):
@@ -111,6 +124,7 @@ def plot_pvalue(df, colors={'decentralized': 'steelblue', 'original': 'darkorang
 
 def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
     fig, ax = plt.subplots(5, 3, figsize=(15, 10), sharex=True, sharey=True)
+    fig.subplots_adjust(hspace=0.4)
 
     # Group data
     mean_df = df[['TEST', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'Algo']].groupby(['TEST', 'Algo']).agg('sum')
@@ -138,7 +152,7 @@ def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'dar
             alpha=.1, element="step", stat="density", common_norm=False,
             legend=False,  # Disable subplot legend
         )
-        ax[row, col].text(0.5, 1.4, test, ha='center', size=14)  # Centered title
+        ax[row, col].text(0.5, 1.3, test, ha='center', size=15)  # Centered title
         # ax[row, col].axhline(y=1., color='gray', linestyle='--', linewidth=1)
         sns.despine(ax=ax[row, col])
 
@@ -146,7 +160,7 @@ def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'dar
     for a in ax.flatten():
         a.set_ylim(0, 1.5)
         a.set_xlim(0, 1)
-        a.set_xticks([i * 0.1 for i in range(11)])
+        a.set_xticks([i * 0.2 for i in range(6)])
 
     # Create a common legend
     handles, labels = ax[0, 0].get_legend_handles_labels()
@@ -187,7 +201,7 @@ def plot_proportion_box(df, colors={'decentralized': 'steelblue', 'original': 'd
         y=(p_min+p_max)/2,
         s='Confidence Interval',
         color='red',
-        fontsize=9,
+        fontsize=10,
         ha='right',
         va='center',
         rotation=-90,
@@ -225,23 +239,12 @@ def plot_proportion_dot(df, colors={'decentralized': 'steelblue', 'original': 'd
     plt.axhline(y=p_min, color='red', linestyle=':', linewidth=1)
     plt.axhline(y=p_max, color='red', linestyle=':', linewidth=1)
 
-    # plt.text(
-    #     x=14.7,
-    #     y=(p_min+p_max)/2,
-    #     s='Confidence Interval',
-    #     color='red',
-    #     fontsize=9,
-    #     ha='right',
-    #     va='center',
-    #     rotation=-90,
-    #     bbox=dict(facecolor='white', alpha=0.6, edgecolor='none')
-    # )
     plt.text(
         x=14.5,
         y=p_max,
         s='Confidence Interval',
         color='red',
-        fontsize=9,
+        fontsize=11,
         ha='right',
         va='center',
         rotation=0,
@@ -271,11 +274,12 @@ def plot_chisquare(df, colors={'decentralized': 'steelblue', 'original': 'darkor
     plt.axhline(y=0.0001, color='red', linestyle=':', linewidth=1)
     plt.xticks(rotation=45, ha='right')
     plt.ylabel('P-value')
+    plt.xlabel('')
     ax.set_yscale('log')
 
     handles, labels = plt.gca().get_legend_handles_labels()
     threshold_line = Line2D([0], [0], color='red', linestyle=':', linewidth=1)
-    plt.legend(handles + [threshold_line], labels + ['threshold'], loc='lower right')
+    plt.legend(handles + [threshold_line], labels + ['threshold'], loc='lower right', fontsize=15)
 
     sns.despine()
     plt.tight_layout()
