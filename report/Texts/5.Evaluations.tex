@@ -62,7 +62,6 @@ However, under the assumption that uniformly random packet headers prevent adver
 unlinkability can be approximated by assessing the statistical randomness of the headers.
 
 For this purpose, we rely on the NIST SP 800-22 statistical test suite \cite{NIST-SP80022}, which consists of 15 tests designed to evaluate the quality of random number generators. 
-\todo[inline]{Add a brief description of these tests (i.e. what is evaluating) -> no, too long (or for appendix)}
 Each test produces a p-value representing how likely the data could be produced by a uniform source. 
 If the data are truly random, the distribution of p-values across many samples should itself follow a uniform distribution.
 

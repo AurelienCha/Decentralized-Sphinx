@@ -114,7 +114,6 @@ Using this nonce and the public keys of each mixnode along the path, the client 
 \right.
 \label{eq:shared_secret}
 \end{equation}
-\todo[inline]{Take a look if a schema could be interesting to illustrate Eq. \ref{eq:shared_secret}}
 where $ x_1 $ is the client's nonce, $ \PK{i} $ is the public key of the $ i^{th} $ mixnode in the path ($\PK{i} = \sk{i}\G{}$), 
 $ n $ is the subgroup order (i.e. $(n+1)\G{} = \G{}$), $ \| $ is  the concatenation operator and subscript $ y $ refers to the $ y $-coordinate of the point.
 The scalar $ r_i $ acts as a pseudo-randomizer to update the secret $ x_i $ for the next hop, 
