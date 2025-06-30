@@ -33,17 +33,25 @@ This uniformity is in line with our objectives of preserving anonymity and avoid
 \subsection{Protocol description}
 
 The overall decentralized scheme is illustrated in Figure~\ref{fig:overall_schema}.  
-The client first computes a sequence of shared secrets and then splits these secrets, along with the IP addresses of the mixnodes in the path and the final destination, into $m$ shares.  
-Each set of shares is sent to a different TTP, along with the necessary cryptographic element (\A{}).  
-Each TTP independently computes a \textit{partial} Sphinx header using the received shares.  
-The client then aggregates these partial headers to reconstruct the final header, ready for transmission through the mixnet.
+(1) The client first computes a sequence of shared secrets and then splits these secrets, along with the IP addresses of the mixnodes in the path and the final destination, into $m$ shares.  
+(2) Each set of shares is sent to a different TTP, along with the necessary cryptographic element (\A{}).  
+(3) Each TTP independently computes a \textit{partial} Sphinx header using the received shares.  
+(4) The client then aggregates these partial headers to reconstruct the final header, (5) ready for transmission through the mixnet.
 
-\begin{figure}[H]
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=1.\linewidth]{Images/sphinx_ttp.png}
+%     \caption{[DRAFT] Overview of the decentralized scheme}
+%     \label{fig:overall_schema}
+% \end{figure}
+
+\begin{figure}
     \centering
-    \includegraphics[width=1.\linewidth]{Images/sphinx_ttp.png}
-    \caption{[DRAFT] Overview of the decentralized scheme}
+    \resizebox{1.\linewidth}{!}{\input{schema/schema_overview.tex}}
+    \caption{Overview of the decentralized scheme}
     \label{fig:overall_schema}
 \end{figure}
+
 
 \noindent In summary, the protocol is divided into four main steps:
 \begin{itemize}
@@ -106,7 +114,6 @@ Using this nonce and the public keys of each mixnode along the path, the client 
 \right.
 \label{eq:shared_secret}
 \end{equation}
-\todo[inline]{Take a look if a schema could be interesting to illustrate Eq. \ref{eq:shared_secret}}
 where $ x_1 $ is the client's nonce, $ \PK{i} $ is the public key of the $ i^{th} $ mixnode in the path ($\PK{i} = \sk{i}\G{}$), 
 $ n $ is the subgroup order (i.e. $(n+1)\G{} = \G{}$), $ \| $ is  the concatenation operator and subscript $ y $ refers to the $ y $-coordinate of the point.
 The scalar $ r_i $ acts as a pseudo-randomizer to update the secret $ x_i $ for the next hop, 
