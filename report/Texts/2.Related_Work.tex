@@ -12,7 +12,7 @@ This strategy is feasible only in networks like Tor or mixnet, which are designe
 
 However, several open research problems remain.
 For example, how can we prevent certain types of traffic, for whatever reason, without compromising privacy guarantees ?
-\todo[inline, color=green]{Should we be more specific and gives some concrete reasons ?}
+\todo[inline, color=green]{Should we be more specific and gives some concrete reasons ?}\todo{Yes}
 Tor addresses this issue through exit policies, which allow exit nodes to simply drop unwanted traffic.
 This works in Tor because it is circuit-based meaning that all traffic from a specific user session follow one path and hence packets are encrypted using symmetric cryptography which is cheap.
 As a result, dropping traffic at the exit node does not waste significant computation power.

@@ -2,6 +2,7 @@
 \todo[inline, color=green]{I am not convinced of this section (especially this paragraph and the 'System Model' subsection).  
 Moreover I feel like the mixnet figure and explanation is maybe not appropriate (or at the right place).
 What do you think of it ?}
+\todo{you should only have few sentences before 3.1. HOwever you should explain briefly mixnets and nym as if they do not know mixnets or any anonymous communcation network. Do not start directly with TTP. Start explaining slowly until you reach your detailed solution.}
 
 Nym uses fixed-size Sphinx packets, which ensure that external observers cannot correlate incoming and outgoing messages at mixnodes. 
 For example, if Signal is integrated with  Nym, clients who want their traffic to be anonymous would route their traffic through the mixnet instead of connecting directly to the Signal server. 
@@ -67,7 +68,7 @@ We consider different types of adversaries:
         The GAA attempts to alter Sphinx headers in transit or to create a valid Sphinx header. 
         Thanks to the integrity-check mechanisms embedded in the packet format, any such tampering is detected and causes the packet to be discarded by mixnodes.
         \todo[color=green, inline]{'Colluding Header Constructors' or 'Colluding TTPs' or 'Honest-but-curious TTPs' ? The second one seems more logical in 'types of adversaries' but the first one may be more explicit in the beginning (before well explaining the setup)}
-        
+        \todo{I think honest but curious TTP is better}
         \item \textbf{Colluding Header Constructors:} 
         In our decentralized header construction schema, multiple trusted third parties (TTPs) participate in generating the Sphinx headers. 
         We assume that a subset of these parties may collude. 
