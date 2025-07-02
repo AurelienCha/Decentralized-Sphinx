@@ -1,19 +1,5 @@
 \centering
 \begin{tikzpicture}
-[
-    % node distance=1.5cm and 2cm,
-    % every node/.style={font=\small},
-    % ttp/.style={draw, thick, circle, radius=\width},
-    % mycircle/.style={draw, thick, circle, radius=\width},
-    % ttpbox/.style={draw, thick, rounded corners=5pt, inner sep=10pt},
-    myarrow/.style={-Latex},
-    greenarrow/.style={arrow, draw=green!70!black},
-    redarrow/.style={arrow, draw=red!80!black},
-    bluearrow/.style={arrow, draw=blue},
-    yellowarrow/.style={arrow, draw=yellow!80!black},
-    purplearrow/.style={arrow, draw=violet},
-    orangearrow/.style={arrow, draw=orange},
-]
 
 % Nodes
 \node (client) [bob, minimum size=1cm, label=below:\text{\color{gray}Client}] at (0,0) {};
@@ -80,8 +66,5 @@
 \draw (31.east) -- (exit.west);
 \draw (32.east) -- (exit.west);
 \draw (33.east) -- (exit.west);
-
-% \draw[purplearrow] (client) -- node[below, font=\tiny, yshift=-2pt] {5. aggregate partial headers} (entry);
-% \draw[orangearrow] (exit) -- node[above, font=\tiny] {} (app);
 
 \end{tikzpicture}

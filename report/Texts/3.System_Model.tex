@@ -1,4 +1,4 @@
-\section{System and Threat Model}~\label{sec:sys_model}
+\section{System and Threat Model - TODO}~\label{sec:sys_model}
 \todo{This first setence needs furether explanation but it can be removed to System model subsection}
 We observed that adversarial interactions on mixnets can increase the use of
 computational resources and network resources, thus reducing the
@@ -7,7 +7,7 @@ services. Our work seeks to mitigate these challenges. Below we describe
 the system model and the adversary we consider, and derive privacy and
 security requirements for our solution.
 
-\subsection{System Model}
+\subsection{System Model - TODO}
 
 \todo[inline]{Aurelien: I think we could try to be more concise on this subsection
 because it feels quite heavy (especially the second half speaking of
@@ -17,77 +17,74 @@ since we haven't really focus on credentials...}
 \todo[inline]{Iness: add a simple graph here of a mixnet; purpose: illustrate
 system model, benign interactions, adversarial interactions.}
 %
-We abstract the Nym mixnet to the components that are relevant for our
-work. We consider a mixnet, where each user have a gateway that shows a
-credential and if accepted their traffic is allowed.  To prevent
-correlation, mixnet relies on fixed-size packet format such as Sphinx
-packet, making it difficult for external
-observers to link incoming and outgoing messages just by observing packets length. The
-Nym credential is constructed by the user and issued by a third
-decentralized party after obtaining a certificate that proves payment.  For
-example let's say Signal is integrated with Nym, and Signal users who want
-their traffic to be anonymous instead of sending traffic directly to the
-Signal server, traffic will be first routed through the mixnet such that an
-adversary who observes the signal server and/or the device of the user can
-not correlate the sender with signal server and eventually the final
-recipient. Signal (service provider) can add an option for user who want to
-pay and issue a certified attribute to those users. Users then encode this
-attributes into a credential and sends it to validators. If the proof is
-valid, validators return partial signatures. Once the user collects a
-threshold number of these signatures, they aggregate them to form a valid
-credential and re-randomize it to ensure unlinkability from previous
-interactions. The user can then present this credential to a verifier to
-prove their right to access a service to show that the credential meets all
-necessary payment and authentication conditions. To prevent
-double-spending, the verifier checks that the credential has not already
-been used by consulting the blockchain and then commits the credential's
-serial number to the blockchain upon acceptance.  For example, a user can
-obtain an certification from the Signal service provider, construct a valid
-credential and then use it to route traffic to another service provider
-they didn't pay for or simply not allowed (an illegal website).  Such
-misuse would be detected only at the final node of the mixnet preventing
-the user from accessing another application.  However, prior mixnodes would
-have already wasted computational resources processing an invalid packet.
-This vulnerability enables Denial of Service (DoS) attack by exhausting
-mixnodes computational power with illegitimate packets.
+We abstract the Nym mixnet to the components that are relevant for our work. 
+We consider a mixnet, where each client have a gateway that shows a credential and if accepted their traffic is allowed.  
+To prevent correlation, mixnet relies on fixed-size packet format such as Sphinx packet, making it difficult for external observers to link incoming and outgoing messages. 
+% The Nym credential is constructed by the user and issued by a third decentralized party after obtaining a certificate that proves payment.  
+For example let's say Signal is integrated with Nym, and Signal users who want their traffic to be anonymous instead of sending traffic directly to the
+Signal server, traffic will be first routed through the mixnet such that an adversary who observes the signal server and/or the device of the user can
+not correlate the sender with signal server and eventually the final recipient. 
+Signal (service provider) can add an option for user who want to pay and issue a certified attribute to those users. 
+Users then encode this attributes into a credential and sends it to validators. 
+If the proof is valid, validators return partial signatures. Once the user collects a threshold number of these signatures, 
+they aggregate them to form a valid credential and re-randomize it to ensure unlinkability from previous interactions. 
+The user can then present this credential to a verifier to prove their right to access a service to show that the credential meets all necessary payment and authentication conditions. 
+To prevent double-spending, the verifier checks that the credential has not already been used by consulting the blockchain and then commits the credential's serial number to the blockchain upon acceptance.  
+For example, a user can obtain an certification from the Signal service provider, construct a valid
+credential and then use it to route traffic to another service provider they didn't pay for or simply not allowed (an illegal website).  
+Such misuse would be detected only at the final node of the mixnet preventing the user from accessing another application.  
+However, prior mixnodes would have already wasted computational resources processing an invalid packet.
+This vulnerability enables Denial of Service (DoS) attack by exhausting mixnodes computational power with illegitimate packets.
 
 Additionally, each encryption layer includes an integrity tag, which prevents tampering and improves the network’s resistance against malicious mixnodes and active adversaries.
+
+\begin{figure}
+    \centering
+    \resizebox{.8\linewidth}{!}{\input{schema/mixnet.tex}}
+    \caption{Mixnet architecture.}
+    \label{fig:mixnet}
+\end{figure}
 
 \subsection{Threat Model} 
 
 We consider different types of adversaries:
-\todo[inline]{Aurelien: I feel like the bullet points are mixing a bit threat model (GPA, malicious user and honest-but-curious TTP) with desired properties (collusion resistant, integrity, unlinkability, ...)}
 \begin{itemize}
-	\item A GPA: an adversary who is able to observe all the inputs and outputs of the network. This adversary should not be able to correlate an input with an output based on the packet's appearance. This is achieved by the bitwise unlinkability of the sphinx packets.
-	\item When constructing the headers: By using a Trusted Third Party that constructs the headers we need to make sure that even if the majority of the entities collude, no one should know the final destination of the user.
-	\item An adversary who captures the headers is not able to change headers without intervening with the integrity check and hence mixes are able to know that the integrity check has been tampered with.
-	\item Malicious users: Users can not cheat and create their own headers and putting the final destination different from the one they have the credential for.
+        \item \textbf{Global Passive Adversary (GPA):} An adversary able to observe all traffic entering and leaving the network and each mixnode. 
+        The GPA aims to correlate incoming and outgoing packets. 
+        Our construction ensures \emph{bitwise unlinkability} of Sphinx packets, such that packet headers appear uniformly random and indistinguishable from one another, thereby preventing correlation.
+        
+        \item \textbf{Global Active Adversary (GAA):} An adversary able of modifying or injecting packets across the entire network. 
+        The GAA attempts to alter Sphinx headers in transit or to create a valid Sphinx header. 
+        Thanks to the integrity-check mechanisms embedded in the packet format, any such tampering is detected and causes the packet to be discarded by mixnodes.
+        \todo[color=pink, inline]{'Colluding Header Constructors' or 'Colluding TTPs' or 'Honest-but-curious TTPs' ? The second one seems more logical in 'types of adversaries' but the first one may be more explicit in the beginning (before well explaining the setup)}
+        
+        \item \textbf{Colluding Header Constructors:} 
+        In our decentralized header construction schema, multiple trusted third parties (TTPs) participate in generating the Sphinx headers. 
+        We assume that a subset of these parties may collude. 
+        Our design guarantees that even if a majority of these TTP collude, they learn nothing about the final destination or the route, preserving route confidentiality.
+        
+        \item \textbf{Malicious Clients:} We consider clients attempting to build Sphinx headers that misrepresent their intended destination by exploiting a valid credential to access a service for which they are not authorized. 
+        Such misuse can typically only be detected at the mixnet’s exit gateway, where the true destination is revealed and can be compared against the credential.
+        Our decentralized scheme could enable the adaptation of those credentials such that they could be verified at any step in the network.
 \end{itemize}
 
 \subsection{Security \& Privacy Objectives}
 \label{sec:sp-objectives}
 
+Our main security and privacy objectives are the following:
 \begin{itemize}
-%
-        \item Cheating users: Users' traffic is only allowed to be routed
-if the traffic belongs to the same service provider from the credential
-%
-        \item even if the majority of headers issuers are colluding, they
-do not know which service provider the user is communicating with.
-%
-        \item the Spinx headers can not be altered.
-%
-        \item Verifiers can verify that the headers has not been altered
-without revealing the service provider.
-%
-        \item Unlinkability between  sphinx packets, the original sphinx
-packet that is constructed in a centralized way provide the
-\textit{unlinkability} property, meaning that an adversary can not know
-that two packets are connected to the same user. Our scheme that
-decentralize the headers creation aim at providing this same property.
-%
+        \item \textbf{Unlinkability:} Our scheme aims to ensure that a global adversary cannot link incoming packets to their corresponding outgoing packets at any mixnode.
+        The original Sphinx packet format introduced by Danezis and Goldberg~\cite{sphinx} is known to achieve strong unlinkability guarantees.
+        We target at least the same level of unlinkability, but adopt a relaxed version called \textit{bitwise unlinkability}.
+        If packets appear uniformly random and indistinguishable from one another, we consider that this prevents correlations between incoming and outgoing packets, thereby satisfying the unlinkability requirement.
+
+        \item \textbf{Integrity:} Packets should be protected against tampering.
+        Our schema should adapt or provide a similar integrity-check mechanisms as the original Sphinx, ensuring that any modification in the header is detectable by mixnodes.
+
+        \item \textbf{Collusion Resistance:} Even if a majority of the Trusted Third Parties (TTPs) involved in header construction collude, they must not learn any information about the message, route or cryptographic secrets.
+        Leakage of routing information could enable timing or metadata correlation attacks across different hops.
+        Therefore, collusion resistance is necessary to maintain strong anonymity and metadata protection in our decentralized scheme.
+
+        \item \textbf{Verifiability:} In the original Sphinx design, credentials can only be validated at the exit gateway, once the true destination is revealed.
+        However, credentials should be verifiable at any step in the network, allowing for early detection and discarding of unauthorized packets, reducing wasted computational and bandwidth resources.
 \end{itemize}
-\todo[inline]{Some objectives may need a bit of explanation re. why they matter,
-for others I'm not sure how they can be evaluated.}
-
-

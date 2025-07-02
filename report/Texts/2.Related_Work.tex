@@ -1,30 +1,38 @@
 \section{Motivation and Related Work}
 \label{sec:related}
 
-Since Chaum’s seminal work on untraceable email in 1981~\cite{chaum-mix}, there has been a great amount of research related to mixnets' design~\cite{piotrowska2017loopix, van2015vuvuzela, kwon2020xrd, lazar2018karaoke, cottrell1995mixmaster, alexopoulos2017MCMIX, chaum2016cmix, chaum-mix, danezis2003mixminion}. However most systems that have been deployed and used come with their own system on top of the network meaning that only one type of traffic type is allowed. As stated by Dingledine et al. in~\cite{dingledine2006anonymity}, Anonymity Loves Company" meaning that the more messages there are in the network the more privacy the network provide. This is also shared by Ben Guirat et al. in~\cite{benguirat2023blending} where the authors show that blending different traffic types on top of a mixnet provide better anonymity. Let's imagine an instant messaging system where users do not tolerate latency of more than few seconds and an email app where users tolerate latency of up to 1 minute. The authors show that blending these two types of traffic do actually increase the privacy for both traffic. This only applicable in networks such as Tor or the Nym network that they offer the network for different applications to be integrated on top of the network rather than dictating which application to use the mixnet.
-\todo{paragraph needs re writing}However, certain open research problems remain open. For example how can we ensure that certain traffic are not allowed (for whatever reason and we will specify the exact reason for our work) without compromising ?
-Tor solves the problem with having exit policy that simply drop traffic at the last node. However Tor routing is circuit-based meaning that all traffic from a specific user session follow one path and hence packets are encrypted using symmetric cryptography which is cheap, so even if traffic is dropped that is not a problem.
+Since Chaum’s seminal work on untraceable email in 1981~\cite{chaum-mix}, there has been a great amount of research related to mixnets' design~\cite{piotrowska2017loopix, van2015vuvuzela, kwon2020xrd, lazar2018karaoke, cottrell1995mixmaster, alexopoulos2017MCMIX, chaum2016cmix, chaum-mix, danezis2003mixminion}. 
+However most systems that have been deployed and used come with their own system on top of the network meaning that only one type of traffic is allowed. 
+As stated by Dingledine et al. in~\cite{dingledine2006anonymity}, \enquote{Anonymity Loves Company} meaning that the more messages there are in the network the more privacy the network provide. 
+This idea is also supported by Ben Guirat et al.~\cite{benguirat2023blending}, who show that blending different type of traffic over a mixnet provide better anonymity.
+For example, consider an instant messaging system where users expect latencies of only a few seconds, and an email application where users tolerate delays of up to a minute. 
+The authors show that mixing these two types of traffic can actually improve the privacy of both traffic.
+This strategy is feasible only in networks like Tor or mixnet, which are designed to support multiple applications, rather than being tied to a single type of traffic.
 
-However, and beyond Tor, mixnets can impose substantial computational
-overheads due to packet based routing where every packet takes a different
-path and hence layered public-key cryptography is used. This implies that, 
-if packets are dropped at the last node of the mix, which is
-traditionally the only place where service contracts can be validated,
-computational resources required by the mix to propagate a packet to its
-final node are wasted. Additionally, and unlike Tor where relaying traffic
-happens on a volunteering base, nodes in mixnets such as Nym are
-economically incentivized through payment per relayed bandwidth. Thus,
-dropping packets at an the exit node impacts the economic viability of the
-mixnet service.
 
-\begin{itemize}
-%
-        \item \ldots
-%
-\end{itemize}
+However, several open research problems remain.
+For example, how can we prevent certain types of traffic (for whatever reason and we will specify the exact reason for our work) without compromising privacy guarantees ?
+\todo{Do we really specify later ?}
+Tor addresses this issue through exit policies, which allow exit nodes to simply drop unwanted traffic.
+This works in Tor because it is circuit-based meaning that all traffic from a specific user session follow one path and hence packets are encrypted using symmetric cryptography which is cheap.
+As a result, dropping traffic at the exit node does not waste significant computation power.
+
+
+In contrast, mixnets present a more complex challenge. 
+Due to packet-based routing, where each packet takes a different path, mixnets rely on layered public-key cryptography, which is computationally intensive.
+Dropping packets at the final node, which is typically the only point where service policies can be applied, results in a significant waste of computational resources spent by intermediate nodes on processing and forwarding those packets.
+Moreover, unlike Tor where relays operate on a voluntary basis, mixnets such as Nym use economic incentives through payment per relayed bandwidth.
+Consequently, dropping packets at the exit node not only wastes computational resources but also impacts the economic sustainability of the network.
+
 %
 \todo[inline]{Some concrete research questions that we can derive here and answer?}
-
-
-
+\begin{itemize}
+        \item \ldots
+        \item \ldots
+        \item \ldots
+        % is it possible to decentralized ?
+        % if yes at which cost ? overhead ? security ?
+        % Does it facilitate to ZK proof ?
+\end{itemize}
+%
 
