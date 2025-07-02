@@ -11,8 +11,8 @@ This strategy is feasible only in networks like Tor or mixnet, which are designe
 
 
 However, several open research problems remain.
-For example, how can we prevent certain types of traffic (for whatever reason and we will specify the exact reason for our work) without compromising privacy guarantees ?
-\todo{Do we really specify later ?}
+For example, how can we prevent certain types of traffic, for whatever reason, without compromising privacy guarantees ?
+\todo[inline, color=green]{Should we be more specific and gives some concrete reasons ?}
 Tor addresses this issue through exit policies, which allow exit nodes to simply drop unwanted traffic.
 This works in Tor because it is circuit-based meaning that all traffic from a specific user session follow one path and hence packets are encrypted using symmetric cryptography which is cheap.
 As a result, dropping traffic at the exit node does not waste significant computation power.
@@ -24,15 +24,11 @@ Dropping packets at the final node, which is typically the only point where serv
 Moreover, unlike Tor where relays operate on a voluntary basis, mixnets such as Nym use economic incentives through payment per relayed bandwidth.
 Consequently, dropping packets at the exit node not only wastes computational resources but also impacts the economic sustainability of the network.
 
-%
-\todo[inline]{Some concrete research questions that we can derive here and answer?}
-\begin{itemize}
-        \item \ldots
-        \item \ldots
-        \item \ldots
-        % is it possible to decentralized ?
-        % if yes at which cost ? overhead ? security ?
-        % Does it facilitate to ZK proof ?
-\end{itemize}
-%
 
+\noindent This work raises several concrete research questions: 
+\begin{itemize}
+        \item Could the construction of Sphinx headers be effectively decentralized without compromising core security properties such as unlinkability and integrity ? 
+        \item What are the computational and communication overhead introduced by the decentralization ? 
+        \item Do those overhead costs are preferable to the bandwidth and computational waste caused by malicious users ?
+        \item Does decentralization facilitate the integration of advanced cryptographic mechanisms, such as zero-knowledge proofs, for credential verification ?
+\end{itemize}

@@ -1,42 +1,51 @@
-\section{System and Threat Model - TODO}~\label{sec:sys_model}
-\todo{This first setence needs furether explanation but it can be removed to System model subsection}
-We observed that adversarial interactions on mixnets can increase the use of
-computational resources and network resources, thus reducing the
-availability and negatively affecting economic viability of mixnet
-services. Our work seeks to mitigate these challenges. Below we describe
-the system model and the adversary we consider, and derive privacy and
-security requirements for our solution.
+\section{System and Threat Model}~\label{sec:sys_model}
+\todo[inline, color=green]{I am not convinced of this section (especially this paragraph and the 'System Model' subsection).  
+Moreover I feel like the mixnet figure and explanation is maybe not appropriate (or at the right place).
+What do you think of it ?}
 
-\subsection{System Model - TODO}
+Nym uses fixed-size Sphinx packets, which ensure that external observers cannot correlate incoming and outgoing messages at mixnodes. 
+For example, if Signal is integrated with  Nym, clients who want their traffic to be anonymous would route their traffic through the mixnet instead of connecting directly to the Signal server. 
+This prevents adversaries monitoring either the client’s device, the server, or any intermediate nodes from correlating sender and recipient.
+In addition, each Sphinx encryption layer includes an integrity tag. 
+This ensures that any tampering with the packet is detectable, allowing mixnodes to drop corrupted messages early. 
 
-\todo[inline]{Aurelien: I think we could try to be more concise on this subsection
-because it feels quite heavy (especially the second half speaking of
-coconut and blockchain).  But for the moment, this part is a bit tricky
-since we haven't really focus on credentials...}
-%
-\todo[inline]{Iness: add a simple graph here of a mixnet; purpose: illustrate
-system model, benign interactions, adversarial interactions.}
-%
-We abstract the Nym mixnet to the components that are relevant for our work. 
-We consider a mixnet, where each client have a gateway that shows a credential and if accepted their traffic is allowed.  
-To prevent correlation, mixnet relies on fixed-size packet format such as Sphinx packet, making it difficult for external observers to link incoming and outgoing messages. 
-% The Nym credential is constructed by the user and issued by a third decentralized party after obtaining a certificate that proves payment.  
-For example let's say Signal is integrated with Nym, and Signal users who want their traffic to be anonymous instead of sending traffic directly to the
-Signal server, traffic will be first routed through the mixnet such that an adversary who observes the signal server and/or the device of the user can
-not correlate the sender with signal server and eventually the final recipient. 
-Signal (service provider) can add an option for user who want to pay and issue a certified attribute to those users. 
-Users then encode this attributes into a credential and sends it to validators. 
-If the proof is valid, validators return partial signatures. Once the user collects a threshold number of these signatures, 
-they aggregate them to form a valid credential and re-randomize it to ensure unlinkability from previous interactions. 
-The user can then present this credential to a verifier to prove their right to access a service to show that the credential meets all necessary payment and authentication conditions. 
-To prevent double-spending, the verifier checks that the credential has not already been used by consulting the blockchain and then commits the credential's serial number to the blockchain upon acceptance.  
-For example, a user can obtain an certification from the Signal service provider, construct a valid
-credential and then use it to route traffic to another service provider they didn't pay for or simply not allowed (an illegal website).  
-Such misuse would be detected only at the final node of the mixnet preventing the user from accessing another application.  
-However, prior mixnodes would have already wasted computational resources processing an invalid packet.
-This vulnerability enables Denial of Service (DoS) attack by exhausting mixnodes computational power with illegitimate packets.
 
-Additionally, each encryption layer includes an integrity tag, which prevents tampering and improves the network’s resistance against malicious mixnodes and active adversaries.
+Each Nym client receives anonymous credentials (e.g. Coconut credentials~\cite{coconut}) to use the mixnet to route their traffic towards specific destinations (e.g. services) they have paid for.
+A potential vulnerability arises when a client obtains a credential for a specific service (e.g. Signal) but uses it to inject traffic directed to an unauthorized or unrelated service. 
+Because the true destination is only revealed at the final hop of the mixnet, earlier mixnodes waste computational resources processing a packet that will ultimately be dropped. 
+This misuse opens the door to to denial-of-service (DoS) attacks, where malicious clients flood the system with unauthorized packets that will be detected at the last hop, draining bandwidth and compute capacity.
+
+
+To address this, we propose a decentralized construction of Sphinx headers involving a set of trusted third parties (TTPs). 
+This decentralized could enable TTPs to update credentials and/or zero-knowledge proofs in accordance with the layered encrypted header, to be verifiable any mixnodes on the route.  
+As a result, mixnodes could early discard unauthorized traffic before it consumes significant resources.
+
+
+In this section, we present our system model and threat model, and outline the privacy and security requirements our solution should satisfy.
+
+
+\subsection{System Model}
+
+As illustrated in Figure~\ref{fig:overall_schema}, our model involves three types of entities: the Client, a set of Trusted Third Parties (TTPs), and the Mixnet.
+The client is considered as potentially malicious.
+TTPs are assumed to be honest-but-curious, meaning that they correctly follow the protocol but may attempt to collude in order to extract additional information from the data they process.
+Mixnodes are responsible for enforcing access policies by dropping unauthorized traffic.
+
+
+We assume that clients already possess valid Nym credentials that authorize them to access specific services.
+To send a message to such a service, the client first randomly selects a route through the mixnet.
+Next, the client computes a set of cryptographic elements, distributes and shares them among a set of TTPs.
+Each TTP then uses its shares to compute a partial Sphinx header and update the credential accordingly.
+The client aggregates these partial headers and credentials into a complete Sphinx header along with a valid credential.
+This final packet is then ready to be transmitted through the mixnet.
+Note that credential issuance, modification, and verification are outside the scope of this paper and are left for future work.
+
+
+A simplified view of a mixnet architecture is presented in Figure~\ref{fig:mixnet}.
+A mixnet is a set of nodes organized in layers.
+Thereby each packet traverses a fixed and predetermined number of mixnodes.
+A packet enters through an entry node, is forwarded to a next layer's node and so on until it exits via an exit node.
+Each mixnode decrypts, reorders and delays packets before forwarding them to the next layer, breaking any direct correlation between input and output. 
 
 \begin{figure}
     \centering
@@ -44,6 +53,7 @@ Additionally, each encryption layer includes an integrity tag, which prevents ta
     \caption{Mixnet architecture.}
     \label{fig:mixnet}
 \end{figure}
+
 
 \subsection{Threat Model} 
 
@@ -56,7 +66,7 @@ We consider different types of adversaries:
         \item \textbf{Global Active Adversary (GAA):} An adversary able of modifying or injecting packets across the entire network. 
         The GAA attempts to alter Sphinx headers in transit or to create a valid Sphinx header. 
         Thanks to the integrity-check mechanisms embedded in the packet format, any such tampering is detected and causes the packet to be discarded by mixnodes.
-        \todo[color=pink, inline]{'Colluding Header Constructors' or 'Colluding TTPs' or 'Honest-but-curious TTPs' ? The second one seems more logical in 'types of adversaries' but the first one may be more explicit in the beginning (before well explaining the setup)}
+        \todo[color=green, inline]{'Colluding Header Constructors' or 'Colluding TTPs' or 'Honest-but-curious TTPs' ? The second one seems more logical in 'types of adversaries' but the first one may be more explicit in the beginning (before well explaining the setup)}
         
         \item \textbf{Colluding Header Constructors:} 
         In our decentralized header construction schema, multiple trusted third parties (TTPs) participate in generating the Sphinx headers. 
