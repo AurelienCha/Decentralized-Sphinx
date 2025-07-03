@@ -14,11 +14,11 @@ Recently, Nym Technologies a mixnet-based company is being commercialized and pr
 Their network is based on Loopix~\cite{piotrowska2017loopix}. 
 Clients of these services are then allowed to use the Nym mixnet by using Nym credentials (based on the Coconut credential~\cite{coconut}) that they can construct after getting a certificate of paying for a specific service to use the Nym network.
 However, nothing prevents clients to exploit a valid credential to access services for which they have not paid for.
-Such misuse would only be detected at the mixnet’s exit gateway, resulting in wasted resources for the intermediate nodes.
-This is a particular difficult problem in anonymous communication networks where the mixnodes do not know the traffic type or the final service a client is communicating with by doing layered encryption (Sphinx packet~\cite{sphinx}) where the final IP address is only known at the exit gateway. 
+Such misuse would only be detected at the mixnet’s exit gateway, resulting in wasted resources of intermediate nodes.
+This is a particular difficult problem in anonymous communication networks where mixnodes do not know the traffic type or the service a client is communicating with by doing layered encryption (Sphinx packet~\cite{sphinx}) where the final IP address is only known at the exit gateway. 
 
 
-In this paper we present a scheme that creates the Sphinx header in a decentralized way based on trusted third parties while ensuring that these parties learn nothing about the destination or the path.
+In this paper we present a scheme to create Sphinx headers in a decentralized way based on trusted third parties while ensuring that these parties learn nothing about the destination or even the route itself.
 Having a decentralized scheme offers greater flexibility for real-world deployment and facilitates ongoing improvements of the technology and its features.
 We think a decentralized approach could simplify the creation of credentials and zero-knowledge proofs that demonstrate the client has actually used an authorized destination as the final destination (which is encrypted under multiple layers).
 
