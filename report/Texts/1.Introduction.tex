@@ -10,32 +10,8 @@ Additionally an adversary should not be able to link input messages to output me
 %
 %Open research problems such as mixnet parameterization~\cite{benguirat2022mixnet}, authentication and fake packets halted the usage on a large scale.
 
-Recently, Nym Technologies a mixnet-based company is being commercialized and proposing a mixnet network for services to be integrated with their network for a fee. 
-Their network is based on Loopix~\cite{piotrowska2017loopix}. 
-Clients of these services are then allowed to use the Nym mixnet by using
-Nym credentials (based on the Coconut credential~\cite{coconut}) that
-clients can construct after getting a certificate of payment for a specific
-service that is to be used through the Nym network.
-However, nothing prevents clients to exploit a valid credential to attempt
-to access services for which they have not paid for.
-Such misuse would only be detected, and handled by discarding the packet,
-at the mixnet’s exit gateway, which results in wasted resources for the intermediate nodes.
-This illustrates how authentication and dealing with fake packets are
-particular difficult problems in anonymous communication networks where the mixnodes, due to layered encryption (cf. Sphinx
-packet~\cite{sphinx}), do not know the traffic type or the final service a
-client is communicating with, and where the final IP address is only known at the exit gateway.
-
-In this paper we present a scheme to create Sphinx headers in a
-decentralized way based on trusted third parties, while ensuring that these
-parties learn nothing about the destination or even the route itself.
-Having a decentralized scheme offers greater flexibility for real-world
-deployment and facilitates ongoing improvements of the technology and its
-features.  We argue that a decentralized approach will simplify the
-creation of credentials and zero-knowledge proofs that demonstrate the
-client has actually used an authorized destination as the final
-destination, thus enabling mixnet implementations that address the
-aforementioned challenges regarding authentication and fake packet
-injection in a privacy-preserving and efficient manner.
+%Recently, Nym Technologies a mixnet-based company is being commercialized and proposing a mixnet network for services to be integrated with their network for a fee.  Their network is based on Loopix~\cite{piotrowska2017loopix}. Clients of these services are then allowed to use the Nym mixnet by using Nym credentials (based on the Coconut credential~\cite{coconut}) that clients can construct after getting a certificate of payment for a specific service that is to be used through the Nym network. However, nothing prevents clients to exploit a valid credential to attempt to access services for which they have not paid for. Such misuse would only be detected, and handled by discarding the packet, at the mixnet’s exit gateway, which results in wasted resources for the intermediate nodes. This illustrates how authentication and dealing with fake packets are particular difficult problems in anonymous communication networks where the mixnodes, due to layered encryption (cf. Sphinx packet~\cite{sphinx}), do not know the traffic type or the final service a client is communicating with, and where the final IP address is only known at the exit gateway.
+In this paper we present a scheme to create Sphinx headers in a decentralized way based on trusted third parties, while ensuring that these parties learn nothing about the destination or even the route itself. Having a decentralized scheme offers greater flexibility for real-world deployment and facilitates ongoing improvements of the technology and its features.  We argue that a decentralized approach will simplify the creation of credentials and zero-knowledge proofs that demonstrate the client has actually used an authorized destination as the final destination, thus enabling mixnet implementations that address the aforementioned challenges regarding authentication and fake packet injection in a privacy-preserving and efficient manner.
 %
 Our work makes the following contributions:
 %
