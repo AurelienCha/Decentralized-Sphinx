@@ -73,7 +73,7 @@ $$
 $$
 where $ m $ denotes the number of samples.
 
-Our implementation fails only three tests: \textit{Nonperiodic Template Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
+Our implementation fails only three tests: \textit{Non-periodic Template Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
 In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Template Matching}.
 
 \begin{figure*}[ht]
@@ -90,7 +90,7 @@ A Chi-square test is performed on each histogram to assess their uniformity.
 The results are shown in Figure \ref{fig:chisquare}, with a significance threshold of $0.0001$ as recommended by the NIST guidelines.
 
 Two Chi-square results stand out: the \textit{Frequency} and \textit{Cumulative Sums} tests.  
-Both were successful for our implementation, despite failing for the orignal Sphinx implementation.
+Both were successful for our implementation, despite failing for the original Sphinx implementation.
 
 \begin{figure*}[ht]
     \centering
@@ -102,7 +102,7 @@ Both were successful for our implementation, despite failing for the orignal Sph
 
 
 \subsection{Discussion - TO UPDATE}
-\todo[inline]{Update and develop the 'Discussion' subsection and then the 'Conclusion' with futur work}
+\todo[inline]{Update and develop the 'Discussion' subsection and then the 'Conclusion' with future work}
 
 In terms of computational complexity, our implementation is slower than the original Sphinx implementation. 
 However, in the context of a mixnet where inherent latency is already expected, this additional delay is likely acceptable.
@@ -128,7 +128,7 @@ Since the original Sphinx implementation is widely considered as secure, and ass
     Longest Run                     & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
     Rank                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
     Discrete Fourier Transform      & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-    Nonperiodic Template Match.  & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+    Non-periodic Template Match.  & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
     Overlapping Template Match.  & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
     Universal Statistical           & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
     Approximate Entropy             & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
