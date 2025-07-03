@@ -1,8 +1,8 @@
 \section{Introduction}
 
 Mix network, or mixnet, is an overlay network of servers, called mixnodes, that prevent an adversary from correlating senders with receivers~\cite{chaum-mix,cypherpunk-remailer,piotrowska2017loopix,nym-network-whitepaper,danezis2003mixminion, van2015vuvuzela,mixmaster-spec,chaum2016cmix}. 
-They achieve this by adding delays to messages inside the different mixnodes in order to mitigate timing analysis attacks. 
-\todo{also "layered encryption" or something? is there an official term?}
+Mixnets achieve this through layered encryption where only the exit node
+can see the destination of a packet, and by adding delays to messages inside the different mixnodes in order to mitigate timing analysis attacks. 
 Additionally, unlike Tor~\cite{onion-routing96} where all packets sent by a user follow the same path for the entire session (circuit-based), in mixnets each packet follows a different routing routing path (packet-based). 
 These two techniques ensure that mixnets are resilient against a strong adversary who observes the entire inputs and outputs of the network, typically called a Global Passive Adversary (GPA).
 During the last few decades several systems have been proposed in the literature and few of them have been implemented. 
