@@ -1,16 +1,6 @@
-\section{Our Solution - Multi-Party Computation (MPC)}\label{sec:scheme}
+\section{Our Scheme}\label{sec:scheme}
 
-Our approach to ensure trust in the Sphinx header is to prevent user manipulation by decentralizing the header construction to Trusted Third Parties (TTPs) through the use of Multi-Party Computation (MPC).
-\newline
-
-To facilitate explanation and illustration, we describe our solution such that each packet goes through a fixed-length path consisting of three mixnodes.
-However, the scheme is general and can be adapted to support arbitrary path lengths. 
-\todo[inline, color=green]{Better in 'model' section or here (since it's an assomption to have lighter math formula)}
-
-
-\subsection{Header structure}
-
-In our approach, each piece of header information is encoded as an elliptic curve point. 
+In our approach to decentralized Sphinx header construction, each piece of header information is encoded as an elliptic curve point. 
 To achieve this, the encoded string is divided into fixed-size chunks, as illustrated in Figure \ref{fig:chunked_schema}, where each chunk is a single EC point. 
 For example, in the case of a path consisting of three mixnodes, the resulting header contains seven EC points: one destination, three mixnodes and three integrity tags.
 
@@ -33,20 +23,12 @@ The overall decentralized scheme is illustrated in Figure~\ref{fig:overall_schem
 (3) Each TTP independently computes a \textit{partial} Sphinx header using the received shares.  
 (4) The client then aggregates these partial headers to reconstruct the final header, (5) ready for transmission through the mixnet.
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=1.\linewidth]{Images/sphinx_ttp.png}
-%     \caption{[DRAFT] Overview of the decentralized scheme}
-%     \label{fig:overall_schema}
-% \end{figure}
-
 \begin{figure}
     \centering
     \resizebox{1.\linewidth}{!}{\input{schema/schema_overview.tex}}
-    \caption{Overview of the decentralized scheme}
+    \caption{Overview of the decentralized scheme - TODO: add key word in schema + briefly steps (i) in caption descritpion}
     \label{fig:overall_schema}
 \end{figure}
-\todo{Caption: expand TTP, name (1) to (5)}
 
 
 \noindent In summary, the protocol is divided into four main steps:
