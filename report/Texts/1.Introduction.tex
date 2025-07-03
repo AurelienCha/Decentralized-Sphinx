@@ -2,11 +2,16 @@
 
 Mix network, or mixnet, is an overlay network of servers, called mixnodes, that prevent an adversary from correlating senders with receivers~\cite{chaum-mix,cypherpunk-remailer,piotrowska2017loopix,nym-network-whitepaper,danezis2003mixminion, van2015vuvuzela,mixmaster-spec,chaum2016cmix}. 
 They achieve this by adding delays to messages inside the different mixnodes in order to mitigate timing analysis attacks. 
+\todo{also "layered encryption" or something? is there an official term?}
 Additionally, unlike Tor~\cite{onion-routing96} where all packets sent by a user follow the same path for the entire session (circuit-based), in mixnets each packet follows a different routing routing path (packet-based). 
 These two techniques ensure that mixnets are resilient against a strong adversary who observes the entire inputs and outputs of the network, typically called a Global Passive Adversary (GPA).
 During the last few decades several systems have been proposed in the literature and few of them have been implemented. 
 %
-Open research problems such as parameterization, authentication and fake dummies packets have halted the usage on a large scale.
+Open research problems such as parameterization, authentication and fake dummies
+ packets
+\todo{still the fake dummies. inclusive language please.
+\url{https://www.khronos.org/about/inclusive-language\#dummy}}
+have halted the usage on a large scale.
 \todo[inline, color=green]{I guess from JT: Also this speculation, needs rephrasing + citations
 \newline Aure: Iness I let you handle this because you are more competent than me on the subject and I am not sure to know what you are referring to...}
 %
@@ -14,8 +19,12 @@ Recently, Nym Technologies a mixnet-based company is being commercialized and pr
 Their network is based on Loopix~\cite{piotrowska2017loopix}. 
 Clients of these services are then allowed to use the Nym mixnet by using Nym credentials (based on the Coconut credential~\cite{coconut}) that they can construct after getting a certificate of paying for a specific service to use the Nym network.
 However, nothing prevents clients to exploit a valid credential to access services for which they have not paid for.
-Such misuse would only be detected at the mixnet’s exit gateway, resulting in wasted resources for the intermediate nodes.
-This is a particular difficult problem in anonymous communication networks where the mixnodes do not know the traffic type or the final service a client is communicating with by doing layered encryption (Sphinx packet~\cite{sphinx}) where the final IP address is only known at the exit gateway. 
+Such misuse would only be detected, and handled by discarding the packet,
+at the mixnet’s exit gateway, which results in wasted resources for the intermediate nodes.
+This is a particular difficult problem in anonymous communication networks
+where the mixnodes, due to layered encryption (cf. Sphinx
+packet~\cite{sphinx}), do not know the traffic type or the final service a
+client is communicating with, and where the final IP address is only known at the exit gateway.
 
 
 In this paper we present a scheme that creates the Sphinx header in a decentralized way based on trusted third parties while ensuring that these parties learn nothing about the destination or the path.
