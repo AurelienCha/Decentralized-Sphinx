@@ -2,8 +2,12 @@
 
 Mix network, or mixnet, is an overlay network of servers, called mixnodes, that prevent an adversary from correlating senders with receivers~\cite{chaum-mix,cypherpunk-remailer,piotrowska2017loopix,nym-network-whitepaper,danezis2003mixminion, van2015vuvuzela,mixmaster-spec,chaum2016cmix}. Various techniues in mixnets are employed in order to be resilient against a strong adversary who observes the entire inputs and outputs of the network, typically called a Global Passive Adversary (GPA);
 Each message in mixnet spends a certain amount of time inside each mixnodes before it being routed to the next mixnode, routing messages through multiple mixnodes, and using layered encryption in order for each node to only know its immediate predecessor and successor, only the final mixnode in the path knows the final destination of the message.
-
-Additionally an adversary should not be able to link input messages to output messages solely based on the format of the packets. This is acheived by the Sphinx packet format. Introduced in 2003 by Danezis et al and it acheives unlinkability.
+%
+Additionally an adversary should not be able to link input messages to
+output messages solely based on the format of the packets. This notion of
+unlinkability is achieved
+by the Sphinx~\cite{sphinx} packet format, introduced in 2003 by Danezis
+et al.
 
 
 %During the last few decades several systems have been proposed in the literature and few of them have been implemented. 
