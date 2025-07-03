@@ -32,18 +32,40 @@ particular difficult problems in anonymous communication networks where the mixn
 packet~\cite{sphinx}), do not know the traffic type or the final service a
 client is communicating with, and where the final IP address is only known at the exit gateway.
 
-In this paper we present a scheme to create Sphinx headers in a decentralized way based on trusted third parties while ensuring that these parties learn nothing about the destination or even the route itself.
-Having a decentralized scheme offers greater flexibility for real-world deployment and facilitates ongoing improvements of the technology and its features.
-We think a decentralized approach could simplify the creation of credentials and zero-knowledge proofs that demonstrate the client has actually used an authorized destination as the final destination (which is encrypted under multiple layers).
-
-
-\noindent Our work makes the following contributions:
+In this paper we present a scheme to create Sphinx headers in a
+decentralized way based on trusted third parties, while ensuring that these
+parties learn nothing about the destination or even the route itself.
+Having a decentralized scheme offers greater flexibility for real-world
+deployment and facilitates ongoing improvements of the technology and its
+features.  We argue that a decentralized approach will simplify the
+creation of credentials and zero-knowledge proofs that demonstrate the
+client has actually used an authorized destination as the final
+destination, thus enabling mixnet implementations that address the
+aforementioned challenges regarding authentication and fake packet
+injection in a privacy-preserving and efficient manner.
+%
+Our work makes the following contributions:
+%
 \begin{itemize}
+%
   \item We propose a decentralized approach to Sphinx header construction;
-  \item We evaluate the unlinkability property of both the original Sphinx packet and our decentralized construction by assessing their randomness using the NIST SP 800-22 statistical test suite.
+%
+  \item We evaluate the unlinkability property of both the original Sphinx
+packet and our decentralized construction by assessing their randomness
+using the NIST SP 800-22 statistical test suite.
+\todo{statement on performance?}
+%
+  \item We provide an conceptual implementation of our header construction
+to support a comprehensive evaluation of our approach in Nym or other
+mixnets.
+%
 \end{itemize}
 
+In the following, we present related work and motivation in
+Section~\ref{sec:related}, then we specify and justify our system model in
+Section~\ref{sec:sys_model}, where we also describe the considered threat
+model.  We then present our scheme that decentralize the creation of the
+Sphinx headers in Section~\ref{sec:scheme} and the evaluation of our
+proposed solution in Section~\ref{sec:eval}.  Finally we conclude and
+discuss future work in Section~\ref{sec:conclusion}.
 
-We highlight related work and motivation in Section~\ref{sec:related}, then we specify and justify our system model in Section~\ref{sec:sys_model}, where we also describe the considered threat model. 
-We then present our scheme that decentralize the creation of the Sphinx headers in Section~\ref{sec:scheme} and the evaluation of our proposed solution in Section~\ref{sec:eval}. 
-Finally we conclude and discuss future work in Section~\ref{sec:conclusion}
