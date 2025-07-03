@@ -1,55 +1,6 @@
 \section{System and Threat Model}~\label{sec:sys_model}
-% \todo[inline, color=green]{I am not convinced of this section (especially this paragraph and the 'System Model' subsection).  
-% Moreover I feel like the mixnet figure and explanation is maybe not appropriate (or at the right place).
-% What do you think of it ?}
-% \todo[inline, color=pink]{you should only have few sentences before 3.1. However you should explain briefly mixnets and nym as if they do not know mixnets or any anonymous communcation network. Do not start directly with TTP. Start explaining slowly until you reach your detailed solution.}
-
-% Nym uses fixed-size Sphinx packets, which ensure that external observers cannot correlate incoming and outgoing messages at mixnodes. 
-% For example, if Signal is integrated with  Nym, clients who want their traffic to be anonymous would route their traffic through the mixnet instead of connecting directly to the Signal server. 
-% This prevents adversaries monitoring either the client’s device, the server, or any intermediate nodes from correlating sender and recipient.
-% In addition, each Sphinx encryption layer includes an integrity tag. 
-% This ensures that any tampering with the packet is detectable, allowing mixnodes to drop corrupted messages early. 
-
-
-% Each Nym client receives anonymous credentials (e.g. Coconut credentials~\cite{coconut}) to use the mixnet to route their traffic towards specific destinations (e.g. services) they have paid for.
-% A potential vulnerability arises when a client obtains a credential for a specific service (e.g. Signal) but uses it to inject traffic directed to an unauthorized or unrelated service. 
-% Because the true destination is only revealed at the final hop of the mixnet, earlier mixnodes waste computational resources processing a packet that will ultimately be dropped. 
-% This misuse opens the door to to denial-of-service (DoS) attacks, where malicious clients flood the system with unauthorized packets that will be detected at the last hop, draining bandwidth and compute capacity.
-
-
-% To address this, we propose a decentralized construction of Sphinx headers involving a set of trusted third parties (TTPs). 
-% This decentralized could enable TTPs to update credentials and/or zero-knowledge proofs in accordance with the layered encrypted header, to be verifiable any mixnodes on the route.  
-% As a result, mixnodes could early discard unauthorized traffic before it consumes significant resources.
-
-
-% In this section, we present our system model and threat model, and outline the privacy and security requirements our solution should satisfy.
-
-
-% \subsection{System Model}
-
-% As illustrated in Figure~\ref{fig:overall_schema}, our model involves three types of entities: the Client, a set of Trusted Third Parties (TTPs), and the Mixnet.
-% The client is considered as potentially malicious.
-% TTPs are assumed to be honest-but-curious, meaning that they correctly follow the protocol but may attempt to collude in order to extract additional information from the data they process.
-% Mixnodes are responsible for enforcing access policies by dropping unauthorized traffic.
-
-
-% We assume that clients already possess valid Nym credentials that authorize them to access specific services.
-% To send a message to such a service, the client first randomly selects a route through the mixnet.
-% Next, the client computes a set of cryptographic elements, distributes and shares them among a set of TTPs.
-% Each TTP then uses its shares to compute a partial Sphinx header and update the credential accordingly.
-% The client aggregates these partial headers and credentials into a complete Sphinx header along with a valid credential.
-% This final packet is then ready to be transmitted through the mixnet.
-% Note that credential issuance, modification, and verification are outside the scope of this paper and are left for future work.
-
-
-% A simplified view of a mixnet architecture is presented in Figure~\ref{fig:mixnet}.
-% A mixnet is a set of nodes organized in layers.
-% Thereby each packet traverses a fixed and predetermined number of mixnodes.
-% A packet enters through an entry node, is forwarded to a next layer's node and so on until it exits via an exit node.
-% Each mixnode decrypts, reorders and delays packets before forwarding them to the next layer, breaking any direct correlation between input and output. 
 
 In this section, we present our system model and threat model, and outline the privacy and security requirements our solution should satisfy.
-
 
 \subsection{System Model}
 
@@ -64,17 +15,39 @@ Each mixnode reorders and delays packets before forwarding them to the next laye
 These techniques enhance the mixnet’s resistance to a global adversary capable of observing the entire network.
 For clarity in both formulas and figures, and without loss of generality, we consider a mixnet consisting of three layers (i.e. path of three mixnodes).
 
-
 \begin{figure}
     \centering
     \resizebox{.8\linewidth}{!}{\input{schema/mixnet.tex}}
     \caption{Mixnet architecture.}
     \label{fig:mixnet}
 \end{figure}
-\todo{I propose to make Figure~\ref{fig:mixnet} more similar to the
+\todo[inline, color=yellow]{I propose to make Figure~\ref{fig:mixnet} more similar to the
 original one that illustrated routing pathways and users. Maybe even the
 fake-packet attack? Then we could move it much earlier, even to gthe intro.}
-\todo{Your figures need proper captions that explain what the reader sees.}
+\todo[inline, color=yellow]{Your figures need proper captions that explain what the reader sees.}
+
+This kind of network often relies on privacy oriented layered encrypted packet format such as Sphinx~\cite{sphinx}.
+In this work, we will solely focus on the Sphinx packet format.
+Some privacy-concerned companies, like Nym Technologies, commercialize an enhanced mixnet network for services to be integrated with their network for a fee.
+For example, if Signal is integrated with  Nym, clients who want their traffic to be anonymous would route their traffic through the mixnet instead of connecting directly to the Signal server. 
+This prevents adversaries monitoring either the client’s device, the server, or any intermediate nodes from correlating sender and recipient.
+In addition of the Sphinx packets, they often improved the system with extra features such as \textit{anonymous credentials}.
+For example, each Nym client receives anonymous credentials (based on Coconut credential~\cite{coconut}) to use the mixnet to route their traffic towards specific destinations (e.g. services) they have paid for.
+A potential vulnerability arises when a client obtains a credential for a specific service (e.g. Signal) but uses it to inject traffic directed to an unauthorized or unrelated service. 
+Because the true destination is only revealed at the final hop of the mixnet, earlier mixnodes waste computational resources processing a packet that will ultimately be dropped. 
+This misuse opens the door to to denial-of-service (DoS) attacks, where malicious clients flood the system with unauthorized packets that will be detected at the last hop, draining bandwidth and compute capacity.
+
+
+To address this, we propose a decentralized construction of Sphinx headers involving a set of trusted third parties (TTPs). 
+This decentralized could enable TTPs to update credentials and/or zero-knowledge proofs in accordance with the layered encrypted header, to be verifiable any mixnodes on the route.  
+As a result, mixnodes could early discard unauthorized traffic before it consumes significant resources.
+However the credential issuance, modification, and verification are outside the scope of this paper and are left for future work.
+We assume that clients already possess valid credentials that authorize them to access specific services. \todo{Aure: last sentence useless ?}
+
+To summarize, as illustrated in Figure~\ref{fig:overall_schema}, our model involves three types of entities: the Client, a set of Trusted Third Parties (TTPs), and the Mixnet.
+The client is considered as potentially malicious.
+TTPs are assumed to be honest-but-curious, meaning that they correctly follow the protocol but may attempt to collude in order to extract additional information from the data they process.
+Mixnodes are responsible for enforcing access policies by dropping unauthorized traffic.
 
 
 \subsection{Threat Model} 
