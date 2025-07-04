@@ -1,9 +1,21 @@
 \section{Introduction}
 
-Mix network, or mixnet, is an overlay network of servers, called mixnodes, that prevent an adversary from correlating senders with receivers~\cite{chaum-mix,cypherpunk-remailer,piotrowska2017loopix,nym-network-whitepaper,danezis2003mixminion, van2015vuvuzela,mixmaster-spec,chaum2016cmix}. Various techniques in mixnets are used in order to be resilient against a strong adversary who observes all inputs and outputs of the network, typically called a Global Passive Adversary (GPA). 
-First messages are routed via multiple servers, also called mixes, before reaching the first destination. Second, each message in mixnet spends a certain amount of time inside each mix before it being routed to the next mix. Additionally messages are layered encrypted ensuring that each mix only knows its immediate predecessor and successor and therefore only the final mix in the path knows the final destination of a particular message.
-\newline Typically, mixnets use the Sphinx packet format, introduced in 2003 by Danezis et al.\cite{sphinx}, for encrypting packets. This format provides \textit{bit-wise unlinkability}, meaning an adversary cannot determine whether an output packet corresponds to an input packet based solely on its format. Sphinx is used in various Anonymous Communication Networks (ACNs), including Nym\cite{nym-network-whitepaper}, Katzenpost~\cite{infeld2025echomix}, and the Lightning Network~\cite{poon2016bitcoin}. Sphinx packets are constructed by clients, who encode all the necessary routing information such as the IP addresses and keys. While this simplifies routing, it opens the door for malicious clients to bias the routes and not follow the routing algorithm in order to reduce the overall anonymity provided by the mixnet~\cite{benguirat2022mixnet}. Additionally, in systems like Nym, where users must pay a subscription fee to route messages for a specific application, users authenticate using anonymous credentials. However, nothing prevents them from using the network to route traffic for an unauthorized application they haven't paid for.
-\newline In this paper we present a scheme to create Sphinx headers in a decentralized way based on trusted third parties, while ensuring that these parties learn nothing about the destination or even the route itself. Having a decentralized scheme offers greater flexibility for real-world deployment and facilitates ongoing improvements of the technology and its features.  We argue that a decentralized approach will simplify the creation of anonymous credentials. 
+Mix network, or mixnet, is an overlay network of servers, called mixnodes, that prevent an adversary from correlating senders with receivers~\cite{chaum-mix,cypherpunk-remailer,piotrowska2017loopix,nym-network-whitepaper,danezis2003mixminion, van2015vuvuzela,mixmaster-spec,chaum2016cmix}. 
+Various techniques in mixnets are used in order to be resilient against a strong adversary who observes all inputs and outputs of the network, typically called a Global Passive Adversary (GPA). 
+First messages are routed via multiple mixnodes, before reaching the final destination. 
+Second, each message in mixnet spends a certain amount of time inside each mixnode before it being routed to the next mixnode. 
+Additionally messages are layered encrypted ensuring that each mixnode only knows its immediate predecessor and successor and therefore only the final mixnode in the path knows the final destination of a particular message.
+
+Typically, mixnets use the Sphinx packet format, introduced in 2003 by Danezis et al.\cite{sphinx}, for encrypting packets. 
+This format provides \textit{bit-wise unlinkability}, meaning an adversary cannot determine whether an output packet corresponds to an input packet based solely on its format. Sphinx is used in various Anonymous Communication Networks (ACNs), including Nym\cite{nym-network-whitepaper}, Katzenpost~\cite{infeld2025echomix}, and the Lightning Network~\cite{poon2016bitcoin}. 
+Sphinx packets are constructed by clients, who encode all the necessary routing information such as the IP addresses and keys. 
+While this simplifies routing, it opens the door for malicious clients to bias the routes and not follow the routing algorithm in order to reduce the overall anonymity provided by the mixnet~\cite{benguirat2022mixnet}. 
+Additionally, in systems like Nym, where users must pay a subscription fee to route messages for a specific application, users authenticate using anonymous credentials. However, nothing prevents them from using the network to route traffic for an unauthorized application they haven't paid for.
+
+In this paper we present a scheme to create Sphinx headers in a decentralized way based on trusted third parties, while ensuring that these parties learn nothing about the destination or even the route itself. 
+Having a decentralized scheme offers greater flexibility for real-world deployment and facilitates ongoing improvements of the technology and its features.  
+We argue that a decentralized approach will simplify the creation of anonymous credentials. 
+
 %
 Our work makes the following contributions:
 %
