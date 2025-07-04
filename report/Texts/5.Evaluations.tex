@@ -71,7 +71,8 @@ These results are presented in Fig.\ref{fig:chisquare}.
     \centering
     % \hspace*{-1cm}
     \includegraphics[width=1.\linewidth]{Images/proportion_dot.png}
-    \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over the fifteen NIST SP 800-22 statistical tests (significance level = $0.01$).}
+    \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over the fifteen NIST SP 800-22 statistical tests (significance level = $0.01$).
+    \newline - TODO bigger dot + change 'Non-periodic' name}
     \label{fig:proportion}
 \end{figure}
 
@@ -89,7 +90,8 @@ In contrast, our implementation successfully passes three tests that the origina
     \centering
     % \hspace*{-2cm}
     \includegraphics[width=1.\linewidth]{Images/hist_p-values.png}
-    \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.}
+    \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.
+    \newline - TODO: Change 'Nonperiodic' name}
     \label{fig:hist_p-values}
 \end{figure*}
 
@@ -104,7 +106,8 @@ Both were successful for our implementation, despite failing for the original Sp
     \centering
     % \hspace*{-1cm}
     \includegraphics[width=1.\linewidth]{Images/chisquare.png}
-    \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.}
+    \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.
+    \newline - TODO: Change 'Nonperiodic name}
     \label{fig:chisquare}
 \end{figure*}
 
@@ -128,14 +131,17 @@ In brief, the \textit{Frequency} evaluates the overall balance between zeros and
 while the \textit{Cummulative Sums} and \textit{Random Excursions} tests brings additional information about their repartition,
 and finally the \textit{Matching Template} tests look for excessive repetition of substrings.
 
-\subsection{Discussion - TO UPDATE}
-\todo[inline]{Update and develop the 'Discussion' subsection and then the 'Conclusion' with future work}
+
+\subsection{Discussion}
 
 In terms of computational complexity, our implementation is slower than the original Sphinx implementation. 
 However, in the context of a mixnet where inherent latency is already expected, this additional delay is likely acceptable.
 
-Regarding unlinkability (i.e. output randomness), our implementation performs slightly better than the original implementation, as it passes more statistical tests, as shown in Table \ref{tab:test_summary}. 
-Since the original Sphinx implementation is widely considered as secure, and assuming no specific vulnerabilities exist in our design, we can reasonably infer that our approach maintains a comparable level of security.
+Regarding unlinkability (i.e. output randomness), our decentralized implementation performs slightly better than the original implementation, as it passes a greater number of statistical tests, as summarized in Table~\ref{tab:test_summary}.
+The results suggest that both implementations may exhibit subtle patterns or hidden structure, as indicated by failures in the \textit{Random Excursions} and the  \textit{Non-overlapping Template Matching} tests. 
+This behavior could potentially comes from the underlying mathematical framework (e.g. elliptic curves), which is not inherently truly random.
+Nevertheless, our implementation demonstrates a better overall balance between ones and zeros, as reflected in the \textit{Frequency} and \textit{Cumulative Sums} test results.
+Given that the original Sphinx implementation is widely regarded as secure, and assuming no design flaws in our scheme, we can reasonably conclude that our approach achieves a comparable level of privacy.
 
 \begin{table}
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
@@ -168,22 +174,13 @@ Since the original Sphinx implementation is widely considered as secure, and ass
     }
 \end{table}
 
+At this stage, our decentralized scheme fulfills three out of our four main security and privacy objectives.
+First, the unlinkability property appears to be at least as good as the original Sphinx.
+Second, integrity protection is verified at each layer, similarly to the original Sphinx.
+Third, our scheme is designed to ensure that, as long as at least one TTP remains honest, colluding TTPs cannot learn any information about the route or the cryptographic secrets.
+The fourth core goal, verifiability of legitimate traffic at each node, has not yet been achieved since the generation, modification, and verification of credentials fall outside the scope of this paper and are left for future work.
 
-\todo[inline]{Come back to \ref{sec:sp-objectives} objectives and explain
-why they hold. If we have research questions from \ref{sec:related}, answer
-them. Summarize overheads impacts and discuss feasibility in the context of
-Nym.}
-\todo[inline]{Aurelien: It is quite difficult to refer to these objectives because the paper in this state does "half" of the work.
-We only decentralized the construction of the Sphinx header. 
-After that, we still need to provide the actual "credentials".
-It's just way easier to do it now since we can "verify/link" the credential with "partial destination" 
-(with the original implementation we would have to somehow verify/link this credential to a destination that have been encrypted under multiple layer.)}
-
-We have proposed a decentralized scheme that delegates the construction of the Sphinx header to a set of Trusted Third Parties (TTPs), ensuring that no single TTP can infer meaningful information from the computation, even in the case of collusion (if at least one party remains honest). 
-Since these TTPs directly access partial destination IP information, it becomes significantly easier to issue anonymous credentials for specific usages, while preventing users from cheating on their intended destinations.
-\todo[inline]{move to Conclusion and Future work}
-The detailed construction of such credentials, lies beyond the scope of this paper.
-
-Another future work is to evaluate the computational overhead introduced by the TTPs in comparison to the computational waste caused by malicious users in the original Sphinx implementation, in order to assess the overall trade-off.
-
-\todo[inline]{From our call 2025-06-10: \enquote{While it's computationally more complex, our schema does not allow the mixnet to be saturated by an attacker.}}
+To conclude, while our scheme introduces higher computational complexity compared to the original Sphinx, it maintains a reasonable polynomial bound, specifically a quadratic complexity.
+This makes it viable for real-world applications, especially considering the additional features it could enable.
+The decentralized design may simplify future implementation of advanced features, such as packet legitimacy verification at each node.
+This would allow unauthorized packets to be dropped earlier in the path, reducing computational wastes of itermediate nodes, improving the economic sustainability of such network.

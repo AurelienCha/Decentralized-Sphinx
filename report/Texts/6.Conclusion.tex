@@ -1,1 +1,10 @@
 \section{Conclusion}\label{sec:conclusion}
+
+We have proposed a decentralized scheme that delegates the construction of the Sphinx header to a set of Trusted Third Parties (TTPs), ensuring that no single TTP can infer meaningful information from the computation, even in the case of collusion (if at least one party remains honest). 
+Since these TTPs directly access partial destination IP information, it becomes significantly easier to issue anonymous credentials for specific usages, while preventing users from cheating on their intended destinations.
+
+The detailed construction of such credentials, lies beyond the scope of this paper.
+
+Another future work is to evaluate the computational overhead introduced by the TTPs in comparison to the computational waste caused by malicious users in the original Sphinx implementation, in order to assess the overall trade-off.
+
+\todo[inline]{From our call 2025-06-10: \enquote{While it's computationally more complex, our schema does not allow the mixnet to be saturated by an attacker.}}
