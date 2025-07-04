@@ -49,9 +49,9 @@ Therefore unlinkability can be approximated by assessing the statistical randomn
 
 For this purpose, we rely on the NIST SP 800-22 statistical test suite \cite{NIST-SP80022}, which consists of 15 tests designed to evaluate the quality of random number generators. 
 Each test produces a p-value representing how likely the data could be produced by a uniform source. 
-If the data are truly random, the distribution of p-values across many samples should itself follow a uniform distribution.
+If the data are truly random, the distribution of p-values across many samples must follow a uniform distribution.
 
-We compare the statistical results (with default paramaters) of our implementation with those of the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}}.
+We compare the statistical results (with default parameters) of our implementation with those of the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}}.
 All graphs presented in this section correspond to the results of the NIST statistical test suite applied to 20 distinct datasets.
 Each dataset is generated under a different setup configuration to assess the variability and robustness of our implementation.
 To generate a dataset, we simulate a network of 20 mixnodes and 3 trusted third parties (TTPs). 
@@ -63,7 +63,7 @@ To meet this requirement, generated headers are concatenated until the total len
 Each dataset contains 100 of those concatenated sequences.
 
 NIST outlines two approaches for interpreting the empirical results of its statistical test suite.
-The first assesses the proportion of sequences that pass each statistical test, as shown in Fig.\ref{fig:proportion}.
+The first evaluates the proportion of sequences that pass each statistical test, as shown in Fig.\ref{fig:proportion}.
 The second evaluates whether the distribution of p-values is statistically uniform, as would be expected from random sequences.
 These results are presented in Fig.\ref{fig:chisquare}.
 
@@ -95,12 +95,12 @@ In contrast, our implementation successfully passes three tests that the origina
     \label{fig:hist_p-values}
 \end{figure*}
 
-Figure \ref{fig:hist_p-values} presents the distribution of p-values obtained for each test.  
-This figure is intended solely for visual inspection.   
+Figure \ref{fig:hist_p-values} presents the distribution of p-values obtained for each test.
+This figure is intended solely for visual inspection.\todo{this is a weird sentence, either delete or explains further}
 A Chi-square test is performed on each of these histograms to assess their uniformity.
 The results are shown in Figure \ref{fig:chisquare}, with a significance threshold of $0.0001$ as recommended by the NIST guidelines.
 Two Chi-square results stand out: the \textit{Frequency} and \textit{Cumulative Sums} tests.  
-Both were successful for our implementation, despite failing for the original Sphinx implementation.
+Both were successful for our implementation, and failing for the original Sphinx implementation.
 
 \begin{figure*}[ht]
     \centering
@@ -135,13 +135,13 @@ and finally the \textit{Matching Template} tests look for excessive repetition o
 \subsection{Discussion}
 
 In terms of computational complexity, our implementation is slower than the original Sphinx implementation. 
-However, in the context of a mixnet where inherent latency is already expected, this additional delay is likely acceptable.
+However, in the context of a mixnet where inherent latency is already expected, this additional delay is likely acceptable.~\todo{also explains that our implementation is slower but also devided by multiple parties, however for the orginal sphinx packet is only the client}
 
-Regarding unlinkability (i.e. output randomness), our decentralized implementation performs slightly better than the original implementation, as it passes a greater number of statistical tests, as summarized in Table~\ref{tab:test_summary}.
+Regarding unlinkability (i.e. output randomness), our decentralized implementation performs better than the original implementation, as it passes a greater number of statistical tests, as summarized in Table~\ref{tab:test_summary}.
 The results suggest that both implementations may exhibit subtle patterns or hidden structure, as indicated by failures in the \textit{Random Excursions} and the  \textit{Non-overlapping Template Matching} tests. 
 This behavior could potentially comes from the underlying mathematical framework (e.g. elliptic curves), which is not inherently truly random.
 Nevertheless, our implementation demonstrates a better overall balance between ones and zeros, as reflected in the \textit{Frequency} and \textit{Cumulative Sums} test results.
-Given that the original Sphinx implementation is widely regarded as secure, and assuming no design flaws in our scheme, we can reasonably conclude that our approach achieves a comparable level of privacy.
+Given that the original Sphinx implementation is widely regarded as secure, and assuming no design flaws in our scheme, we can reasonably conclude that our approach achieves a comparable level of privacy. ~\todo{this last sentence is dangerous, reviewers will easily attack it as this is not how we do security. It's better to say this is a first step but thorgough security analysis is needed (but we leave it for future work)}
 
 \begin{table}
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
@@ -178,9 +178,9 @@ At this stage, our decentralized scheme fulfills three out of our four main secu
 First, the unlinkability property appears to be at least as good as the original Sphinx.
 Second, integrity protection is verified at each layer, similarly to the original Sphinx.
 Third, our scheme is designed to ensure that, as long as at least one TTP remains honest, colluding TTPs cannot learn any information about the route or the cryptographic secrets.
-The fourth core goal, verifiability of legitimate traffic at each node, has not yet been achieved since the generation, modification, and verification of credentials fall outside the scope of this paper and are left for future work.
+The fourth core goal, verifiability of legitimate traffic at each node, has not yet been achieved since the generation, modification, and verification of credentials fall outside the scope of this paper and are left for future work.~\todo{rephrase the entire paragraph, just say we acheived 1, 2, 3. Then say future work include (we will pretend that linking a credential to a the packet was not our objetif)}
 
-To conclude, while our scheme introduces higher computational complexity compared to the original Sphinx, it maintains a reasonable polynomial bound, specifically a quadratic complexity.
+While our scheme introduces higher computational complexity compared to the original Sphinx, it maintains a reasonable polynomial bound, specifically a quadratic complexity.
 This makes it viable for real-world applications, especially considering the additional features it could enable.
-The decentralized design may simplify future implementation of advanced features, such as packet legitimacy verification at each node.
-This would allow unauthorized packets to be dropped earlier in the path, reducing computational wastes of itermediate nodes, improving the economic sustainability of such network.
+The decentralized design simplifies future implementation of advanced features, such as packet legitimacy verification at each node and preventing users from biasing routes.
+
