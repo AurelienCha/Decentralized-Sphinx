@@ -96,7 +96,6 @@ In contrast, our implementation successfully passes three tests that the origina
 \end{figure*}
 
 Figure \ref{fig:hist_p-values} presents the distribution of p-values obtained for each test.
-This figure is intended solely for visual inspection.\todo{this is a weird sentence, either delete or explains further}
 A Chi-square test is performed on each of these histograms to assess their uniformity.
 The results are shown in Figure \ref{fig:chisquare}, with a significance threshold of $0.0001$ as recommended by the NIST guidelines.
 Two Chi-square results stand out: the \textit{Frequency} and \textit{Cumulative Sums} tests.  
@@ -134,8 +133,10 @@ and finally the \textit{Matching Template} tests look for excessive repetition o
 
 \subsection{Discussion}
 
-In terms of computational complexity, our implementation is slower than the original Sphinx implementation. 
-However, in the context of a mixnet where inherent latency is already expected, this additional delay is likely acceptable.~\todo{also explains that our implementation is slower but also devided by multiple parties, however for the orginal sphinx packet is only the client}
+In terms of computational complexity, our implementation is slower than the original Sphinx implementation.
+However, most of the additional computational workload is distributed among the TTPs, which operate in parallel. 
+Given that mixnets inherently tolerate some latency, this overhead is likely acceptable in practice.
+
 
 Regarding unlinkability (i.e. output randomness), our decentralized implementation performs better than the original implementation, as it passes a greater number of statistical tests, as summarized in Table~\ref{tab:test_summary}.
 The results suggest that both implementations may exhibit subtle patterns or hidden structure, as indicated by failures in the \textit{Random Excursions} and the  \textit{Non-overlapping Template Matching} tests. 
