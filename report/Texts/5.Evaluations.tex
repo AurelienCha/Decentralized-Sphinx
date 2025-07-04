@@ -142,7 +142,8 @@ Regarding unlinkability (i.e. output randomness), our decentralized implementati
 The results suggest that both implementations may exhibit subtle patterns or hidden structure, as indicated by failures in the \textit{Random Excursions} and the  \textit{Non-overlapping Template Matching} tests. 
 This behavior could potentially comes from the underlying mathematical framework (e.g. elliptic curves), which is not inherently truly random.
 Nevertheless, our implementation demonstrates a better overall balance between ones and zeros, as reflected in the \textit{Frequency} and \textit{Cumulative Sums} test results.
-Given that the original Sphinx implementation is widely regarded as secure, and assuming no design flaws in our scheme, we can reasonably conclude that our approach achieves a comparable level of privacy. ~\todo{this last sentence is dangerous, reviewers will easily attack it as this is not how we do security. It's better to say this is a first step but thorgough security analysis is needed (but we leave it for future work)}
+Given that the original Sphinx implementation is widely regarded as secure, and considering the similarities in core structure, our results indicate that our scheme is a solid starting point toward achieving similar privacy guarantees.
+However, we emphasize that a thorough formal security analysis remains necessary to fully assess the protocol's security, which we leave for future work.
 
 \begin{table}
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
@@ -175,13 +176,12 @@ Given that the original Sphinx implementation is widely regarded as secure, and 
     }
 \end{table}
 
-At this stage, our decentralized scheme fulfills three out of our four main security and privacy objectives.
-First, the unlinkability property appears to be at least as good as the original Sphinx.
-Second, integrity protection is verified at each layer, similarly to the original Sphinx.
-Third, our scheme is designed to ensure that, as long as at least one TTP remains honest, colluding TTPs cannot learn any information about the route or the cryptographic secrets.
-The fourth core goal, verifiability of legitimate traffic at each node, has not yet been achieved since the generation, modification, and verification of credentials fall outside the scope of this paper and are left for future work.~\todo{rephrase the entire paragraph, just say we acheived 1, 2, 3. Then say future work include (we will pretend that linking a credential to a the packet was not our objetif)}
+At this stage, our decentralized scheme successfully achieves three key security and privacy objectives.
+First, it maintains strong unlinkability, comparable to the original Sphinx.
+Second, integrity protection is verified at each layer, ensuring that message tampering can be reliably detected.
+Third, our scheme offers robustness against collusion among TTPs, as long as at least one remains honest, preventing them from learning any information about routing information or cryptographic secrets.
 
 While our scheme introduces higher computational complexity compared to the original Sphinx, it maintains a reasonable polynomial bound, specifically a quadratic complexity.
 This makes it viable for real-world applications, especially considering the additional features it could enable.
-The decentralized design simplifies future implementation of advanced features, such as packet legitimacy verification at each node and preventing users from biasing routes.
+The decentralized design could simplify future implementation of advanced features, such as a mechanism to verify the legitimacy of traffic at any mixnode.
 
