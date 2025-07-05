@@ -10,26 +10,22 @@ Typically, mixnets use the Sphinx packet format, introduced in 2003 by Danezis e
 This format provides \textit{bit-wise unlinkability}, meaning an adversary cannot determine whether an output packet corresponds to an input packet based solely on its format. Sphinx is used in various Anonymous Communication Networks (ACNs), including Nym\cite{nym-network-whitepaper}, Katzenpost~\cite{infeld2025echomix}, and the Lightning Network~\cite{poon2016bitcoin}. 
 Sphinx packets are constructed by clients, who encode all the necessary routing information such as the IP addresses and keys. 
 While this simplifies routing, it opens the door for malicious clients to bias the routes and not follow the routing algorithm in order to reduce the overall anonymity provided by the mixnet~\cite{benguirat2022mixnet}. 
-Additionally, in systems like Nym, where users must pay a subscription fee to route messages for a specific application, users authenticate using anonymous credentials. However, nothing prevents them from using the network to route traffic for an unauthorized application they haven't paid for.
+Additionally, in systems like Nym, where users must pay a subscription fee to route messages for a specific application, users authenticate using anonymous credentials. However, nothing prevents them from using the network to route traffic for an unauthorized application they have not paid for.
 
 In this paper we present a scheme to create Sphinx headers in a decentralized way based on trusted third parties, while ensuring that these parties learn nothing about the destination or even the route itself. 
 Having a decentralized scheme offers greater flexibility for real-world deployment and facilitates ongoing improvements of the technology and its features.  
 We argue that a decentralized approach will simplify the creation of anonymous credentials. 
 
-%
 Our work makes the following contributions:
-%
 \begin{itemize}
-%
   \item We propose a decentralized approach to Sphinx header construction;
-%
-  \item We evaluate the unlinkability property of our decentralized construction by analyzing the randomness of the headers using the 15 NIST SP 800-22 statistical test suite. We show that our construction pass all the tests that the original Sphinx packets pass. Additionally it succeeds in 3 tests where the original Sphinx packet format fails.
-\todo{statement on performance? Elliptic curve Multiplication (Original sphinx vs Ours)}
-%
-  \item We provide an conceptual implementation of our header construction
-to support a comprehensive evaluation of our approach in Nym or other
-mixnets.
-%
+
+  \item We provide a python implementation of our header construction to support a comprehensive evaluation of our approach in Nym or other mixnets;
+
+  \item We evaluate the unlinkability property of our decentralized construction by analyzing the randomness of the headers using the NIST SP 800-22 statistical test suite. 
+  We show that our construction pass all the tests that the original Sphinx packets pass. 
+  Additionally it succeeds in three tests where the original Sphinx packet format fails.
+  \todo{statement on performance? Elliptic curve Multiplication (Original sphinx vs Ours)}
 \end{itemize}
 
 In the following, we present related work and motivation in
