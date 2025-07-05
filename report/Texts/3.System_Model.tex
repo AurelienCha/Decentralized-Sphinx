@@ -5,10 +5,7 @@ In this section, we present our system model and threat model, and outline the p
 \subsection{System Model}
 
 \todo[color=pink]{Do you keep some mixnet explanation in Introduction ? If no I should add some additional content (e.g. difference with Tor)}
-% Mix network, or mixnet,  that prevent an adversary from correlating senders with receivers~\cite{chaum-mix,cypherpunk-remailer,piotrowska2017loopix,nym-network-whitepaper,danezis2003mixminion, van2015vuvuzela,mixmaster-spec,chaum2016cmix}. 
-% They achieve this by adding delays to messages inside the different mixnodes in order to mitigate timing analysis attacks. 
-% Additionally, unlike Tor~\cite{onion-routing96} where all packets sent by a user follow the same path for the entire session (circuit-based), in mixnets each packet follows a different routing routing path (packet-based). 
-A mixnet is an overlay network of servers known as mixnodes, which are arranged in sequential layers, as illustrated in Figure~\ref{fig:mixnet}. 
+A mixnet is a network of servers known as mixnodes, which are arranged in sequential layers, as illustrated in Figure~\ref{fig:mixnet}. 
 Thereby, each packet traverses a fixed, predetermined number of mixnodes. 
 It enters the network via an entry node, is relayed through intermediate nodes in successive layers, and exits through an exit node. 
 Each mixnode reorders and delays packets before forwarding them to the next layer, thereby obfuscating any direct correspondence between input and output. 
@@ -38,7 +35,7 @@ To address this, we propose a decentralized construction of Sphinx headers invol
 This decentralized could enable TTPs to update credentials and/or zero-knowledge proofs in accordance with the layered encrypted header, to be verifiable any mixnodes on the route.  
 As a result, mixnodes could early discard unauthorized traffic before it consumes significant resources.
 However the credential issuance, modification, and verification are outside the scope of this paper and are left for future work.
-We assume that clients already possess valid credentials that authorize them to access specific services. \todo{Aure: last sentence useless ?}
+
 
 To summarize, as illustrated in Figure~\ref{fig:overall_schema}, our model involves three types of entities: the Client, a set of Trusted Third Parties (TTPs), and the Mixnet.
 The client is considered as potentially malicious.
