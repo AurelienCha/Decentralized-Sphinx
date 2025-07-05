@@ -1,8 +1,4 @@
 \section{Evaluation}\label{sec:eval}
-\todo[inline, color=pink]{
-    Change 'Non-periodic Template Matching' to 'Non-overlapping Template Matching' in all figures.
-    NIST uses the first name in their code, and the second name in their documentation.
-}
 
 Our prototype implementation is available on \href{https://github.com/AurelienCha/Decentralized-Sphinx}{GitHub}\footnote{\url{https://github.com/AurelienCha/Decentralized-Sphinx}}.
 The implementation is written in Python 3.13 using the \href{https://pypi.org/project/ECPy/}{ECPy}\footnote{\url{https://pypi.org/project/ECPy/}} library for elliptic curve operations. 
@@ -71,8 +67,7 @@ These results are presented in Fig.\ref{fig:chisquare}.
     \centering
     % \hspace*{-1cm}
     \includegraphics[width=1.\linewidth]{Images/proportion_dot.png}
-    \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over the fifteen NIST SP 800-22 statistical tests (significance level = $0.01$).
-    \newline - TODO bigger dot + change 'Non-periodic' name}
+    \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over the fifteen NIST SP 800-22 statistical tests (significance level = $0.01$).}
     \label{fig:proportion}
 \end{figure}
 
@@ -90,8 +85,7 @@ In contrast, our implementation successfully passes three tests that the origina
     \centering
     % \hspace*{-2cm}
     \includegraphics[width=1.\linewidth]{Images/hist_p-values.png}
-    \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.
-    \newline - TODO: Change 'Nonperiodic' name}
+    \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.}
     \label{fig:hist_p-values}
 \end{figure*}
 
@@ -105,8 +99,7 @@ Both were successful for our implementation, and failing for the original Sphinx
     \centering
     % \hspace*{-1cm}
     \includegraphics[width=1.\linewidth]{Images/chisquare.png}
-    \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.
-    \newline - TODO: Change 'Nonperiodic name}
+    \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.}
     \label{fig:chisquare}
 \end{figure*}
 

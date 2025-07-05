@@ -6,7 +6,7 @@ NIST_TEST_NAME = {
     'LongestRun': '   Longest Run',      
     'Rank': '   Rank', 
     'FFT': '  Discrete Fourier Transform', 
-    'NonOverlappingTemplate': '  Nonperiodic Template Matchings', 
+    'NonOverlappingTemplate': '  Non-overlapping Template Matchings', 
     'OverlappingTemplate': '  Overlapping Template Matchings', 
     'Universal': '  Universal Statistical', 
     'ApproximateEntropy': ' Approximate Entropy', 
@@ -220,7 +220,7 @@ def plot_proportion_dot(df, colors={'decentralized': 'steelblue', 'original': 'd
 
     d = df[['TEST','PROPORTION','Algo']].groupby(['TEST','Algo']).mean()
     d = d.reset_index()
-    g = sns.relplot(data=d, x='TEST', y='PROPORTION', hue='Algo', palette=colors, alpha=0.7)
+    g = sns.relplot(data=d, x='TEST', y='PROPORTION', hue='Algo', palette=colors, alpha=0.6, s=40)
     g._legend.remove()
     plt.legend(loc='lower right')
     plt.xticks(rotation=45, ha='right')
