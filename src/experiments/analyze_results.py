@@ -6,8 +6,8 @@ NIST_TEST_NAME = {
     'LongestRun': '   Longest Run',      
     'Rank': '   Rank', 
     'FFT': '  Discrete Fourier Transform', 
-    'NonOverlappingTemplate': '  Non-overlapping Template Matchings', 
-    'OverlappingTemplate': '  Overlapping Template Matchings', 
+    'NonOverlappingTemplate': '  Non-overlapping Matchings', 
+    'OverlappingTemplate': '  Overlapping Matchings', 
     'Universal': '  Universal Statistical', 
     'ApproximateEntropy': ' Approximate Entropy', 
     'RandomExcursions': ' Random Excursions',
@@ -124,7 +124,7 @@ def plot_pvalue(df, colors={'decentralized': 'steelblue', 'original': 'darkorang
 
 def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
     fig, ax = plt.subplots(5, 3, figsize=(15, 10), sharex=True, sharey=True)
-    fig.subplots_adjust(hspace=0.4)
+    fig.subplots_adjust(hspace=0.1, wspace=0.05)
 
     # Group data
     mean_df = df[['TEST', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'Algo']].groupby(['TEST', 'Algo']).agg('sum')
@@ -149,18 +149,26 @@ def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'dar
         sns.histplot(
             data=plot_df, ax=ax[row, col], x="p-value", hue="Algo", palette=colors,
             bins=10, binrange=(0, 1),
-            alpha=.1, element="step", stat="density", common_norm=False,
+            alpha=.3, element="step", stat="density", common_norm=False,
             legend=False,  # Disable subplot legend
         )
-        ax[row, col].text(0.5, 1.3, test, ha='center', size=15)  # Centered title
+        ax[row, col].text(0.5, 1.25, test, ha='center', size=18)  # Centered title
         # ax[row, col].axhline(y=1., color='gray', linestyle='--', linewidth=1)
         sns.despine(ax=ax[row, col])
 
     # Global axis labels and ticks
     for a in ax.flatten():
         a.set_ylim(0, 1.5)
+        a.set_yticks([0, 1])
+        a.tick_params(axis='y', labelsize=15)
+        a.set_ylabel('')
         a.set_xlim(0, 1)
-        a.set_xticks([i * 0.2 for i in range(6)])
+        a.set_xticks([0, 1])
+        a.set_xlabel('')
+        a.tick_params(axis='x', labelsize=15)
+
+    fig.text(0.08, 0.48, 'Density', va='center', rotation='vertical', fontsize=17)
+    fig.text(0.5, 0.06, 'P-value', ha='center', rotation='horizontal', fontsize=17)
 
     # Create a common legend
     handles, labels = ax[0, 0].get_legend_handles_labels()
@@ -168,9 +176,7 @@ def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'dar
     d = Patch(facecolor=colors['decentralized'], edgecolor=colors['decentralized'], label='decentralized', alpha=.3)
     e = Patch(facecolor=colors['original'], edgecolor=colors['original'], label='original', alpha=0.3, linewidth=1.5)
 
-    plt.legend(handles=[d,e], loc='lower right')
-    # fig.text(0.5, 0.04, 'p-value', ha='center')  # Common x-label
-    # fig.tight_layout(rect=[0, 0.03, 1, 0.95])    # Adjust for legend space
+    plt.legend(handles=[d,e], loc='lower right', prop={'size': 17}, labelspacing=0.3, borderpad=0.3, borderaxespad=0.5)  
 
     plt.savefig('src/experiments/results/hist_p-values.png')
     plt.show()
@@ -222,7 +228,7 @@ def plot_proportion_dot(df, colors={'decentralized': 'steelblue', 'original': 'd
     d = d.reset_index()
     g = sns.relplot(data=d, x='TEST', y='PROPORTION', hue='Algo', palette=colors, alpha=0.6, s=40)
     g._legend.remove()
-    plt.legend(loc='lower right')
+    plt.legend(loc='lower right', fontsize=12)
     plt.xticks(rotation=45, ha='right')
     plt.xlabel('')
     plt.ylabel('Proportion')
@@ -259,6 +265,7 @@ def plot_proportion_dot(df, colors={'decentralized': 'steelblue', 'original': 'd
 
 def plot_chisquare(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
 
+    plt.figure(figsize=(8, 5)) 
     size = len(df)/30
     df = df[['TEST', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10','Algo']]
     df = df.groupby(['TEST','Algo']).sum().reset_index()
@@ -270,7 +277,7 @@ def plot_chisquare(df, colors={'decentralized': 'steelblue', 'original': 'darkor
         resultat.append([test, algo, chi_square[0], chi_square[1]])
         
     df = pd.DataFrame(resultat, columns=['TEST', 'Algo', 'STATISTIC', 'P-VALUE'])
-    ax = sns.barplot(data=df, x='TEST', y='P-VALUE', hue='Algo', palette=colors, alpha=0.7)
+    ax = sns.barplot(data=df, x='TEST', y='P-VALUE', hue='Algo', palette=colors, alpha=0.7, gap=0, width=0.85)
     plt.axhline(y=0.0001, color='red', linestyle=':', linewidth=1)
     plt.xticks(rotation=45, ha='right')
     plt.ylabel('P-value')
@@ -279,7 +286,7 @@ def plot_chisquare(df, colors={'decentralized': 'steelblue', 'original': 'darkor
 
     handles, labels = plt.gca().get_legend_handles_labels()
     threshold_line = Line2D([0], [0], color='red', linestyle=':', linewidth=1)
-    plt.legend(handles + [threshold_line], labels + ['threshold'], loc='lower right', fontsize=15)
+    plt.legend(handles + [threshold_line], labels + ['threshold'], loc='lower right', fontsize=12)
 
     sns.despine()
     plt.tight_layout()

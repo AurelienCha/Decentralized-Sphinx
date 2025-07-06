@@ -66,9 +66,8 @@ These results are presented in Fig.\ref{fig:chisquare}.
 
 \begin{figure}
     \centering
-    % \hspace*{-1cm}
     \includegraphics[width=1.\linewidth]{Images/proportion_dot.png}
-    \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over the fifteen NIST SP 800-22 statistical tests (significance level = $0.01$).}
+    \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over the fifteen NIST SP 800-22 statistical tests (significance level = 0.01).}
     \label{fig:proportion}
 \end{figure}
 
@@ -79,16 +78,15 @@ $$
 $$
 where $ m $ denotes the number of samples.
 
-Our implementation fails only three tests: \textit{Non-overlapping Template Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
-In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Template Matching}.
+Our implementation fails only three tests: \textit{Non-overlapping Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
+In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Matching}.
 
-\begin{figure*}[ht]
+\begin{figure}%[ht]
     \centering
-    % \hspace*{-2cm}
     \includegraphics[width=1.\linewidth]{Images/hist_p-values.png}
     \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.}
     \label{fig:hist_p-values}
-\end{figure*}
+\end{figure}
 
 Figure \ref{fig:hist_p-values} presents the distribution of p-values obtained for each test.
 A Chi-square test is performed on each of these histograms to assess their uniformity.
@@ -96,18 +94,17 @@ The results are shown in Figure \ref{fig:chisquare}, with a significance thresho
 Two Chi-square results stand out: the \textit{Frequency} and \textit{Cumulative Sums} tests.  
 Both were successful for our implementation, and failing for the original Sphinx implementation.
 
-\begin{figure*}[ht]
+\begin{figure}%[ht]
     \centering
-    % \hspace*{-1cm}
     \includegraphics[width=1.\linewidth]{Images/chisquare.png}
     \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.}
     \label{fig:chisquare}
-\end{figure*}
+\end{figure}
 
 To better interpret our results, we begin with a brief overview of the specific NIST SP 800-22 tests involved (for further definitions, see the NIST documentation \cite{NIST-SP80022}).
 The \textit{Frequency} test evaluates the proportion of zeros and ones across the entire sequence. 
 It determines whether the number of ones and zeros is approximately equal, as expected in a truly random sequence. 
-The \textit{Template Matching} tests examine how often predefined m-bit binary patterns appear within the sequence (by default $ m = 9 $). 
+The \textit{Matching} tests examine how often predefined m-bit binary patterns appear within the sequence (by default $ m = 9 $). 
 These tests aim to detect excessive repetitions of specific aperiodic patterns that could indicate some hidden structure.
 In the \textit{Overlapping} version, a sliding window of $ m $ bits is shifted from a single bit at each step, allowing overlapping matches.
 In the \textit{Non-overlapping} version, the window shifts from $ m $ bits in case of matching, avoiding overlapping matches.
@@ -122,8 +119,7 @@ The \textit{Random Excursions Variant} test instead counts the total number of t
 
 In brief, the \textit{Frequency} evaluates the overall balance between zeros and ones, 
 while the \textit{Cummulative Sums} and \textit{Random Excursions} tests brings additional information about their repartition,
-and finally the \textit{Matching Template} tests look for excessive repetition of substrings.
-
+and finally the \textit{Matching} tests look for excessive repetition of substrings.
 
 \subsection{Discussion}
 
@@ -133,7 +129,7 @@ Given that mixnets inherently tolerate some latency, this overhead is likely acc
 
 
 Regarding unlinkability (i.e. output randomness), our decentralized implementation performs better than the original implementation, as it passes a greater number of statistical tests, as summarized in Table~\ref{tab:test_summary}.
-The results suggest that both implementations may exhibit subtle patterns or hidden structure, as indicated by failures in the \textit{Random Excursions} and the  \textit{Non-overlapping Template Matching} tests. 
+The results suggest that both implementations may exhibit subtle patterns or hidden structure, as indicated by failures in the \textit{Random Excursions} and the  \textit{Non-overlapping Matching} tests. 
 This behavior could potentially comes from the underlying mathematical framework (e.g. elliptic curves), which is not inherently truly random.
 Nevertheless, our implementation demonstrates a better overall balance between ones and zeros, as reflected in the \textit{Frequency} and \textit{Cumulative Sums} test results.
 Given that the original Sphinx implementation is widely regarded as secure, and considering the similarities in core structure, our results indicate that our scheme is a solid starting point toward achieving similar privacy guarantees.
@@ -157,8 +153,8 @@ However, we emphasize that a thorough formal security analysis remains necessary
     Longest Run                     & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
     Rank                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
     Discrete Fourier Transform      & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-    Non-overlapping Template Match.  & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
-    Overlapping Template Match.  & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
+    Non-overlapping Matchings       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+    Overlapping Matchings           & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
     Universal Statistical           & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
     Approximate Entropy             & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
     Random Excursions               & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
