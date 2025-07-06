@@ -196,12 +196,13 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-  \todo[color=red, inline]{To update}
-  We propose a decentralized scheme that prevent mixnets users from sending traffic that does not match the service provider of an anonymous credential.
-  Our scheme is of direct use in the Nym network where users construct an anonymous credential given they receive a certificate of them paying for that service provider. 
-  Our scheme prevent users from cheating by using a credential for a free service and send traffic for a paid service. 
-  Our solution works even if the majority of the third parties collude. 
-  Finally we evaluate the performance of our solution.
+  We propose a decentralized variant of the Sphinx packet format, distributing header construction across multiple Trusted Third Parties (TTPs), assumed to be honest-but-curious, meaning they follow the protocol but may attempt to collude to infer routing paths or cryptographic secrets. 
+  As a core component in anonymous communication systems like mixnets, Sphinx benefits from decentralization, which enhances deployment flexibility and enables new privacy-preserving features. 
+  In particular, it paves the way for privacy-preserving mechanisms that could verify the legitimacy of packets at any hop, enabling early rejection of unauthorized traffic without compromising privacy.
+  We implemented our scheme in Python and evaluated unlinkability by applying the NIST SP 800-22 statistical test suite to the generated headers. 
+  While our approach introduces moderate overhead compared to the original Sphinx, the latency remains acceptable in the mixnet setting. 
+  Experimental results suggest our scheme achieves comparable unlinkability property, passing slightly more statistical tests than the original Sphinx format.
+  This work represents a first step toward decentralized anonymous communication, with future directions including packet legitimacy enforcement and decentralized route selection.
 \end{abstract}
 
 %%
