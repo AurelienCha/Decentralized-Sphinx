@@ -26,7 +26,12 @@ The overall decentralized scheme is illustrated in Figure~\ref{fig:overall_schem
 \begin{figure}
     \centering
     \resizebox{1.\linewidth}{!}{\input{schema/schema_overview.tex}}
-    \caption{Overview of the decentralized scheme - TODO: add key word in schema + briefly steps (i) in caption description}
+    \caption{Overview of the decentralized scheme. 
+    (1) The client selects a route and generates cryptographic secrets. 
+    (2) These are split into shares and sent to TTPs. 
+    (3) Each TTP constructs a partial header. 
+    (4) The client aggregates them into a final header. 
+    (5) The message is sent through the mixnet.}
     \label{fig:overall_schema}
 \end{figure}
 
