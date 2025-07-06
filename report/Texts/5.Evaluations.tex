@@ -37,11 +37,12 @@ A deeper analysis of how many TTPs are needed to ensure a desired level of trust
 
 
 \subsection{Unlinkability Evaluation}
-Quantifying unlinkability is inherently challenging. 
-In Loopix~\cite{piotrowska2017loopix}, the authors introduced a probabilistic metric \textit{expected difference in likelihood} in order to quantify the \textit{sender-receiver third-party unlinkability}. 
-However this relies on network simulation and does not quantify the unlinkability between packets, meaning under an adversary who is trying to correlate incoming and outgoing packets through cryptanalysis. 
-Therefore unlinkability can be approximated by assessing the statistical randomness of the headers.
-\todo[inline, color=yellow]{rephrasing 2 last sentences ?}
+Quantifying unlinkability remains a fundamental challenge in anonymous communication systems.
+In Loopix~\cite{piotrowska2017loopix}, the authors introduce a probabilistic metric called the \textit{expected difference in likelihood} to evaluate \textit{sender-receiver third-party unlinkability}.
+However, this approach relies on network simulations and specifically assesses the likelihood that a given packet originated from a particular client.
+In contrast, our focus is on unlinkability at the mixnode level, meaning the difficulty for a Global Passive Adversary (GPA) to correlate an incoming packet with its corresponding outgoing packet through cryptanalysis.
+Thereby, assuming that greater randomness hinders correlation, we evaluate the statistical randomness of packet headers to approximate this form of unlinkability.
+
 
 For this purpose, we rely on the NIST SP 800-22 statistical test suite \cite{NIST-SP80022}, which consists of 15 tests designed to evaluate the quality of random number generators. 
 Each test produces a p-value representing how likely the data could be produced by a uniform source. 
