@@ -9,10 +9,10 @@ Specifically, we require a mapping from integers to curve points, noted \Map{}, 
 such that $\InverseMap{\Map{x}} = x$ where $x$ is an integer.
 
 Traditional methods achieve this by directly mapping integers to the x-coordinates of points on the curve. 
-However, this approach could leaks information by introducing bias since nearby integers result in nearby points.
+However, this approach could leak information by introducing bias since nearby integers result in nearby points.
 
 To address this, we adopt Elligator~\cite{bernstein2013elligator}, which offers stronger privacy guarantees. 
-Unlike the traditional approach, Elligator produces a uniformly distributed output which is computationally indistinguishable from truly random curve points. 
+Unlike the traditional approach, Elligator produces a uniformly distributed output which is computationally indistinguishable from a random curve point. 
 This uniformity is in line with our objectives of preserving anonymity and avoiding linkability. 
 
 \subsection{Protocol description}
@@ -62,9 +62,9 @@ Every entity (clients, mixnodes, and TTPs) must run the setup phase to ensure th
 
 To achieve synchronized and deterministic generators across the system, we derive them from a common seed. 
 This seed is computed as the hash of the current timestamp, truncated to the chosen refresh interval. 
-To produce \textit{independent} generators, we simply increment the seed since Elligator already provides a uniform (i.e. pseudo-random) integers to points mapping.
+We simply increment the seed to produce \textit{independent} generators since Elligator already provides a uniform (i.e. pseudo-random) integers to points mapping.
 
-A subtlety with Elligator is that it can map integers to points outside of the base generator's subgroup.
+A subtlety with Elligator is that it may map integers to points outside of the base generator's subgroup.
 To ensure that points remain in the generator subgroup, an extra step is required to \textit{clear the cofactor} by multiplying the resulting point by the cofactor (Curve25519's cofactor is $ 8 $).
 
 \noindent The final formula for generating the $ j^{th} $ chunk’s generator is:
@@ -105,7 +105,7 @@ ensuring that each cryptographic element $ \A{i} $ remains unlinkable across mix
 The IP addresses of the mixnodes and the destination are padded with random bits
 then mapped to elliptic curve points using Elligator, allowing later recovery of these addresses.
 Both the resulting IP points and the shared secrets are split into shares and distributed to $ m $ different TTPs. 
-In addition, the client send the hash of each shared secret to these TTPs. % for integrity
+In addition, the client sends the hash of each shared secret to these TTPs. % for integrity
 
 Each TTP then independently computes a partial header from the received shares and returns it to the client. 
 The client aggregates these partial headers by performing chunk-wise point additions to reconstruct the complete encrypted header.
@@ -123,11 +123,11 @@ They receive from the client:
     \item the hash of each shared secrets (integers noted $ \sHashed{i} $).
 \end{itemize}
 
-The TTP constructs a partial encrypted header by layering routing information in reverse path order, starting from the last mixnode, as illustrated by Figure \ref{fig:chunked_schema}.
+The TTP constructs a partial encrypted header by layering the routing information in reverse order along the path, starting from the last mixnode, as illustrated by Figure \ref{fig:chunked_schema}.
 
 At each layer, two new chunks are introduced: the mixnode’s address (\N{i}) and the integrity tag (\C{i}).  
 To preserve a fixed-length header while allowing mixnodes to reverse the operation (as in the original design), four additional \emph{filler chunks} are appended.  
-These filler chunks are carefully computed such that at each layer, after applying the corresponding masking points (\sG{i}{j}\hspace{-1mm}), the last two chunks cancel out and become identity point (i.e. point at infinity).  
+These filler chunks are computed in such a way that at each layer, after applying the corresponding masking points (\sG{i}{j}\hspace{-1mm}), the last two chunks cancel out and become the identity point (i.e. point at infinity).  
 This mechanism allows these two chunks to be safely truncated at each layer, ensuring a consistent header size while preserving reversibility for mixnodes.
 
 To initialize the header, the TTP encrypts the destination point using the shared secret of the last mixnode and append the required filler chunks. 
@@ -175,7 +175,7 @@ Since TTPs are aware of these pseudo-random weights, omitting this offset would 
 \end{equation}
 
 When the first layer is finally computed, it is appended with the integrity tag \C{1} and the first mixnode’s point $ N_1 $.
-Finally, the TTP returns the constructed partial header to the client.
+Finally, the TTP returns the resulting partial header to the client.
 
 \begin{figure}[H]
     \centering
@@ -186,8 +186,8 @@ Finally, the TTP returns the constructed partial header to the client.
 
 
 \paragraph{\textbf{Security Note.}}\label{note:security_why_indep_generators}
-To preserve unlinkability, it is essential that the generators $ (\G{1}, \dots, \G{7}) $ are \textit{independent}, meaning that their scalar relationships are unknown and cannot be derived.
-If the same generator \G{} were used across chunks (or their scalar relationships known), an adversary could compute the chunk-wise difference between consecutive layers: $ \B{i}{j} - \B{i+1}{j} = \sG{i}{} $.
+To preserve unlinkability, it is essential that the generators $ (\G{1}, \dots, \G{7}) $ are \textit{independent}, meaning their scalar relationships are unknown and computationally infeasible to derive.
+If the same generator \G{} were used across chunks (or their scalar relationships known), an adversary could compute chunk-wise difference between consecutive layers: $ \B{i}{j} - \B{i+1}{j} = \sG{i}{} $.
 Since the shared secret \s{i} remains consistent within a layer, the resulting differences would reveal a predictable pattern (uniform or preserved scalar relationships).
 This consistency could allow an adversary to correlate incoming and outgoing packets at a mixnode, thereby breaking the unlinkability property.
 Using independent generators for each chunk prevents such correlations and is therefore critical to the protocol's security.  
@@ -233,7 +233,7 @@ As in the client's step, it is computed using the $y$-coordinates of both \A{i} 
 \A{i+1} = \text{hash}({\A{i}}_y \ \| \ {\S{i}}_y) \ \A{i}
 \label{eq:update_alpha}
 \end{equation}
-Finally, the mixnode forwards the updated header (\A{i+1}, \C{i+1}, \B{i+1}{}) to the next node.
+Finally, the mixnode forwards the updated header (\A{i+1}, \C{i+1}, \B{i+1}{}) to the next mixnode in the path.
 
 \begin{figure}[H]
     \centering
