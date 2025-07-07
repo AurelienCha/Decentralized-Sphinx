@@ -2,28 +2,26 @@
 
 We have proposed a decentralized scheme that delegates the construction of Sphinx headers to a set of Trusted Third Parties (TTPs). 
 This design ensures that TTPs cannot infer any information about the route or cryptographic secrets, even when colluding, provided that at least one TTP remains honest.
-To evaluate our approach, we developed a Python implementation and performed a series of statistical randomness tests to assess the unlinkability of our Sphinx packets. 
-The results demonstrate that our decentralized construction achieves comparable, and in some cases improved, output randomness relative to the original centralized Sphinx design.
-While our Python implementation does not exhibit the performance
-characteristics required for integration with Nym or any other real mixnet
-service, it can serve as a template and proof-of-concept for such an
-integration.
+To evaluate our approach, we developed a Python implementation. 
+We then performed statistical randomness tests to assess the unlinkability of our Sphinx packets.
+The results demonstrate that our decentralized construction achieves output randomness comparable to, and in some cases better than, the original centralized Sphinx design.
+While our Python implementation does not exhibit the performance characteristics required for integration with Nym or any other real mixnet service, it can serve as a template and proof-of-concept for such an integration.
 
 Decentralizing the construction process introduces greater flexibility for real-world deployment and long-term evolution of the protocol.
-In particular, it opens promising avenues for integrating mechanisms that allow verification of packet legitimacy at any hop. 
+In particular, it opens promising avenues for mechanisms that enable packet legitimacy verification at any hop.
 Such functionality would enable mixnodes to detect and discard unauthorized traffic early in the path, thereby conserving computational resources and mitigating denial-of-service threats. 
-A potential approach involves having TTPs dynamically update credentials during header construction, and allowing mixnodes to further update them during packet processing.
+A potential approach involves TTPs dynamically updating credentials during header construction and mixnodes further updating them during packet processing.
 We highlight the development of such legitimacy verification mechanisms as an important and promising direction for future research.
 \todo{This is good. I'd repeat some of this in the previous section and
 write what needs to be implemented to have the verifiability property.}
 
-An additional future work toward a fully decentralized scheme would involve delegating route selection to the TTPs themselves.
+Another step toward a fully decentralized scheme would involve delegating route selection to the TTPs themselves.
 This could help prevent biased or predictable path choices by clients, thereby enhancing overall anonymity.
 
 Before real-world deployment, a comprehensive security evaluation of our scheme is required. 
 This includes formal verification of the protocol’s correctness and privacy properties, as well as a detailed threat analysis to identify potential vulnerabilities in our scheme. 
-Additionally, a careful evaluation of the computational overhead introduced by our approach, compared to the resource cost of processing illegitimate traffic by malicious clients, will help to determine the overall trade-off of our design.
+A careful evaluation of the computational overhead introduced by our approach, compared to the cost of processing illegitimate traffic, will help clarify the overall trade-off of our design.
 
 In summary, our decentralized design offers a promising advancement towards scalable and privacy-preserving anonymous communication.
 By redistributing trust from a single client to a set of collaborative TTPs, our approach enhances flexibility and robustness of anonymity systems.
-We view this work as a crucial step into decentralized cryptographic architectures and hope it contributes to the development of more secure and privacy-preserving communication systems.
+We view this work as a crucial step toward decentralized cryptographic architectures and hope it contributes to the development of more secure and privacy-preserving communication systems.
