@@ -4,12 +4,18 @@ We have proposed a decentralized scheme that delegates the construction of Sphin
 This design ensures that TTPs cannot infer any information about the route or cryptographic secrets, even when colluding, provided that at least one TTP remains honest.
 To evaluate our approach, we developed a Python implementation and performed a series of statistical randomness tests to assess the unlinkability of our Sphinx packets. 
 The results demonstrate that our decentralized construction achieves comparable, and in some cases improved, output randomness relative to the original centralized Sphinx design.
+While our Python implementation does not exhibit the performance
+characteristics required for integration with Nym or any other real mixnet
+service, it can serve as a template and proff-of-concept for such an
+integration.
 
 Decentralizing the construction process introduces greater flexibility for real-world deployment and long-term evolution of the protocol.
 In particular, it opens promising avenues for integrating mechanisms that allow verification of packet legitimacy at any hop. 
 Such functionality would enable mixnodes to detect and discard unauthorized traffic early in the path, thereby conserving computational resources and mitigating denial-of-service threats. 
 A potential approach involves having TTPs dynamically update credentials during header construction, and allowing mixnodes to further update them during packet processing.
 We highlight the development of such legitimacy verification mechanisms as an important and promising direction for future research.
+\todo{This is good. I'd repeat some of this in the previous section and
+write what needs to be implemented to have the verifiability property.}
 
 An additional future work toward a fully decentralized scheme would involve delegating route selection to the TTPs themselves.
 This could help prevent biased or predictable path choices by clients, thereby enhancing overall anonymity.
