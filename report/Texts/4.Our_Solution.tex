@@ -11,7 +11,7 @@ such that $\InverseMap{\Map{x}} = x$ where $x$ is an integer.
 Traditional methods achieve this by directly mapping integers to the x-coordinates of points on the curve. 
 However, this approach could leaks information by introducing bias since nearby integers result in nearby points.
 
-To address this, we adopt Elligator, which offers stronger privacy guarantees. 
+To address this, we adopt Elligator~\cite{bernstein2013elligator}, which offers stronger privacy guarantees. 
 Unlike the traditional approach, Elligator produces a uniformly distributed output which is computationally indistinguishable from truly random curve points. 
 This uniformity is in line with our objectives of preserving anonymity and avoiding linkability. 
 
