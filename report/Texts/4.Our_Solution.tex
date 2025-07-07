@@ -180,7 +180,7 @@ Finally, the TTP returns the resulting partial header to the client.
 \begin{figure}[H]
     \centering
     \resizebox{1.\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
-    \caption{Chunk-wise header encryption (TTP side), where \eq[x] refers to Eq. x.}
+    \caption{Chunk-wise header encryption done by the TTP. Circled numbers \eq[x] refers to Equation x in the paper.}
     \label{fig:chunked_schema}
 \end{figure}
 
@@ -238,6 +238,6 @@ Finally, the mixnode forwards the updated header (\A{i+1}, \C{i+1}, \B{i+1}{}) t
 \begin{figure}[H]
     \centering
     \resizebox{1.\linewidth}{!}{\input{schema/chunkwise_decryption.tex}}
-    \caption{Processing sphinx header at mixnode $i$, where \eq[x] refers to Eq. x.}
+    \caption{Header processing at mixnode $i$. Circled numbers \eq[x] refers to Equation x in the paper.}
     \label{fig:mixnode_decryption}
 \end{figure}

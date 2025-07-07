@@ -131,15 +131,15 @@
     \begin{pgfonlayer}{background}
         % 3
         \foreach \j in {1,...,5} {
-            \draw[->, dashed, very thin, color=unHighlight!50] (B3\j.south) -- ([xshift=-1pt, yshift=+1pt] b3\j.north);
+            \draw[->, dashed, very thin, color=unHighlight!80] (B3\j.south) -- ([xshift=-1pt, yshift=+1pt] b3\j.north);
         }
         % 2
         \foreach \j in {1,...,5} {
-            \draw[->, dashed, very thin, color=unHighlight!50] (B2\j.south) -- ([xshift=-1pt, yshift=+1pt] b2\j.north);
+            \draw[->, dashed, very thin, color=unHighlight!80] (B2\j.south) -- ([xshift=-1pt, yshift=+1pt] b2\j.north);
         }
         % 1
         \foreach \j in {1,...,5} {
-            \draw[->, dashed, very thin, color=unHighlight!50] (B1\j.south) -- ([xshift=-1pt, yshift=+1pt] b1\j.north);
+            \draw[->, dashed, very thin, color=unHighlight!80] (B1\j.south) -- ([xshift=-1pt, yshift=+1pt] b1\j.north);
         }
     \end{pgfonlayer}
 
@@ -148,7 +148,7 @@
     \node[between=n3 and s21] (middleTop) {};
     \node[between=n2 and s11] (middleBot){};
     \node (bot) at (n1.south) {};
-    \node (left) at ($(xor3.west) - (\width, 0)$) {};
+    \node (left) at ($(xor3.west) - (\width/3, 0)$) {};
     \node (right) at ($(zero1.east) + (0.1*\width, 0)$) {};
 
     \draw[densely dotted] (middleTop -| left) -- (middleTop -| right) {};

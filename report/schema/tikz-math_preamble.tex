@@ -14,13 +14,14 @@
 % \colorlet: (i.e. mixing colors)
 %   - \colorlet{mixedColor}{blue!10!red}        % 10% blue mixed with 90% red
 
-\definecolor{unHighlight}{gray}{0.66}
+\definecolor{unHighlight}{gray}{0.60}
 
 \newcommand{\bigO}[1]{$\mathcal{O}(#1)$}
 
 \newcommand{\mathtext}[1]{\text{#1}}
-\newcommand{\indexsize}{\tiny}
-\renewcommand{\index}[1]{\mathtext{\indexsize {#1}}}
+% \newcommand{\indexsize}{\footnotesize}
+% \renewcommand{\index}[1]{\mathtext{\indexsize {#1}}}
+\renewcommand{\index}[1]{\mathtext{{#1}}}
 \newcommand{\inmath}[1]{\relax\ifmmode #1 \else $#1$\fi}
 
 \newcommand{\G}[1]{\inmath{G_\index{#1}}}
@@ -53,7 +54,7 @@
 \newcommand{\InverseMap}[1]{\inmath{\mathsf{Map}^{-1}(#1)}}
 
 \newlength{\y}
-\newcommand{\width}{10mm}
+\newcommand{\width}{9mm}
 \newcommand{\height}{5.4mm}
 
 \newcommand{\vgap}{
