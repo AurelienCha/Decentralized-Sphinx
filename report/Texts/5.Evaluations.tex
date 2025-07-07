@@ -166,10 +166,12 @@ However, we emphasize that a thorough formal security analysis remains necessary
     }
 \end{table}
 
-At this stage, our decentralized scheme successfully achieves three key security and privacy objectives.
+At this stage, our decentralized scheme successfully achieves three key
+security and privacy objectives as outlined in~\ref{sec:sp-objectives}.
 First, it maintains strong unlinkability, comparable to the original Sphinx.
 Second, integrity protection is verified at each mixnode, ensuring that message tampering can be reliably detected.
 Third, our scheme offers robustness against collusion among TTPs, as long as at least one remains honest, preventing them from learning any information about routing information or cryptographic secrets.
+\todo{Why not all four? Verifiability mus be discussed here.}
 
 While our scheme introduces higher computational complexity compared to the original Sphinx, it maintains a reasonable polynomial bound, specifically a quadratic complexity.
 This makes it viable for real-world applications, especially considering the additional features it could enable.
