@@ -11,12 +11,12 @@ Each mixnode reorders and delays packets before forwarding them to the next laye
 These techniques enhance the mixnet’s resistance to a global adversary capable of observing the entire network.
 For clarity in both formulas and figures, and without loss of generality, we consider a mixnet consisting of three layers (i.e. path of three mixnodes).
 
-\begin{figure}
+\begin{figure*}
     \centering
     \resizebox{.8\linewidth}{!}{\input{schema/mixnet.tex}}
     \caption{Simplify overview of a mixnet architecture.}
     \label{fig:mixnet}
-\end{figure}
+\end{figure*}
 
 This kind of network often relies on privacy oriented packet format of fixed size such as Sphinx~\cite{sphinx}.
 In this work, we will solely focus on the Sphinx packet format.
