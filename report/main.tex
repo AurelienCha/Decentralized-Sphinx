@@ -197,14 +197,11 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-  Sphinx is a packet format commonly used in mixnets and the Lightning Network, designed to prevent adversaries from linking packets across different parts of the network based on their format. 
-  A Sphinx packet is constructed by the client and includes encrypted routing information for the message’s transmission. 
-  While Sphinx provides ease of use, it also allows malicious clients to bias path selection or route packets to unauthorized services.
-  In this paper, we propose a decentralized variant of the Sphinx packet format, distributing header construction across multiple Trusted Third Parties which are assumed to be honest-but-curious, meaning they follow the protocol but may attempt to collude in order to infer routing paths or cryptographic secrets. 
-  Our decentralized construction enhances deployment flexibility and paves the way for privacy-preserving mechanisms that could verify the legitimacy of packets at any hop, enabling early rejection of unauthorized traffic without compromising privacy.
-  We implement our scheme in Python and evaluate unlinkability using the NIST SP 800-22 statistical test suite on generated headers.
-  Experimental results suggest that our scheme achieves unlinkability, passing more statistical tests than the original Sphinx format.
-  This work represents a first step towards a decentralized route selection and packet legitimacy enforcement.%, for example system that want to enforce exit policy.
+  Sphinx is a packet format commonly used in mixnet-based systems such as Nym and Katzenpost as well as the Lightning Network. It is constructed by the clients and includes all the routing information for the message’s transmission from a client to the final destination while preventing adversaries from linking packets across the different parts of the network based on their format. 
+  Although Sphinx is considered to have robust security guarantees, it does not protect against malicious clients who try to bias path selection or route packets to unauthorized services.
+  In this paper, we propose a decentralized variant of the Sphinx packet format, distributing header construction across multiple Trusted Third Parties that are honest-but-curious, meaning they follow the protocol but can collude to infer routing information or cryptographic secrets. We implement our scheme in Python and evaluate the unlinkability property using the NIST SP 800-22 statistical test suite.
+  Our empirical results show that our scheme achieves unlinkability, passing more statistical tests than the original Sphinx format.
+  %Our decentralized construction enhances deployment flexibility and paves the way for privacy-preserving mechanisms that could verify the legitimacy of packets at any hop, enabling early rejection of unauthorized traffic without compromising privacy. This work represents a first step towards a decentralized route selection and packet legitimacy enforcement.%, for example system that want to enforce exit policy.
 \end{abstract}
 
 %%
