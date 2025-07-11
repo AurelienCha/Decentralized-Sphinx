@@ -13,8 +13,11 @@ For clarity in both formulas and figures, and without loss of generality, we con
 
 \begin{figure*}
     \centering
-    \resizebox{.8\linewidth}{!}{\input{schema/mixnet.tex}}
-    \caption{Simplify overview of a mixnet architecture.}
+    \resizebox{1.\linewidth}{!}{\input{schema/mixnet.tex}}
+    \caption{
+        Step-by-step tracing of two clients communicating with services through a 3-layer mixnet.
+        In order to follow paths across each time step, packets are labeled with color and number, respectively indicating the client and message order.
+    }
     \label{fig:mixnet}
 \end{figure*}
 
