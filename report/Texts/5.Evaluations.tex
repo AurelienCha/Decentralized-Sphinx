@@ -44,11 +44,33 @@ However, this approach relies on network simulations and specifically assesses t
 In contrast, our focus is on unlinkability at the mixnode level, meaning the difficulty for a Global Passive Adversary (GPA) to correlate an incoming packet with its corresponding outgoing packet through cryptanalysis.
 Therefore, assuming that greater randomness hinders correlation, we evaluate the statistical randomness of packet headers to approximate this form of unlinkability.
 
-
-For this purpose, we rely on the NIST SP 800-22 statistical test suite \cite{NIST-SP80022}, which consists of 15 tests designed to evaluate the quality of random number generators. 
+\subsubsection{Test Suite Overview}
+We rely on the NIST SP 800-22 statistical test suite \cite{NIST-SP80022}, which consists of 15 tests designed to evaluate the quality of random number generators. 
 Each test produces a p-value representing how likely the data could be produced by a uniform source. 
 If the data are truly random, the distribution of p-values across many samples must follow a uniform distribution.
+To support the interpretation of our results, we first provide a brief overview of the specific NIST SP 800-22 tests that are most relevant to our analysis 
+(i.e. \textit{Frequency}, \textit{Matching}, \textit{Random Walk} tests).
 
+The \textit{Frequency} test evaluates the proportion of zeros and ones across the entire sequence. 
+It determines whether the number of ones and zeros is approximately equal, as expected in a truly random sequence. 
+
+The \textit{Matching} tests examine how often predefined m-bit binary patterns appear within the sequence (by default $ m = 9 $). 
+These tests aim to detect excessive repetitions of specific aperiodic patterns that could indicate some hidden structure.
+The \textit{Overlapping} version uses a sliding window of $ m $ bits which is shifted from a single bit at each step, allowing overlapping matches.
+The \textit{Non-overlapping} version shifts the sliding window from $ m $ bits in case of matching, avoiding overlapping matches.
+
+The \textit{Random Walk} tests transform a binary sequence of 1s and 0s into a sequence of $+1$ (step up) and $-1$ (step down) values. 
+A truly random walk is expected to oscillate around zero.
+The simplest of these tests is the \textit{Cumulative Sums}, which iteratively computes the cumulative sums of these steps and evaluates the maximum deviation from zero compared to the expected behavior of a truly random walk.
+The \textit{Random Excursions} test counts how often each state is visited within each cycle\footnote{A cycle is a segment of the walk between two successive zero state (i.e. state where the cumulative sum equals $0$).} 
+and compares this distribution with the theoretical expectations for a random walk.
+The \textit{Random Excursions Variant} counts how often each state is visited over the entire walk, rather than cycle by cycle.
+
+In summary, the \textit{Frequency} test evaluates the overall balance between zeros and ones, 
+while the \textit{Random Walk} tests bring additional information about their distribution,
+and finally the \textit{Matching} tests look for excessive repetition of substrings.
+
+\subsubsection{Evaluation Methodology}
 We compare the statistical results (with default parameters) of our implementation with those of the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}}.
 All graphs presented in this section correspond to the results of the NIST statistical test suite applied to 20 distinct datasets.
 Each dataset is generated under a different setup configuration to assess the variability and robustness of our implementation.
@@ -65,62 +87,44 @@ The first evaluates the proportion of sequences that pass each statistical test,
 The second evaluates whether the distribution of p-values is statistically uniform, as would be expected from random sequences.
 These results are presented in Fig.\ref{fig:chisquare}.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1.\linewidth]{Images/proportion_dot.png}
-    \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over the fifteen NIST SP 800-22 statistical tests (significance level = 0.01).}
-    \label{fig:proportion}
-\end{figure}
-
-Figure \ref{fig:proportion} shows the proportion of sequences that successfully pass each statistical test for both our implementation and the original Sphinx implementation.  
+\subsubsection{Passing Rate}
+The proportion of sequences that successfully pass each statistical test, for both our implementation and the original Sphinx implementation, is shown in Figure~\ref{fig:proportion}. 
 Following the NIST guidelines, the significance level is set to $ \alpha = 0.01 $, and the confidence interval is defined as:
 $$
 (1 - \alpha) \pm 3 \sqrt{\frac{\alpha (1 - \alpha)}{m}},
 $$
 where $ m $ denotes the number of samples.
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.\linewidth]{Images/proportion_dot.png}
+    \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over all the NIST SP 800-22 statistical tests (significance level = 0.01).}
+    \label{fig:proportion}
+\end{figure}
 Our implementation fails only three tests: \textit{Non-overlapping Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
 In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Matching}.
 
-\begin{figure}%[ht]
-    \centering
-    \includegraphics[width=1.\linewidth]{Images/hist_p-values.png}
-    \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.}
-    \label{fig:hist_p-values}
-\end{figure}
 
+
+\subsubsection{P-Value Distribution}
 Figure \ref{fig:hist_p-values} presents the distribution of p-values obtained for each test.
 A Chi-square goodness-of-fit test is applied on each of these histograms to assess their uniformity.
 The results are shown in Figure \ref{fig:chisquare}, with a significance threshold of $0.0001$ as recommended by the NIST guidelines.
 Two Chi-square results stand out: the \textit{Frequency} and \textit{Cumulative Sums} tests.  
 Both were successful for our implementation, and failing for the original Sphinx implementation.
 
-\begin{figure}%[ht]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.\linewidth]{Images/hist_p-values.png}
+    \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.}
+    \label{fig:hist_p-values}
+\end{figure}
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.\linewidth]{Images/chisquare.png}
     \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.}
     \label{fig:chisquare}
 \end{figure}
-
-To aid interpretation of our results, we briefly describe the specific NIST SP 800-22 tests involved (for further definitions, see the NIST documentation \cite{NIST-SP80022}).
-The \textit{Frequency} test evaluates the proportion of zeros and ones across the entire sequence. 
-It determines whether the number of ones and zeros is approximately equal, as expected in a truly random sequence. 
-The \textit{Matching} tests examine how often predefined m-bit binary patterns appear within the sequence (by default $ m = 9 $). 
-These tests aim to detect excessive repetitions of specific aperiodic patterns that could indicate some hidden structure.
-In the \textit{Overlapping} version, a sliding window of $ m $ bits is shifted from a single bit at each step, allowing overlapping matches.
-In the \textit{Non-overlapping} version, the window shifts from $ m $ bits in case of matching, avoiding overlapping matches.
-The \textit{Cumulative Sums} test transforms the binary sequence of $1$ and $0$ respectively into a sequence of $+1$ and $–1$.
-Then a cumulative sum is iteratively computed, interpreting the result as a one-dimensional random walk, \enquote{randomly} going up ($+1$) and down ($-1$).
-A truly random walk is expected to oscillate around zero. 
-This test assesses the maximum deviation from zero over time and compares it with a truly random walk.
-The \textit{Random Excursions} tests also rely on the random walk model derived from the \textit{Cumulative Sums} test. 
-The \textit{Random Excursions} test counts the number of times each state has been visited within each cycle\footnote{A cycle is a segment of the walk between two successive zero state (i.e. state where the cumulative sum equals $0$).} 
-and compares this distribution with theoretical expectations for a true random walk.
-The \textit{Random Excursions Variant} test instead counts the total number of times each state has been visited over the entire walk.
-
-In brief, the \textit{Frequency} evaluates the overall balance between zeros and ones, 
-while the \textit{Cumulative Sums} and \textit{Random Excursions} tests bring additional information about their distribution,
-and finally the \textit{Matching} tests look for excessive repetition of substrings.
 
 \subsection{Discussion}
 
@@ -136,32 +140,32 @@ Nevertheless, our implementation demonstrates a better overall balance between o
 Given the established security of the original Sphinx protocol, and considering the similarities in core structure, our results indicate that our scheme is a solid starting point toward achieving similar privacy guarantees.
 However, we emphasize that a thorough formal security analysis remains necessary to fully assess the protocol's security, which we leave for future work.
 
-\begin{table}
+\begin{table}[H]
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
 \label{tab:test_summary}
-    \scalebox{0.9}{
+    \scalebox{.85}{
     \begin{tabular}{|l|cc|cc|}
     \toprule
                                     & \multicolumn{2}{c|}{\textbf{Decentralized}}   & \multicolumn{2}{c|}{\textbf{Original}} \\
     \cline{2-5}
-                                    & \textbf{\tiny Excessive}    & \textbf{\tiny Lacks}        & \textbf{\tiny Excessive} & \textbf{\tiny Lacks} \vspace*{-1.5mm} \\
-    \textbf{Statistical Test}       & \textbf{\tiny Rejections}   & \textbf{\tiny Uniformity}   & \textbf{\tiny Rejections} & \textbf{\tiny Uniformity} \\
+                                    & \textbf{\footnotesize Excessive}    & \textbf{\footnotesize Lacks}        & \textbf{\footnotesize Excessive} & \textbf{\footnotesize Lacks} \vspace*{-0.8mm} \\
+    \textbf{Statistical Test}       & \textbf{\footnotesize Rejections}   & \textbf{\footnotesize Uniformity}   & \textbf{\footnotesize Rejections} & \textbf{\footnotesize Uniformity} \\
     \midrule
-    Frequency                       & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
-    Block Frequency                 & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-    Cumulative Sums                 & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
-    Runs                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-    Longest Run                     & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-    Rank                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-    Discrete Fourier Transform      & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-    Non-overlapping Matchings       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
-    Overlapping Matchings           & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
-    Universal Statistical           & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-    Approximate Entropy             & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-    Random Excursions               & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
-    Random Excursions Variant       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
-    Serial                          & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-    Linear Complexity               & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Frequency                       & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
+     \small Block Frequency                 & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Cumulative Sums                 & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
+     \small Runs                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Longest Run                     & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Rank                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Discrete Fourier Transform      & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Non-overlapping Matchings       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \small Overlapping Matchings           & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \small Universal Statistical           & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Approximate Entropy             & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Random Excursions               & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \small Random Excursions Variant       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \small Serial                          & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Linear Complexity               & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
     \bottomrule
     \end{tabular}
     }
