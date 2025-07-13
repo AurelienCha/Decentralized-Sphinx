@@ -89,24 +89,23 @@ These results are presented in Fig.\ref{fig:chisquare}.
 
 \subsubsection{Passing Rate}
 The proportion of sequences that successfully pass each statistical test, for both our implementation and the original Sphinx implementation, is shown in Figure~\ref{fig:proportion}. 
-Following the NIST guidelines, the significance level is set to $ \alpha = 0.01 $, and the confidence interval is defined as:
+Following the NIST guidelines, the significance level is set to $ \alpha = 0.01 $, and the confidence interval over $ m $ samples is defined as:
 $$
 (1 - \alpha) \pm 3 \sqrt{\frac{\alpha (1 - \alpha)}{m}},
 $$
-where $ m $ denotes the number of samples.
+Our implementation fails only three tests: \textit{Non-overlapping Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
+In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Matching}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.\linewidth]{Images/proportion_dot.png}
     \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over all the NIST SP 800-22 statistical tests (significance level = 0.01).}
     \label{fig:proportion}
 \end{figure}
-Our implementation fails only three tests: \textit{Non-overlapping Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
-In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Matching}.
 
 
 
 \subsubsection{P-Value Distribution}
-Figure \ref{fig:hist_p-values} presents the distribution of p-values obtained for each test.
+To evaluate the statistical randomness of headers, we examine the distribution of p-values produced by each NIST SP 800-22 test (Figure~\ref{fig:hist_p-values}).
 A Chi-square goodness-of-fit test is applied on each of these histograms to assess their uniformity.
 The results are shown in Figure \ref{fig:chisquare}, with a significance threshold of $0.0001$ as recommended by the NIST guidelines.
 Two Chi-square results stand out: the \textit{Frequency} and \textit{Cumulative Sums} tests.  
