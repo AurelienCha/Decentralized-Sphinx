@@ -4,12 +4,13 @@ In this section, we present our system model and threat model, and outline the p
 
 \subsection{System Model}
 
-A mixnet is a network of servers known as mixnodes, which are arranged in sequential layers, as illustrated in Figure~\ref{fig:mixnet}. 
-Each packet traverses a fixed, predetermined number of mixnodes. 
-It enters the network via an entry node, is relayed through intermediate nodes in successive layers, and exits through an exit node. 
-Each mixnode reorders and delays packets before forwarding them to the next layer, thereby obfuscating any direct correspondence between input and output. 
-These techniques enhance the mixnet’s resistance to a global adversary capable of observing the entire network.
-For clarity in both formulas and figures, and without loss of generality, we consider a mixnet consisting of three layers (i.e. path of three mixnodes).
+A mixnet is a network of servers, called mixnodes, organized into sequential layers. 
+Each packet traverses a fixed path of mixnodes: it enters through an entry node, passes through a set of intermediate nodes, and exits via a final node. 
+At each layer, mixnodes shuffle and delay packets, obfuscating the link between incoming and outgoing traffic and improving resistance against global adversaries.
+This process is illustrated in Figure~\ref{fig:mixnet}, which provides a step-by-step tracing of two clients communicating with services through a 3-layer mixnet. 
+Each vertical segment (from $t_0$ to $t_6$) represents a point in time, showing how packets move and are reshuffled across layers. 
+The packets are labeled by color (client identity) and number (message order), allowing us to visually follow how each message is mixed and relayed before reaching its destination.
+For clarity in both formulas and figures, and without loss of generality, we consider a mixnet with three layers throughout the paper.
 
 \begin{figure*}
     \centering
