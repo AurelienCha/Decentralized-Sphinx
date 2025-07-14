@@ -98,7 +98,7 @@ Using this nonce and the public keys of each mixnodes along the path, it derives
 where $x_1$ is the client’s nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ mixnode, $n$ is the subgroup order (i.e. $(n+1)\G{} = \G{}$), $\|$ denotes concatenation, and subscripts $_y$ refer to the $y$-coordinate of a point. 
 Each scalar $r_i$ pseudo-randomizes $x_i$ for the next hop, ensuring that cryptographic elements $\A{i}$ remain unlinkable across mixnodes.
 
-IP addresses are padded with random bits and mapped to elliptic curve points via Elligator, enabling recovery. 
+IP addresses are padded with random bits and mapped to elliptic curve points via Elligator, allowing later recovery of IP addresses.
 These IP points and the shared secrets are then split into shares and distributed to $m$ different TTPs, along with a hash of each secret. % for integrity
 
 Each TTP then independently computes a partial header from the received shares and returns it to the client. 
@@ -217,10 +217,10 @@ This shared integer is then used to verify the integrity tag (Eq. \ref{eq:integr
 \label{eq:decrypt}
 \end{equation}
 
-The first chunk ({\BB{i}{1}}), encodes the next mixnode’s IP address (\N{i+1}). 
+The first chunk $({\BB{i}{1}})$, encodes the next mixnode’s IP address (\N{i+1}). 
 This point is mapped back to an integer using Elligator and the random padding is removed by keeping the last 128 bits (i.e. size of an IP address).
 
-\noindent The second chunk ({\BB{i}{2}}) is the next integrity tag (\C{i+1}) for the remaining five chunks that form the new encrypted routing information (\B{i+1}{}).
+\noindent The second chunk $({\BB{i}{2}})$ is the next integrity tag (\C{i+1}) for the remaining five chunks that form the new encrypted routing information $(\B{i+1}{})$.
 
 To maintain unlinkability, the cryptographic element \A{i} must be updated for the next hop. 
 As in the client's step, it is computed using the $y$-coordinates of both \A{i} and \S{i}:
@@ -228,7 +228,7 @@ As in the client's step, it is computed using the $y$-coordinates of both \A{i} 
 \A{i+1} = \text{hash}({\A{i}}_y \ \| \ {\S{i}}_y) \ \A{i}
 \label{eq:update_alpha}
 \end{equation}
-Finally, the mixnode forwards the updated header (\A{i+1}, \C{i+1}, \B{i+1}{}) to the next mixnode in the path.
+Finally, the mixnode forwards the updated header $(\A{i+1}, \C{i+1}, \B{i+1}{})$ to the next mixnode in the path.
 
 \begin{figure}[H]
     \centering

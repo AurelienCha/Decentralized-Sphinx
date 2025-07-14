@@ -10,14 +10,24 @@ We evaluate our system on two main axes: computational complexity and unlinkabil
 
 \subsection{Computational Complexity}
 
-Instead of measuring raw execution time, which can vary significantly based on hardware and software environments, we focus on the number of expensive cryptographic operations. 
-Table~\ref{tab:operation_count} counts these operations per party for $ m $ TTPs and path of length $ p $. 
-To compute the total cost for sending a single message, multiply the TTP cost by $ m $ and the mixnode cost by $ p $. 
-In typical mixnet implementations, the path includes approximately three to five mixnodes.
-As a result, \bigO{p} can be considered constant (i.e. \bigO{1}).
+Rather than measuring raw execution time, which depends heavily on hardware and software, we count the number of expensive cryptographic operations.
+Direct comparison with the Sphinx scheme is not straightforward, as cryptographic primitives differ (e.g. Elligator). 
+Although such comparison is not entirely meaningful, our protocol is inherently more computationally intensive and will be slower in practice.
+Table~\ref{tab:operation_count} counts these operations per party, considering $ m $ TTPs and path of length $ p $. 
+To compute the total cost for sending a single message, multiply the cost per TTP by $m$ and the cost per mixnode by $p$.
+% CLIENT
+Since each TTP constructs its partial header independently, they operate in parallel, minimizing their impact on the overall execution time.
+Thus, the number of TTPs mainly affects the client, who performs \bigO{p m} elliptic curve multiplications and additions to split $p$ addresses and cryptographic secrets into $m$ shares.
+For each mixnode, the client also executes an Elligator mapping to encode the IP address into an elliptic curve point, a hash and a reverse Elligator mapping (i.e. $Point \rightarrow Integer$) to derive the shared secret (Eq.~\ref{eq:shared_secret}), all scaling linearly with $p$.
+% TTP
+For each layer, a TTP performs elliptic curve multiplications, additions (Eq.\ref{eq:last_layer}, Eq.\ref{eq:layer_i}) and hashes (Eq.~\ref{eq:integrity}) proportional to the number of chunks.
+Since both the number of chunks and layers grow linearly with $p$, the total cost per TTP scales quadratically with $p$.
+% MIXNODE
+Mixnodes follow a similar pattern, performing EC operations and hashes proportional to the number of chunks (Eq.\ref{eq:integrity_check} and Eq.\ref{eq:decrypt}), thus scaling linearly with $p$.
+Each mixnode additionally executes one reverse mapping (Eq.~\ref{eq:derive_secret}) to convert the shared secret point into an integer.
 
 \begin{table}[H]
-\caption{Number of expensive cryptographic operations per party, where $ p $ is the path length (e.g. $ p = 3 $), and $ m $ is the number of TTPs.}
+\caption{Number of expensive cryptographic operations per party, where $ p $ is the path length and $ m $ is the number of TTPs.}
 \label{tab:operation_count}
     \begin{tabular}{lccc}
         \toprule
@@ -25,16 +35,17 @@ As a result, \bigO{p} can be considered constant (i.e. \bigO{1}).
         \midrule
         \textbf{EC Multiplication}              & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
         \textbf{EC Addition}                    & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
-        \textbf{Point $\rightarrow$ Integer}    & \bigO{p}      & 0             & 2 \\
-        \textbf{Integer $\rightarrow$ Point}    & \bigO{p}      & 0             & 0 \\
+        \textbf{Elligator Mapping}              & \bigO{p}      & \slash        & \slash \\
+        \textbf{Inverse Mapping}                & \bigO{p}      & \slash        & \bigO{1} \\
         \textbf{Hash}                           & \bigO{p}      & \bigO{p^{2}}  & \bigO{p} \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Consequently, the overall computational burden is more sensitive to the number of TTPs $ m $ rather than the path length $ p $. 
-Since our design remains secure as long as a single TTP is honest (i.e. non-colluding), only a small number of TTPs may be required. 
-A deeper analysis of how many TTPs are needed to ensure a desired level of trust remains an open question for future work.
+In practice, most mixnet implementations use paths of three to five mixnodes, making \bigO{p} $\approx$ \bigO{1}.
+Accordingly, the overall computational burden is more sensitive to the number of TTPs $m$ than to the path length $p$.
+As our design remains secure as long as one TTP is honest, only a small number $m$ may be sufficient.
+Determining the precise number needed to meet a desired trust threshold is left for future work.
 
 
 \subsection{Unlinkability Evaluation}
