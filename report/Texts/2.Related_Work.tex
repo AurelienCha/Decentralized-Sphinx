@@ -14,12 +14,12 @@ However, several open research problems remain.
 For example, how can we prevent certain types of traffic without compromising privacy guarantees ?
 Such traffic could include clients attempting to reach destinations they have not paid for, or those using the network to access illegal content.
 Tor mitigates this problem through exit policies, which allow exit nodes to simply drop unwanted traffic.
-This works in Tor because it is circuit-based meaning that all traffic from a specific user session follows the same path and hence packets are encrypted using symmetric cryptography which is computationally efficient.
+This works for Tor because it is circuit-based meaning that all traffic from a user session follows the same path, allowing the use of symmetric encryption which is computationally efficient.
 As a result, dropping traffic at the exit node does not waste significant computation power.
 
 
 In contrast, mixnets present a more complex challenge. 
-Since each packet follows a different path, mixnets rely on layered public-key cryptography, which is computationally intensive.
+Since each packet follows a different path, mixnets rely on layered public-key cryptography which is computationally intensive.
 Dropping packets at the final node, which is typically the only point where access policies can be applied, results in a significant waste of computational resources spent by intermediate nodes on processing and forwarding these packets.
 Moreover, unlike Tor where relays operate on a voluntary basis, mixnets such as Nym use economic incentives through payment per relayed bandwidth.
 Consequently, dropping packets at the exit node not only wastes computational resources but also impacts the economic sustainability of the network.
