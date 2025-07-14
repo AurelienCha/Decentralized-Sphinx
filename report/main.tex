@@ -198,7 +198,7 @@
 %% article.
 \begin{abstract}
   Sphinx is a packet format widely used in mixnet-based systems such as Nym, Katzenpost, and the Lightning Network. 
-  Constructed by clients, Sphinx headers encode all routing information required to transmit messages from the client to the final destination, while preventing adversaries from linking packets across the network based on their format. 
+  Constructed by clients, Sphinx headers encode all routing information required to transmit messages from the client to the final destination, while preventing adversaries from linking packets across the network based on their size or format. 
   Although Sphinx is considered to provide robust security guarantees, it does not protect against malicious clients who attempt to bias path selection or route packets to unauthorized services.
   In this paper, we propose a decentralized variant of the Sphinx packet format that distributes header construction among multiple trusted third parties. 
   These parties are assumed to be honest-but-curious, meaning they follow the protocol but may collude to infer routing information or cryptographic secrets. 
