@@ -50,17 +50,17 @@ We consider different types of adversaries:
         Our construction ensures \emph{bitwise unlinkability} of Sphinx packets, such that packet headers appear uniformly random and indistinguishable from one another, thereby preventing correlation.
         
         \item \textbf{Global Active Adversary (GAA):} An adversary able to modify or inject packets across the entire network. 
-        The GAA attempts to alter Sphinx headers in transit or to create a valid Sphinx header. 
+        The GAA attempts to alter or create a valid Sphinx header. 
         Thanks to the integrity-check mechanisms embedded in the packet format, any such tampering is detected and causes the packet to be discarded by mixnodes.
 
         \item \textbf{Honest-but-curious TTPs:} 
-        In our decentralized header construction scheme, multiple trusted third parties (TTPs) participate in generating the Sphinx headers. 
+        In our decentralized scheme, multiple trusted third parties participate in generating the headers. 
         These TTPs are assumed to be honest-but-curious, meaning they follow the protocol but may collude in order to extract additional information from the data they process.
         Our design guarantees that even if a majority of these TTPs collude, but not all of them, they learn nothing about the final destination, the route, or the cryptographic secrets.
         
-        \item \textbf{Malicious Clients:} We consider clients attempting to build Sphinx headers that misrepresent their intended destination by exploiting a valid credential to access a service for which they are not authorized. 
-        Such misuse can typically only be detected at the mixnet’s exit gateway, where the true destination is revealed and can be compared against the credential.
-        Our decentralized scheme could enable the adaptation of these credentials such that they could be verified at any step in the network.
+        \item \textbf{Malicious Clients:} We consider clients who misuse valid credentials to build Sphinx headers targeting unauthorized services. 
+        Such misuse can typically only be detected at the mixnet’s exit gateway, where the true destination is revealed and can be checked against the credential. 
+        Our decentralized scheme could enable credentials that could be verified at any step in the network.
 \end{itemize}
 Figure~\ref{fig:overall_schema} summarizes our model, which involves three types of entities: the Client, a set of Trusted Third Parties (TTPs), and the Mixnet.
 The client is considered as potentially malicious.

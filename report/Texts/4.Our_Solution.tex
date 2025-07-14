@@ -18,10 +18,11 @@ This uniformity is in line with our objectives of preserving anonymity and avoid
 \subsection{Protocol description}
 
 The overall decentralized scheme is illustrated in Figure~\ref{fig:overall_schema}.  
-(1) The client first computes a sequence of shared secrets and then splits these secrets, along with the IP addresses of the mixnodes in the path and the final destination, into $m$ shares.  
-(2) Each set of shares is sent to a different TTP, along with the necessary cryptographic element (\A{}).  
+(1) The client first computes a sequence of shared secrets and then splits these secrets, along with IP addresses of the mixnodes in the path and the final destination, into $m$ shares.  
+(2) Each set of shares is sent to $m$ different TTP, along with the necessary cryptographic element (\A{}).  
 (3) Each TTP independently computes a \textit{partial} Sphinx header using the received shares.  
-(4) The client then aggregates these partial headers to reconstruct the final header, (5) ready for transmission through the mixnet.
+(4) The client then aggregates these partial headers to reconstruct the final header. 
+(5) Finally, the client encrypts the payload accordingly to the header and sends the message through the mixnet.
 
 \begin{figure}[!b]
     \centering
@@ -38,7 +39,7 @@ The overall decentralized scheme is illustrated in Figure~\ref{fig:overall_schem
 
 \noindent In summary, the protocol is divided into four main steps:
 \begin{itemize}
-    \item \textbf{Setup}: fixes random points as generators (once but should be refreshed);
+    \item \textbf{Setup}: selects random generators (once but refreshable);
     \item \textbf{Client}: splits and shares the necessary information to TTPs;
     \item \textbf{TTP}: encrypts the routing information into a partial header;
     \item \textbf{Mixnode}: decrypts and forwards the header.
@@ -51,23 +52,20 @@ In our protocol, routing information is divided into seven chunks, each one enco
 These points will later be encrypted by adding a masking point of the form $ P = s G $, where $ s $ is a shared secret and $ G $ is the base generator of the curve.
 However, using the same masking point $ P $ for all the seven chunks compromises the \textit{unlinkability} property
 (see security note in \ref{note:security_why_indep_generators}).
-
 To mitigate this, we use a set of seven \textit{independent} generators $ G_j $, one for each chunk. 
 By \textit{independent}, we mean that the scalar relationship between any two generators is unknown. 
 Therefore no one knows the scalars $ z_j \in \mathbb{Z}_N $ such that $ G_j = z_j G $.
 
 In principle, this setup phase can be executed only once. 
-However, to preserve unlinkability, the set of generators should be refreshed periodically. 
+However, to preserve its security, the set of generators should be refreshed periodically. 
 Every entity (clients, mixnodes, and TTPs) must run the setup phase to ensure they use the same set of generators.
-
 To achieve synchronized and deterministic generators across the system, we derive them from a common seed. 
 This seed is computed as the hash of the current timestamp, truncated to the chosen refresh interval. 
 We simply increment the seed to produce \textit{independent} generators since Elligator already provides a uniform (i.e. pseudo-random) integers to points mapping.
 
 A subtlety with Elligator is that it may map integers to points outside of the base generator's subgroup.
 To ensure that points remain in the generator subgroup, an extra step is required to \textit{clear the cofactor} by multiplying the resulting point by the cofactor (Curve25519's cofactor is $ 8 $).
-
-\noindent The final formula for generating the $ j^{th} $ chunk’s generator is:
+The final formula for generating the $ j^{th} $ chunk’s generator is:
 \begin{equation}
 G_j = 8 \cdot \Map{\hash{\text{timestamp}} + j}, \quad \text{for } j = 1, \dots, 7
 \end{equation}
@@ -83,8 +81,8 @@ G_j = 8 \cdot \Map{\hash{\text{timestamp}} + j}, \quad \text{for } j = 1, \dots,
 % 7) Send sets of shares (mixnodes IPs, destination IP, shared secrets) to different TTP.
 % 8) TTP will compute from those shares a partial header and send it to the client. Afterwards, the client aggregate these partial headers.
   
-To send a message to a specific destination, the client first randomly chooses a path through the mixnet and generates a nonce.
-Using this nonce and the public keys of each mixnode along the path, the client derives a chain of shared secret integers (\s{1}, \s{2}, \s{3}) as follows:
+To send a message to a specific destination, the client randomly selects a path through the mixnet and generates a nonce.
+Using this nonce and the public keys of each mixnodes along the path, it derives a chain of shared secret integers (\s{1}, \s{2}, \s{3}) as follows:
 \begin{equation}
 (\s{1}, \s{2}, \s{3}) \quad \left\{ \quad
 \begin{aligned}
@@ -97,15 +95,11 @@ Using this nonce and the public keys of each mixnode along the path, the client 
 \right.
 \label{eq:shared_secret}
 \end{equation}
-where $ x_1 $ is the client's nonce, $ \PK{i} $ is the public key of the $ i^{th} $ mixnode in the path ($\PK{i} = \sk{i}\G{}$), 
-$ n $ is the subgroup order (i.e. $(n+1)\G{} = \G{}$), $ \| $ is  the concatenation operator and subscript $ y $ refers to the $ y $-coordinate of the point.
-The scalar $ r_i $ acts as a pseudo-randomizer to update the secret $ x_i $ for the next hop, 
-ensuring that each cryptographic element $ \A{i} $ remains unlinkable across mixnodes.
+where $x_1$ is the client’s nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ mixnode, $n$ is the subgroup order (i.e. $(n+1)\G{} = \G{}$), $\|$ denotes concatenation, and subscripts $_y$ refer to the $y$-coordinate of a point. 
+Each scalar $r_i$ pseudo-randomizes $x_i$ for the next hop, ensuring that cryptographic elements $\A{i}$ remain unlinkable across mixnodes.
 
-The IP addresses of the mixnodes and the destination are padded with random bits
-then mapped to elliptic curve points using Elligator, allowing later recovery of these addresses.
-Both the resulting IP points and the shared secrets are split into shares and distributed to $ m $ different TTPs. 
-In addition, the client sends the hash of each shared secret to these TTPs. % for integrity
+IP addresses are padded with random bits and mapped to elliptic curve points via Elligator, enabling recovery. 
+These IP points and the shared secrets are then split into shares and distributed to $m$ different TTPs, along with a hash of each secret. % for integrity
 
 Each TTP then independently computes a partial header from the received shares and returns it to the client. 
 The client aggregates these partial headers by performing chunk-wise point additions to reconstruct the complete encrypted header.
