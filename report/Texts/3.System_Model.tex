@@ -29,7 +29,7 @@ For example, if Signal is integrated with Nym, clients who want their traffic to
 This prevents adversaries monitoring either the client’s device, the server, or any intermediate nodes from correlating sender and recipient.
 In addition to Sphinx packets, they often improved the system with extra features such as \textit{anonymous credentials}.
 For example, each Nym client receives anonymous credentials (based on Coconut credential~\cite{coconut}) to use the mixnet to route their traffic towards specific destinations they have paid for.
-A potential vulnerability arises when a client obtains a credential for a specific service (e.g. Signal) but uses it to inject traffic directed to an unauthorized or unrelated service. 
+A potential vulnerability arises when a client obtains a credential for a specific service but uses it to inject traffic directed to an unauthorized or unrelated service. 
 Because the true destination is only revealed at the final hop of the mixnet, earlier mixnodes waste computational resources processing a packet that will ultimately be dropped. 
 This misuse opens the door to denial-of-service (DoS) attacks, where malicious clients flood the system with unauthorized packets that will be detected at the last hop, draining bandwidth and compute capacity.
 
