@@ -4,9 +4,8 @@ A mix network (or mixnet) is an overlay network of servers, called mixnodes, des
 Unlike Tor~\cite{onion-routing96}, where all packets follow the same path throughout a session (circuit-based), mixnets route each packet independently along different paths (packet-based), making traffic analysis significantly harder.
 To further strengthen resistance against traffic analysis, mixnets employ techniques such as packet shuffling, reordering, and fake packets injection, aiming to resist even powerful adversaries capable of observing the entire network. 
 One of the most important advancements in mixnet design is the Sphinx packet format, introduced by Danezis et al.~\cite{sphinx} in 2009.
-First, Sphinx ensures that all packets are of fixed size and structure, preventing correlation through traffic analysis
-This property is known as \textit{bit-wise unlinkability}. 
-It also employs layered encryption, so that each mixnode only learns its immediate predecessor and successor.
+First, Sphinx ensures that all packets are of fixed size and structure, preventing correlation through traffic analysis.
+It also employs layered encryption, ensuring that each mixnode learns only its immediate predecessor and successor, nothing more.
 Additionally, it includes integrity checks to detect tampering. 
 If any part of the routing data is altered, whether accidentally or with malicious intent, the next mixnode will reject the packet.
 
@@ -18,7 +17,7 @@ However, nothing prevents them from using the network to route traffic for an un
 
 In this paper, we present a novel scheme to create Sphinx headers in a decentralized manner using trusted third parties, while ensuring that these parties learn nothing about the route, destination, or cryptographic secrets. 
 Having a decentralized scheme offers greater flexibility and robustness for real-world deployment and facilitates ongoing improvements of the technology and its features.  
-We argue that a decentralized approach will simplify the creation of anonymous credentials and enable enforcement of access control policies without compromising privacy.
+We argue that a decentralized approach will simplify the issuance of anonymous credentials and enable enforcement of access control policies without compromising privacy.
 
 \noindent Our work makes the following contributions:
 \begin{itemize}

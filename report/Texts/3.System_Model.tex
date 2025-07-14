@@ -5,10 +5,11 @@ In this section, we present our system model and threat model, and outline the p
 \subsection{System Model}
 
 A mixnet is a network of servers, called mixnodes, organized into sequential layers. 
-Each packet traverses a fixed path of mixnodes: it enters through an entry node, passes through a set of intermediate nodes, and exits via a final node. 
+Each packet traverses a fixed path of mixnodes. 
+It enters through an entry node, passes through a set of intermediate nodes, and exits via a final node. 
 At each layer, mixnodes shuffle and delay packets, obfuscating the link between incoming and outgoing traffic and improving resistance against global adversaries.
 This process is illustrated in Figure~\ref{fig:mixnet}, which provides a step-by-step tracing of two clients communicating with services through a 3-layer mixnet. 
-Each vertical segment (from $t_0$ to $t_6$) represents a point in time, showing how packets move and are reshuffled across layers. 
+Each timestamp (from $t_0$ to $t_6$) represents a point in time, showing how packets move and are reshuffled across layers. 
 The packets are labeled by color (client identity) and number (message order), allowing us to visually follow how each message is mixed and relayed before reaching its destination.
 For clarity in both formulas and figures, and without loss of generality, we consider a mixnet with three layers throughout the paper.
 
@@ -22,13 +23,13 @@ For clarity in both formulas and figures, and without loss of generality, we con
     \label{fig:mixnet}
 \end{figure*}
 
-This kind of network often relies on privacy oriented packet format of fixed size such as Sphinx~\cite{sphinx}.
-In this work, we will solely focus on the Sphinx packet format.
-Some privacy-focused companies, like Nym Technologies, commercialize an enhanced mixnet network for services to be integrated with their network for a fee.
+This kind of network often relies on privacy-preserving packet format with fixed-size, such as Sphinx~\cite{sphinx}.
+%In this work, we will solely focus on the Sphinx packet format.
+Some privacy-focused companies, like Nym Technologies, commercialize an advanced mixnet services that other applications can access for a fee.
 For example, if Signal is integrated with Nym, clients who want their traffic to be anonymous would route their traffic through the mixnet instead of connecting directly to the Signal server. 
-This prevents adversaries monitoring either the client’s device, the server, or any intermediate nodes from correlating sender and recipient.
+This prevents adversaries monitoring either the client’s device, the server, or any intermediate nodes, from correlating sender and recipient.
 In addition to Sphinx packets, they often improved the system with extra features such as \textit{anonymous credentials}.
-For example, each Nym client receives anonymous credentials (based on Coconut credential~\cite{coconut}) to use the mixnet to route their traffic towards specific destinations they have paid for.
+For example, each Nym client receives anonymous credentials (based on Coconut credential~\cite{coconut}) to use the mixnet for routing their traffic towards specific destinations they have paid for.
 A potential vulnerability arises when a client obtains a credential for a specific service but uses it to inject traffic directed to an unauthorized or unrelated service. 
 Because the true destination is only revealed at the final hop of the mixnet, earlier mixnodes waste computational resources processing a packet that will ultimately be dropped. 
 This misuse opens the door to denial-of-service (DoS) attacks, where malicious clients flood the system with unauthorized packets that will be detected at the last hop, draining bandwidth and compute capacity.
@@ -38,12 +39,6 @@ To address this, we propose a decentralized construction of Sphinx headers invol
 This decentralized scheme could enable TTPs to update credentials and/or zero-knowledge proofs in accordance with the layered encrypted header, to be verifiable by any mixnodes on the route.  
 As a result, mixnodes could early discard unauthorized traffic before it consumes significant resources.
 However, the credentials issuance, modification, and verification are outside the scope of this paper and are left for future work.
-
-
-Figure~\ref{fig:overall_schema} summarizes our model, which involves three types of entities: the Client, a set of Trusted Third Parties (TTPs), and the Mixnet.
-The client is considered as potentially malicious.
-TTPs are assumed to be honest-but-curious, meaning that they correctly follow the protocol but may attempt to collude in order to extract additional information from the data they process.
-Mixnodes are responsible for enforcing access policies by dropping unauthorized traffic.
 
 
 \subsection{Threat Model} 
@@ -67,6 +62,10 @@ We consider different types of adversaries:
         Such misuse can typically only be detected at the mixnet’s exit gateway, where the true destination is revealed and can be compared against the credential.
         Our decentralized scheme could enable the adaptation of these credentials such that they could be verified at any step in the network.
 \end{itemize}
+Figure~\ref{fig:overall_schema} summarizes our model, which involves three types of entities: the Client, a set of Trusted Third Parties (TTPs), and the Mixnet.
+The client is considered as potentially malicious.
+TTPs are assumed to be honest-but-curious, meaning that they correctly follow the protocol but may attempt to collude in order to extract additional information from the data they process.
+Mixnodes are responsible for enforcing access policies by dropping unauthorized traffic.
 
 \subsection{Security \& Privacy Objectives}
 \label{sec:sp-objectives}
@@ -74,7 +73,7 @@ We consider different types of adversaries:
 Our main security and privacy objectives are the following:
 \begin{itemize}
         \item \textbf{Unlinkability:} Our scheme aims to ensure that a global adversary cannot link incoming packets to their corresponding outgoing packets at any mixnode.
-        The original Sphinx packet format introduced by Danezis and Goldberg~\cite{sphinx} is known to achieve strong unlinkability guarantees.
+        The original Sphinx packet introduced by Danezis and Goldberg~\cite{sphinx} is known to achieve strong unlinkability guarantees.
         We target at least the same level of unlinkability, but adopt a relaxed version called \textit{bitwise unlinkability}.
         If packets appear uniformly random and indistinguishable from one another, we consider that this prevents correlations between incoming and outgoing packets, thereby satisfying the unlinkability requirement.
 
