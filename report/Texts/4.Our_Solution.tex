@@ -115,15 +115,16 @@ Finally, the client sends the header along with \A{1} to the first mixnode from 
 % 1) Receive partial destination, path's nodes and partial shared secret
 % 2) First
 % 3) For each layer
-They receive from the client:
+
+To construct the partial encrypted header, each TTP receives the following information from the client:
 \begin{itemize}
-    \item a share of the destination address (EC point noted $ \Delta $);
-    \item a share of each mixnode address in the path (EC points noted $ \N{i} $);
-    \item a share of each shared secrets (integers noted $ \s{i} $);
-    \item the hash of each shared secrets (integers noted $ \sHashed{i} $).
+    \item a share of the destination address (EC point $ \Delta $);
+    \item a share of each mixnode address in the path (EC points $ \N{i} $);
+    \item a share of each shared secret (scalars $ \s{i} $);
+    \item the hash of each shared secret (scalars $ \sHashed{i} $).
 \end{itemize}
 
-The TTP constructs a partial encrypted header by layering the routing information in reverse order along the path, starting from the last mixnode, as illustrated by Figure \ref{fig:chunked_schema}.
+Using these data, the TTP builds a partial encrypted header by layering the routing information in reverse, starting from the last mixnode, as illustrated in Figure~\ref{fig:chunked_schema}.
 
 At each layer, two new chunks are introduced: the mixnode’s address (\N{i}) and the integrity tag (\C{i}).  
 To preserve a fixed-length header while allowing mixnodes to reverse the operation (as in the original design), four additional \emph{filler chunks} are appended.  
