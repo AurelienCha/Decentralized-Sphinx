@@ -13,16 +13,6 @@ Each timestamp (from $t_0$ to $t_6$) represents a point in time, showing how pac
 The packets are labeled by color (client identity) and number (message order), allowing us to visually follow how each message is mixed and relayed before reaching its destination.
 For clarity in both formulas and figures, and without loss of generality, we consider a mixnet with three layers throughout the paper.
 
-\begin{figure*}
-    \centering
-    \resizebox{1.\linewidth}{!}{\input{schema/mixnet.tex}}
-    \caption{
-        Step-by-step tracing of two clients communicating with services through a 3-layer mixnet.
-        In order to follow paths across each time step ($t_i$), packets are labeled with color and number, respectively indicating the client and message order.
-    }
-    \label{fig:mixnet}
-\end{figure*}
-
 This kind of network often relies on privacy-preserving packet format with fixed-size, such as Sphinx~\cite{sphinx}.
 %In this work, we will solely focus on the Sphinx packet format.
 Some privacy-focused companies, like Nym Technologies, commercialize an advanced mixnet services that other applications can access for a fee.

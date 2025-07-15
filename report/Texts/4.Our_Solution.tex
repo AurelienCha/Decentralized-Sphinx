@@ -17,14 +17,7 @@ This uniformity is in line with our objectives of preserving anonymity and avoid
 
 \subsection{Protocol description}
 
-The overall decentralized scheme is illustrated in Figure~\ref{fig:overall_schema}.  
-(1) The client first computes a sequence of shared secrets and then splits these secrets, along with IP addresses of the mixnodes in the path and the final destination, into $m$ shares.  
-(2) Each set of shares is sent to $m$ different TTP, along with the necessary cryptographic element (\A{}).  
-(3) Each TTP independently computes a \textit{partial} Sphinx header using the received shares.  
-(4) The client then aggregates these partial headers to reconstruct the final header. 
-(5) Finally, the client encrypts the payload accordingly to the header and sends the message through the mixnet.
-
-\begin{figure}[!b]
+\begin{figure}[t]
     \centering
     \resizebox{1.\linewidth}{!}{\input{schema/schema_overview.tex}}
     \caption{Overview of the decentralized scheme. 
@@ -35,6 +28,13 @@ The overall decentralized scheme is illustrated in Figure~\ref{fig:overall_schem
     (5) The message is sent through the mixnet.}
     \label{fig:overall_schema}
 \end{figure}
+
+The overall decentralized scheme is illustrated in Figure~\ref{fig:overall_schema}.  
+(1) The client first computes a sequence of shared secrets and then splits these secrets, along with IP addresses of the mixnodes in the path and the final destination, into $m$ shares.  
+(2) Each set of shares is sent to $m$ different TTP, along with the necessary cryptographic element (\A{}).  
+(3) Each TTP independently computes a \textit{partial} Sphinx header using the received shares.  
+(4) The client then aggregates these partial headers to reconstruct the final header. 
+(5) Finally, the client encrypts the payload accordingly to the header and sends the message through the mixnet.
 
 
 \noindent In summary, the protocol is divided into four main steps:
