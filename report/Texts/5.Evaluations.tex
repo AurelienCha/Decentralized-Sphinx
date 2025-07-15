@@ -26,7 +26,7 @@ Since both the number of chunks and layers grow linearly with $p$, the total cos
 Mixnodes follow a similar pattern, performing EC operations and hashes proportional to the number of chunks (Eq.\ref{eq:integrity_check} and Eq.\ref{eq:decrypt}), thus scaling linearly with $p$.
 Each mixnode additionally executes one reverse mapping (Eq.~\ref{eq:derive_secret}) to convert the shared secret point into an integer.
 
-\begin{table}[H]
+\begin{table}[t]
 \caption{Number of expensive cryptographic operations per party, where $ p $ is the path length and $ m $ is the number of TTPs.}
 \label{tab:operation_count}
     \begin{tabular}{lccc}
@@ -106,7 +106,8 @@ $$
 $$
 Our implementation fails only three tests: \textit{Non-overlapping Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
 In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Matching}.
-\begin{figure}[H]
+
+\begin{figure}[b]
     \centering
     \includegraphics[width=1.\linewidth]{Images/proportion_dot.png}
     \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over all the NIST SP 800-22 statistical tests (significance level = 0.01).}
@@ -150,7 +151,7 @@ Nevertheless, our implementation demonstrates a better overall balance between o
 Given the established security of the original Sphinx protocol, and considering the similarities in core structure, our results indicate that our scheme is a solid starting point toward achieving similar privacy guarantees.
 However, we emphasize that a thorough formal security analysis remains necessary to fully assess the protocol's security, which we leave for future work.
 
-\begin{table}[H]
+\begin{table}[t]
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
 \label{tab:test_summary}
     \scalebox{.85}{
