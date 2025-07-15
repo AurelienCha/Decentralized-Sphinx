@@ -22,9 +22,9 @@ This uniformity is in line with our objectives of preserving anonymity and avoid
     \resizebox{1.\linewidth}{!}{\input{schema/schema_overview.tex}}
     \caption{Overview of the decentralized scheme. 
     (1) The client selects a route and generates cryptographic secrets. 
-    (2) These are split into shares and sent to TTPs. 
+    (2) Secrets are split into shares and sent to TTPs. 
     (3) Each TTP constructs a partial header. 
-    (4) The client aggregates them into a final header. 
+    (4) The client aggregates partial headers into a final header. 
     (5) The message is sent through the mixnet.}
     \label{fig:overall_schema}
 \end{figure}
@@ -163,7 +163,7 @@ The integrity tag consists in a pseudo-random weighted sum of the chunks, offset
 The pseudo-random weights (i.e. \hashIt{\sHashed{i}}{j}) ensure binding, preventing adversaries from modifying individual chunks.
 Without these weights, an attacker could add a random point P to one chunk and subtract P from another, thereby preserving the overall sum and bypassing the integrity check.
 The secret offset (i.e. \sG{i}{}) prevents curious TTPs from correlating integrity tags.
-Since TTPs are aware of these pseudo-random weights, omitting this offset would allow them to potentially link some incoming and outgoing mixnode's packets by simply verifying integrity tags.
+Since TTPs are aware of these pseudo-random weights, omitting this offset would allow TTPs to potentially link some incoming and outgoing mixnode's packets by simply verifying integrity tags.
 \begin{equation}
 \C{i} = \sG{i}{} + \sum_{j=1}^{5} \big( \hashIt{\sHashed{i}}{j} \, \B{i}{j} \big)
 \label{eq:integrity}

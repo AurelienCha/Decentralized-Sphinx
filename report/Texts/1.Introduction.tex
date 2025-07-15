@@ -14,7 +14,7 @@ Sphinx is used in various Anonymous Communication Networks (ACNs), including Nym
 Sphinx packets are constructed by the client, who encodes all the routing information such as IP addresses and cryptographic elements within the packet header.
 While this design simplifies routing, it opens the door for malicious clients who could bias the routes and not follow the randomized path selection, reducing the overall anonymity provided by the mixnet~\cite{benguirat2022mixnet}. 
 Additionally, in systems like Nym, where users must pay a subscription fee to route messages for a specific application, users authenticate using anonymous credentials. 
-However, nothing prevents them from using the network to route traffic for an unauthorized application they have not paid for, potentially overloading the network.
+However, nothing prevents users from using the network to route traffic for an unauthorized application they have not paid for, potentially overloading the network.
 
 In this paper, we present a novel scheme to create Sphinx headers in a decentralized manner using trusted third parties, while ensuring that these parties learn nothing about the route, destination, or cryptographic secrets. 
 Having a decentralized scheme offers greater flexibility and robustness for real-world deployment and facilitates ongoing improvements of mixnet-based systems.  
