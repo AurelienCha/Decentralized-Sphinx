@@ -1,7 +1,7 @@
 \section{Evaluation}\label{sec:eval}
 
 %Our prototype implementation is available on \href{https://github.com/AurelienCha/Decentralized-Sphinx}{GitHub}\footnote{\url{https://github.com/AurelienCha/Decentralized-Sphinx}}.
-Our implementation\footnote{We will release our code under the GPL license.}
+Our implementation, which we will release our code under the GPL license,
  is written in Python 3.13 using the \href{https://pypi.org/project/ECPy/}{ECPy}\footnote{\url{https://pypi.org/project/ECPy/}} library for elliptic curve operations. 
 ECPy is well-suited for prototyping due to its simplicity, but it is significantly slower than many EC python libraries (approximately one order of magnitude slower). 
 However, it is one of the few Python libraries that support Montgomery Curve25519, which is essential for our implementation.
@@ -73,7 +73,7 @@ The \textit{Non-overlapping} version shifts the sliding window from $ m $ bits i
 The \textit{Random Walk} tests transform a binary sequence of 1s and 0s into a sequence of $+1$ (step up) and $-1$ (step down) values. 
 A truly random walk is expected to oscillate around zero.
 The simplest of these tests is the \textit{Cumulative Sums}, which iteratively computes the cumulative sums of these steps and evaluates the maximum deviation from zero compared to the expected behavior of a truly random walk.
-The \textit{Random Excursions} test counts how often each state is visited within each cycle\footnote{A cycle is a segment of the walk between two successive zero state (i.e. state where the cumulative sum equals $0$).} 
+The \textit{Random Excursions} test counts how often each state is visited within each cycle\footnote{A cycle is a segment of the walk between two successive zero states, i.e., states where the cumulative sum equals $0$.} 
 and compares this distribution with the theoretical expectations for a random walk.
 The \textit{Random Excursions Variant} counts how often each state is visited over the entire walk, rather than cycle by cycle.
 

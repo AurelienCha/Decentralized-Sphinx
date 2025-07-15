@@ -3,7 +3,8 @@
 A mix network (or mixnet) is an overlay network of servers, called mixnodes, designed to prevent adversaries from correlating senders with receivers~\cite{chaum-mix,cypherpunk-remailer,piotrowska2017loopix,nym-network-whitepaper,danezis2003mixminion, van2015vuvuzela,mixmaster-spec,chaum2016cmix}. 
 Unlike Tor~\cite{onion-routing96}, where all packets follow the same path throughout a session (circuit-based), mixnets route each packet independently along different paths (packet-based), making traffic analysis significantly harder.
 To further strengthen resistance against traffic analysis, mixnets employ techniques such as packet shuffling, reordering, and fake packets injection, aiming to resist even powerful adversaries capable of observing the entire network. 
-One of the most important features in mixnet design is the Sphinx packet format, introduced by Danezis et al.~\cite{sphinx} in 2009.
+One of the most important features in mixnet design is the Sphinx packet
+format, introduced by Danezis and Goldberg~\cite{sphinx} in 2009.
 First, Sphinx ensures that all packets are of fixed size and structure, preventing correlation through traffic analysis.
 It also employs layered encryption, ensuring that each mixnode learns only its immediate predecessor and successor, not the entire path of the packet.
 Additionally, it includes integrity checks to detect tampering. 
@@ -23,7 +24,8 @@ Having a decentralized scheme offers greater flexibility and robustness for real
 \begin{itemize}
   \item We propose a decentralized approach to Sphinx header construction;
 
-  \item We provide a Python implementation of our header construction; %to support a comprehensive evaluation of our approach in Nym or other mixnets;
+  \item We provide a Python implementation of our header construction,
+which we will release under an open-source license; %to support a comprehensive evaluation of our approach in Nym or other mixnets;
 
   \item We evaluate the unlinkability property of our decentralized construction by analyzing the randomness of the headers using the NIST SP 800-22 statistical test suite. 
   We show that our construction passes all the tests that the original Sphinx passed. 
