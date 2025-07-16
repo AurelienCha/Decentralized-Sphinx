@@ -17,7 +17,7 @@ This kind of network often relies on privacy-preserving packet format with fixed
 %In this work, we will solely focus on the Sphinx packet format.
 Some privacy-focused companies, like Nym Technologies, commercialize an advanced mixnet services that other applications can access for a fee.
 For example, if Signal is integrated with Nym, clients who want their traffic to be anonymous would route their traffic through the mixnet instead of connecting directly to the Signal server. 
-This prevents adversaries monitoring either the client’s device, the server, or any intermediate nodes, from correlating sender and recipient.
+This prevents adversaries monitoring either the client's device, the server, or any intermediate nodes, from correlating sender and recipient.
 In addition to Sphinx packets, they often improved the system with extra features such as \textit{anonymous credentials}.
 For example, each Nym client receives anonymous credentials (based on Coconut credential~\cite{coconut}) to use the mixnet for routing their traffic towards specific destinations they have paid for.
 A potential vulnerability arises when a client obtains a credential for a specific service but uses it to inject traffic directed to an unauthorized or unrelated service. 
@@ -49,7 +49,7 @@ We consider different types of adversaries:
         Our design guarantees that even if a majority of these TTPs collude, but not all of them, they learn nothing about the final destination, the route, or the cryptographic secrets.
         
         \item \textbf{Malicious Clients:} We consider clients who misuse valid credentials to build Sphinx headers targeting unauthorized services. 
-        Such misuse can typically only be detected at the mixnet’s exit gateway, where the true destination is revealed and can be checked against the credential. 
+        Such misuse can typically only be detected at the mixnet's exit gateway, where the true destination is revealed and can be checked against the credential. 
         Our decentralized scheme could enable credentials that could be verified at any step in the network.
 \end{itemize}
 Figure~\ref{fig:overall_schema} summarizes our model, which involves three types of entities: the Client, a set of Trusted Third Parties (TTPs), and the Mixnet.

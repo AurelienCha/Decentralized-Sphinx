@@ -65,7 +65,7 @@ We simply increment the seed to produce \textit{independent} generators since El
 
 A subtlety with Elligator is that it may map integers to points outside of the base generator's subgroup.
 To ensure that points remain in the generator subgroup, an extra step is required to \textit{clear the cofactor} by multiplying the resulting point by the cofactor (Curve25519's cofactor is $ 8 $).
-The final formula for generating the $ j^{th} $ chunk’s generator is:
+The final formula for generating the $ j^{th} $ chunk's generator is:
 \begin{equation}
 G_j = 8 \cdot \Map{\hash{\text{timestamp}} + j}, \quad \text{for } j = 1, \dots, 7
 \end{equation}
@@ -95,7 +95,7 @@ Using this nonce and the public keys of each mixnodes along the path, it derives
 \right.
 \label{eq:shared_secret}
 \end{equation}
-where $x_1$ is the client’s nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ mixnode, $n$ is the subgroup order (i.e. $(n+1)\G{} = \G{}$), $\|$ denotes concatenation, and subscripts $_y$ refer to the $y$-coordinate of a point. 
+where $x_1$ is the client's nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ mixnode, $n$ is the subgroup order (i.e. $(n+1)\G{} = \G{}$), $\|$ denotes concatenation, and subscripts $_y$ refer to the $y$-coordinate of a point. 
 Each scalar $r_i$ pseudo-randomizes $x_i$ for the next hop, ensuring that cryptographic elements $\A{i}$ remain unlinkable across mixnodes.
 
 IP addresses are padded with random bits and mapped to elliptic curve points via Elligator, allowing later recovery of IP addresses.
@@ -120,7 +120,7 @@ To construct the partial encrypted header, each TTP receives the following infor
 
 Using these data, the TTP builds a partial encrypted header by layering the routing information in reverse, starting from the last mixnode, as illustrated in Figure~\ref{fig:chunked_schema}.
 
-At each layer, two new chunks are introduced: the mixnode’s address (\N{i}) and the integrity tag (\C{i}).  
+At each layer, two new chunks are introduced: the mixnode's address (\N{i}) and the integrity tag (\C{i}).  
 To preserve a fixed-length header while allowing mixnodes to reverse the operation (as in the original design), four additional \emph{filler chunks} are appended.  
 These filler chunks are computed in such a way that at each layer, after applying the corresponding masking points (\sG{i}{j}\hspace{-1mm}), the last two chunks cancel out and become the identity point (i.e. point at infinity).  
 This mechanism allows these two chunks to be safely truncated at each layer, ensuring a consistent header size while preserving reversibility for mixnodes.
@@ -169,7 +169,7 @@ Since TTPs are aware of these pseudo-random weights, omitting this offset would 
 \label{eq:integrity}
 \end{equation}
 
-When the first layer is finally computed, it is appended with the integrity tag \C{1} and the first mixnode’s point $ N_1 $.
+When the first layer is finally computed, it is appended with the integrity tag \C{1} and the first mixnode's point $ N_1 $.
 Finally, the TTP returns the resulting partial header to the client.
 
 \begin{figure}[H]
@@ -217,7 +217,7 @@ This shared integer is then used to verify the integrity tag (Eq. \ref{eq:integr
 \label{eq:decrypt}
 \end{equation}
 
-The first chunk $({\BB{i}{1}})$, encodes the next mixnode’s IP address (\N{i+1}). 
+The first chunk $({\BB{i}{1}})$, encodes the next mixnode's IP address (\N{i+1}). 
 This point is mapped back to an integer using Elligator and the random padding is removed by keeping the last 128 bits (i.e. size of an IP address).
 
 \noindent The second chunk $({\BB{i}{2}})$ is the next integrity tag (\C{i+1}) for the remaining five chunks that form the new encrypted routing information $(\B{i+1}{})$.

@@ -17,7 +17,7 @@ the computationally most expensive part of the scheme.
 Direct comparison with the Sphinx scheme is not straightforward, as cryptographic primitives differ (e.g. Elligator). 
 Although such comparison is not entirely meaningful, our protocol is
 inherently more computationally intensive than the original Sphinx
-construction, and will be slower in practice.
+construction and will likely be slower in practice, which we discuss below.
 Table~\ref{tab:operation_count} counts these operations per party, considering $ m $ TTPs and path of length $ p $. 
 To compute the total cost for sending a single message, multiply the cost per TTP by $m$ and the cost per mixnode by $p$.
 % CLIENT
@@ -51,6 +51,18 @@ In practice, most mixnet implementations use paths of three to five mixnodes, ma
 Accordingly, the overall computational burden is more sensitive to the number of TTPs $m$ than to the path length $p$.
 As our design remains secure as long as one TTP is honest, only a small number $m$ may be sufficient.
 Determining the precise number needed to meet a desired trust threshold is left for future work.
+
+Regarding practical performance considerations, we expect our protocol to
+be slower than the original Sphinx header construction. The main factors
+contributing to this are the EC operations in our approach (as compared
+generation of pseudo-random numbers, hashing, and XOR operations in
+Sphinx), and the distributed nature of our header construction, which may
+introduce non-deterministic delays. Computational load on individual
+mixnodes should be on par with Sphinx. We believe that the overheads
+incurred by our header construction are worth consideration, depending on
+the type of mixnet and the specific risks incurred by fake packets or
+denial-of-service attacks, against which protection mechanisms can be
+designed for mixnets that are based on our header construction.
 
 
 \subsection{Unlinkability Evaluation}
@@ -188,7 +200,7 @@ However, we emphasize that a thorough formal security analysis remains necessary
 \end{table}
 
 At this stage, our decentralized scheme successfully achieves three key
-security and privacy objectives as outlined in~\ref{sec:sp-objectives}.
+security and privacy objectives as outlined in Section~\ref{sec:sp-objectives}.
 First, it maintains strong unlinkability, comparable to the original Sphinx.
 Second, integrity protection is verified at each mixnode, ensuring that message tampering can be reliably detected.
 Third, our scheme offers robustness against collusion among TTPs, as long as at least one remains honest, preventing them from learning any information about routing information or cryptographic secrets.
