@@ -15,7 +15,9 @@ and software, we count the number of cryptographic operations as these are
 the computationally most expensive part of the scheme.
 %\todo{Can you define \enquote{expensive}?}
 Direct comparison with the Sphinx scheme is not straightforward, as cryptographic primitives differ (e.g. Elligator). 
-Although such comparison is not entirely meaningful, our protocol is inherently more computationally intensive and will be slower in practice.
+Although such comparison is not entirely meaningful, our protocol is
+inherently more computationally intensive than the original Sphinx
+construction, and will be slower in practice.
 Table~\ref{tab:operation_count} counts these operations per party, considering $ m $ TTPs and path of length $ p $. 
 To compute the total cost for sending a single message, multiply the cost per TTP by $m$ and the cost per mixnode by $p$.
 % CLIENT
