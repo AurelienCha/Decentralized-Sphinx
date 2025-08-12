@@ -17,7 +17,7 @@
 \newcommand{\subsize}{\tiny}
 
 % Handle text and math mode consistent notation
-\newcommand{\inmath}[1]{\relax\ifmmode \size #1 \else \size $#1$\fi}
+\newcommand{\inmath}[1]{\relax\ifmmode {\size #1} \else {\size $#1$} \fi}
 \renewcommand{\index}[1]{\mathrm{\text{\subsize #1}}}
 % \renewcommand{\index}[1]{ %
 %   \ifdim \y > 2mm
@@ -53,56 +53,17 @@
 
 
 \newcommand{\at}[3]{\node at ($(#1.west) + ({#2*\x}, {-#3*\y})$)}
-% \newcommand{\blocks}[4]{
-%     \foreach \i in {0,...,#4}{%
-%         \node at ($(#1.west) + ({(#2+\i)*\x}, {-#3*\y})$) [block=1, draw] {};
-%     }
-% }
-\tikzset{
-    p1/.style = {pattern = north east lines, pattern color = color1, opacity = 0.7, text opacity=1.0},
-    p2/.style = {pattern = north west lines, pattern color = color2, fill opacity = 0.7, text opacity=1.0},
-    p3/.style = {pattern = grid, pattern color = color3, opacity = 0.7, text opacity=1.0},
-%     shape
-    block/.style={minimum width = #1*\x, minimum height = 0.85*\y, fill=background, inner sep = 0pt, anchor=west},
-%     inblock/.style={block = #1, densely dotted}, % dash pattern=on 1pt off 1pt, 
-    zero_pad/.style={block = #1, fill = unhighlight, fill opacity=0.3, font=\size},
-    HMAC/.style={draw, ellipse, fill = background, minimum width = \x, minimum height = \y, inner sep = 0pt, anchor = center},
-    eq/.style={draw, circle, inner sep=1pt, fill=lightorange, text=black, font=\size}, %font=\bfseries\large
-    arrow/.style={->, shorten <= 1pt, shorten >= 2pt},
-%     line/.style={shorten <= 1pt, shorten >= 1pt},
-%     dotline/.style={dotted},
-%     between/.style args={#1 and #2}{at = ($(#1)!0.5!(#2)$)},
+\renewcommand{\animate}[1]{#1 \only<\thebeamerpauses>{{\color{highlight}#1}}}
+\tikzset{    
+    % shape
+    block/.style={minimum width = #1*\x, minimum height = 0.85*\y, fill=background, inner sep = 0pt, anchor=west},%
+    inblock/.style={minimum width = #1*\x, minimum height = 0.85*\y, inner sep = 0pt, anchor=west},
+    zero_pad/.style={block = #1, fill = unhighlight, fill opacity=0.3, font=\size},%
+    HMAC/.style={draw, ellipse, fill = background, minimum width = \x, minimum height = \y, inner sep = 0pt, anchor = center},%
+    eq/.style={draw, circle, inner sep=1pt, fill=lightorange, text=black, font=\subsize}, %font=\bfseries\large
+    arrow/.style={->, shorten <= 1pt, shorten >= 2pt},%%    
+    p1/.style={inblock = #1, pattern = north east lines, pattern color = color1, opacity = 0.7},
+    p2/.style={inblock = #1, pattern = north west lines, pattern color = color2, opacity = 0.7},
+    p3/.style={inblock = #1, pattern = grid, pattern color = color3, opacity = 0.7},
+    unused/.style={inblock = #1, fill=unhighlight!30},
 }
-
-% % Define TikZ styles for "XOR"
-% \tikzset{    
-%     % shape
-%     block_style/.style={minimum width = #1*\width, minimum height = \height, inner sep = 0pt, anchor = west},
-%     block/.style={draw, block_style = #1},
-%     inblock/.style={ultra thin, block = #1}, % dash pattern=on 1pt off 1pt, 
-%     zero_pad/.style={block_style = #1, gray},
-%     XOR/.style={draw, circle, minimum size=1.3*\height, 
-%         append after command={
-%             [shorten >=\pgflinewidth, shorten <=\pgflinewidth,]
-%             (\tikzlastnode.north) edge (\tikzlastnode.south)
-%             (\tikzlastnode.east) edge (\tikzlastnode.west)
-%         }
-%     },
-%     MULT/.style={draw, circle, minimum size=1.3*\height,
-%         append after command={
-%             [shorten >=\pgflinewidth, shorten <=\pgflinewidth]
-%             (\tikzlastnode.north west) edge (\tikzlastnode.south east)
-%             (\tikzlastnode.north east) edge (\tikzlastnode.south west)
-%         }
-%     },
-%     HMAC/.style={draw, ellipse, minimum width = \width, minimum height = \height, inner sep = 0pt, anchor = center},
-%     arrow/.style={->, shorten <= 1pt, shorten >= 2pt},
-%     arrowB/.style={->, shorten <= 2pt, shorten >= 4pt, color = lightgray},
-%     % display
-%     gray/.style={fill = gray, fill opacity=0.3},
-%     green/.style={fill = green, fill opacity=0.3},
-%     red/.style={fill = red, fill opacity=0.3},
-%     one/.style={pattern = north east lines, pattern color = \sColor},
-%     two/.style={pattern = north west lines, pattern color = \ssColor},
-%     three/.style={pattern = grid, pattern color = \sssColor},
-% }

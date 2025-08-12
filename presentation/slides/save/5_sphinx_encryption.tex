@@ -73,7 +73,7 @@
         %% MIDDLE LAYER  %%
         %%%%%%%%%%%%%%%%%%%
 
-        \at{H3N}{0}{1.5}              (S2)        [block=7, draw]     {\S{2}};
+        \at{H3N}{0}{1.5}            (S2)        [block=7, draw]     {\S{2}};
         \at{S2}{-1}{1}              (xor2)      [XOR]               {}; 
         \node at (xor2-|S2.west)    (B2)        [block=5, draw]     {\B{2}{}};
         \at{B2}{5}{0}               (zero2)     [zero_pad=2]        {0}; 
@@ -106,7 +106,7 @@
         \at{H2N}{0}{1.5}              (S1)        [block=7, draw]     {\S{1}};
         \at{S1}{-1}{1}              (xor1)      [XOR]               {}; 
         \node at (xor1-|S1.west)    (B1)        [block=5, draw]     {\B{1}{}};
-        \at{B1}{5}{0}               (zero2)     [zero_pad=2]        {0}; 
+        \at{B1}{5}{0}               (zero1)     [zero_pad=2]        {0}; 
         
         % HMAC
         \at{B1}{-1}{1.4}        (salt1)                         {\S{1}};
