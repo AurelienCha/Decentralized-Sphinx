@@ -1,0 +1,80 @@
+
+\begin{frame}{Our Idea - Decentralized packet construction}
+
+    % \vspace{-5mm}\hspace{-5mm}
+    \begin{tikzpicture} 
+        % Client
+        \node (client) [bob, minimum size=20mm, label=below:\text{\color{gray}\large\textbf{Client}}] at (0,0) {};
+        % TTPs
+        \node (ttp1) [draw, circle, minimum width=10mm] at ($(client.north) + (-15mm, 20mm)$)  {};
+        \node (ttp2) [draw, circle, minimum width=10mm] at ($(client.north) + (0, 20mm)$) {};
+        \node (ttp3) [draw, circle, minimum width=10mm] at ($(client.north) + (15mm, 20mm)$)  {};
+        \node (ttps) [draw, densely dashed, color=gray, fit={(ttp1) (ttp3)}, rounded corners=5pt, inner sep=13pt, label=above:\text{\color{gray}\large\textbf{TTPs}}, yshift=2mm] {};
+        % Mixnet
+        \node (entry) [draw, minimum height=30mm, minimum width=8mm] at ($(client.east) + (30mm, 0)$) {};
+        \node[align=center, rotate=90] at (entry.center) {Entry gateway};
+        \node (11) [draw, circle, minimum width=7mm] at ($(entry.north east) + (10mm, -5mm)$) {};
+        \node (12) [draw, circle, minimum width=7mm] at ($(entry.east) + (10mm, 0)$) {};
+        \node (13) [draw, circle, minimum width=7mm] at ($(entry.south east) + (10mm, 5mm)$) {};
+        \node (21) [draw, circle, minimum width=7mm] at ($(11.east) + (10mm, 0)$) {};
+        \node (22) [draw, circle, minimum width=7mm] at ($(12.east) + (10mm, 0)$) {};
+        \node (23) [draw, circle, minimum width=7mm] at ($(13.east) + (10mm, 0)$) {};
+        \node (31) [draw, circle, minimum width=7mm] at ($(21.east) + (10mm, 0)$) {};
+        \node (32) [draw, circle, minimum width=7mm] at ($(22.east) + (10mm, 0)$) {};
+        \node (33) [draw, circle, minimum width=7mm] at ($(23.east) + (10mm, 0)$) {};
+        \node (exit) [draw, minimum height=30mm, minimum width=8mm] at ($(32.east) + (10mm, 0)$) {};
+        \node[align=center, rotate=90] at (exit.center) {Exit gateway};
+        \node (mixnet) [draw, densely dashed, color=gray, fit={(entry) (exit)}, rounded corners=5pt, inner sep=10pt, label=above:\text{\color{gray}\large\textbf{Mixnet}}] {};
+        % links
+        \draw (entry.east) -- (11.west);
+        \draw (entry.east) -- (12.west);
+        \draw (entry.east) -- (13.west);
+        \draw (11.east) -- (21.west);
+        \draw (11.east) -- (22.west);
+        \draw (11.east) -- (23.west);
+        \draw (12.east) -- (21.west);
+        \draw (12.east) -- (22.west);
+        \draw (12.east) -- (23.west);
+        \draw (13.east) -- (21.west);
+        \draw (13.east) -- (22.west);
+        \draw (13.east) -- (23.west);
+        \draw (21.east) -- (31.west);
+        \draw (21.east) -- (32.west);
+        \draw (21.east) -- (33.west);
+        \draw (22.east) -- (31.west);
+        \draw (22.east) -- (32.west);
+        \draw (22.east) -- (33.west);
+        \draw (23.east) -- (31.west);
+        \draw (23.east) -- (32.west);
+        \draw (23.east) -- (33.west);
+        \draw (31.east) -- (exit.west);
+        \draw (32.east) -- (exit.west);
+        \draw (33.east) -- (exit.west);
+
+
+        % Step 1
+        \draw[-Latex, gray, loop above] (client) to[out=-150,in=150,looseness=3] node[font=\small, midway, fill=white, inner sep=1pt] {(1)} (client);
+        % Step 2
+        \draw[-Latex, gray, bend left=20, shorten <= 2mm, shorten >= 1mm] ($(client.north) - (4mm, 0)$) to node[font=\small, midway, fill=white, inner sep=1pt] {(2)} (ttp1.south);
+        \draw[-Latex, gray, bend left=20, shorten <= 1mm, shorten >= 1mm] (client.north) to (ttp2.south);
+        \draw[-Latex, gray, bend left=20, shorten <= 1mm, shorten >= 1.5mm] ($(client.north) + (4mm, 0)$) to (ttp3.south);        
+        % Step 3
+        \draw[-Latex, gray, loop above] (ttp1) to[out=140,in=40,looseness=4] (ttp1);
+        \draw[-Latex, gray, loop above] (ttp2) to[out=140,in=40,looseness=4] node[yshift=-1.5mm, font=\small, midway, fill=white, inner sep=1pt] {(3)} (ttp2);
+        \draw[-Latex, gray, loop above] (ttp3) to[out=140,in=40,looseness=4] (ttp3);
+        % Step 4
+        \draw[-Latex, gray, bend right=-20, shorten <= 2mm, shorten >= 1mm] (ttp1.south) to ($(client.north) - (4mm, 0)$);
+        \draw[-Latex, gray, bend right=-20, shorten <= 1mm, shorten >= 1mm] (ttp2.south) to (client.north);
+        \draw[-Latex, gray, bend right=-20, shorten <= 1.5mm, shorten >= 1mm] (ttp3.south) to node[font=\small, midway, fill=white, inner sep=1pt] {(4)} ($(client.north) + (4mm, 0)$);
+        % Step 5
+        \draw[-Latex, gray] (client.east) to node[font=\small, midway, fill=white, inner sep=1pt] {(5)} (mixnet.west);
+
+        % Steps
+        \node (step1) [gray, xshift=5mm, yshift=7mm] at (mixnet|-ttps.north) {(1) Compute route \& shared secrets;};
+        \node (step2) [gray, anchor=west, yshift=-2.5mm] at (step1.south west) {(2) Split and share secrets;};
+        \node (step3) [gray, anchor=west, yshift=-2.5mm] at (step2.south west) {(3) Construct partial header;};
+        \node (step4) [gray, anchor=west, yshift=-2.5mm] at (step3.south west) {(4) Aggregate partial headers;};
+        \node (step5) [gray, anchor=west, yshift=-2.5mm] at (step4.south west) {(5) Send packet through the mixnet.};
+    \end{tikzpicture}
+
+\end{frame}

@@ -1,0 +1,47 @@
+\documentclass[aspectratio=1610]{beamer}
+% \documentclass[handout]{beamer} % no animation version
+
+% Theme and settings
+\usetheme{Madrid}
+\usecolortheme{seagull}
+\usepackage{amsmath, amssymb}
+\usepackage{listings}
+
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tikzpeople} 
+\input{tikz-preamble}
+
+\title{Towards a Decentralized Sphinx Header Construction}
+% \subtitle{Towards a Decentralized Sphinx Header Construction}
+\author{Aurélien Chassagne}
+\date{\today}
+% \date{February 18, 2025} % \today
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Outline slide
+% \begin{frame}{Outline}
+% \tableofcontents
+% \end{frame}
+
+\include{slides/0_plan}
+\include{slides/1_motivation}
+\include{slides/2_technologies}
+\include{slides/3_problem}
+\include{slides/4_idea}
+\include{slides/5_sphinx_decryption}
+\include{slides/5_sphinx_encryption}
+\begin{frame}{\color{red} ECC slide}
+    {\color{red} Is it neeeded ? Generator ?}
+\end{frame}
+\include{slides/6_solution}
+\include{slides/7_results}
+\include{slides/8_conclusion}
+
+\end{document}

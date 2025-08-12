@@ -1,0 +1,142 @@
+\begin{frame}{Original Sphinx - Encryption}
+    % 1) Preprocessing: XOR truncated S
+    % 2) Normal procedure (with patterns that cancel out)
+    % 3) Highlight hash -> problematic to decentralized
+    % 4) Our solution: ECC -> 1 Element = 1 points              %% TODO: ECC recap ?
+    % 5) Final header form, highlight 7 elements
+
+    \renewcommand{\y}{4mm}
+    \renewcommand{\size}{\scriptsize}
+    \renewcommand{\subsize}{\tiny}
+
+    \tikzstyle{unused} = [fill=unhighlight!30]
+    \tikzstyle{XOR} = [draw, circle, minimum size=0.7*\y, fill=background, 
+        append after command={
+            [shorten >=\pgflinewidth, shorten <=\pgflinewidth,]
+            (\tikzlastnode.north) edge (\tikzlastnode.south)
+            (\tikzlastnode.east) edge (\tikzlastnode.west)
+        }
+    ]
+
+    \begin{flushright}
+    \begin{tikzpicture}
+
+        %%%%%%%%%%%%%%%%
+        %% LAST LAYER %%
+        %%%%%%%%%%%%%%%%
+
+        \node (IP) [block=1, draw] at (0,0) {\D};
+
+        \at{IP}{0}{1}   (s3)    [block=7, draw]     {};
+        \at{IP}{0}{1}           [block=1, p3]       {};
+        \at{IP}{1}{1}           [block=6, unused]   {};
+        \node[] at (s3.center)                      {\S{3}};
+
+        \at{s3}{-2}{1}  (s2)    [block=7, draw]     {};
+        \at{s3}{-2}{1}          [block=3, unused]   {};
+        \at{s3}{1}{1}           [block=4, p2]       {};
+        \node[] at (s2.center)                      {\S{2}};
+
+        \at{s2}{-2}{1}  (s1)    [block=7, draw]     {};
+        \at{s2}{-2}{1}          [block=5, unused]   {};
+        \at{s2}{3}{1}           [block=2, p1]       {};
+        \node[] at (s1.center)                      {\S{1}};
+        
+        % XOR
+        \at{s1}{-1}{1}              (xor3)      [XOR]               {}; 
+        \node at (xor3-|IP.west)    (B3)        [block=5, draw]     {\B{3}{}};
+
+        % HMAC
+        \at{B3}{-1}{1.4}        (salt3)                         {\S{3}};
+        \at{B3}{0}{3}           (H3N)       [block=1, draw]     {\N{3}}; 
+        \at{H3N}{1}{0}          (H3C)       [block=1, draw]     {\C{3}}; 
+        \at{H3C}{1}{0}          (H3B)       [block=5, draw]     {\B{3}{}};
+        \node at (salt3-|H3C)   (H3)        [HMAC]              {\tiny HMAC};
+
+        % Arrows
+        \begin{pgfonlayer}{background}
+            \draw[arrow] (IP) -- (IP -| xor3) -- (xor3);
+            \draw[arrow] (s3) -- (s3 -| xor3) -- (xor3);
+            \draw[arrow] (s2) -- (s2 -| xor3) -- (xor3);
+            \draw[arrow] (s1) -- (s1 -| xor3) -- (xor3);
+            \draw[arrow] (xor3) -- (B3);      
+            \draw[arrow] (salt3) -- (H3);
+            \draw[arrow] (B3.south -| H3C) -- (H3C);
+            \draw[arrow] (B3) -- (H3B);
+        \end{pgfonlayer}
+
+        \begin{pgfonlayer}{background}
+            \node (box3) [fill=highlight, fill opacity=0.0, fit={(IP) (s3) (xor3) (H3B)}, rounded corners=2pt, inner sep=2pt, label=right:\rotatebox{-90}{\color{unhighlight!50}\size\textbf{Last layer}}] {};
+        \end{pgfonlayer}
+
+        %%%%%%%%%%%%%%%%%%%
+        %% MIDDLE LAYER  %%
+        %%%%%%%%%%%%%%%%%%%
+
+        \at{H3N}{0}{1.5}              (S2)        [block=7, draw]     {\S{2}};
+        \at{S2}{-1}{1}              (xor2)      [XOR]               {}; 
+        \node at (xor2-|S2.west)    (B2)        [block=5, draw]     {\B{2}{}};
+        \at{B2}{5}{0}               (zero2)     [zero_pad=2]        {0}; 
+        
+        % HMAC
+        \at{B2}{-1}{1.4}        (salt2)                         {\S{2}};
+        \at{B2}{0}{3}           (H2N)       [block=1, draw]     {\N{2}}; 
+        \at{H2N}{1}{0}          (H2C)       [block=1, draw]     {\C{2}}; 
+        \at{H2C}{1}{0}          (H2B)       [block=5, draw]     {\B{2}{}};
+        \node at (salt2-|H2C)   (H2)        [HMAC]              {\tiny HMAC};
+
+        % Arrows
+        \begin{pgfonlayer}{background}
+            \draw[arrow] (H3N) -- (H3N -| xor2) -- (xor2);
+            \draw[arrow] (S2) -- (S2 -| xor2) -- (xor2);
+            \draw[arrow] (xor2) -- (B2);      
+            \draw[arrow] (salt2) -- (H2);
+            \draw[arrow] (B2.south -| H2C) -- (H2C);
+            \draw[arrow] (B2) -- (H2B);
+        \end{pgfonlayer}
+
+        \begin{pgfonlayer}{background}
+            \node (box2) [fill=highlight, fill opacity=0.1, fit={(S2) (xor2) (H2B)}, rounded corners=2pt, inner sep=2pt, label=right:\rotatebox{-90}{\color{highlight!50}\size\textbf{Middle layer}}] {};
+        \end{pgfonlayer}
+
+        %%%%%%%%%%%%%%%%%%
+        %% FIRST LAYER  %%
+        %%%%%%%%%%%%%%%%%%
+
+        \at{H2N}{0}{1.5}              (S1)        [block=7, draw]     {\S{1}};
+        \at{S1}{-1}{1}              (xor1)      [XOR]               {}; 
+        \node at (xor1-|S1.west)    (B1)        [block=5, draw]     {\B{1}{}};
+        \at{B1}{5}{0}               (zero2)     [zero_pad=2]        {0}; 
+        
+        % HMAC
+        \at{B1}{-1}{1.4}        (salt1)                         {\S{1}};
+        \at{B1}{0}{3}           (H1N)       [block=1, draw]     {\N{1}}; 
+        \at{H1N}{1}{0}          (H1C)       [block=1, draw]     {\C{1}}; 
+        \at{H1C}{1}{0}          (H1B)       [block=5, draw]     {\B{1}{}};
+        \node at (salt1-|H1C)   (H1)        [HMAC]              {\tiny HMAC};
+
+        % Arrows
+        \begin{pgfonlayer}{background}
+            \draw[arrow] (H2N) -- (H2N -| xor1) -- (xor1);
+            \draw[arrow] (S1) -- (S1 -| xor1) -- (xor1);
+            \draw[arrow] (xor1) -- (B1);      
+            \draw[arrow] (salt1) -- (H1);
+            \draw[arrow] (B1.south -| H1C) -- (H1C);
+            \draw[arrow] (B1) -- (H1B);
+        \end{pgfonlayer}
+
+        \begin{pgfonlayer}{background}
+            \node (box1) [fill=highlight, fill opacity=0.0, fit={(S1) (xor1) (H1B)}, rounded corners=2pt, inner sep=2pt, label=right:\rotatebox{-90}{\color{unhighlight!50}\size\textbf{First layer}}] {};
+        \end{pgfonlayer}
+
+        %%%%%%%%%%%
+        %% OTHER %%
+        %%%%%%%%%%% 
+        \begin{pgfonlayer}{background}
+            % Separators
+            \node (mid32) at ($(H3N)!0.5!(S2)$) {}; \draw (mid32-|{$(box2.west)-(2mm,0)$}) -- (mid32-|{$(box2.east)+(4mm,0)$}) [densely dotted, color=unhighlight!50, line width=1pt];
+            \node (mid21) at ($(H2N)!0.5!(S1)$) {}; \draw (mid21-|{$(box2.west)-(2mm,0)$}) -- (mid21-|{$(box2.east)+(4mm,0)$}) [densely dotted, color=unhighlight!50, line width=1pt];
+        \end{pgfonlayer}
+    \end{tikzpicture}
+    \end{flushright}
+\end{frame}
