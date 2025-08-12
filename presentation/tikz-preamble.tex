@@ -57,11 +57,12 @@
 \tikzset{    
     % shape
     block/.style={minimum width = #1*\x, minimum height = 0.85*\y, fill=background, inner sep = 0pt, anchor=west},%
-    inblock/.style={minimum width = #1*\x, minimum height = 0.85*\y, inner sep = 0pt, anchor=west},
+    inblock/.style={minimum width = #1*\x - 0.5pt, minimum height = 0.85*\y - 1pt, xshift=0.25pt, inner sep = 0pt, anchor=west},
     zero_pad/.style={block = #1, fill = unhighlight, fill opacity=0.3, font=\size},%
     HMAC/.style={draw, ellipse, fill = background, minimum width = \x, minimum height = \y, inner sep = 0pt, anchor = center},%
     eq/.style={draw, circle, inner sep=1pt, fill=lightorange, text=black, font=\subsize}, %font=\bfseries\large
     arrow/.style={->, shorten <= 1pt, shorten >= 2pt},%%    
+    % Color
     p1/.style={inblock = #1, pattern = north east lines, pattern color = color1, opacity = 0.7},
     p2/.style={inblock = #1, pattern = north west lines, pattern color = color2, opacity = 0.7},
     p3/.style={inblock = #1, pattern = grid, pattern color = color3, opacity = 0.7},
