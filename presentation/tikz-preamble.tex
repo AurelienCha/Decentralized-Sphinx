@@ -54,6 +54,26 @@
 
 \newcommand{\at}[3]{\node at ($(#1.west) + ({#2*\x}, {-#3*\y})$)}
 \renewcommand{\animate}[1]{#1 \only<\thebeamerpauses>{{\color{highlight}#1}}}
+\renewcommand{\t}{\thebeamerpauses}
+
+\newcommand{\patternA}[3]{ 
+    \node at ($(#1.west) + ({#2*\x - \x}, 0)$) [p1=#3] {};
+    \node at ($(#1.west) + ({#2*\x - \x}, 0)$) [c1=#3] {};
+}
+\newcommand{\patternB}[3]{ 
+    \node at ($(#1.west) + ({#2*\x - \x}, 0)$) [p2=#3] {};
+    \node at ($(#1.west) + ({#2*\x - \x}, 0)$) [c2=#3] {};
+}
+\newcommand{\patternC}[3]{ 
+    \node at ($(#1.west) + ({#2*\x - \x}, 0)$) [p3=#3] {};
+    \node at ($(#1.west) + ({#2*\x - \x}, 0)$) [c3=#3] {};
+}
+\renewcommand{\patterns}[7]{ 
+    \patternA{#1}{#2}{#3}
+    \patternB{#1}{#4}{#5}
+    \patternC{#1}{#6}{#7}
+}
+
 \tikzset{    
     % shape
     block/.style={minimum width = #1*\x, minimum height = 0.85*\y, fill=background, inner sep = 0pt, anchor=west},%
@@ -63,8 +83,12 @@
     eq/.style={draw, circle, inner sep=1pt, fill=lightorange, text=black, font=\subsize}, %font=\bfseries\large
     arrow/.style={->, shorten <= 1pt, shorten >= 2pt},%%    
     % Color
-    p1/.style={inblock = #1, pattern = north east lines, pattern color = color1, opacity = 0.7},
-    p2/.style={inblock = #1, pattern = north west lines, pattern color = color2, opacity = 0.7},
-    p3/.style={inblock = #1, pattern = grid, pattern color = color3, opacity = 0.7},
+    p1/.style={inblock = #1, pattern = {Lines[angle=45, distance=3pt, line width=1pt, xshift=  0pt]}, pattern color = color1, opacity = 0.2},
+    p2/.style={inblock = #1, pattern = {Lines[angle=45, distance=3pt, line width=1pt, xshift=1.5pt]}, pattern color = color2, opacity = 0.2},
+    p3/.style={inblock = #1, pattern = {Lines[angle=45, distance=3pt, line width=1pt, xshift=  3pt]}, pattern color = color3, opacity = 0.2},
+    c1/.style={inblock = #1,                                      fill = color1, opacity = 0.1},
+    c2/.style={inblock = #1,                                      fill = color2, opacity = 0.1},
+    c3/.style={inblock = #1,                                      fill = color3, opacity = 0.1},
     unused/.style={inblock = #1, fill=unhighlight!30},
 }
+
