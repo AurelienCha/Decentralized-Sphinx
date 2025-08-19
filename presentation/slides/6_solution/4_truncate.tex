@@ -1,0 +1,165 @@
+%%%%%%%%%%%%%%%%%%%
+%% PREPROCESSING %%
+%%%%%%%%%%%%%%%%%%%
+
+\node (IP) [block=1, draw] at (0,0) {\D};
+\blockC{IP}{0}{1}   (s3)    {\S{3}{1}};
+\blockN{s3}{1}{0}            {\sG{3}{2}};
+\blockN{s3}{2}{0}            {\sG{3}{3}};
+\blockN{s3}{3}{0}            {\sG{3}{4}};
+\blockN{s3}{4}{0}           {\sG{3}{5}};
+\blockN{s3}{5}{0}           {\sG{3}{6}};
+\blockN{s3}{6}{0}           {\sG{3}{7}};
+
+\blockN{s3}{-2}{1}  (s2)    {\sG{2}{1}};
+\blockN{s2}{1}{0}           {\sG{2}{2}};
+\blockN{s2}{2}{0}           {\sG{2}{3}};
+\blockB{s2}{3}{0}           {\sG{2}{4}};
+\blockB{s2}{4}{0}           {\sG{2}{5}};
+\blockB{s2}{5}{0}           {\sG{2}{6}};
+\blockB{s2}{6}{0}           {\sG{2}{7}};
+
+\blockN{s2}{-2}{1}  (s1)    {\sG{1}{1}};
+\blockN{s1}{1}{0}           {\sG{1}{2}};
+\blockN{s1}{2}{0}           {\sG{1}{3}};
+\blockN{s1}{3}{0}           {\sG{1}{4}};
+\blockN{s1}{4}{0}           {\sG{1}{5}};
+\blockA{s1}{5}{0}           {\sG{1}{6}};
+\blockA{s1}{6}{0}           {\sG{1}{7}};
+
+\blockC{IP}{0}{4}       (B31)      {\B{3}{1}};
+\blockAB{B31}{1}{0}      (B32)      {\B{3}{2}};
+\blockAB{B31}{2}{0}      (B33)      {\B{3}{3}};
+\blockB{B31}{3}{0}      (B34)      {\B{3}{4}};
+\blockB{B31}{4}{0}      (B35)      {\B{3}{5}};
+
+\block{B31}{0}{3}      (H3N)       {\N{3}}; 
+\block{H3N}{1}{0}      (H3C)       {\C{3}}; 
+\blockC{H3N}{2}{0}      (H3B1)      {\B{3}{1}};
+\blockAB{H3N}{3}{0}      (H3B2)      {\B{3}{2}};
+\blockAB{H3N}{4}{0}      (H3B3)      {\B{3}{3}};
+\blockB{H3N}{5}{0}      (H3B4)      {\B{3}{4}};
+\blockB{H3N}{6}{0}      (H3B5)      {\B{3}{5}};
+
+% XOR
+\at{B31}{-5}{0} (xor3) [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor3.north) -- (xor3.south); \draw (xor3.west) -- (xor3.east);
+    
+\draw[arrow] (IP) -- (IP -| xor3) -- (xor3);
+\draw[shorten <= 1pt] (s3) -- (s3 -| xor3);
+\draw[shorten <= 1pt] (s2) -- (s2 -| xor3);
+\draw[shorten <= 1pt] (s1) -- (s1 -| xor3);
+\draw[arrow] (xor3) -- (B31);
+
+% HMAC
+\at{B31}{-1}{1.4}               (salt3)                             {\S{3}{}};
+\node at (salt3-|B32)           (HMAC3)            [HMAC]           {\tiny HMAC};
+\draw[arrow] (salt3) -- (HMAC3);
+\draw[arrow] (HMAC3.south) -- (H3C);
+\draw[decorate, decoration={brace, amplitude=3pt, mirror, aspect=0.3, raise=2pt}] (B31.south west) -- (B35.south east);
+
+% ARROWS
+\begin{pgfonlayer}{background}
+    \draw[->, dashed, very thin, color=unhighlight!80] (B31.south) -- ([xshift=-1pt, yshift=+1pt] H3B1.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B32.south) -- ([xshift=-1pt, yshift=+1pt] H3B2.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B33.south) -- ([xshift=-1pt, yshift=+1pt] H3B3.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B34.south) -- ([xshift=-1pt, yshift=+1pt] H3B4.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B35.south) -- ([xshift=-1pt, yshift=+1pt] H3B5.north);
+\end{pgfonlayer}
+
+%%%%%%%%%%%%%%%%%%%
+%% MIDDLE LAYER  %%
+%%%%%%%%%%%%%%%%%%%
+
+\blockB{H3N}{0}{1}   (S2)    {\sG{2}{1}};
+\blockB{S2}{1}{0}            {\sG{2}{2}};
+\blockB{S2}{2}{0}            {\sG{2}{3}};
+\blockB{S2}{3}{0}            {\sG{2}{4}};
+\blockB{S2}{4}{0}            {\sG{2}{5}};
+\blockB{S2}{5}{0}            {\sG{2}{6}};
+\blockB{S2}{6}{0}            {\sG{2}{7}};
+
+\blockB{S2}{0}{1}    (B21)   {\B{2}{1}};
+\blockB{B21}{1}{0}   (B22)   {\B{2}{2}};
+\blockBC{B21}{2}{0}   (B23)   {\B{2}{3}};
+\blockA{B21}{3}{0}   (B24)   {\B{2}{4}};
+\blockA{B21}{4}{0}   (B25)   {\B{2}{5}};
+    \at{B21}{5}{0}   (zero2) [zero_pad=2] {0};
+
+\block{B21}{0}{3}          (H2N)        {\N{2}}; 
+\block{H2N}{1}{0}          (H2C)        {\C{2}}; 
+\blockB{H2N}{2}{0}          (H2B1)       {\B{2}{1}};
+\blockB{H2N}{3}{0}          (H2B2)       {\B{2}{2}};
+\blockBC{H2N}{4}{0}          (H2B3)       {\B{2}{3}};
+\blockA{H2N}{5}{0}          (H2B4)       {\B{2}{4}};
+\blockA{H2N}{6}{0}          (H2B5)       {\B{2}{5}};
+
+% XOR
+\at{B21}{-1}{0} (xor2) [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor2.north) -- (xor2.south); \draw (xor2.west) -- (xor2.east); 
+\draw[arrow] (H3N) -- (H3N -| xor2) -- (xor2);
+\draw[arrow] (S2) -- (S2 -| xor2) -- (xor2);
+\draw[arrow] (xor2) -- (B21);
+
+% HMAC
+\at{B21}{-1}{1.4}               (salt2)                             {\S{2}{}};
+\node at (salt2-|B22)           (HMAC2)            [HMAC]           {\tiny HMAC};
+\draw[arrow] (salt2) -- (HMAC2);
+\draw[arrow] (HMAC2.south) -- (H2C);
+\draw [decorate, decoration={brace, amplitude=3pt, mirror, aspect=0.3, raise=2pt}] (B21.south west) -- (B25.south east);
+
+% Arrows
+\begin{pgfonlayer}{background}
+    \draw[->, dashed, very thin, color=unhighlight!80] (B21.south) -- ([xshift=-1pt, yshift=+1pt] H2B1.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B22.south) -- ([xshift=-1pt, yshift=+1pt] H2B2.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B23.south) -- ([xshift=-1pt, yshift=+1pt] H2B3.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B24.south) -- ([xshift=-1pt, yshift=+1pt] H2B4.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B25.south) -- ([xshift=-1pt, yshift=+1pt] H2B5.north);
+\end{pgfonlayer}
+
+%%%%%%%%%%%%%%%%%%
+%% FIRST LAYER  %%
+%%%%%%%%%%%%%%%%%%
+
+\blockA{H2N}{0}{1}  (S1)     {\sG{1}{1}};
+\blockA{S1}{1}{0}            {\sG{1}{2}};
+\blockA{S1}{2}{0}            {\sG{1}{3}};
+\blockA{S1}{3}{0}            {\sG{1}{4}};
+\blockA{S1}{4}{0}            {\sG{1}{5}};
+\blockA{S1}{5}{0}            {\sG{1}{6}};
+\blockA{S1}{6}{0}            {\sG{1}{7}};
+
+\blockA{S1}{0}{1}    (B11)       {\B{1}{1}};
+\blockA{B11}{1}{0}   (B12)       {\B{1}{2}};
+\blockAB{B11}{2}{0}   (B13)       {\B{1}{3}};
+\blockAB{B11}{3}{0}   (B14)       {\B{1}{4}};
+\blockABC{B11}{4}{0}   (B15)       {\B{1}{5}};
+        \at{B11}{5}{0}   (zero1) [zero_pad=2] {0};
+
+\block{B11}{0}{3}          (H1N)        {\N{1}}; 
+\block{H1N}{1}{0}          (H1C)        {\C{1}}; 
+\blockA{H1N}{2}{0}          (H1B1)       {\B{1}{1}};
+\blockA{H1N}{3}{0}          (H1B2)       {\B{1}{2}};
+\blockAB{H1N}{4}{0}          (H1B3)       {\B{1}{3}};
+\blockAB{H1N}{5}{0}          (H1B4)       {\B{1}{4}};
+\blockABC{H1N}{6}{0}          (H1B5)       {\B{1}{5}};
+
+% XOR
+\at{B11}{-1}{0} (xor1) [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor1.north) -- (xor1.south); \draw (xor1.west) -- (xor1.east); 
+\draw[arrow] (H2N) -- (H2N -| xor1) -- (xor1);
+\draw[arrow] (S1) -- (S1 -| xor1) -- (xor1);
+\draw[arrow] (xor1) -- (B11);
+
+% HMAC
+\at{B11}{-1}{1.4}               (salt1)                             {\S{1}{}};
+\node at (salt1-|B12)           (HMAC1)            [HMAC]           {\tiny HMAC};
+\draw[arrow] (salt1) -- (HMAC1);
+\draw[arrow] (HMAC1.south) -- (H1C);
+\draw [decorate, decoration={brace, amplitude=3pt, mirror, aspect=0.3, raise=2pt}] (B11.south west) -- (B15.south east);
+
+% Arrows
+\begin{pgfonlayer}{background}
+    \draw[->, dashed, very thin, color=unhighlight!80] (B11.south) -- ([xshift=-1pt, yshift=+1pt] H1B1.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B12.south) -- ([xshift=-1pt, yshift=+1pt] H1B2.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B13.south) -- ([xshift=-1pt, yshift=+1pt] H1B3.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B14.south) -- ([xshift=-1pt, yshift=+1pt] H1B4.north);
+    \draw[->, dashed, very thin, color=unhighlight!80] (B15.south) -- ([xshift=-1pt, yshift=+1pt] H1B5.north);
+\end{pgfonlayer}

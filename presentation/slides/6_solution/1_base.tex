@@ -1,0 +1,118 @@
+%%%%%%%%%%%%%%%%
+%% LAST LAYER %%
+%%%%%%%%%%%%%%%%
+
+\node (IP) [block=1, draw] at (0,0) {\D};
+
+\at{IP}{0}{1}   (s3)    [block=7, draw]     {\S{3}{}};
+\at{IP}{0}{1}           [p3=1]       {};
+\at{IP}{0}{1}           [c3=1]       {};
+\at{IP}{1}{1}           [unused=6]   {};
+\node[] at (s3.center)                      {\S{3}{}};
+
+\at{s3}{-2}{1}  (s2)    [block=7, draw]     {};
+\at{s3}{-2}{1}          [unused=3]   {};
+\at{s3}{1}{1}           [p2=4]       {};
+\at{s3}{1}{1}           [c2=4]       {};
+\node[] at (s2.center)                      {\S{2}{}};
+
+\at{s2}{-2}{1}  (s1)    [block=7, draw]     {};
+\at{s2}{-2}{1}          [unused=5]   {};
+\at{s2}{3}{1}           [p1=2]       {};
+\at{s2}{3}{1}           [c1=2]       {};
+\node[] at (s1.center)                      {\S{1}{}};
+
+% XOR
+\at{s1}{-1}{1} (xor3) [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor3.north) -- (xor3.south); \draw (xor3.west) -- (xor3.east); 
+\draw[arrow] (IP) -- (IP -| xor3) -- (xor3);
+\draw[shorten <= 1pt] (s3) -- (s3 -| xor3);
+\draw[shorten <= 1pt] (s2) -- (s2 -| xor3);
+\draw[shorten <= 1pt] (s1) -- (s1 -| xor3);
+\node at (xor3-|IP.west)                      (B3)        [block=5, draw]     {\B{3}{}};   
+\patterns{B3}{2}{2}{2}{4}{1}{1}
+\draw[arrow] (xor3) -- (B3);                                          
+
+\at{B3}{2}{3}                                 (H3B)       [block=5, draw]     {\B{3}{}};
+\draw[arrow] (B3) -- (H3B);
+\patterns{H3B}{2}{2}{2}{4}{1}{1}
+
+% HMAC
+\at{B3}{-1}{1.4}                              (salt3)                             {\S{3}{}};
+\at{B3}{1}{3}                                 (H3C)           [block=1, draw]     {\C{3}};
+\draw[arrow] (B3.south -| H3C) -- (H3C);
+\node at (salt3-|H3C)                         (H3)            [HMAC]              {\tiny HMAC};
+\draw[arrow] (salt3) -- (H3);
+
+\at{B3}{0}{3}                                 (H3N)       [block=1, draw]     {\N{3}};
+
+%%%%%%%%%%%%%%%%%%%
+%% MIDDLE LAYER  %%
+%%%%%%%%%%%%%%%%%%%
+
+\at{H3N}{0}{1}              (S2)        [block=7, draw]     {{\color{black}\S{2}{}}};      
+\patternB{S2}{1}{7}                    
+\at{S2}{-1}{1}              (xor2)      [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor2.north) -- (xor2.south); \draw (xor2.west) -- (xor2.east);
+\draw[arrow] (H3N) -- (H3N -| xor2) -- (xor2);
+\draw[shorten <= 1pt] (S2) -- (S2 -| xor2);
+\node at (xor2-|S2.west)                      (B2)        [block=5, draw]     {\B{2}{}};
+\draw[arrow] (xor2) -- (B2);
+\patterns{B2}{4}{2}{1}{3}{3}{1}
+\at{B2}{5}{0}                                           (zero2)     [zero_pad=2]        {0};
+
+\at{B2}{2}{3}                                 (H2B)       [block=5, draw]     {\B{2}{}};
+\draw[arrow] (B2) -- (H2B);
+\patterns{H2B}{4}{2}{1}{3}{3}{1}
+
+% HMAC
+\at{B2}{-1}{1.4}                              (salt2)                         {\S{2}{}};
+\at{B2}{1}{3}                                 (H2C)       [block=1, draw]     {\C{2}}; 
+\draw[arrow] (B2.south -| H2C) -- (H2C);
+\node at (salt2-|H2C)                         (H2)        [HMAC]              {\tiny HMAC};
+\draw[arrow] (salt2) -- (H2);
+
+\at{B2}{0}{3}                                 (H2N)       [block=1, draw]     {\N{2}};
+
+%%%%%%%%%%%%%%%%%%
+%% FIRST LAYER  %%
+%%%%%%%%%%%%%%%%%%
+
+\at{H2N}{0}{1}              (S1)        [block=7, draw]     {{\color{black}\S{1}{}}};     
+\patternA{S1}{1}{7}                    
+\at{S1}{-1}{1}              (xor1)      [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor1.north) -- (xor1.south); \draw (xor1.west) -- (xor1.east); 
+\draw[arrow] (H2N) -- (H2N -| xor1) -- (xor1);
+\draw[shorten <= 1pt] (S1) -- (S1 -| xor1);
+\node at (xor1-|S1.west)                      (B1)        [block=5, draw]     {\B{1}{}}; 
+\draw[arrow] (xor1) -- (B1);   
+\patterns{B1}{1}{5}{3}{3}{5}{1}
+\at{B1}{5}{0}                                           (zero1)     [zero_pad=2]        {0}; 
+
+\at{B1}{2}{3}                                 (H1B)       [block=5, draw]     {}; 
+\draw[arrow] (B1) -- (H1B);
+\patterns{H1B}{1}{5}{3}{3}{5}{1}
+
+% HMAC
+\at{B1}{-1}{1.4}                              (salt1)                         {\S{1}{}};
+\at{B1}{1}{3}                                 (H1C)       [block=1, draw]     {\C{1}}; 
+\draw[arrow] (B1.south -| H1C) -- (H1C);
+\node at (salt1-|H1C)                         (H1)        [HMAC]              {\tiny HMAC};
+\draw[arrow] (salt1) -- (H1);
+
+\at{B1}{0}{3}                                 (H1N)       [block=1, draw]     {\N{1}}; 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\slide{0}{
+    \at{H1B}{0.5}{0} {\N{2}};
+    \at{H1B}{1.5}{0} {\C{2}};
+    \at{H1B}{2.5}{0} {\N{3}};
+    \at{H1B}{3.5}{0} {\C{3}};
+    \at{H1B}{4.5}{0} {\D};
+}
+\incrementAnimation
+\slide{1}{
+    \at{H1B}{0}{0} [block=1, draw] {\N{2}};
+    \at{H1B}{1}{0} [block=1, draw] {\C{2}};
+    \at{H1B}{2}{0} [block=1, draw] {\N{3}};
+    \at{H1B}{3}{0} [block=1, draw] {\C{3}};
+    \at{H1B}{4}{0} [block=1, draw] {\D};
+}
