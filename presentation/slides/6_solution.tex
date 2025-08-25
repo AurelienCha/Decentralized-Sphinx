@@ -9,13 +9,15 @@
     % 3) XOR -> ECC addition and substraction
     % 4) HMAC -> integrity check
 
-    \renewcommand{\y}{4mm}
+    \renewcommand{\x}{7mm}
+    \renewcommand{\y}{4mm} 
     \renewcommand{\size}{\scriptsize}
     \renewcommand{\subsize}{\tiny}
 
     \begin{flushright}
     \begin{tikzpicture}
-        \node at (0,-204pt) {}; % for common alignement
+        \size
+        \node at (140pt, -204pt) {}; % for common alignement
         
         \updatebeamerpauses{1}
         \only<1-2>{\input{slides/6_solution/1_base.tex}}
@@ -25,6 +27,11 @@
         \only<4-7>{\input{slides/6_solution/3_generators.tex}}
         \updatebeamerpauses{8}
         \only<8-10>{\input{slides/6_solution/4_truncate.tex}}
+        \updatebeamerpauses{11}
+        \only<11-13>{\input{slides/6_solution/5_xor.tex}}
+        \updatebeamerpauses{14}
+        \only<14-16>{\input{slides/6_solution/6_hmac.tex}}
+        \only<17>{\input{slides/6_solution/7_final.tex}}
 
     \end{tikzpicture}
     \end{flushright}

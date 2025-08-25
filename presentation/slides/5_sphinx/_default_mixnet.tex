@@ -1,0 +1,30 @@
+\begin{tikzpicture}
+
+  % GENERAL ARCHITECTURE (define nodes)
+  \node (source) at (1,0) {\computer{unhighlight}};
+
+  \node (mix11) at (3,-0.6) [draw, circle, minimum size=7mm] {};
+  \node (mix12) at (3, 0.6) [draw, circle, minimum size=7mm] {};
+  \node (mix21) at (5,-0.6) [draw, circle, minimum size=7mm] {};
+  \node (mix22) at (5, 0.6) [draw, circle, minimum size=7mm] {};
+  \node (mix31) at (7,-0.6) [draw, circle, minimum size=7mm] {};
+  \node (mix32) at (7, 0.6) [draw, circle, minimum size=7mm] {};
+
+  \node (destination) at (9, 0) {\computer{unhighlight}};
+
+  % LINKS
+
+  \draw[mixarrow] (source.east) -- (mix11.west);
+  \draw[mixarrow] (source.east) -- (mix12.west);
+  \draw[mixarrow] (mix11.east) -- (mix21.west);
+  \draw[mixarrow] (mix11.east) -- (mix22.west);
+  \draw[mixarrow] (mix12.east) -- (mix21.west);
+  \draw[mixarrow] (mix12.east) -- (mix22.west);
+  \draw[mixarrow] (mix21.east) -- (mix31.west);
+  \draw[mixarrow] (mix21.east) -- (mix32.west);
+  \draw[mixarrow] (mix22.east) -- (mix31.west);
+  \draw[mixarrow] (mix22.east) -- (mix32.west);
+  \draw[mixarrow] (mix31.east) -- (destination.west);
+  \draw[mixarrow] (mix32.east) -- (destination.west);
+
+\end{tikzpicture}

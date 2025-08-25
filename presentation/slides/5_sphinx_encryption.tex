@@ -5,16 +5,16 @@
     % 4) Our solution: ECC -> 1 Element = 1 points              %% TODO: ECC recap ?
     % 5) Final header form, highlight 7 elements
 
-    \renewcommand{\y}{4mm}
+    \renewcommand{\x}{7mm}
+    \renewcommand{\y}{4mm} 
     \renewcommand{\size}{\scriptsize}
     \renewcommand{\subsize}{\tiny}
+    \updatebeamerpauses{1}
 
     \begin{flushright}
     \begin{tikzpicture}
         \size
-        \node at (0,-204pt) {}; % for common alignement
-        % Overfull \vbox (88.39871pt too high)
-        % Overfull \vbox (59.94597pt too high)
+        \node at (140pt, -204pt) {}; % for common alignement
 
         %%%%%%%%%%%%%%%%
         %% LAST LAYER %%
@@ -23,53 +23,55 @@
         \node (IP) [block=1, draw] at (0,0) {\D};
         \incrementAnimation
 
-        \at{IP}{0}{1}   (s3)    [block=7, draw]     {\S{3}{}};
-        \incrementAnimation
-        \at{IP}{0}{1}           [p3=1]       {};
-        \at{IP}{0}{1}           [c3=1]       {};
-        \at{IP}{1}{1}           [unused=6]   {};
-        \node[] at (s3.center)                      {\S{3}{}};
-        \incrementAnimation
+        \highlightEnter{
+            \at{IP}{0}{1}   (s3)    [block=7, draw]     {\S{3}{}};
+            \incrementAnimation
+            \at{IP}{0}{1}           [p3=1]       {};
+            \at{IP}{0}{1}           [c3=1]       {};
+            \at{IP}{1}{1}           [unused=6]   {};
+            \node[] at (s3.center)                      {\S{3}{}};
+            \incrementAnimation
 
-        \at{s3}{-2}{1}  (s2)    [block=7, draw]     {};
-        \at{s3}{-2}{1}          [unused=3]   {};
-        \at{s3}{1}{1}           [p2=4]       {};
-        \at{s3}{1}{1}           [c2=4]       {};
-        \node[] at (s2.center)                      {\S{2}{}};
+            \at{s3}{-2}{1}  (s2)    [block=7, draw]     {};
+            \at{s3}{-2}{1}          [unused=3]   {};
+            \at{s3}{1}{1}           [p2=4]       {};
+            \at{s3}{1}{1}           [c2=4]       {};
+            \node[] at (s2.center)                      {\S{2}{}};
 
-        \at{s2}{-2}{1}  (s1)    [block=7, draw]     {};
-        \at{s2}{-2}{1}          [unused=5]   {};
-        \at{s2}{3}{1}           [p1=2]       {};
-        \at{s2}{3}{1}           [c1=2]       {};
-        \node[] at (s1.center)                      {\S{1}{}};
-        \incrementAnimation
+            \at{s2}{-2}{1}  (s1)    [block=7, draw]     {};
+            \at{s2}{-2}{1}          [unused=5]   {};
+            \at{s2}{3}{1}           [p1=2]       {};
+            \at{s2}{3}{1}           [c1=2]       {};
+            \node[] at (s1.center)                      {\S{1}{}};
+            \incrementAnimation
+        }
         
         % XOR
-        \highlightAnimation{ \at{s1}{-1}{1} (xor3) [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor3.north) -- (xor3.south); \draw (xor3.west) -- (xor3.east); } 
-        \highlightAnimation{ \draw[arrow] (IP) -- (IP -| xor3) -- (xor3); }
-        \highlightAnimation{ \draw[shorten <= 1pt] (s3) -- (s3 -| xor3); }
-        \highlightAnimation{ \draw[shorten <= 1pt] (s2) -- (s2 -| xor3); }
-        \highlightAnimation{ \draw[shorten <= 1pt] (s1) -- (s1 -| xor3); }
+        \highlightEnter{ \at{s1}{-1}{1} (xor3) [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor3.north) -- (xor3.south); \draw (xor3.west) -- (xor3.east); } 
+        \highlightEnter{ \draw[arrow] (IP) -- (IP -| xor3) -- (xor3); }
+        \highlightEnter{ \draw[shorten <= 1pt] (s3) -- (s3 -| xor3); }
+        \highlightEnter{ \draw[shorten <= 1pt] (s2) -- (s2 -| xor3); }
+        \highlightEnter{ \draw[shorten <= 1pt] (s1) -- (s1 -| xor3); }
         \incrementAnimation
-        \highlightAnimation{ \node at (xor3-|IP.west)                      (B3)        [block=5, draw]     {\only<-22>{{\color{black}\B{3}{}}}}; }   
-        \highlightAnimation{ \patterns{B3}{2}{2}{2}{4}{1}{1} }
-        \highlightAnimation{ \draw[arrow] (xor3) -- (B3); }                                          
+        \highlightEnter{ \node at (xor3-|IP.west)                      (B3)        [block=5, draw]     {\only<-22>{{\color{black}\B{3}{}}}}; }   
+        \highlightEnter{ \patterns{B3}{2}{2}{2}{4}{1}{1} }
+        \highlightEnter{ \draw[arrow] (xor3) -- (B3); }                                          
         \incrementAnimation
 
-        \highlightAnimation{ \at{B3}{2}{3}                                 (H3B)       [block=5, draw]     {\only<-22>{{\color{black}\B{3}{}}}}; }
-        \highlightAnimation{ \draw[arrow] (B3) -- (H3B); }
-        \highlightAnimation{ \patterns{H3B}{2}{2}{2}{4}{1}{1} }
+        \highlightEnter{ \at{B3}{2}{3}                                 (H3B)       [block=5, draw]     {\only<-22>{{\color{black}\B{3}{}}}}; }
+        \highlightEnter{ \draw[arrow] (B3) -- (H3B); }
+        \highlightEnter{ \patterns{H3B}{2}{2}{2}{4}{1}{1} }
         \incrementAnimation
 
         % HMAC
-        \highlightAnimation{ \at{B3}{-1}{1.4}                              (salt3)                             {\S{3}{}}; }
-        \highlightAnimation{ \at{B3}{1}{3}                                 (H3C)           [block=1, draw]     {\C{3}}; }
-        \highlightAnimation{ \draw[arrow] (B3.south -| H3C) -- (H3C); }
-        \highlightAnimation{ \node at (salt3-|H3C)                         (H3)            [HMAC]              {\tiny HMAC}; }
-        \highlightAnimation{ \draw[arrow] (salt3) -- (H3); }
+        \highlightEnter{ \at{B3}{-1}{1.4}                              (salt3)                             {\S{3}{}}; }
+        \highlightEnter{ \at{B3}{1}{3}                                 (H3C)           [block=1, draw]     {\C{3}}; }
+        \highlightEnter{ \draw[arrow] (B3.south -| H3C) -- (H3C); }
+        \highlightEnter{ \node at (salt3-|H3C)                         (H3)            [HMAC]              {\tiny HMAC}; }
+        \highlightEnter{ \draw[arrow] (salt3) -- (H3); }
         \incrementAnimation
 
-        \highlightAnimation{ \at{B3}{0}{3}                                 (H3N)       [block=1, draw]     {\N{3}}; }
+        \highlightEnter{ \at{B3}{0}{3}                                 (H3N)       [block=1, draw]     {\N{3}}; }
         \incrementAnimation
 
         % \begin{pgfonlayer}{background}
@@ -80,15 +82,15 @@
         %% MIDDLE LAYER  %%
         %%%%%%%%%%%%%%%%%%%
 
-        \highlightAnimation{ \at{H3N}{0}{1}              (S2)        [block=7, draw]     {{\color{black}\S{2}{}}}; }      
+        \highlightEnter{ \at{H3N}{0}{1}              (S2)        [block=7, draw]     {{\color{black}\S{2}{}}}; }      
         \only<\thebeamerpauses->{\patternB{S2}{1}{7}}                    
-        \highlightAnimation{ \at{S2}{-1}{1}              (xor2)      [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor2.north) -- (xor2.south); \draw (xor2.west) -- (xor2.east); }
-        \highlightAnimation{ \draw[arrow] (H3N) -- (H3N -| xor2) -- (xor2); }
-        \highlightAnimation{ \draw[shorten <= 1pt] (S2) -- (S2 -| xor2); }
+        \highlightEnter{ \at{S2}{-1}{1}              (xor2)      [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor2.north) -- (xor2.south); \draw (xor2.west) -- (xor2.east); }
+        \highlightEnter{ \draw[arrow] (H3N) -- (H3N -| xor2) -- (xor2); }
+        \highlightEnter{ \draw[shorten <= 1pt] (S2) -- (S2 -| xor2); }
         \incrementAnimation  
-        \highlightAnimation{ \node at (xor2-|S2.west)                      (B2)        [block=5, draw]     {\only<-21>{{\color{black}\B{2}{}}}}; }
-        \highlightAnimation{ \draw[arrow] (xor2) -- (B2); }
-        \highlightAnimation{  \patterns{B2}{4}{2}{1}{3}{3}{1} }
+        \highlightEnter{ \node at (xor2-|S2.west)                      (B2)        [block=5, draw]     {\only<-21>{{\color{black}\B{2}{}}}}; }
+        \highlightEnter{ \draw[arrow] (xor2) -- (B2); }
+        \highlightEnter{  \patterns{B2}{4}{2}{1}{3}{3}{1} }
         \only<\thebeamerpauses->{\at{B2}{5}{0}                                           (zero2)     [zero_pad=2]        {0};}
         \only<\thebeamerpauses>{\patternB{s2}{4}{4}}
         \only<\thebeamerpauses>{\patternB{B3}{2}{4}}
@@ -97,20 +99,20 @@
         \only<\thebeamerpauses>{\patternB{B2}{1}{3}}
         \incrementAnimation
         
-        \highlightAnimation{ \at{B2}{2}{3}                                 (H2B)       [block=5, draw]     {\only<-21>{{\color{black}\B{2}{}}}}; }
-        \highlightAnimation{ \draw[arrow] (B2) -- (H2B); }
-        \highlightAnimation{  \patterns{H2B}{4}{2}{1}{3}{3}{1} }
+        \highlightEnter{ \at{B2}{2}{3}                                 (H2B)       [block=5, draw]     {\only<-21>{{\color{black}\B{2}{}}}}; }
+        \highlightEnter{ \draw[arrow] (B2) -- (H2B); }
+        \highlightEnter{  \patterns{H2B}{4}{2}{1}{3}{3}{1} }
         \incrementAnimation
 
         % HMAC
-        \highlightAnimation{ \at{B2}{-1}{1.4}                              (salt2)                         {\S{2}{}}; }
-        \highlightAnimation{ \at{B2}{1}{3}                                 (H2C)       [block=1, draw]     {\C{2}}; } 
-        \highlightAnimation{ \draw[arrow] (B2.south -| H2C) -- (H2C); }
-        \highlightAnimation{ \node at (salt2-|H2C)                         (H2)        [HMAC]              {\tiny HMAC}; }
-        \highlightAnimation{ \draw[arrow] (salt2) -- (H2); }
+        \highlightEnter{ \at{B2}{-1}{1.4}                              (salt2)                         {\S{2}{}}; }
+        \highlightEnter{ \at{B2}{1}{3}                                 (H2C)       [block=1, draw]     {\C{2}}; } 
+        \highlightEnter{ \draw[arrow] (B2.south -| H2C) -- (H2C); }
+        \highlightEnter{ \node at (salt2-|H2C)                         (H2)        [HMAC]              {\tiny HMAC}; }
+        \highlightEnter{ \draw[arrow] (salt2) -- (H2); }
         \incrementAnimation
 
-        \highlightAnimation{ \at{B2}{0}{3}                                 (H2N)       [block=1, draw]     {\N{2}}; }
+        \highlightEnter{ \at{B2}{0}{3}                                 (H2N)       [block=1, draw]     {\N{2}}; }
         \incrementAnimation
 
         % \begin{pgfonlayer}{background}
@@ -121,15 +123,15 @@
         %% FIRST LAYER  %%
         %%%%%%%%%%%%%%%%%%
 
-        \highlightAnimation{ \at{H2N}{0}{1}              (S1)        [block=7, draw]     {{\color{black}\S{1}{}}}; }     
+        \highlightEnter{ \at{H2N}{0}{1}              (S1)        [block=7, draw]     {{\color{black}\S{1}{}}}; }     
         \only<\thebeamerpauses->{\patternA{S1}{1}{7}}                    
-        \highlightAnimation{ \at{S1}{-1}{1}              (xor1)      [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor1.north) -- (xor1.south); \draw (xor1.west) -- (xor1.east); } 
-        \highlightAnimation{ \draw[arrow] (H2N) -- (H2N -| xor1) -- (xor1); }
-        \highlightAnimation{ \draw[shorten <= 1pt] (S1) -- (S1 -| xor1); }
+        \highlightEnter{ \at{S1}{-1}{1}              (xor1)      [draw, circle, minimum size=0.7*\y, fill=background] {}; \draw (xor1.north) -- (xor1.south); \draw (xor1.west) -- (xor1.east); } 
+        \highlightEnter{ \draw[arrow] (H2N) -- (H2N -| xor1) -- (xor1); }
+        \highlightEnter{ \draw[shorten <= 1pt] (S1) -- (S1 -| xor1); }
         \incrementAnimation
-        \highlightAnimation{ \node at (xor1-|S1.west)                      (B1)        [block=5, draw]     {\only<-20>{{\color{black}\B{1}{}}}}; } 
-        \highlightAnimation{ \draw[arrow] (xor1) -- (B1); }   
-        \highlightAnimation{ \patterns{B1}{1}{5}{3}{3}{5}{1} }
+        \highlightEnter{ \node at (xor1-|S1.west)                      (B1)        [block=5, draw]     {\only<-20>{{\color{black}\B{1}{}}}}; } 
+        \highlightEnter{ \draw[arrow] (xor1) -- (B1); }   
+        \highlightEnter{ \patterns{B1}{1}{5}{3}{3}{5}{1} }
         \only<\thebeamerpauses->{\at{B1}{5}{0}                                           (zero1)     [zero_pad=2]        {0};}
         \only<\thebeamerpauses>{\patternB{s1}{6}{2}}
         \only<\thebeamerpauses>{\patternB{B3}{2}{2}}
@@ -140,51 +142,51 @@
         \only<\thebeamerpauses>{\patternA{B1}{1}{5}}
         \incrementAnimation
         
-        \highlightAnimation{ \at{B1}{2}{3}                                 (H1B)       [block=5, draw]     {\only<-20>{{\color{black}\B{1}{}}}}; } 
-        \highlightAnimation{ \draw[arrow] (B1) -- (H1B); }
-        \highlightAnimation{  \patterns{H1B}{1}{5}{3}{3}{5}{1} }
+        \highlightEnter{ \at{B1}{2}{3}                                 (H1B)       [block=5, draw]     {\only<-20>{{\color{black}\B{1}{}}}}; } 
+        \highlightEnter{ \draw[arrow] (B1) -- (H1B); }
+        \highlightEnter{  \patterns{H1B}{1}{5}{3}{3}{5}{1} }
         \incrementAnimation
 
         % HMAC
-        \highlightAnimation{ \at{B1}{-1}{1.4}                              (salt1)                         {\S{1}{}}; }
-        \highlightAnimation{ \at{B1}{1}{3}                                 (H1C)       [block=1, draw]     {\C{1}}; } 
-        \highlightAnimation{ \draw[arrow] (B1.south -| H1C) -- (H1C); }
-        \highlightAnimation{ \node at (salt1-|H1C)                         (H1)        [HMAC]              {\tiny HMAC}; }
-        \highlightAnimation{ \draw[arrow] (salt1) -- (H1); }
+        \highlightEnter{ \at{B1}{-1}{1.4}                              (salt1)                         {\S{1}{}}; }
+        \highlightEnter{ \at{B1}{1}{3}                                 (H1C)       [block=1, draw]     {\C{1}}; } 
+        \highlightEnter{ \draw[arrow] (B1.south -| H1C) -- (H1C); }
+        \highlightEnter{ \node at (salt1-|H1C)                         (H1)        [HMAC]              {\tiny HMAC}; }
+        \highlightEnter{ \draw[arrow] (salt1) -- (H1); }
         \incrementAnimation
 
-        \highlightAnimation{ \at{B1}{0}{3}                                 (H1N)       [block=1, draw]     {\N{1}}; } 
+        \highlightEnter{ \at{B1}{0}{3}                                 (H1N)       [block=1, draw]     {\N{1}}; } 
         \incrementAnimation
 
-        \highlightAnimation{ \node at (salt3-|H3C)            [HMAC]              {\tiny HMAC}; }
-        \highlightAnimation{ \node at (salt2-|H2C)            [HMAC]              {\tiny HMAC}; }
-        \highlightAnimation{ \node at (salt1-|H1C)            [HMAC]              {\tiny HMAC}; }
+        \highlightEnter{ \node at (salt3-|H3C)            [HMAC]              {\tiny HMAC}; }
+        \highlightEnter{ \node at (salt2-|H2C)            [HMAC]              {\tiny HMAC}; }
+        \highlightEnter{ \node at (salt1-|H1C)            [HMAC]              {\tiny HMAC}; }
         \incrementAnimation
 
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{H2N}{0}{0} [block=1, draw] {\N{2}};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{H2C}{0}{0} [block=1, draw] {\C{2}};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{B1}{0.5}{0} {\N{2}};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{B1}{1.5}{0} {\C{2}};} }
-                                  \highlightAnimation{\at{H1B}{0.5}{0} {\N{2}};}
-                                  \highlightAnimation{\at{H1B}{1.5}{0} {\C{2}};}
+        \only<\thebeamerpauses>{  \highlightEnter{\at{H2N}{0}{0} [block=1, draw] {\N{2}};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{H2C}{0}{0} [block=1, draw] {\C{2}};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{B1}{0.5}{0} {\N{2}};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{B1}{1.5}{0} {\C{2}};} }
+                                  \highlightEnter{\at{H1B}{0.5}{0} {\N{2}};}
+                                  \highlightEnter{\at{H1B}{1.5}{0} {\C{2}};}
         \incrementAnimation
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{H3N}{0}{0} [block=1, draw] {\N{3}};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{H3C}{0}{0} [block=1, draw] {\C{3}};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{B2}{0.5}{0} {\N{3}};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{B2}{1.5}{0} {\C{3}};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{H2B}{0.5}{0} {\N{3}};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{H2B}{1.5}{0} {\C{3}};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{B1}{2.5}{0} {\N{3}};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{B1}{3.5}{0} {\C{3}};} }
-                                  \highlightAnimation{\at{H1B}{2.5}{0} {\N{3}};}
-                                  \highlightAnimation{\at{H1B}{3.5}{0} {\C{3}};}
+        \only<\thebeamerpauses>{  \highlightEnter{\at{H3N}{0}{0} [block=1, draw] {\N{3}};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{H3C}{0}{0} [block=1, draw] {\C{3}};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{B2}{0.5}{0} {\N{3}};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{B2}{1.5}{0} {\C{3}};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{H2B}{0.5}{0} {\N{3}};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{H2B}{1.5}{0} {\C{3}};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{B1}{2.5}{0} {\N{3}};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{B1}{3.5}{0} {\C{3}};} }
+                                  \highlightEnter{\at{H1B}{2.5}{0} {\N{3}};}
+                                  \highlightEnter{\at{H1B}{3.5}{0} {\C{3}};}
         \incrementAnimation
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{B3}{0.5}{0} {\D};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{H3B}{0.5}{0} {\D};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{B2}{2.5}{0} {\D};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{H2B}{2.5}{0} {\D};} }
-        \only<\thebeamerpauses>{  \highlightAnimation{\at{B1}{4.5}{0} {\D};} }
-                                  \highlightAnimation{\at{H1B}{4.5}{0} {\D};}
+        \only<\thebeamerpauses>{  \highlightEnter{\at{B3}{0.5}{0} {\D};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{H3B}{0.5}{0} {\D};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{B2}{2.5}{0} {\D};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{H2B}{2.5}{0} {\D};} }
+        \only<\thebeamerpauses>{  \highlightEnter{\at{B1}{4.5}{0} {\D};} }
+                                  \highlightEnter{\at{H1B}{4.5}{0} {\D};}
         \incrementAnimation
 
         % \begin{pgfonlayer}{background}

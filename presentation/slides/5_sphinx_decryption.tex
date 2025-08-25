@@ -1,9 +1,41 @@
+\tikzset{mixarrow/.style={->, shorten <= 0.35mm, shorten >= 0.7mm,-{Stealth[length=4pt]}}}
+
+\newcommand{\computer}[1]{
+\begin{tikzpicture}[scale=0.22]
+    % Monitor screen
+    \draw[fill=#1, draw=black, rounded corners=4pt] (0,0) rectangle (4,2.5);
+    % Inner bezel
+    \draw[fill=white, draw=none, rounded corners=3pt] (0.2,0.2) rectangle (3.8,2.3);
+    % Stand
+    \draw[fill=#1, draw=black] (1.75,-0.7) rectangle (2.25,0);
+    % Base
+    \draw[fill=#1, draw=black, rounded corners=1pt] (0.8,-1) rectangle (3.2,-0.7);
+\end{tikzpicture}
+}
+
 \begin{frame}{Original Sphinx - Decryption}
-    \begin{itemize}
-        \item {Upper part:} Mixnet path
-        \vfill
-        \item {Middle part:} Packet representation
-        \vfill
-        \item {Lower part:} Packet processing (Fig 4)
-    \end{itemize}
+
+    \renewcommand{\x}{8mm}
+    \renewcommand{\y}{5.7mm} 
+    \renewcommand{\size}{\footnotesize}
+    \renewcommand{\subsize}{\tiny}
+
+    \size
+    \centering
+
+    \renewcommand{\i}{1}
+
+    \updatebeamerpauses{1}
+    \only<1-3>{\input{slides/5_sphinx/0_default.tex}}
+    \updatebeamerpauses{4}
+    \only<4-6>{\input{slides/5_sphinx/1_shared_secret.tex}}
+    \updatebeamerpauses{7}
+    \only<7-9>{\input{slides/5_sphinx/2_integrity.tex}} % 3 animations: step + input (put one with opacity=0) + arrows
+    \updatebeamerpauses{10}
+    % \only<4>{\input{slides/5_sphinx/3_decrypt.tex}}
+    % \only<5>{\input{slides/5_sphinx/4_output.tex}}
+    % \only<6>{\input{slides/5_sphinx/5_blind.tex}}
+    % \only<7>{\input{slides/5_sphinx/6_output.tex}}
+    % \only<8>{\input{slides/5_sphinx/7_payload.tex}}
+
 \end{frame}
