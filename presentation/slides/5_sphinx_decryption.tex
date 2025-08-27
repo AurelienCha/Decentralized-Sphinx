@@ -13,6 +13,12 @@
 \end{tikzpicture}
 }
 
+\newcommand{\fillingBeta}[7]{
+    \at{#1}{(#2-1)*1.05}{0} [block=#3, pattern3] {}; \at{#1}{(#2-1)*1.05}{0} [block=#3, fill3] {};
+    \at{#1}{(#4-1)*1.05}{0} [block=#5, pattern2] {}; \at{#1}{(#4-1)*1.05}{0} [block=#5, fill2] {};
+    \at{#1}{(#6-1)*1.05}{0} [block=#7, pattern1] {}; \at{#1}{(#6-1)*1.05}{0} [block=#7, fill1] {};
+}
+
 \begin{frame}{Original Sphinx - Decryption}
 
     \renewcommand{\x}{8mm}
@@ -30,12 +36,53 @@
     \updatebeamerpauses{4}
     \only<4-6>{\input{slides/5_sphinx/1_shared_secret.tex}}
     \updatebeamerpauses{7}
-    \only<7-9>{\input{slides/5_sphinx/2_integrity.tex}} % 3 animations: step + input (put one with opacity=0) + arrows
+    \only<7-9>{\input{slides/5_sphinx/2_integrity.tex}} 
     \updatebeamerpauses{10}
-    % \only<4>{\input{slides/5_sphinx/3_decrypt.tex}}
-    % \only<5>{\input{slides/5_sphinx/4_output.tex}}
-    % \only<6>{\input{slides/5_sphinx/5_blind.tex}}
-    % \only<7>{\input{slides/5_sphinx/6_output.tex}}
-    % \only<8>{\input{slides/5_sphinx/7_payload.tex}}
+    \only<10-13>{\input{slides/5_sphinx/3_decrypt.tex}}
+    \updatebeamerpauses{14}
+    \only<14-15>{\input{slides/5_sphinx/4_output.tex}}
+    \updatebeamerpauses{16}
+    \only<16-19>{\input{slides/5_sphinx/5_blind.tex}}
+    \updatebeamerpauses{20}
+    \only<20-22>{\input{slides/5_sphinx/6_payload.tex}}
+
+    \renewcommand{\i}{2}
+
+    \updatebeamerpauses{23}
+    \only<23-25>{\input{slides/5_sphinx/0_default.tex}}
+    \updatebeamerpauses{26}
+    \only<26-28>{\input{slides/5_sphinx/1_shared_secret.tex}}
+    \updatebeamerpauses{29}
+    \only<29-31>{\input{slides/5_sphinx/2_integrity.tex}} 
+    \updatebeamerpauses{32}
+    \only<32-35>{\input{slides/5_sphinx/3_decrypt.tex}}
+    \updatebeamerpauses{36}
+    \only<36-37>{\input{slides/5_sphinx/4_output.tex}}
+    \updatebeamerpauses{38}
+    \only<38-41>{\input{slides/5_sphinx/5_blind.tex}}
+    \updatebeamerpauses{42}
+    \only<42-44>{\input{slides/5_sphinx/6_payload.tex}}
+
+    \renewcommand{\i}{3}
+
+    \updatebeamerpauses{45}
+    \only<45-47>{\input{slides/5_sphinx/0_default.tex}}
+    \updatebeamerpauses{48}
+    \only<48-50>{\input{slides/5_sphinx/1_shared_secret.tex}}
+    \updatebeamerpauses{51}
+    \only<51-53>{\input{slides/5_sphinx/2_integrity.tex}} 
+    \updatebeamerpauses{54}
+    \only<54-57>{\input{slides/5_sphinx/3_decrypt.tex}}
+    \updatebeamerpauses{58}
+    \only<58-59>{\input{slides/5_sphinx/4_output.tex}}
+    \updatebeamerpauses{60}
+    \only<60-63>{\input{slides/5_sphinx/5_blind.tex}}
+    \updatebeamerpauses{64}
+    \only<64-66>{\input{slides/5_sphinx/6_payload.tex}}
+
+    \renewcommand{\i}{4}
+
+    \updatebeamerpauses{67}
+    \only<67-69>{\input{slides/5_sphinx/0_default.tex}}
 
 \end{frame}
