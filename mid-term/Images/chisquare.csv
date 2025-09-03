@@ -1,0 +1,31 @@
+,TEST,Algo,STATISTIC,P-VALUE
+0,     Frequency,decentralized,3.47,0.9427212698129797
+1,     Frequency,original,89.61,1.9494460382964124e-15
+2,    Block Frequency,decentralized,7.37,0.5986561806214997
+3,    Block Frequency,original,4.03,0.9094269166679616
+4,    Cumulative Sums,decentralized,4.172499999999999,0.8996963799414663
+5,    Cumulative Sums,original,78.9425,2.620657731563609e-13
+6,    Runs,decentralized,11.130000000000003,0.2669032864043157
+7,    Runs,original,5.92,0.7478975881188554
+8,   Longest Run,decentralized,14.42,0.10814977025924809
+9,   Longest Run,original,7.91,0.5432409517094527
+10,   Rank,decentralized,10.56,0.3070774518042104
+11,   Rank,original,3.88,0.9191314942154243
+12,  Discrete Fourier Transform,decentralized,16.29,0.061067101483468784
+13,  Discrete Fourier Transform,original,10.47,0.313791616064465
+14,  Non-overlapping Template Matchings,decentralized,0.10766435354273217,0.999999964378014
+15,  Non-overlapping Template Matchings,original,0.04269494156318463,0.9999999994303357
+16,  Overlapping Template Matchings,decentralized,7.84,0.5503474641773244
+17,  Overlapping Template Matchings,original,30.12,0.0004185634343455116
+18,  Universal Statistical,decentralized,15.780000000000001,0.07162033800972283
+19,  Universal Statistical,original,15.049999999999999,0.08957168661974053
+20, Approximate Entropy,decentralized,26.36,0.001783389528736274
+21, Approximate Entropy,original,1.9,0.9929519746920032
+22, Random Excursions,decentralized,2.0971403301886795,0.9898365693350667
+23, Random Excursions,original,1.5253466204506065,0.9969543290132369
+24, Random Excursions Variant,decentralized,0.7712749437068074,0.9998082762693152
+25, Random Excursions Variant,original,0.7521770759783463,0.9998274040922311
+26, Serial,decentralized,4.07,0.9067451272314155
+27, Serial,original,5.9275,0.7471519218556228
+28,Linear Complexity,decentralized,6.33,0.7064899122990426
+29,Linear Complexity,original,7.31,0.604878370801992

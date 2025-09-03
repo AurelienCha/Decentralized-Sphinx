@@ -1,0 +1,216 @@
+\section{Evaluation}\label{sec:eval}
+
+%Our prototype implementation is available on \href{https://github.com/AurelienCha/Decentralized-Sphinx}{GitHub}\footnote{\url{https://github.com/AurelienCha/Decentralized-Sphinx}}.
+Our implementation, which we will release our code under the GPL license,
+ is written in Python 3.13 using the \href{https://pypi.org/project/ECPy/}{ECPy}\footnote{\url{https://pypi.org/project/ECPy/}} library for elliptic curve operations. 
+ECPy is well-suited for prototyping due to its simplicity, but it is significantly slower than many EC python libraries (approximately one order of magnitude slower). 
+However, it is one of the few Python libraries that support Montgomery Curve25519, which is essential for our implementation.
+
+We evaluate our system on two main axes: computational complexity and unlinkability (i.e. resistance to correlation between incoming and outgoing packets).
+
+\subsection{Computational Complexity}
+
+Rather than measuring raw execution time, which depends heavily on hardware
+and software, we count the number of cryptographic operations as these are
+the computationally most expensive part of the scheme.
+%\todo{Can you define \enquote{expensive}?}
+Direct comparison with the Sphinx scheme is not straightforward, as cryptographic primitives differ (e.g. Elligator). 
+Although such comparison is not entirely meaningful, our protocol is
+inherently more computationally intensive than the original Sphinx
+construction and will likely be slower in practice, which we discuss below.
+Table~\ref{tab:operation_count} counts these operations per party, considering $ m $ TTPs and path of length $ p $. 
+To compute the total cost for sending a single message, multiply the cost per TTP by $m$ and the cost per mixnode by $p$.
+% CLIENT
+Since each TTP constructs its partial header independently, they operate in parallel, minimizing their impact on the overall execution time.
+Thus, the number of TTPs mainly affects the client, who performs \bigO{p m} elliptic curve multiplications and additions to split $p$ addresses and cryptographic secrets into $m$ shares.
+For each mixnode, the client also executes an Elligator mapping to encode the IP address into an elliptic curve point, a hash and a reverse Elligator mapping (i.e. $Point \rightarrow Integer$) to derive the shared secret (Eq.~\ref{eq:shared_secret}), all scaling linearly with $p$.
+% TTP
+For each layer, a TTP performs elliptic curve multiplications, additions (Eq.\ref{eq:last_layer}, Eq.\ref{eq:layer_i}) and hashes (Eq.~\ref{eq:integrity}) proportional to the number of chunks.
+Since both the number of chunks and layers grow linearly with $p$, the total cost per TTP scales quadratically with $p$.
+% MIXNODE
+Mixnodes follow a similar pattern, performing EC operations and hashes proportional to the number of chunks (Eq.\ref{eq:integrity_check} and Eq.\ref{eq:decrypt}), thus scaling linearly with $p$.
+Each mixnode additionally executes one reverse mapping (Eq.~\ref{eq:derive_secret}) to convert the shared secret point into an integer.
+
+\begin{table}[t]
+\centering
+\label{tab:operation_count}
+    \begin{tabular}{lccc}
+        \toprule
+        & \textbf{Client} & \textbf{TTP} & \textbf{Mixnode} \\
+        \midrule
+        \textbf{EC Multiplication}              & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
+        \textbf{EC Addition}                    & \bigO{p \, m} & \bigO{p^{2}}  & \bigO{p} \\
+        \textbf{Elligator Mapping}              & \bigO{p}      & \slash        & \slash \\
+        \textbf{Inverse Mapping}                & \bigO{p}      & \slash        & \bigO{1} \\
+        \textbf{Hash}                           & \bigO{p}      & \bigO{p^{2}}  & \bigO{p} \\
+        \bottomrule
+    \end{tabular}
+\caption{Number and complexity of cryptographic operations per party, where $ p $ is the path length and $ m $ is the number of TTPs.}
+\end{table}
+
+In practice, most mixnet implementations use paths of three to five mixnodes, making \bigO{p} $\approx$ \bigO{1}.
+Accordingly, the overall computational burden is more sensitive to the number of TTPs $m$ than to the path length $p$.
+As our design remains secure as long as one TTP is honest, only a small number $m$ may be sufficient.
+Determining the precise number needed to meet a desired trust threshold is left for future work.
+
+Regarding practical performance considerations, we expect our protocol to
+be slower than the original Sphinx header construction. The main factors
+contributing to this are the EC operations in our approach (as compared
+generation of pseudo-random numbers, hashing, and XOR operations in
+Sphinx), and the distributed nature of our header construction, which may
+introduce non-deterministic delays. Computational load on individual
+mixnodes should be on par with Sphinx. We believe that the overheads
+incurred by our header construction are worth consideration, depending on
+the type of mixnet and the specific risks incurred by fake packets or
+denial-of-service attacks, against which protection mechanisms can be
+designed for mixnets that are based on our header construction.
+
+
+\subsection{Unlinkability Evaluation}
+Quantifying unlinkability remains a fundamental challenge in anonymous communication systems.
+In Loopix~\cite{piotrowska2017loopix}, the authors introduce a probabilistic metric called the \textit{expected difference in likelihood} to evaluate \textit{sender-receiver third-party unlinkability}.
+However, this approach relies on network simulations and specifically assesses the likelihood that a given packet originated from a particular client.
+In contrast, our focus is on unlinkability at the mixnode level, meaning the difficulty for a Global Passive Adversary (GPA) to correlate an incoming packet with its corresponding outgoing packet through cryptanalysis.
+Therefore, assuming that greater randomness hinders correlation, we evaluate the statistical randomness of packet headers to approximate this form of unlinkability.
+
+\subsubsection{Test Suite Overview}
+We rely on the NIST SP 800-22 statistical test suite \cite{NIST-SP80022}, which consists of 15 tests designed to evaluate the quality of random number generators. 
+Each test produces a p-value representing how likely the data could be produced by a uniform source. 
+If the data are truly random, the distribution of p-values across many samples must follow a uniform distribution.
+To support the interpretation of our results, we first provide a brief overview of the specific NIST SP 800-22 tests that are most relevant to our analysis 
+(i.e. \textit{Frequency}, \textit{Matching}, \textit{Random Walk} tests).
+
+The \textit{Frequency} test evaluates the proportion of zeros and ones across the entire sequence. 
+It determines whether the number of ones and zeros is approximately equal, as expected in a truly random sequence. 
+
+The \textit{Matching} tests examine how often predefined m-bit binary patterns appear within the sequence (by default $ m = 9 $). 
+These tests aim to detect excessive repetitions of specific aperiodic patterns that could indicate some hidden structure.
+The \textit{Overlapping} version uses a sliding window of $ m $ bits which is shifted from a single bit at each step, allowing overlapping matches.
+The \textit{Non-overlapping} version shifts the sliding window from $ m $ bits in case of matching, avoiding overlapping matches.
+
+The \textit{Random Walk} tests transform a binary sequence of 1s and 0s into a sequence of $+1$ (step up) and $-1$ (step down) values. 
+A truly random walk is expected to oscillate around zero.
+The simplest of these tests is the \textit{Cumulative Sums}, which iteratively computes the cumulative sums of these steps and evaluates the maximum deviation from zero compared to the expected behavior of a truly random walk.
+The \textit{Random Excursions} test counts how often each state is visited within each cycle\footnote{A cycle is a segment of the walk between two successive zero states, i.e., states where the cumulative sum equals $0$.} 
+and compares this distribution with the theoretical expectations for a random walk.
+The \textit{Random Excursions Variant} counts how often each state is visited over the entire walk, rather than cycle by cycle.
+
+In summary, the \textit{Frequency} test evaluates the overall balance between zeros and ones, 
+while the \textit{Random Walk} tests bring additional information about their distribution,
+and finally the \textit{Matching} tests look for excessive repetition of substrings.
+
+\subsubsection{Evaluation Methodology}
+We compare the statistical results (with default parameters) of our implementation with those of the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}}.
+All graphs presented in this section correspond to the results of the NIST statistical test suite applied to 20 distinct datasets.
+Each dataset is generated under a different setup configuration to assess the variability and robustness of our implementation.
+To generate a dataset, we simulate a randomized network of 20 mixnodes and 3 trusted third parties (TTPs). 
+For each iteration, a random destination IP address and a path consisting of 3 mixnodes are selected. 
+The client then generates shares and distributes them to the three TTPs, which independently compute partial headers. 
+These headers are then aggregated and forwarded through the simulated mixnet.
+According to the NIST documentation, the statistical test suite requires input sequences of $1\,000\,000$ bits. 
+To meet this requirement, generated headers are concatenated until the total length reaches $1\,000\,000$ bits. 
+Each dataset contains 100 of those concatenated sequences.
+
+NIST outlines two approaches for interpreting the empirical results of its statistical test suite.
+The first evaluates the proportion of sequences that pass each statistical test, as shown in Fig.\ref{fig:proportion}.
+The second evaluates whether the distribution of p-values is statistically uniform, as would be expected from random sequences.
+These results are presented in Fig.\ref{fig:chisquare}.
+
+\subsubsection{Passing Rate}
+The proportion of sequences that successfully pass each statistical test, for both our implementation and the original Sphinx implementation, is shown in Figure~\ref{fig:proportion}. 
+Following the NIST guidelines, the significance level is set to $ \alpha = 0.01 $, and the confidence interval over $ m $ samples is defined as:
+$$
+(1 - \alpha) \pm 3 \sqrt{\frac{\alpha (1 - \alpha)}{m}},
+$$
+Our implementation fails only three tests: \textit{Non-overlapping Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
+In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Matching}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.8\linewidth]{Images/proportion_dot.png}
+    \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over all the NIST SP 800-22 statistical tests (significance level = 0.01).}
+    \label{fig:proportion}
+\end{figure}
+
+
+
+\subsubsection{P-Value Distribution}
+To evaluate the statistical randomness of headers, we examine the distribution of p-values produced by each NIST SP 800-22 test (Figure~\ref{fig:hist_p-values}).
+A Chi-square goodness-of-fit test is applied on each of these histograms to assess their uniformity.
+The results are shown in Figure \ref{fig:chisquare}, with a significance threshold of $0.0001$ as recommended by the NIST guidelines.
+Two Chi-square results stand out: the \textit{Frequency} and \textit{Cumulative Sums} tests.  
+Both were successful for our implementation, and failing for the original Sphinx implementation.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1.\linewidth]{Images/hist_p-values.png}
+    \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.}
+    \label{fig:hist_p-values}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{Images/chisquare.png}
+    \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.}
+    \label{fig:chisquare}
+\end{figure}
+
+\subsection{Discussion}
+
+In terms of computational complexity, our implementation is slower than the original Sphinx implementation.
+However, most of the additional computational workload is distributed among the TTPs, which operate in parallel. 
+Since mixnets inherently trade latency for privacy, this computational overhead may be acceptable in practical deployments.
+
+
+Regarding unlinkability (i.e. output randomness), our decentralized implementation performs better than the original implementation, as it passes a greater number of statistical tests, as summarized in Table~\ref{tab:test_summary}.
+The results suggest that both implementations may exhibit subtle patterns or hidden structure, as indicated by failures in the \textit{Random Excursions} and the  \textit{Non-overlapping Matching} tests. 
+This behavior could potentially come from the underlying mathematical framework (e.g. elliptic curves), which is not inherently truly random.
+Nevertheless, our implementation demonstrates a better overall balance between ones and zeros, as reflected in the \textit{Frequency} and \textit{Cumulative Sums} test results.
+Given the established security of the original Sphinx protocol, and considering the similarities in core structure, our results indicate that our scheme is a solid starting point toward achieving similar privacy guarantees.
+However, we emphasize that a thorough formal security analysis remains necessary to fully assess the protocol's security, which we leave for future work.
+
+\begin{table}[t]
+\centering
+\label{tab:test_summary}
+    \scalebox{.85}{
+    \begin{tabular}{|l|cc|cc|}
+    \toprule
+                                    & \multicolumn{2}{c|}{\textbf{Decentralized}}   & \multicolumn{2}{c|}{\textbf{Original}} \\
+    \cline{2-5}
+                                    & \textbf{\footnotesize Excessive}    & \textbf{\footnotesize Lacks}        & \textbf{\footnotesize Excessive} & \textbf{\footnotesize Lacks} \vspace*{-0.8mm} \\
+    \textbf{Statistical Test}       & \textbf{\footnotesize Rejections}   & \textbf{\footnotesize Uniformity}   & \textbf{\footnotesize Rejections} & \textbf{\footnotesize Uniformity} \\
+    \midrule
+     \small Frequency                       & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
+     \small Block Frequency                 & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Cumulative Sums                 & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
+     \small Runs                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Longest Run                     & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Rank                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Discrete Fourier Transform      & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Non-overlapping Matchings       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \small Overlapping Matchings           & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \small Universal Statistical           & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Approximate Entropy             & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Random Excursions               & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \small Random Excursions Variant       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \small Serial                          & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \small Linear Complexity               & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+    \bottomrule
+    \end{tabular}
+    }
+\caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
+\end{table}
+
+At this stage, our decentralized scheme successfully achieves three key
+security and privacy objectives as outlined in Section~\ref{sec:sp-objectives}.
+First, it maintains strong unlinkability, comparable to the original Sphinx.
+Second, integrity protection is verified at each mixnode, ensuring that message tampering can be reliably detected.
+Third, our scheme offers robustness against collusion among TTPs, as long as at least one remains honest, preventing them from learning any information about routing information or cryptographic secrets.
+Since credential issuance, modification, and verification are left for future work, the verifiability of legitimate traffic at each mixnode has not yet been achieved.
+However, a promising approach involves having TTPs update credentials during header construction, with mixnodes performing further updates during packet processing.
+
+
+While our scheme introduces higher computational complexity compared to the original Sphinx, it maintains a reasonable polynomial bound, specifically a quadratic complexity.
+This makes it viable for real-world applications, especially considering the additional features it could enable.
+The decentralized design could simplify future implementation of advanced features, such as a mechanism to verify the legitimacy of traffic at any mixnode.
+

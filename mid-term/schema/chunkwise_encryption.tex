@@ -1,0 +1,155 @@
+\centering
+\begin{tikzpicture}
+    % \tiny
+    \setlength{\y}{0cm}
+
+    \node (ip) [block=1] at (0, \y) {\D};
+    \vgap
+    \node (s3_) [block=5] at (0, \y) {};
+    \node [block=1] at (0, \y) {\sG{3}{1}};
+    \foreach \j in {1,...,4} {\node [zero_pad=1] at (\j*\width, \y) {0};}
+    \vgap
+    \node (s2_) [block=5] at (0, \y) {};
+    \node [zero_pad=1] at (0, \y) {0};
+    \foreach \j in {4,...,7} {
+        \node [block=1] at (\j*\width - 3*\width, \y) {\sG{2}{\j}}; 
+    }
+    \vgap
+    \node [zero_pad=1] at (0, \y) {0}; 
+    \node (s1_) [block=5] at (0, \y) {};
+    \foreach \j in {6,...,7} {
+        \node [block=1] at (\j*\width - 5*\width, \y) {\sG{1}{\j}}; 
+    }
+    \node [zero_pad=1] at (3*\width, \y) {0}; 
+    \node [zero_pad=1] at (4*\width, \y) {0}; 
+    \vgap 
+    \foreach \j in {1,...,5} {
+        \node (B3\j) [block=1] at (\j*\width-\width, \y) {\B{3}{\j}}; 
+    }
+    % \node (xor3) [] at (-3*\width, \y) {\normalsize $ + $}; 
+    \node (xor3) [eq] at (-\width, \y) {\ref{eq:last_layer}}; 
+    % \node (xor3) [eq] at (-5*\width, \y) {\ref{eq:last_layer}}; 
+    \vGap
+    \node (hmac3) [eq] at (1.5*\width, \y) {\ref{eq:integrity}};
+    \vGap
+
+    \node [block=7] at (0, \y) {};
+    \node (n3) [block=1] at (0, \y) {\N{3}}; 
+    \node (y3) [block=1] at (\width, \y) {\C{3}}; 
+    \foreach \j in {1,...,5} {
+        \node (b3\j) [block=1] at (\width + \j*\width, \y) {\B{3}{\j}}; 
+    }
+    \vGap
+    \foreach \j in {1,...,7} {
+        \node (s2\j) [block=1] at (\j*\width-\width, \y) {\sG{2}{\j}};
+    }
+    \vgap
+    \foreach \j in {1,...,5} {
+        \node (B2\j) [block=1] at (\j*\width-\width, \y) {\B{2}{\j}}; 
+    }
+    \node (zero2) [zero_pad=2] at (5*\width, \y) {0}; 
+
+    % \node (xor2) [] at (-\width, \y) {\normalsize $ + $}; 
+    \node (xor2) [eq] at (-\width, \y) {\ref{eq:layer_i}}; 
+    \vGap
+    \node (hmac2) [eq] at (1.5*\width, \y) {\ref{eq:integrity}};
+    \vGap
+
+    \node [block=7] at (0, \y) {};
+    \node (n2) [block=1] at (0, \y) {\N{2}}; 
+    \node (y2) [block=1] at (\width, \y) {\C{2}}; 
+    \foreach \j in {1,...,5} {
+        \node (b2\j) [block=1] at (\width + \j*\width, \y) {\B{2}{\j}}; 
+    }
+    \
+    \vGap
+    \foreach \j in {1,...,7} {
+        \node (s1\j) [block=1] at (\j*\width-\width, \y) {\sG{1}{\j}};
+    }    
+    \vgap
+    \foreach \j in {1,...,5} {
+        \node (B1\j) [block=1] at (\j*\width-\width, \y) {\B{1}{\j}};
+    }
+    \node (zero1) [zero_pad=2]  at (5*\width, \y) {0}; 
+
+    % \node (xor1) []  at (-\width, \y) {\normalsize $ + $}; 
+    \node (xor1) [eq]  at (-\width, \y) {\ref{eq:layer_i}}; 
+    \vGap
+    \node (hmac1) [eq]  at (1.5*\width, \y) {\ref{eq:integrity}};
+    \vGap
+
+    \node [block=7] at (0, \y) {};
+    \node (n1) [block=1]  at (0, \y) {\N{1}}; 
+    \node (y1) [block=1]  at (\width, \y) {\C{1}};
+    \foreach \j in {1,...,5} {
+        \node (b1\j) [block=1]  at (\width + \j*\width, \y) {\B{1}{\j}}; 
+    }
+
+    %% XOR ARROWS %%
+    % 3
+    \draw[arrow] (ip.west) -- ++(-\width, 0) -- (xor3.north);
+    \draw[arrow] (s3_.west) -- ++(-\width, 0) -- (xor3.north);
+    \draw[arrow] (s2_.west) -- ++(-\width, 0) -- (xor3.north);
+    \draw[arrow] (s1_.west) -- ++(-\width, 0) -- (xor3.north);
+    \draw[arrow] (xor3.east) -- (B31.west);
+    % 2
+    \draw[arrow] (n3.west) -- ++(-\width, 0) -- (xor2.north);
+    \draw[arrow] (s21.west) -- ++(-\width, 0) -- (xor2.north);
+    \draw[arrow] (xor2.east) -- (B21.west);
+    % 1
+    \draw[arrow] (n2.west) -- ++(-\width, 0) -- (xor1.north);
+    \draw[arrow] (s11.west) -- ++(-\width, 0) -- (xor1.north);
+    \draw[arrow] (xor1.east) -- (B11.west);
+
+    %% HMAC ARROWS %%
+    % 3
+    \node[left=\width of hmac3] (input_hmac3) {(\sG{3}{}\hspace{-1mm}, \sHashed{3})};
+    \draw[arrow] (input_hmac3) -- (hmac3.west);
+    \draw [decorate, decoration={brace, amplitude=3pt, mirror, aspect=0.3, raise=2pt}] (B31.south west) -- (B35.south east);
+    
+    \draw[arrow] (hmac3.south) -- (y3.north);
+    % 2
+    \node[left=\width of hmac2] (input_hmac2) {(\sG{2}{}\hspace{-1mm}, \sHashed{2})};
+    \draw[arrow] (input_hmac2) -- (hmac2.west);
+    \draw [decorate, decoration={brace, amplitude=3pt, mirror, aspect=0.3, raise=2pt}] (B21.south west) -- (B25.south east);
+    \draw[arrow] (hmac2.south) -- (y2.north);
+    % 1
+    \node[left=\width of hmac1] (input_hmac1) {(\sG{1}{}\hspace{-1mm}, \sHashed{1})};
+    \draw[arrow] (input_hmac1) -- (hmac1.west);
+    \draw [decorate, decoration={brace, amplitude=3pt, mirror, aspect=0.3, raise=2pt}] (B11.south west) -- (B15.south east);
+    \draw[arrow] (hmac1.south) -- (y1.north);
+
+    %% BETA ARROWS %%
+    \begin{pgfonlayer}{background}
+        % 3
+        \foreach \j in {1,...,5} {
+            \draw[->, dashed, very thin, color=unHighlight!80] (B3\j.south) -- ([xshift=-1pt, yshift=+1pt] b3\j.north);
+        }
+        % 2
+        \foreach \j in {1,...,5} {
+            \draw[->, dashed, very thin, color=unHighlight!80] (B2\j.south) -- ([xshift=-1pt, yshift=+1pt] b2\j.north);
+        }
+        % 1
+        \foreach \j in {1,...,5} {
+            \draw[->, dashed, very thin, color=unHighlight!80] (B1\j.south) -- ([xshift=-1pt, yshift=+1pt] b1\j.north);
+        }
+    \end{pgfonlayer}
+
+    %% LAYERS %%
+    \node (top) at (ip.north) {};
+    \node[between=n3 and s21] (middleTop) {};
+    \node[between=n2 and s11] (middleBot){};
+    \node (bot) at (n1.south) {};
+    \node (left) at ($(xor2.west) - (\width/3, 0)$) {};
+    \node (right) at ($(zero1.east) + (0.1*\width, 0)$) {};
+
+    \draw[densely dotted] ($(middleTop -| left) - (1, 0)$) -- ($(middleTop -| right) + (1.5, 0)$) {};
+    \draw[densely dotted] ($(middleBot -| left) - (1, 0)$) -- ($(middleBot -| right) + (1.5, 0)$) {};
+    \node[between=top and middleTop] (l3){};
+    \node[between=middleTop and middleBot] (l2){};
+    \node[between=middleBot and bot] (l1){};
+    \node[xshift=10mm, rotate=90] at (l3 -| right) {\color{black!40} Last layer};  
+    \node[xshift=10mm, rotate=90] at (l2 -| right) {\color{black!40} Middle layer};  
+    \node[xshift=10mm, rotate=90] at (l1 -| right) {\color{black!40} First layer}; 
+
+\end{tikzpicture}

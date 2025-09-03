@@ -1,0 +1,61 @@
+\documentclass[a4paper,12pt]{article}
+
+
+% \documentclass[sigconf, review]{acmart} % Do not fogot to put back GITHUB when not anonymous
+
+\usepackage[american]{babel}
+\usepackage[english=american]{csquotes}
+
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{amsmath} % begin{aligned}
+\usepackage{amsfonts} % \mathbb{}
+\usepackage{tabularx}
+\usepackage[textsize=footnotesize, textwidth=40mm]{todonotes} % \todo and \todo[inline]
+\presetkeys{todonotes}{fancyline}{}
+\setlength{\marginparwidth}{40mm}
+\usepackage{paralist}
+\usepackage{enumitem}
+
+\usepackage{wasysym} % Add this in your preamble for the circle symbols
+% \usepackage{stfloats} %[!b] for bottom-page figure
+\input{schema/tikz-math_preamble}
+
+\usepackage{booktabs} % \toprule \midrule \bottomrule \customrule  % doc: https://nasa.github.io/nasa-latex-docs/html/examples/table.html 
+
+
+\begin{document}
+
+
+\input{coverpage.tex}
+
+\section*{Abstract}
+  Sphinx is a packet format widely used in mixnet-based systems such as Nym, Katzenpost, and the Lightning Network. 
+  Constructed by clients, Sphinx headers encode all routing information required to transmit messages from the client to the final destination, while preventing adversaries from linking packets across the network based on their size or format. 
+  Although Sphinx is considered to provide robust security guarantees, it does not protect against malicious clients who attempt to bias path selection or route packets to unauthorized services.
+  In this paper, we propose a decentralized variant of the Sphinx packet format that distributes header construction among multiple trusted third parties. 
+  These parties are assumed to be honest-but-curious, meaning they follow the protocol but may collude to infer routing information or cryptographic secrets. 
+  We implement our scheme in Python and evaluate the unlinkability property using the NIST SP 800-22 statistical test suite. 
+  Our empirical results suggest that our decentralized scheme achieves unlinkability, passing more statistical tests than the original Sphinx format.
+  % Our decentralized construction enhances deployment flexibility and paves the way for privacy-preserving mechanisms that could verify the legitimacy of packets at any hop, enabling early rejection of unauthorized traffic without compromising privacy. This work represents a first step towards a decentralized route selection and packet legitimacy enforcement.%, for example system that want to enforce exit policy.
+
+\input{Texts/1.Introduction}
+\input{Texts/2.Related_Work}
+\input{Texts/3.System_Model}
+\input{Texts/4.Our_Solution}
+\input{Texts/5.Evaluations}
+\input{Texts/6.Conclusion}
+
+
+\section*{acknowledgments}
+This research is funded by Belgium Walloon region CyberExcellence program (grant \#2110186)
+%This research is funded by the CyberExcellence project of the Public Service of Wallonia (SPW Recherche), convention No. 2110186.
+
+\bibliographystyle{plain}
+\bibliography{bib}
+
+\end{document}
