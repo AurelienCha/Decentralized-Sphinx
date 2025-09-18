@@ -64,6 +64,7 @@ I.e. \alpha_{i+1}   =   s_i     *   \alpha{i}
     - require: x_i to update alpha (eq 2)
 
 ## Proof (2) "bitwise unlinkability":
+    - Alternative proof: mixnode 1 send a message to mixnode 2, mixnode 3 receives a message from mixnode 2. Then mixnode 1 and 3 collude to determine if the message is the same.b
     - Input: 2 Headers layer i and layer i+1 
     - proof: no more than 50% chance of linking the corresponding header
     - require: Indep generators

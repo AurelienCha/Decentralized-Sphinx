@@ -143,13 +143,24 @@
     \node (left) at ($(xor2.west) - (\width/3, 0)$) {};
     \node (right) at ($(zero1.east) + (0.1*\width, 0)$) {};
 
-    \draw[densely dotted] ($(middleTop -| left) - (1, 0)$) -- ($(middleTop -| right) + (1.5, 0)$) {};
-    \draw[densely dotted] ($(middleBot -| left) - (1, 0)$) -- ($(middleBot -| right) + (1.5, 0)$) {};
+    \draw[densely dotted] (middleTop -| left) -- (middleTop -| right) {};
+    \draw[densely dotted] (middleBot -| left) -- (middleBot -| right) {};
     \node[between=top and middleTop] (l3){};
     \node[between=middleTop and middleBot] (l2){};
     \node[between=middleBot and bot] (l1){};
-    \node[xshift=10mm, rotate=90] at (l3 -| right) {\color{black!40} Last layer};  
-    \node[xshift=10mm, rotate=90] at (l2 -| right) {\color{black!40} Middle layer};  
-    \node[xshift=10mm, rotate=90] at (l1 -| right) {\color{black!40} First layer}; 
+    \node[rotate=90] at (l3 -| left) {\color{black!40} Last layer};  
+    \node[rotate=90] at (l2 -| left) {\color{black!40} Middle layer};  
+    \node[rotate=90] at (l1 -| left) {\color{black!40} First layer}; 
 
+    %% EQUATIONS %%
+    % \color{unHighlight!75}
+    % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=2*\width+30pt}]
+    %     ([xshift=4*\width] ip.north east) -- (B35.south east) node[midway, xshift=110pt]{Eq. \ref{eq:last_layer}};
+    % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=30pt}]
+    %         (b35.north east) -- (zero2.south east) node[midway, xshift=70pt]{Eq. \ref{eq:layer_i} ($i=2$)};
+    % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=30pt}]
+    %         (b25.north east) -- (zero1.south east) node[midway, xshift=70pt]{Eq. \ref{eq:layer_i} ($i=1$)};
+    % \node[right=6*\width+10pt of hmac3] {Eq. \ref{eq:integrity}};
+    % \node[right=6*\width+10pt of hmac2] {Eq. \ref{eq:integrity}};
+    % \node[right=6*\width+10pt of hmac1] {Eq. \ref{eq:integrity}};
 \end{tikzpicture}

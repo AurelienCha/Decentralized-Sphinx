@@ -32,7 +32,7 @@ Mixnodes follow a similar pattern, performing EC operations and hashes proportio
 Each mixnode additionally executes one reverse mapping (Eq.~\ref{eq:derive_secret}) to convert the shared secret point into an integer.
 
 \begin{table}[t]
-\centering
+\caption{Number and complexity of cryptographic operations per party, where $ p $ is the path length and $ m $ is the number of TTPs.}
 \label{tab:operation_count}
     \begin{tabular}{lccc}
         \toprule
@@ -45,7 +45,6 @@ Each mixnode additionally executes one reverse mapping (Eq.~\ref{eq:derive_secre
         \textbf{Hash}                           & \bigO{p}      & \bigO{p^{2}}  & \bigO{p} \\
         \bottomrule
     \end{tabular}
-\caption{Number and complexity of cryptographic operations per party, where $ p $ is the path length and $ m $ is the number of TTPs.}
 \end{table}
 
 In practice, most mixnet implementations use paths of three to five mixnodes, making \bigO{p} $\approx$ \bigO{1}.
@@ -125,9 +124,9 @@ $$
 Our implementation fails only three tests: \textit{Non-overlapping Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
 In contrast, our implementation successfully passes three tests that the original implementation fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Matching}.
 
-\begin{figure}
+\begin{figure}[b]
     \centering
-    \includegraphics[width=.8\linewidth]{Images/proportion_dot.png}
+    \includegraphics[width=1.\linewidth]{Images/proportion_dot.png}
     \caption{Proportion of successful sequences from our implementation and the original Sphinx implementation over all the NIST SP 800-22 statistical tests (significance level = 0.01).}
     \label{fig:proportion}
 \end{figure}
@@ -141,16 +140,16 @@ The results are shown in Figure \ref{fig:chisquare}, with a significance thresho
 Two Chi-square results stand out: the \textit{Frequency} and \textit{Cumulative Sums} tests.  
 Both were successful for our implementation, and failing for the original Sphinx implementation.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.\linewidth]{Images/hist_p-values.png}
     \caption{P-value distribution comparison between our implementation and the original Sphinx across the fifteen NIST SP 800-22 statistical tests.}
     \label{fig:hist_p-values}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Images/chisquare.png}
+    \includegraphics[width=1.\linewidth]{Images/chisquare.png}
     \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across the fifteen NIST SP 800-22 statistical tests.}
     \label{fig:chisquare}
 \end{figure}
@@ -170,7 +169,7 @@ Given the established security of the original Sphinx protocol, and considering 
 However, we emphasize that a thorough formal security analysis remains necessary to fully assess the protocol's security, which we leave for future work.
 
 \begin{table}[t]
-\centering
+\caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
 \label{tab:test_summary}
     \scalebox{.85}{
     \begin{tabular}{|l|cc|cc|}
@@ -198,7 +197,6 @@ However, we emphasize that a thorough formal security analysis remains necessary
     \bottomrule
     \end{tabular}
     }
-\caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \Circle~=\enspace Fail)}
 \end{table}
 
 At this stage, our decentralized scheme successfully achieves three key

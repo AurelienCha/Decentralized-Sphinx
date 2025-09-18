@@ -1,26 +1,3 @@
-\section{Future work}\label{sec:future_work}
-
-Now that we have developed a prototype scheme for decentralized Sphinx packet construction, several important directions remain open:
-\begin{itemize}
-    \item \textbf{Formal verification}: 
-    A rigorous security proof, or at least a detailed formal argument, is needed to guarantee the security properties of our decentralized construction and to compare with the original Sphinx security guarantee.
-
-    \item \textbf{Legitimacy verification}: 
-    Incorporating an additional cryptographic layer, such as zero-knowledge proofs, to enable mixnodes to verify packet legitimacy. 
-    This functionality is essential for addressing the core research problem that motivated our work.
-
-    \item \textbf{Performance analysis}: 
-    A more comprehensive performance study is required to assess the computational and network overhead introduced by our decentralized design relative to the original centralized Sphinx.
-    Such an evaluation would clarify the trade-off between the additional security guarantees provided by decentralization and the resulting efficiency costs.
-    In particular, it would quantify the overhead imposed by our scheme against the computational and network resources that would otherwise be wasted in the presence of malicious clients.
-
-    \item \textbf{Decentralized path selection}: 
-    Exploring mechanisms to decentralized the route selection to reduce the risk of biased or predictable path choices by clients, thereby strengthening overall anonymity.
-
-\end{itemize}
-We regard these directions as crucial next steps toward a practical, secure, and scalable deployment of decentralized Sphinx-based mix networks.
-
-
 \section{Conclusion}\label{sec:conclusion}
 
 We have proposed a decentralized scheme that delegates the construction of Sphinx headers to a set of Trusted Third Parties (TTPs), which forms a foundation for further developing the protocol to, for example, enable mixnodes to detect and handle unauthorized traffic early.
