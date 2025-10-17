@@ -4,9 +4,10 @@ We summarize the security properties of our scheme into three main categories: \
 Each category addresses different but complementary aspects of security.  
 
 \begin{itemize}
-  \item \textbf{Privacy}:  
+  \item \textbf{Privacy / Unlinkability}:  
   Privacy properties ensure that an adversary cannot extract sensitive information from packets or infer communication patterns.  
   In our scheme the primary goal is to achieve \emph{unlinkability}, which encompasses both \emph{sender anonymity} and \emph{receiver anonymity}.
+  Since we have a decentralized scheme, the resistance against collusion must also be evaluated.
   \begin{itemize}
     \item \textbf{Fixed-size}:  
     All packets must have the same size, regardless of the header or message length. 
@@ -21,10 +22,10 @@ Each category addresses different but complementary aspects of security.
     This property protects sender-receiver relationship from being exposed.
   \end{itemize}
 
-  \item \textbf{Robustness}:  
+  \item \textbf{Robustness / Integrity}:  
   Robustness properties ensure that the system can withstand active attacks:
   \begin{itemize}
-    \item \textbf{Integrity}:  
+    \item \textbf{Integrity-forgery resistance}:  
     Any unauthorized modification of a packet must be detectable by the next mixnode. 
     This prevents adversaries from tampering packets.
     \item \textbf{Wrap resistance}:  % --> Necessary for bounded length
@@ -33,9 +34,6 @@ Each category addresses different but complementary aspects of security.
     \item \textbf{Replay resistance}:  
     A packet that has already been processed by the network should be recognized and discarded if it appears again. 
     This prevent an adversary to replay an old packet to overload the network.
-    \item \textbf{Collusion resistance}:  
-    The system should remain secure even if some TTPs and/or mixnode collude with each others.
-    This ensures that no subset of compromised nodes can break the privacy guarantees of the protocol.
   \end{itemize}
 
   \item \textbf{Correctness}:  
@@ -50,6 +48,13 @@ Each category addresses different but complementary aspects of security.
     The path length of a packet must be bounded to prevent excessively long or cyclic routes. 
     This avoids denial-of-service scenarios where packets could consume network resources indefinitely.
   \end{itemize}
+\end{itemize}
+In addition to the previously defined security properties, the introduction of TTPs into our decentralized scheme requires an assessment of the risks associated with them.
+Accordingly, we introduce one final property:
+\begin{itemize}
+  \item \textbf{Collusion resistance}:
+  The system must remain secure even in the presence of collusion among a subset of TTPs and/or mixnodes.
+  In particular, no coalition of compromised entities should be able to undermine the core privacy guarantees of the protocol, such as sender anonymity, receiver anonymity, or relationship anonymity.
 \end{itemize}
 
 \subsection{Privacy properties}
@@ -70,18 +75,18 @@ As a result, no additional proof is needed for this property.
 
 \subsubsection{Bitwise Unlinkability}
 
-The property of \emph{bitwise unlinkability} requires that an adversary cannot determine, with more than negligible advantage, which outgoing packet corresponds to which incoming packet at a mixnodes. 
+The property of \emph{bitwise unlinkability} requires that an adversary cannot determine, with more than negligible advantage, which outgoing packet corresponds to which incoming packet at a mixnode. 
 Formally, if $n$ packets enter a mixnodes and $n$ packets leave it, the adversary's probability of correctly linking an incoming packet to its corresponding outgoing packet must satisfy
 $$
 \Pr[\text{linking}] \;\leq\; \frac{1}{n} + \epsilon,
 $$
-where $\epsilon$ is negligible in the security parameter. 
+where $\epsilon$ is a negligible term. 
 Intuitively, this means that even if the adversary colludes with the preceding and following mixnodes, its best strategy should be no better than random guessing.
 
 \paragraph{Linking via $\alpha$ values:}  
 The relation $\alpha_{i+1} = s_i \alpha_i$ reveals no link without recovering $s_i$, which is computationally equivalent to solving the Elliptic Curve Discrete Logarithm Problem (ECDLP). 
-If an adversary manage to compute this $s_i$ value (i.e. shared secret), he can easily verify if these two packets are linked or not.
-Moreover, repeated $\alpha$ values are rejected by mixnodes, preventing trivial linkability.  
+If an adversary manage to compute that $s_i$ value (i.e. shared secret), he can easily verify if these two packets are linked or not.
+Moreover, $\alpha$ values that have already be seen are rejected by mixnodes, preventing trivial linkability.  
 
 \paragraph{Linking via $\beta$ values:}  
 For each chunk $j$, the difference between $\beta$ components of an incoming packet and its corresponding outgoing packet is:
@@ -95,8 +100,8 @@ If, however, an adversary discovers a scalar $x$ such that $G_j = x G_{j'}$ for 
 To prevent this, our setup phase derives independent generators using hashes and Elligator to map to a random EC point. 
 Under this assumption, the adversary cannot exploit linear dependencies between generators.
 
-\paragraph{Linking via $\gamma$ values:}  
-Since $\gamma$ is computed from $\beta$, unlinkability of $\beta$ implies unlinkability of $\gamma$.  
+\paragraph{Linking via $\gamma$ values:}  % TODO reformulate (note about collusion)
+Since $\gamma$ is computed from $\beta$, unlinkability of $\beta$ implies unlinkability of $\gamma$.\todo{A bit light, I need to develop it...}
 
 \paragraph{Conclusion and necessary hypothesis:}  
 We conclude that any attempt to break bitwise unlinkability necessarily reduces to solving the ECDLP, under the following assumptions:
@@ -112,18 +117,156 @@ An \textbf{important security remark} concerns the generator's independence hypo
 If an adversary is able to discover a scalar relation between two generators (i.e. solve a single instance of the ECDLP), then the unlinkability property of all packets in the system is compromised.  
 To mitigate this risk, it is essential that the setup phase produces independent generators and that these generators are periodically refreshed.
 
+\subsubsection{Relationship Anonymity}  
 
-\subsubsection{Relationship anonimity}
+\emph{Relationship anonymity}, sometimes referred to as sender-receiver anonymity, aims to prevent an adversary from linking a sender to its corresponding receiver.  
+A necessary prerequisite for this property is \emph{bitwise unlinkability}.
+Otherwise, an adversary could simply trace a packet hop by hop through the network, thereby breaking relationship anonymity.  
 
-\subsection{Robustness}
+Assuming bitwise unlinkability holds, the only remaining strategy for an adversary is to attempt direct identification of nodes along the path, in particular the final destination.  
+In our scheme, the only information that could potentially reveal a node is its encoded IP address, represented as an elliptic curve point ($N_i$ for intermediate nodes or $\Delta$ for the final destination) using a reversible mapping such as Elligator.  
 
-\subsubsection{Integrity}  
-\subsubsection{Wrap resistance}  % --> Necessary for bounded length
-\subsubsection{Replay resistance}  
-\subsubsection{Collusion resistance}
+An adversary who obtains $N_i$ would trivially identify the corresponding node.  
+However, in our construction each $N_i$ is always masked by at least one point of the form $s_{i-1} G_1$.
+Thus, the problem of deanonymizing $N_i$ reduces to guessing a candidate among all mixnodes in the system and solving an ECDLP instance for each attempt and then check consistency with the rest of the header.  
+Finally, the destination $\Delta$ is handled in exactly the same way since it is the last intermediate node $N_{\text{last}}$.  
 
-\subsection{Correctness}
+\subsubsection{Collusion Analysis}\label{sec:collusion}\todo{Probably better to consider this at the very end of the security section ?}
 
-\subsubsection{Correctness} 
-\subsubsection{Legitimacy}
+To complement decentralization with trusted third parties (TTPs), we must analyze the system's resilience to collusion. 
+The central requirement is that an adversary should not gain a decisive advantage by colluding with other entities. 
+In our scheme, collusion can occur with two types of parties: TTPs or mixnodes, each with distinct security implications.
+
+\paragraph{Collusion with TTPs.}\label{sec:collusion-ttps} 
+Collusion with a trusted third party (TTP) reveals three types of information:  
+\begin{itemize}
+  \item additive shares of destinations $N_{(i,t)}$, such that $N_i = \sum_{t=1}^T N_{(i,t)}$;  
+  \item additive shares of shared secrets $s_{(i,t)}$, such that $s_i = \sum_{t=1}^T s_{(i,t)}$;
+  \item hash values of the shared secrets $\{h(s_1), h(s_2), h(s_3)\}$.  
+\end{itemize}
+
+Since the first two items are additive shares, they provide no information unless all $T$ shares are collected.  
+Hence, as long as at least one TTP remains honest, neither destinations nor shared secrets can be reconstructed.  
+The only additional information available to an adversary colluding with a single TTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags.  
+This allows the adversary, in principle, to forge integrity tags.  
+However, the blinding offset $s_i G$ prevents linking weights to specific packets.  
+Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability at most $1/n$ among $n$ packets in the mixnode's batch.  
+
+\paragraph{Collusion with mixnodes.}\label{sec:collusion-mixnodes}   
+Collusion with a mixnode $i$ reveals its private key and thus the shared secret $s_i$.  
+This enables the adversary to compute integrity tags and break unlinkability \emph{at that node}.  
+However, since the node is already corrupted, this provides no additional power: the adversary cannot extend this knowledge beyond the compromised node.  
+Therefore, the scheme remains secure as long as at least one mixnode on the path is honest, though the anonymity set is slightly reduced.  
+
+\paragraph{Collusion with both TTPs and mixnodes.}\label{sec:collusion-all}\todo[color=red]{/!$\backslash$ Weakness}
+Collusion with both a TTP and a mixnode is more damaging.  
+While TTPs alone reveal only unlinked weights, and mixnodes alone reveal only its shared secrets, their combination allows an adversary to \emph{link integrity weights to specific packets}.  
+Indeed, the adversary can hash the mixnode's shared secret and match it against the TTP-provided weights, thereby recovering the corresponding weights for that packet across all mixnodes.  
+
+This capability enables two attacks:  
+(i) \emph{Integrity forgery}: the adversary can modify chunks (including the final destination $\Delta$) while recomputing valid integrity tags across multiple mixnodes.  
+(ii) \emph{Weaker unlinkability}: the adversary may attempt to trace a packet by modifying it and checking if it succeeds the integrity verification.
+This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, in which case the attack is detected, where $n$ is the mixnode's batch size.
+Breaking unlinkability entirely would still require solving the ECDLP or exploiting linear relations among generators, which is assumed infeasible.  
+\todo{Worst case scenario: An adversary collude with a TPP, an entry node, and an excit node, therefore he can break the unlinkability property of packets generated by this TTP and, entering and exiting by these corrupted nodes (both are needed)}
+
+\paragraph{Summary.}  
+In summary, collusion with either TTPs or mixnodes alone does not compromise security.
+TTPs reveal only additive shares and unlinked weights, while mixnodes reveal only its shared secrets.  
+However, collusion between a TTP and a mixnode is more powerful, as it enables linking weights to packets which allows integrity forging.  
+Unlinkability remains computationally hard to break, but the adversary may probabilistically test packets with success probability $1/n$, where $n$ is the mixnode's batch size.  
+\todo{mentionning the worst case scenario that can break unlinkability of some packets ?}
+In summary, the security of the scheme rests on the following minimal assumptions:
+(i) at least one TTP remains honest;
+(ii) at least one mixnode on the path is not compromised; and
+(iii) adversaries cannot simultaneously collude with both a TTP and a mixnode (in particular, when entry and exit nodes are corrupted).
+Under these conditions, collusion yields at most negligible advantage beyond trivial guessing.
+
+
+\subsection{Robustness}  
+
+Robustness assesses the security of the scheme against an \emph{active} adversary.  
+In particular, we focus on three essential properties:  
+
+\begin{enumerate}
+    \item \textbf{Integrity-forgery resistance}: 
+    An adversary must not be able to modify a valid packet and simultaneously update its integrity tag such that the modified packet is still accepted by following mixnodes.  
+
+    \item \textbf{Wrap resistance}:\label{wrap_resistance}
+    An adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being processed by some mixnode $i'$, the packet again becomes $(\alpha, \beta, \gamma)$.  
+    Without this property, an adversary could “wrap” traffic around intermediate nodes arbitrarily many times, violating the bounded-path guarantee.  
+
+    \item \textbf{Replay resistance}:
+    A packet that has already been processed must be discarded if replayed, rather than being accepted again.  
+    This prevents denial-of-service attacks in which an adversary floods the system by resending previously valid packets.  
+\end{enumerate}  
+
+Replay protection is inherited from the original Sphinx construction since mixnodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).  
+\todo{Need to mention it in the schema}
+Thus, an adversary cannot simply replay a packet.  
+To succeed, he would need to alter $\alpha$ (and consequently $\beta$) while still producing a consistent integrity tag $\gamma$, which directly reduces to the problem of forging integrity.  
+Similarly, wrap resistance also requires producing a modified header that passes integrity verification, meaning that it is reductible to integrity forgery.  
+
+Hence, both replay resistance and wrap resistance reduce directly to integrity-forgery resistance. 
+Therefore, the only property that requires an explicit security proof is integrity-forgery resistance.
+
+\subsubsection{Integrity-Forgery Resistance}  
+
+Integrity (or forgery resistance) is a fundamental security property of any communication scheme.  
+It guarantees that any unauthorized modification of a packet will be detected by the next mixnode.  
+
+Because our system is decentralized, we require a homomorphic integrity mechanism.
+I.e. the integrity of an aggregated header must be derivable from the integrity checks of its constituent parts.  
+To achieve this, we employ a pseudorandom weighted checksum of the form:
+$$
+\C{i} = s_i G + \sum_j h^{(j)}(s_i)\, B_{(i,j)},
+$$
+where $B_{(i,j)}$ denotes the $j$-th header chunk, $s_i$ is the shared secret, and $h^{(j)}(s_i)$ is the $j$-th iterated hash of $s_i$.  
+This construction combines two elements: (i) a \emph{weighted sum}, and (ii) a blinding \emph{offset} term $s_i G$.  
+
+\paragraph{Security rationale.}  
+If an adversary knows the value of a weight, he could modify the corresponding chunk and recompute the integrity tag accordingly.  
+Similarly, if relations between weights are known, the adversary could exploit them to preserve the checksum.  
+For example, if the same weight is used across chunks, the adversary could add a point $P$ to one chunk and subtract $P$ from another, leaving the weighted sum unchanged.  
+
+To prevent such attacks, weights are derived from one-time shared secrets and obtained via iterated hashing.  
+Under the random-oracle assumption, these weights are indistinguishable from random and independent scalars, so no non-trivial relations can be exploited.  
+Consequently, forging a valid integrity tag without knowledge of the underlying secret is computationally infeasible.  
+
+\paragraph{Collusion scenarios.}  
+If an adversary colludes with a trusted third party (TTP), they may gain knowledge of the weights.  
+In this case, the blinding offset $s_i G$ prevents trivial forgery.
+Although the adversary can compute the weighted sum, they cannot verify or reconstruct the integrity tag without the corresponding secret $s_i$.  
+Thus, even while colluding with TTP, the adversary cannot reliably forge integrity tags without colluding with mixnodes.
+A more detailed analysis of collusion resistance is provided in section \ref{sec:collusion}.
+
+
+
+\subsection{Correctness}\todo{Find more appropriate name since we alse have a subsubsection called 'Correctness'}
+
+Correctness properties guarantee that if all entities behave honestly, then all cryptographic primitives operate as specified and the protocol wroks as intended.
+
+\subsubsection{Correctness}
+
+Correctness ensures that, in the absence of an adversary, the protocol behaves as expected by its design specification.
+In our implementation, this property has been empirically validated through the Python prototype.
+Packets constructed by TTPs are correctly routed through the successive mixnodes, and each hop transformation $(\alpha_i, \beta_i, \gamma_i) \rightarrow (\alpha_{i+1}, \beta_{i+1}, \gamma_{i+1})$ conforms to the expected equations derived from the protocol definition.
+All headers and shared secrets are updated consistently, and the final destination $\Delta$ is correctly reached.
+
+
+\subsubsection{Legitimacy verification}\todo{Not implemented}
+
+Legitimacy property ensures that only legitimate packets are processed by mixnodes, while any illegitimate or malformed packets are promptly discarded.
+In the current design, legitimacy verification is not yet implemented.
+However, it can be enforced by embedding TTP authentication (e.g. zero-knowledge proofs) into the packet header.
+Upon reception, each mixnode would verify this authentication tag before proceeding with packet's processing.
+Packets failing this legitimacy check would be immediately discarded, preventing network pollution or denial-of-service attacks.
+
 \subsubsection{Bounded path length}
+
+The bounded path length property guarantees that each packet traverses a finite, predefined number of mixnodes, preventing adversaries from creating cyclic or arbitrarily long routes.
+This bound ensures termination and limits the computational resources consumed per packet.
+
+Since headers have a fixed size, if \textit{wrap resistance} is established (section \ref{wrap_resistance}), then the only remaining mechanism that could produce an unbounded path is the creation of a cyclic route.  
+Therefore, proving that path length is bounded reduces to proving that packet cannot have a cyclic route.
+\todo[inline]{TODO proof: cyclic route is possible or not ?}
