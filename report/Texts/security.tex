@@ -120,7 +120,7 @@ We consider four main robustness properties:
 \end{itemize}  
 
 \emph{Replay resistance} and \emph{wrap resistance} can be reduce to \emph{integrity-forgery resistance}. 
-\emph{Replay protection} is inherited from the original Sphinx construction since mixnodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).\todo{Need to mention it in the schema}
+\emph{Replay resistance} is inherited from the original Sphinx construction since mixnodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).\todo{Need to mention it in the schema}
 Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (and consequently $\beta$) while still producing a consistent integrity tag $\gamma$, which directly reduces to the problem of forging integrity.  
 Similarly, \emph{wrap resistance} also requires producing a modified header that passes integrity verification, meaning that it is reductible to integrity forgery.  
 
@@ -136,15 +136,50 @@ $$
 $$
 where $B_{(i,j)}$ denotes the $j$-th header chunk, $s_i$ is the shared secret, and $h^{(j)}(s_i)$ is the $j$-th iterated hash of $s_i$.  
 This construction combines two elements: (i) a \emph{weighted sum}, and (ii) a blinding \emph{offset} term $s_i G$.  
+\newline
 
-\paragraph{Security rationale.}  
-If an adversary knows a weight, he can modify the corresponding chunk and update the integrity tag accordingly.  
-Similarly, if relations between weights are known, the adversary can exploit them to preserve the checksum. 
-\todo[inline]{Add formula to proove it}% TODO
 
-To prevent such attacks, weights are derived from iterated hashing of shared secrets.
-Under the random-oracle assumption, these weights are indistinguishable from random and independent, so no non-trivial relations can be exploited.  
-Consequently, forging a valid integrity tag without knowledge of the underlying secret (or at least the weights) is computationally infeasible.  
+Each header chunk $\beta_{i,j}$ can be modified by an adversary in two possible ways: 
+either (i) the chunk is replaced by a new point $\beta'_{i,j}$, or (ii) it is incremented by an elliptic curve point $P_j$.
+
+\paragraph{Case 1: Chunk replacement.}
+Replacing $\beta_{i,j}$ with $\beta'_{i,j}$ requires updating the corresponding integrity tag $\gamma_i$ to $\gamma'_i$ such that:
+$$
+\gamma'_i = \gamma_i + h^{(j)}(s_i)\, (\beta'_{i,j} - \beta_{i,j}).
+$$
+This operation necessitates knowledge of the weight $h^{(j)}(s_i)$, which is derived from the shared secret $s_i$. 
+Without this information, an adversary cannot produce a valid updated integrity tag.
+
+\paragraph{Case 2: Incremental modification.}
+If the adversary only adds a point $P_j$ to a single chunk, the integrity tag must be updated as:
+$$
+\gamma'_i = \gamma_i + h^{(j)}(s_i)\, P_j,
+$$
+which again requires knowledge of the corresponding weight $h^{(j)}(s_i)$.
+
+\paragraph{Case 2.b: Balanced increment.}
+A more sophisticated attempt consists in modifying two chunks, say $j$ and $j'$, to preserve the checksum balance:
+$$
+\gamma'_i = \gamma_i + h^{(j)}(s_i)\, P_j + h^{(j')}(s_i)\, P_{j'}
+$$
+If the adversary knows a scalar $n$ such that $h^{(j)}(s_i) = n\,h^{(j')}(s_i)$,  it becomes:
+$$
+\gamma'_i = \gamma_i + h^{(j')}(s_i)\, (n P_j + P_{j'})
+$$
+Thus, the adversary can choose any $P_j$ and set $P_{j'} = -n P_j$, keeping $\gamma'_i = \gamma_i$ unchanged and thereby forging integrity.  
+
+\paragraph{Conclusion.}
+In summary, successful integrity forgery requires at least knowledge of scalar relations between the weights $h^{(j)}(s_i)$.  
+Since these weights are derived from one-time shared secrets through iterated hashing, such relations are computationally infeasible to obtain in the absence of collusion.
+
+%% OLD VERSION %%
+% If an adversary knows a weight, he can modify the corresponding chunk and update the integrity tag accordingly.  
+% Similarly, if relations between weights are known, the adversary can exploit them to preserve the checksum. 
+% \todo[inline]{Add formula to proove it}% TODO
+
+% To prevent such attacks, weights are derived from iterated hashing of shared secrets.
+% Under the random-oracle assumption, these weights are indistinguishable from random and independent, so no non-trivial relations can be exploited.  
+% Consequently, forging a valid integrity tag without knowledge of the underlying secret (or at least the weights) is computationally infeasible.  
 
 % \paragraph{Collusion scenarios.}  
 % If an adversary colludes with a trusted third party (TTP), they gain knowledge of weights.  
