@@ -125,7 +125,7 @@ Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (
 Similarly, \emph{wrap resistance} also requires producing a modified header that passes integrity verification, meaning that it is reductible to integrity forgery.  
 
 
-\subsubsection{Integrity-Forgery Resistance}  
+\subsubsection{Integrity-Forgery Resistance}\label{security:integrity_resistance}
 
 Integrity (or forgery resistance) guarantees that any unauthorized modification of a packet will be detected by the next mixnode.  
 
@@ -232,7 +232,7 @@ While TTPs alone reveal only unlinked weights, and mixnodes alone reveal only it
 Indeed, the adversary can hash the mixnode's shared secret and match it against the TTP-provided weights, thereby recovering the corresponding weights for that packet across all mixnodes.  
 
 This capability enables two attacks:\todo{Extend it with a bit of math}  % TODO
-(i) \emph{Integrity forgery}: the adversary can modify chunks (including the final destination $\Delta$) while recomputing valid integrity tags.  
+(i) \emph{Integrity forgery}: the adversary can modify chunks (including the final destination $\Delta$) while recomputing valid integrity tags as demonstrated in section \ref{security:integrity_resistance}.  
 (ii) \emph{Weaker unlinkability}: the adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds integrity verifications.
 This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the mixnode's batch size.
 (iii) \emph{Mixnode position identification}: a mixnode colluding with a TTP can infer its exact position within the packet's path thanks to the weights. 
