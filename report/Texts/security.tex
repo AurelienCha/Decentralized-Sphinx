@@ -31,6 +31,85 @@ Ensuring fixed-size packets is therefore a necessary condition which is already 
 Packets with unexpected size are discarded.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% V2 GAME-BASED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Unlinkability (Game-Based Definition)}
+
+We formalize unlinkability using a standard indistinguishability game between a challenger $\mathcal{C}$ and an adversary $\mathcal{A}$.  
+Intuitively, the adversary observes a set of packets entering and leaving a mixnode and attempts to determine which outgoing packet corresponds to a given incoming packet.
+
+\paragraph{Game Definition:}
+\begin{enumerate}
+\item \textbf{Setup.}
+  The challenger generates mixnode secret keys and public system parameters $(G_1, \dots, G_7)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
+
+  \item \textbf{Oracle.}  
+  The adversary is granted access to an oracle, which on input of a nounce $x$ and routing path $\pi = (N_1, N_2, N_3, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the mixnode.
+
+  \item \textbf{Challenge.}
+  The adversary submits two distinct headers $(\alpha_0, \beta_0, \gamma_0)$ and $(\alpha_1, \beta_1, \gamma_1)$ that were not obtained from oracle queries.  
+  The challenger selects a random bit $b \in \{0,1\}$ and processes $(\alpha_b, \beta_b, \gamma_b)$ through the mixnode, obtaining $(\alpha'_b, \beta'_b, \gamma'_b)$, which is then given to the adversary.
+
+  \item \textbf{Guess.}
+  The adversary outputs a bit $b' \in \{0,1\}$, attempting to guess which of the two input headers corresponds to the given output header.  
+  The adversary wins if $b' = b$.
+\end{enumerate}
+
+\noindent The adversary's advantage in breaking unlinkability is defined as
+$$
+\mathrm{Adv}^{\mathsf{unlink}}_{\mathcal{A}}(\lambda)
+= \big| \Pr[b' = b] - \tfrac{1}{2} \big|.
+$$
+The scheme achieves unlinkability if $\mathrm{Adv}^{\mathsf{unlink}}_{\mathcal{A}}(\lambda)$ is negligible in the security parameter $\lambda$.
+
+\paragraph{Proof Sketch.}
+Since headers are computationally indistinguishable from random bitstrings (as verified empirically using the NIST randomness test suite), any successful distinguishing strategy by $\mathcal{A}$ must exploit a correlation between the components $(\alpha, \beta, \gamma)$ and $(\alpha', \beta', \gamma')$.  
+We analyze the possible cases below.
+
+\medskip
+\noindent\textbf{Case 1: Linking via $\alpha$.}  
+Mixnodes reject packets with duplicate $\alpha$ values, preventing trivial replay-based linkage.  
+The only relation between $\alpha$ and its processed form $\alpha'$ is $\alpha' = s \alpha$, where $s$ is the mixnode's shared secret.  
+\emph{Reduction:} If $\mathcal{A}$ can link headers via $\alpha$, it can compute $s$ such that $\alpha' = s \alpha$, thereby solving an instance of the Elliptic Curve Discrete Logarithm Problem (ECDLP).
+
+\medskip
+\noindent\textbf{Case 2: Linking via $\beta$.}  
+Each routing chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy
+$$
+\beta_j - \beta'_j = s G_j, \quad \forall j \in \{1, \dots, 7\}.
+$$
+To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used amoung all chunks, or that the scalar relation between two generators $G_j$ is preserved (i.e. $x$ such that $G_j = x G_{j'}$).
+\emph{Reduction:} Linking via $\beta$ thus reduces to solving an instance of the ECDLP, either to compute $s$ or $x$.
+
+\medskip
+\noindent\textbf{Case 3: Linking via $\gamma$.}  
+The integrity tag $\gamma$ is a weighted sum of the encrypted routing components:
+$$
+\gamma = s G + \sum_{j=1}^{5} h^{(j)}(s)\, \beta_j.
+$$
+Finding a correlation between $\gamma$ and $\gamma'$ without knowledge of $s$ or its derived weights $h^{(j)}(s)$ is no easier than linking via $\beta$ (Case 2).
+
+\medskip
+\noindent\textbf{Summary.}  
+Under the hardness assumption of the ECDLP, no probabilistic polynomial-time adversary $\mathcal{A}$ can achieve a non-negligible advantage in the unlinkability game.  
+Therefore, it is reasonable to conclude that the proposed scheme provides unlinkability in the standard model.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \paragraph{Assumptions.}
+% \begin{enumerate}
+%   \item The Elliptic Curve Discrete Logarithm Problem (ECDLP) is hard in $\mathbb{G}$.
+%   \item The hash function $h$ acts as a pseudorandom function or random oracle.
+%   \item The generators $\{G_j\}$ are independent, i.e. no scalar $x$ such that $G_j = x G_{j'}$ is known to any party.
+% \end{enumerate}
+
+% \paragraph{Attacks.}
+% \begin{enumerate}
+%   \item recovering $s_i$, 
+%   \item learning weights, 
+%   \item exploiting generator relations
+% \end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ORIGINAL %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Unlinkability}
 
 The \emph{unlinkability} property requires that an adversary cannot determine, with more than negligible advantage, which outgoing packet corresponds to which incoming packet at a mixnode. 
