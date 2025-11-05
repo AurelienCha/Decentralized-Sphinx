@@ -1,6 +1,8 @@
 # TODO
 - Remove any suggestion if "legitimacy verification" properties. It should be mention only in introduction for motivation (and future work) but nowhere else (it is not the focus of our paper)
 - Do not consider a 'virtual adversary' (i.e. "Malicious TTP/Mixnode" instead of "Collusion with TTP/Mixnode")
+- For EuroS&P submission: publish code in anonymous Github (https://anonymous.4open.science/)
+- For EuroS&P submission: use the special EuroS&P IEEE template (not the ACM from previous conf.)
 
 # Feedback / Questions
 
@@ -12,3 +14,5 @@
 ### Secondary
 - Remove any mention of "Relationship anonimity" (it is only for completness, does not bring useful information)
 - For the "Robustness properties" only one sentence to describe the case of "wrapping" and "replay" (reduce to integrity forgery)
+
+garantie termination instead of bounded length

@@ -2920,7 +2920,7 @@
     % The 'nonacm' option disables 'printacmref' by default,
     % and the present \@mkbibcitation definition is never used
     % in this case. The conditional remains useful if the user
-    % explicitly sets \settopmatter{printacmref=true}.
+    explicitly sets \settopmatter{printacmref=true}.
     \if@ACM@journal@bibstrip
        \textit{\@journalNameShort}
        \@acmVolume, \@acmNumber \@article@string (\@acmPubDate),
