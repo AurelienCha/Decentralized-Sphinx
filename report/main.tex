@@ -24,7 +24,7 @@
 \setlength{\marginparwidth}{40mm}
 \usepackage{paralist}
 \usepackage{enumitem}
-
+\usepackage{comment}
 \usepackage{wasysym} % Add this in your preamble for the circle symbols
 % \usepackage{stfloats} %[!b] for bottom-page figure
 \input{schema/tikz-math_preamble}
@@ -38,45 +38,44 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Towards a decentralized Sphinx header construction}
 
+\title{Towards a decentralized Sphinx header construction}
 \author{
-\IEEEauthorblockN{\hspace{-1cm}Aurélien Chassagne}
-\IEEEauthorblockA{\textit{\hspace{-1cm}Université Libre de Bruxelles} \\
-\hspace{-1cm}Brussels, Belgium \\
-\hspace{-1cm}aurelien.chassagne@ulb.be}
-\and
-\IEEEauthorblockN{Iness Ben Guirat}
-\IEEEauthorblockA{\textit{Université Libre de Bruxelles} \\
-Brussels, Belgium \\
-iness.ben.guirat@ulb.be}
-\and
-\IEEEauthorblockN{Jan Tobias Mühlberg}
-\IEEEauthorblockA{\textit{Université Libre de Bruxelles} \\
-Brussels, Belgium \\
-jan.tobias.muehlberg@ulb.be}
-\and
-\IEEEauthorblockN{\hspace{3cm}Jean-Michel Dricot}
-\IEEEauthorblockA{\textit{\hspace{3cm}Université Libre de Bruxelles} \\
-\hspace{3cm}Brussels, Belgium \\
-\hspace{3cm}jean-michel.dricot@ulb.be}
-\and
-\IEEEauthorblockN{Olivier Markowitch}
-\IEEEauthorblockA{\textit{Université Libre de Bruxelles} \\
-Brussels, Belgium \\
-olivier.markowitch@ulb.be}
-}
+		\IEEEauthorblockN{\hspace{-1cm}Aurélien Chassagne}
+		\IEEEauthorblockA{\textit{\hspace{-1cm}Université Libre de Bruxelles} \\
+			\hspace{-1cm}Brussels, Belgium \\
+			\hspace{-1cm}aurelien.chassagne@ulb.be}
+		\and
+		\IEEEauthorblockN{Iness Ben Guirat}
+		\IEEEauthorblockA{\textit{Université Libre de Bruxelles} \\
+			Brussels, Belgium \\
+			iness.ben.guirat@ulb.be}
+		\and
+		\IEEEauthorblockN{Jan Tobias Mühlberg}
+		\IEEEauthorblockA{\textit{Université Libre de Bruxelles} \\
+			Brussels, Belgium \\
+			jan.tobias.muehlberg@ulb.be}
+		\and
+		\IEEEauthorblockN{\hspace{3cm}Jean-Michel Dricot}
+		\IEEEauthorblockA{\textit{\hspace{3cm}Université Libre de Bruxelles} \\
+			\hspace{3cm}Brussels, Belgium \\
+			\hspace{3cm}jean-michel.dricot@ulb.be}
+		\and
+		\IEEEauthorblockN{Olivier Markowitch}
+		\IEEEauthorblockA{\textit{Université Libre de Bruxelles} \\
+			Brussels, Belgium \\
+			olivier.markowitch@ulb.be}
+	}
+
 
 \maketitle
 
 \begin{abstract}
-  Sphinx is a packet format widely used in mixnet-based systems such as Nym, Katzenpost, and the Lightning Network. 
-  Constructed by clients, Sphinx headers encode all routing information required to transmit messages from the client to the final destination, while preventing adversaries from linking packets across the network based on their size or format. 
-  Although Sphinx is considered to provide robust security guarantees, it does not protect against malicious clients who attempt to bias path selection or route packets to unauthorized services.
-  In this paper, we propose a decentralized variant of the Sphinx packet format that distributes header construction among multiple trusted third parties. 
-  These parties are assumed to be honest-but-curious, meaning they follow the protocol but may collude to infer routing information or cryptographic secrets. 
-  We implement our scheme in Python and evaluate the unlinkability property using the NIST SP 800-22 statistical test suite. 
-  Our empirical results suggest that our decentralized scheme achieves unlinkability, passing more statistical tests than the original Sphinx format.
+  Sphinx is a packet format widely used in decentralized networks such as Nym, Katzenpost, and the Lightning Network because of its strong security properties as well as the unlinkability property where an adversary can not link an input packet to an output packet based on the size or the format of the packet.
+  The Sphinx headers encode all the routing information such as the servers address and the keys that are required to transmit messages from the client to the final destination. However, while it is considered to provide robust security guarantees, because it is constructed centrally by clients, it does not protect against malicious clients who attempt to bias path selection or route packets to unauthorized services.
+  In this paper, we propose a decentralized variant of the Sphinx packet format that distributes header construction among multiple third parties that can be honest but curious.
+  We provide a formal analysis of the main security properties of the Sphinx packet format given various threat models. Additionally we implement our scheme in Python and evaluate the unlinkability property using the NIST SP 800-22 statistical test suite. Our empirical results suggest that our decentralized scheme achieves unlinkability, passing more statistical tests than the original Sphinx format.
+  
   % Our decentralized construction enhances deployment flexibility and paves the way for privacy-preserving mechanisms that could verify the legitimacy of packets at any hop, enabling early rejection of unauthorized traffic without compromising privacy. This work represents a first step towards a decentralized route selection and packet legitimacy enforcement.%, for example system that want to enforce exit policy.
 \end{abstract}
 
