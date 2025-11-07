@@ -2,9 +2,11 @@
 
 This section outlines the security guarantees of our scheme.  
 We first analyze each desired property in an ideal setting (i.e. without collusion), and then discuss the effect of potential collusion, whether involving TTPs, mixnodes, or both.
-%We group the security properties into two categories: \emph{privacy} and \emph{robustness}.  
-% Robustness properties ensure that the system remains secure under active attacks such as packet replay, rerouting, or forgery.
 
+
+%%%%%%%%%%%%%%%%%
+% UNLINKABILITY %
+%%%%%%%%%%%%%%%%%
 
 \subsection{Unlinkability}
 
@@ -13,9 +15,9 @@ Thus, the problem reduces to proving unlinkability at the mixnode level, meaning
 
 We formalize unlinkability using a standard indistinguishability game between a challenger $\mathcal{C}$ and an adversary $\mathcal{A}$.  
 Intuitively, the adversary observes a set of packets entering and leaving a mixnode and attempts to determine which outgoing packet corresponds to a given incoming packet.
+\newline
 
-
-\medskip\noindent\textbf{Game Definition:}
+\noindent\textbf{Game Definition:}
 \begin{enumerate}
 \item \textbf{Setup.}
   The challenger generates mixnode secret keys and public system parameters $(G_1, \dots, G_7)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
@@ -38,35 +40,38 @@ $$
 = \big| \Pr[b' = b] - \tfrac{1}{2} \big|.
 $$
 The scheme achieves unlinkability if $\mathrm{Adv}^{\mathsf{unlink}}_{\mathcal{A}}(\lambda)$ is negligible in the security parameter $\lambda$.
+\newline
 
-
-\medskip\noindent\textbf{Proof Sketch:}
+\noindent\textbf{Proof Sketch:}
 As in the original Sphinx construction, all packets have a fixed size (header and payload), preventing any adversary from correlating packets based on observable size patterns.
 In addition, headers are computationally indistinguishable from random bitstrings (as verified empirically using the NIST randomness test suite), any successful distinguishing strategy by $\mathcal{A}$ must exploit a correlation between header's components $(\alpha, \beta, \gamma)$ and $(\alpha', \beta', \gamma')$.  
 We analyze the possible cases below.
+\newline
 
-\paragraph{\textbf{Case 1: Linking via $\alpha$.}}  
+\noindent{\textbf{Case 1: Linking via $\boldsymbol\alpha$.}}  
 Mixnodes reject packets with duplicate $\alpha$ values, preventing trivial replay-based linkage.  
 The only relation between $\alpha$ and its processed form $\alpha'$ is $\alpha' = s \alpha$, where $s$ is the mixnode's shared secret.  
 \emph{Reduction:} If $\mathcal{A}$ can link headers via $\alpha$, it can compute $s$ such that $\alpha' = s \alpha$, thereby solving an instance of the Elliptic Curve Discrete Logarithm Problem (ECDLP).
+\newline
 
-\paragraph{\textbf{Case 2: Linking via $\beta$.}}  
+\noindent{\textbf{Case 2: Linking via $\boldsymbol\beta$.}}  
 Each routing chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy
 $$
 \beta_j - \beta'_j = s G_j, \quad \forall j \in \{1, \dots, 7\}.
 $$
 To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used amoung all chunks, or that the scalar relation between two generators $G_j$ is preserved (i.e. $x$ such that $G_j = x G_{j'}$).
 \emph{Reduction:} Linking via $\beta$ thus reduces to solving an instance of the ECDLP, either to compute $s$ or $x$.
+\newline
 
-\paragraph{\textbf{Case 3: Linking via $\gamma$.}}  
+\noindent{\textbf{Case 3: Linking via $\boldsymbol\gamma$.}}  
 The integrity tag $\gamma$ is a weighted sum of the encrypted routing components:
 $$
 \gamma = s G + \sum_{j=1}^{5} h^{(j)}(s)\, \beta_j.
 $$
 Finding a correlation between $\gamma$ and $\gamma'$ without knowledge of $s$ or its derived weights $h^{(j)}(s)$ is no easier than linking via $\beta$ (Case 2).
+\newline
 
-
-\medskip\noindent\textbf{Summary.}  
+\noindent\textbf{Summary.}  
 Under the hardness assumption of the ECDLP, no probabilistic polynomial-time adversary $\mathcal{A}$ can achieve a non-negligible advantage in the unlinkability game.  
 Therefore, it is reasonable to conclude that the proposed scheme provides unlinkability in the standard model.
 
@@ -86,51 +91,12 @@ Therefore, it is reasonable to conclude that the proposed scheme provides unlink
 % \end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \paragraph{Conclusion and assumptions.}  
-% Breaking unlinkability necessarily reduces to solving the ECDLP, under the following assumptions:
-% \begin{itemize}
-%   \item $\alpha$ values are used as nonces, and mixnodes discard packets with repeated $\alpha$ values;
-%   \item The generators $G_j$ are independent, as ensured by the setup procedure.
-% \end{itemize}
 
-% \paragraph{Security remark.}  
-% The independence of generators is a critical assumption.  
-% If an adversary discovers any scalar relation between two generators (i.e. solves a single instance of the ECDLP), the unlinkability of all packets in the system is compromised.  
-% To mitigate this, it is essential that the setup phase produces independent generators and that these generators are periodically refreshed.
-
-
-% \subsubsection{Relationship Anonymity}  
-
-% \emph{Relationship anonymity}, also known as \emph{sender-receiver unlinkability}, ensures that an adversary cannot associate a sender with its corresponding receiver.  
-% Assuming \emph{unlinkability} holds, the only remaining strategy for an adversary is to directly identify the final node.
-
-% In our scheme, the only information that could reveal a node's identity is its encoded IP address, represented as an elliptic curve point ($N_i$ for intermediate nodes or $\Delta$ for the final destination) via a reversible mapping such as Elligator.  
-% An adversary who obtains $N_i$ could trivially identify the corresponding node.  
-% However, in our construction, each $N_i$ is masked by at least one elliptic curve point of the form $s_{i-1} G_1$.  
-% Thus, deanonymizing $N_i$ reduces to guessing a candidate among all mixnodes in the system, solving an instance of the ECDLP for each guess, and checking consistency with the rest of the header, an infeasible task under standard cryptographic assumptions.  
-% The destination $\Delta$ is treated as the last node $N_{\text{last}}$ in the path.
-
-
+%%%%%%%%%%%%%
+% INTEGRITY %
+%%%%%%%%%%%%%
 
 \subsection{Integrity-forgery resistance}\label{security:integrity_resistance}
-
-% We consider four main robustness properties:
-% \begin{itemize}
-%     \item \textbf{Integrity-forgery resistance:} 
-%     An adversary must not be able to modify a valid packet and simultaneously update its integrity tag such that the modified packet is still accepted by following mixnodes.   
-
-%     \item \textbf{Bounded path length:}
-%     The path length of a packet must be bounded to prevent excessively long or cyclic routes.   
-%     This bound ensures termination and limits the computational resources consumed per packet.
-
-%     \item \textbf{Wrap resistance:}\label{wrap_resistance}
-%     An adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being processed by some mixnode $i'$, the packet becomes $(\alpha, \beta, \gamma)$ again.  
-%     Without this property, an adversary could \textit{wrap} traffic around intermediate nodes arbitrarily many times, violating the bounded-path guarantee.  
-
-%     \item \textbf{Replay resistance:}
-%     A packet that has already been processed must be discarded if replayed, rather than being accepted again.  
-%     This prevents denial-of-service attacks in which an adversary floods the system by resending previously valid packets. 
-% \end{itemize}  
 
 Due to the decentralized nature of our scheme, we require a homomorphic integrity mechanism (i.e. integrity tags of TTP's partial headers are aggregated into the final header's integrity tag).
 To achieve this, we employ a pseudorandom weighted checksum of the form:
@@ -144,23 +110,26 @@ This construction combines two elements: (i) a \emph{weighted sum}, and (ii) a b
 
 Each header chunk $\beta_{i,j}$ can be modified by an adversary in two possible ways: 
 either (i) the chunk is replaced by a new point $\beta'_{i,j}$, or (ii) it is incremented by an elliptic curve point $P_j$.
+\newline
 
-\paragraph{\textbf{Case 1: Chunk replacement.}}
+\noindent{\textbf{Case 1: Chunk replacement.}}
 Replacing $\beta_{i,j}$ with $\beta'_{i,j}$ requires updating the corresponding integrity tag $\gamma_i$ to $\gamma'_i$ such that:
 $$
 \gamma'_i = \gamma_i + h^{(j)}(s_i)\, (\beta'_{i,j} - \beta_{i,j}).
 $$
 This operation necessitates knowledge of the weight $h^{(j)}(s_i)$, which is derived from the shared secret $s_i$. 
 Without this information, an adversary cannot produce a valid updated integrity tag.
+\newline
 
-\paragraph{\textbf{Case 2: Incremental modification.}}
+\noindent{\textbf{Case 2: Incremental modification.}}
 If the adversary only adds a point $P_j$ to a single chunk, the integrity tag must be updated as:
 $$
 \gamma'_i = \gamma_i + h^{(j)}(s_i)\, P_j,
 $$
 which again requires knowledge of the corresponding weight $h^{(j)}(s_i)$.
+\newline
 
-\paragraph{\textbf{Case 2.b: Balanced increment.}}
+\noindent{\textbf{Case 2.b: Balanced increment.}}
 A more sophisticated attempt consists in modifying two chunks, say $j$ and $j'$, to preserve the checksum balance:
 $$
 \gamma'_i = \gamma_i + h^{(j)}(s_i)\, P_j + h^{(j')}(s_i)\, P_{j'}
@@ -170,40 +139,25 @@ $$
 \gamma'_i = \gamma_i + h^{(j')}(s_i)\, (n P_j + P_{j'})
 $$
 Thus, the adversary can choose any $P_j$ and set $P_{j'} = -n P_j$, keeping $\gamma'_i = \gamma_i$ unchanged and thereby forging integrity.  
+\newline
 
-\medskip\noindent\textbf{Summary.}
+\noindent\textbf{Summary.}
 Successful integrity forgery requires at least knowledge of scalar relations between the weights $h^{(j)}(s_i)$.  
 Since these weights are derived from one-time shared secrets through iterated hashing, such relations are computationally infeasible to obtain in the absence of collusion.
+\newline
 
-
-\medskip\noindent\textbf{Remark.}
+\noindent\textbf{Remark.}
 Original Sphinx article take into account the \emph{replay resistance} and \emph{wrap resistance}.
 \emph{Wrap resistance} means an adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being processed by some mixnode $i'$, the packet becomes $(\alpha, \beta, \gamma)$ again.  
 \emph{Replay resistance} is inherited from the original Sphinx construction since mixnodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).
 Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (and consequently $\beta$) while still producing a consistent integrity tag $\gamma$. % which directly reduces to the problem of forging integrity.  
 Similarly, \emph{wrap resistance} also requires producing a modified header that passes integrity verification.
 Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integrity forgery resistance}. 
-%\todo{Need to mention it in the schema}
 
-% \subsubsection{Integrity-Forgery Resistance}
 
-% Integrity (or forgery resistance) guarantees that any unauthorized modification of a packet will be detected by the next mixnode.  
-
-%% OLD VERSION %%
-% If an adversary knows a weight, he can modify the corresponding chunk and update the integrity tag accordingly.  
-% Similarly, if relations between weights are known, the adversary can exploit them to preserve the checksum. 
-% \todo[inline]{Add formula to proove it}% TODO
-
-% To prevent such attacks, weights are derived from iterated hashing of shared secrets.
-% Under the random-oracle assumption, these weights are indistinguishable from random and independent, so no non-trivial relations can be exploited.  
-% Consequently, forging a valid integrity tag without knowledge of the underlying secret (or at least the weights) is computationally infeasible.  
-
-% \paragraph{Collusion scenarios.}  
-% If an adversary colludes with a trusted third party (TTP), they gain knowledge of weights.  
-% In this case, the blinding offset $s_i G$ prevents trivial forgery.
-% Although the adversary can compute the weighted sum, they cannot verify or reconstruct the integrity tag without the corresponding secret $s_i$.  
-% Thus, even while colluding with TTP, the adversary cannot reliably forge integrity tags without colluding with mixnodes.
-% A more detailed analysis of collusion resistance is provided in section \ref{sec:collusion}.
+%%%%%%%%%%%%%%%
+% TERMINATION %
+%%%%%%%%%%%%%%%
 
 \subsection{Termination guarantee}
 
@@ -213,39 +167,36 @@ Therefore, proving that path length is bounded reduces to proving that packet ca
 
 
 %%%%%%%%%%%%%
-% Collusion %
+% COLLUSION %
 %%%%%%%%%%%%%
 
-\subsection{Collusion Analysis}\label{sec:collusion}
+\subsection{Collusion Analysis}
 
 To complement decentralization with trusted third parties (TTPs), we must analyze the system's resilience to collusion. 
-An adversary should not gain a decisive advantage by colluding with other entities. 
-In our scheme, collusion can occur with: TTPs, mixnodes, or both.
+An adversary should not gain a decisive advantage by colluding with TTPs, as long as at least one TTP used in the header construction remains honest. 
+\newline
 
-\paragraph{\textbf{Collusion with TTPs.}}\label{sec:collusion-ttps} 
-Collusion with a trusted third party (TTP) reveals three types of information:  
+\noindent{\textbf{TTP advantages.}}
+Amoung the set of $T$ trusted third party used to build the header, a TTP $t$ reveals three types of information:  
 \begin{itemize}
-  \item additive shares of destinations $N_{(i,t)}$, such that $N_i = \sum_{t=1}^T N_{(i,t)}$;  
-  \item additive shares of shared secrets $s_{(i,t)}$, such that $s_i = \sum_{t=1}^T s_{(i,t)}$;
-  \item hash values of the shared secrets $\{h(s_1), h(s_2), h(s_3)\}$.  
+  \item additive shares of destinations $N_{(i,t)}$,such that\newline 
+  $N_i = \sum_{t=1}^T N_{(i,t)}$;  
+  \item additive shares of shared secrets $s_{(i,t)}$, such that\newline 
+  $s_i = \sum_{t=1}^T s_{(i,t)}$;
+  \item hash values of shared secrets $\{h(s_1), h(s_2), h(s_3)\}$.
+  \newline
 \end{itemize}
 
 Since the first two items are additive shares, they provide no information unless all $T$ shares are collected.  
-Hence, as long as at least one TTP remains honest, neither destinations nor shared secrets can be reconstructed.  
-The only additional information available to an adversary colluding with a single TTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags.  
+Hence, as long as at least one of the $T$ TTP remains honest, neither destinations nor shared secrets can be reconstructed.  
+The only additional information available to an adversary colluding with a single TTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags for all mixnodes in the path.  
 However, the integrity's blinding offset $s_i G$ prevents linking weights to specific packets.
 Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the mixnet.
+\newline
 
-\paragraph{\textbf{Collusion with mixnodes.}}\label{sec:collusion-mixnodes}   
-Collusion with a mixnode $i$ reveals its private key. 
-This enables the adversary to compute the shared secret $s_i$, breaking unlinkability \emph{at that node}.  
-However, since the node is already corrupted, this provides no additional power: the adversary cannot extend this knowledge beyond the compromised node.  
-Therefore, the scheme remains secure as long as at least one mixnode on the path is honest, though the anonymity set is slightly reduced.  
-\todo[inline]{paragraph on collusion with mixnode alone is not really intersetd, we could skip it.}
-
-\paragraph{\textbf{Collusion with both TTPs and mixnodes.}}\label{sec:collusion-all}
-Collusion with both a TTP and a mixnode is more damaging.  
-While TTPs alone reveal only unlinked weights, and mixnodes alone reveal only its shared secrets, their combination allows an adversary to \emph{link integrity weights to specific packets}.  
+\noindent{\textbf{Case of malicious mixnode}}
+While TTPs alone reveal only unlinked weights, when combining with a malicious mixnode, it allows an adversary to potentially \emph{link those weights to a specific packets} going through the malicious mixnode.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 Indeed, the adversary can hash the mixnode's shared secret and match it against the TTP-provided weights, thereby recovering the corresponding weights for that packet across all mixnodes.  
 
 This capability enables two attacks:%\todo{Extend it with a bit of math}  % TODO
@@ -256,8 +207,10 @@ This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where
 (iv) \emph{Breaking relationship anonymity}: if an adversary compromises both the entry and exit mixnodes of a packet, as well as one of the TTPs involved in constructing its header, 
 then by correlating the integrity weights, the adversary can link the entry and exit nodes belonging to the same packet.  
 This breaks relationship anonymity since the entry node reveals the sender and the exit node reveals the receiver.
+\newline
+% DOING THE WORST CASE SCENARIO
 
-\medskip\noindent\textbf{Summary.}
+\noindent\textbf{Summary.}
 Collusion with either TTPs or mixnodes alone does not compromise security.
 TTPs reveal only additive shares and unlinked weights, while mixnodes reveal only its shared secrets.  
 However, collusion between a TTP and a mixnode is more powerful, as it enables linking weights to packets which allows integrity forging.  
