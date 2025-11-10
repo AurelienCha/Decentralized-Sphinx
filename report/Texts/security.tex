@@ -26,7 +26,7 @@ Intuitively, the adversary observes a set of packets entering and leaving a mixn
   The adversary is granted access to an oracle, which on input of a nounce $x$ and routing path $\pi = (N_1, N_2, N_3, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the mixnode.
 
   \item \textbf{Challenge.}
-  The adversary submits two distinct headers $(\alpha_0, \beta_0, \gamma_0)$ and $(\alpha_1, \beta_1, \gamma_1)$ that were not obtained from oracle queries.  
+  The adversary submits two distinct headers $(\alpha_0, \beta_0, \gamma_0)$ and $(\alpha_1, \beta_1, \gamma_1)$ that were not obtained during oracle queries.  
   The challenger selects a random bit $b \in \{0,1\}$ and processes $(\alpha_b, \beta_b, \gamma_b)$ through the mixnode, obtaining $(\alpha'_b, \beta'_b, \gamma'_b)$, which is then given to the adversary.
 
   \item \textbf{Guess.}
@@ -96,18 +96,49 @@ Therefore, it is reasonable to conclude that the proposed scheme provides unlink
 % INTEGRITY %
 %%%%%%%%%%%%%
 
-\subsection{Integrity-forgery resistance}\label{security:integrity_resistance}
+\subsection{Integrity-Forgery Resistance (game-based)}
 
-Due to the decentralized nature of our scheme, we require a homomorphic integrity mechanism (i.e. integrity tags of TTP's partial headers are aggregated into the final header's integrity tag).
-To achieve this, we employ a pseudorandom weighted checksum of the form:
+A pseudorandom weighted checksum is used due to the decentralized nature of our scheme, which requires a homomorphic integrity mechanism.
+As a remainder, the integrity checksum is computed as:
 $$
 \C{i} = s_i G + \sum_j h^{(j)}(s_i)\, B_{(i,j)},
 $$
 where $B_{(i,j)}$ denotes the $j$-th header chunk, $s_i$ is the shared secret, and $h^{(j)}(s_i)$ is the $j$-th iterated hash of $s_i$.  
 This construction combines two elements: (i) a \emph{weighted sum}, and (ii) a blinding \emph{offset} term $s_i G$.  
 \newline
+\todo[inline]{First paragraph is maybe not needed (should have already be done for integrity in algo section)}
 
+Integrity-forgery resistance requires that an adversary cannot produce a modified header that is accepted by the next mixnode.  
+We formalize this property as a game in which the adversary attempts to forge a new header that passes integrity verification.
+\newline
 
+\noindent\textbf{Game Definition:}
+\begin{enumerate}
+\item \textbf{Setup.}
+  The challenger generates mixnode secret keys and public system parameters $(G_1, \dots, G_7)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
+
+  \item \textbf{Oracle.}  
+  The adversary is granted access to an oracle, which outputs a valid header $(\alpha, \beta, \gamma)$.
+  Then the adversary can change the $\beta$ values to $\beta'$.
+  The adversary can then send the modified header $(\alpha, \beta', \gamma)$ to an oracle which will send the new integrity tag $\gamma'$.
+
+  \item \textbf{Challenge.}
+  The challenger submits a header $(\alpha, \beta, \gamma)$ with an $\alpha$ that has not been used during the oracle.
+  The adversary modify chunks $\beta$ into $\beta_\mathcal{A}$, and update the integrity tag into $\gamma_\mathcal{A}$.
+
+  \item \textbf{Guess.}
+  The adversary wins if $\gamma_\mathcal{A} = \gamma_\mathcal{C}$, where $\gamma_\mathcal{C}$ is the integrity tag compute by the challenger on header $(\alpha, \beta_\mathcal{A})$.
+\end{enumerate}
+
+\noindent The adversary's advantage in forgering integrity tag is defined as
+$$
+\mathrm{Adv}^{\mathsf{forgery}}_{\mathcal{A}}(\lambda)
+= \big| \Pr[\gamma_\mathcal{A} = \gamma_\mathcal{C}] - \tfrac{1}{2^{\lambda}} \big|.
+$$
+The scheme achieves integrity-forgery resistance if $\mathrm{Adv}^{\mathsf{forgery}}_{\mathcal{A}}(\lambda)$ is negligible in the security parameter $\lambda$.
+\newline
+
+\noindent\textbf{Proof Sketch:}
 Each header chunk $\beta_{i,j}$ can be modified by an adversary in two possible ways: 
 either (i) the chunk is replaced by a new point $\beta'_{i,j}$, or (ii) it is incremented by an elliptic curve point $P_j$.
 \newline
@@ -154,6 +185,18 @@ Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (
 Similarly, \emph{wrap resistance} also requires producing a modified header that passes integrity verification.
 Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integrity forgery resistance}. 
 
+
+
+% \paragraph{Corollaries.}  
+% Replay-resistance and wrap-resistance reduce to the integrity-forgery game: a verbatim replay is blocked by nonce duplication checks, and creating a wrapped header that reconstitutes a previous header after node processing requires forging a valid integrity tag. Hence proving integrity-forgery resistance suffices to establish these robustness properties.
+
+% \paragraph{Security theorem (informal).}
+% Assume:
+% \begin{itemize}
+%   \item[(A1)] ECDLP is hard in $\mathbb{G}$;
+%   \item[(A2)] $h$ acts as a secure PRF / random oracle (so hashed weights are pseudorandom);
+%   \item[(A3)] the chunk generators $\{G_j\}$ are independent (no known scalar relations).
+% \end{itemize}
 
 %%%%%%%%%%%%%%%
 % TERMINATION %

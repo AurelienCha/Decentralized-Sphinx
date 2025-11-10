@@ -3,6 +3,7 @@
 - Do not consider a 'virtual adversary' (i.e. "Malicious TTP/Mixnode" instead of "Collusion with TTP/Mixnode")
 - For EuroS&P submission: publish code in anonymous Github (https://anonymous.4open.science/)
 - For EuroS&P submission: use the special EuroS&P IEEE template (not the ACM from previous conf.)
+- Instead of TRUSTED third parties (TTP), we should speak of SEMI-TRUSTED third parties (STTP)
 
 # Feedback / Questions
 
