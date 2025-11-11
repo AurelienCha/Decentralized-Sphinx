@@ -8,7 +8,7 @@ We first analyze each desired property in an ideal setting (i.e. without collusi
 % UNLINKABILITY %
 %%%%%%%%%%%%%%%%%
 
-\subsection{Unlinkability}
+\subsection{Unlinkability}\label{sec:unlinkability}
 
 To argue about sender-receiver unlinkability, we assume that an adversary cannot link a sender to its recipient without retracing the entire communication path.  
 Thus, the problem reduces to proving unlinkability at the mixnode level, meaning that an adversary cannot determine which outgoing packet corresponds to a given incoming packet at a mixnode.
@@ -96,7 +96,7 @@ Therefore, it is reasonable to conclude that the proposed scheme provides unlink
 % INTEGRITY %
 %%%%%%%%%%%%%
 
-\subsection{Integrity-Forgery Resistance (game-based)}
+\subsection{Integrity-Forgery Resistance}\label{sec:integrity_forgery}
 
 A pseudorandom weighted checksum is used due to the decentralized nature of our scheme, which requires a homomorphic integrity mechanism.
 As a remainder, the integrity checksum is computed as:
@@ -213,16 +213,17 @@ Therefore, proving that path length is bounded reduces to proving that packet ca
 % COLLUSION %
 %%%%%%%%%%%%%
 
-\subsection{Collusion Analysis}
+\subsection{Collusion Analysis}\label{sec:collusion}
 
-To complement decentralization with trusted third parties (TTPs), we must analyze the system's resilience to collusion. 
-An adversary should not gain a decisive advantage by colluding with TTPs, as long as at least one TTP used in the header construction remains honest. 
+The preceding security arguments assume an ideal setting without collusion.
+However, since our construction relies on semi-trusted third parties (STTPs), it is essential to assess the system's resilience to collusion. 
+In this section, we formalize potential collusion scenarios and evaluate the additional capabilities an adversary may gain when colluding with subsets of STTPs.
 \newline
 
-\noindent{\textbf{TTP advantages.}}
-Amoung the set of $T$ trusted third party used to build the header, a TTP $t$ reveals three types of information:  
+\noindent{\textbf{STTP advantages.}}
+Amoung the set of $T$ semi-trusted third parties used to build an header, an STTP $t$ reveals three types of information:  
 \begin{itemize}
-  \item additive shares of destinations $N_{(i,t)}$,such that\newline 
+  \item additive shares of destinations $N_{(i,t)}$, such that\newline 
   $N_i = \sum_{t=1}^T N_{(i,t)}$;  
   \item additive shares of shared secrets $s_{(i,t)}$, such that\newline 
   $s_i = \sum_{t=1}^T s_{(i,t)}$;
@@ -230,37 +231,34 @@ Amoung the set of $T$ trusted third party used to build the header, a TTP $t$ re
   \newline
 \end{itemize}
 
-Since the first two items are additive shares, they provide no information unless all $T$ shares are collected.  
-Hence, as long as at least one of the $T$ TTP remains honest, neither destinations nor shared secrets can be reconstructed.  
-The only additional information available to an adversary colluding with a single TTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags for all mixnodes in the path.  
-However, the integrity's blinding offset $s_i G$ prevents linking weights to specific packets.
+Since the first two items are additive shares, they provide no information unless all $T$ shares are collected.
+Hence, as long as at least one of the $T$ STTP remains honest, neither destinations nor shared secrets can be reconstructed.
+The only additional information available to an adversary colluding with an STTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags for all mixnodes in the path.  
+However, the integrity's blinding offset $s_i G$ prevents trivial linking weights to specific packets.
 Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the mixnet.
 \newline
 
-\noindent{\textbf{Case of malicious mixnode}}
-While TTPs alone reveal only unlinked weights, when combining with a malicious mixnode, it allows an adversary to potentially \emph{link those weights to a specific packets} going through the malicious mixnode.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-Indeed, the adversary can hash the mixnode's shared secret and match it against the TTP-provided weights, thereby recovering the corresponding weights for that packet across all mixnodes.  
+\noindent\textbf{Case of corrupted mixnode.}  
+While an STTP alone reveals only unlinked integrity weights, when colluding with a corrupted mixnode, it enables the adversary to \emph{associate those weights to a specific packets} observed at the corrupted mixnode.  
+Concretely, a corrupted mixnode computes its shared secret $s_i$ using the packet's cryptographique element $\alpha$, derive $h(s_i)$, and compare it against the set of weights disclosed by the colluding STTP.
+If the compromised STTP participated in the construction of this packet's header, a match occurs, allowing the adversary to recover the remaining weights associated to this packet across all mixnodes along its path.
 
-This capability enables two attacks:%\todo{Extend it with a bit of math}  % TODO
-(i) \emph{Integrity forgery}: the adversary can modify chunks, including the final destination $\Delta$, while recomputing valid integrity tags as demonstrated in section \ref{security:integrity_resistance}.  
-(ii) \emph{Weaker unlinkability}: the adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds integrity verifications.
-This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the mixnode's batch size.
-(iii) \emph{Mixnode position identification}: a mixnode colluding with a TTP can infer its exact position within the packet's path thanks to the weights. 
-(iv) \emph{Breaking relationship anonymity}: if an adversary compromises both the entry and exit mixnodes of a packet, as well as one of the TTPs involved in constructing its header, 
-then by correlating the integrity weights, the adversary can link the entry and exit nodes belonging to the same packet.  
-This breaks relationship anonymity since the entry node reveals the sender and the exit node reveals the receiver.
-\newline
-% DOING THE WORST CASE SCENARIO
+Once weights are associated to a packet, the adversary gains several capabilities:
+\begin{enumerate}
+  \item \textbf{Integrity forgery.} The adversary can modify any header chunks (including the destination $\Delta$) and recompute valid integrity tags, as discussed in Section~\ref{sec:integrity_forgery}.
+  \item \textbf{Weaker unlinkability.} The adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds subsequent integrity verifications.
+  This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the mixnode's batch size.
+\end{enumerate}
+% DOING THE WORST CASE SCENARIO ?
 
 \noindent\textbf{Summary.}
-Collusion with either TTPs or mixnodes alone does not compromise security.
-TTPs reveal only additive shares and unlinked weights, while mixnodes reveal only its shared secrets.  
-However, collusion between a TTP and a mixnode is more powerful, as it enables linking weights to packets which allows integrity forging.  
+Collusion with either STTPs or mixnodes alone does not compromise security.
+STTPs reveal only additive shares and unlinked weights, while mixnodes reveal only shared secrets.  
+However, when colluding simultaneously with both STTP and mixnode, an adversary can correlate integrity weights with specific packets, thereby allowing integrity forgeries.  
 Unlinkability remains computationally hard to break, but the adversary may probabilistically test packets with success probability $1/n$, where $n$ is the mixnode's batch size. 
-In the worst case scenario (i.e. collusion between the TTP, and both entry and exit mixnodes), the relationship anonymity is compromised.
+In the worst case scenario (i.e. collusion between the STTP, and both entry and exit mixnodes), the relationship anonymity is compromised.
 In summary, the security of the scheme rests on the following minimal assumptions:
-(i) at least one TTP remains honest;
+(i) at least one STTP remains honest;
 (ii) at least one mixnode on the path is not compromised; and
 (iii) adversaries cannot simultaneously collude with both a TTP and a mixnode (in particular, when entry and exit nodes are corrupted).
 Under these conditions, collusion yields at most negligible advantage beyond trivial guessing.
