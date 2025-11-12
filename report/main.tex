@@ -72,8 +72,7 @@
 \maketitle
 
 \begin{abstract}
-  Sphinx is a packet format widely used in decentralized networks such as Nym, Katzenpost, and the Lightning Network because of its strong security properties as well as the unlinkability property where an adversary can not link an input packet to an output packet based on the size or the format of the packet.
-  The Sphinx headers encode all the routing information such as the servers address and the keys that are required to transmit messages from the client to the final destination. However, while it is considered to provide robust security guarantees, because it is constructed centrally by clients, it does not protect against malicious clients who attempt to bias path selection or route packets to unauthorized services.
+  Sphinx is a packet format widely used in decentralized networks such as Nym, Katzenpost, and the Lightning Network. Sphinx has two parts the payload that contains the content of the message and the headers that contains all the routing information from the client to the final destination.  While Sphinx has strong security and privacy properties such as integrity, wrap-resistence, unlinkability that protects against an adversary who tries to correlate input to output it does not protect against malicious clients who attempt to bias path selection because it is constructed centrally by clients.
   In this paper, we propose a decentralized variant of the Sphinx packet format that distributes header construction among multiple semi-honest third parties.
   We provide a formal analysis of the main security properties of the Sphinx packet format given various threat models. Additionally we implement our scheme in Python and evaluate the unlinkability property using the NIST SP 800-22 statistical test suite. Our empirical results suggest that our decentralized scheme achieves unlinkability, passing more statistical tests than the original Sphinx format.
   
@@ -81,7 +80,7 @@
 \end{abstract}
 
 \begin{IEEEkeywords}
-mixnet, sphinx, malicious users
+mixnet, decentralized networks, sphinx, malicious clients
 \end{IEEEkeywords}
 
 \input{Texts/1.Introduction}
