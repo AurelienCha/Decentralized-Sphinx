@@ -14,13 +14,11 @@ message order.
 
 \section{Motivation and Related Work}
 \label{sec:related}
-
+\subsection{Decentralized Networks}
 Since Chaum's seminal work on untraceable email in 1981~\cite{chaum-mix}, there has been a great amount of research related to mixnet design~\cite{piotrowska2017loopix, van2015vuvuzela, kwon2020xrd, lazar2018karaoke, cottrell1995mixmaster, alexopoulos2017MCMIX, chaum2016cmix, chaum-mix, danezis2003mixminion}. 
 However, most deployed systems integrate their own system on top of the network meaning that they only allow one type of traffic. 
 As stated by Dingledine et al. in~\cite{dingledine2006anonymity}, \enquote{Anonymity Loves Company}, the more messages there are in the network the more privacy the network provides. 
 Ben Guirat et al.~\cite{benguirat2023blending} further support this by showing that blending different types of traffic over a mixnet improves anonymity. 
-For instance, combining an instant messaging system, where users tolerate few seconds of latencies, with an email service that tolerates longer delays, can enhance privacy for both types of traffic.
-Such blending is possible only in systems like Tor or mixnets that support multiple applications and types of traffic.
 
 However, several research challenges remain.
 For example, how can we prevent certain types of traffic without compromising privacy guarantees ?
@@ -29,6 +27,8 @@ Tor mitigates this problem through exit policies, which allow exit nodes to drop
 This works for Tor due to its circuit-based design, meaning that all traffic from a user session follows the same path, allowing the use of symmetric encryption which is computationally efficient.
 As a result, dropping traffic at the exit node does not waste significant computation power.
 
+
+\subsection{Sphinx, Tor HORNET}
 In contrast, packet-based design of mixnets present a more complex challenge. 
 Since each packet follows a different path, mixnets rely on layered public-key cryptography which is computationally intensive.
 As a result, dropping packets at the exit node wastes the processing effort of all preceding nodes.
@@ -37,8 +37,8 @@ Therefore, dropping packets at the exit node not only wastes computational resou
 
 \noindent This work raises several concrete research questions: 
 \begin{itemize}
-        \item Could the construction of Sphinx headers be effectively decentralized without compromising core security properties such as unlinkability and integrity? 
-        \item What are the computational and communication overhead introduced by the decentralization? 
-        \item Are those overhead costs preferable to the bandwidth and computational waste caused by malicious users?
-        \item Does decentralization facilitate the integration of advanced cryptographic mechanisms, such as zero-knowledge proofs for credentials verification?
+	\item Could the construction of Sphinx headers be effectively decentralized without compromising core security properties such as unlinkability and integrity? 
+	\item What are the computational and communication overhead introduced by the decentralization? 
+	\item Are those overhead costs preferable to the bandwidth and computational waste caused by malicious users?
+	\item Does decentralization facilitate the integration of advanced cryptographic mechanisms, such as zero-knowledge proofs for credentials verification?
 \end{itemize}
