@@ -1,4 +1,4 @@
-\section{Security Analysis}
+\section{Security Analysis}\label{sec:security}
 
 This section outlines the security guarantees of our scheme.  
 We first analyze each desired property in an ideal setting (i.e. without collusion), and then discuss the effect of potential collusion, whether involving TTPs, mixnodes, or both.
@@ -177,7 +177,7 @@ Successful integrity forgery requires at least knowledge of scalar relations bet
 Since these weights are derived from one-time shared secrets through iterated hashing, such relations are computationally infeasible to obtain in the absence of collusion.
 \newline
 
-\noindent\textbf{Remark.}
+\noindent\textbf{Remark.}\label{replay_resistance}\label{wrap_resistance}
 Original Sphinx article take into account the \emph{replay resistance} and \emph{wrap resistance}.
 \emph{Wrap resistance} means an adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being processed by some mixnode $i'$, the packet becomes $(\alpha, \beta, \gamma)$ again.  
 \emph{Replay resistance} is inherited from the original Sphinx construction since mixnodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).
@@ -202,12 +202,18 @@ Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integ
 % TERMINATION %
 %%%%%%%%%%%%%%%
 
-\subsection{Termination guarantee}
+% \subsection{Termination guarantee}
 
-Since headers have a fixed size, if \textit{wrap resistance} is established (section \ref{wrap_resistance}), then the only remaining mechanism that could produce an unbounded path is the creation of a cyclic route.  
-Therefore, proving that path length is bounded reduces to proving that packet cannot have a cyclic route.
-\todo[inline]{TODO - proof: cyclic route is possible or not ?}
-
+% \begin{itemize}
+%   \item Malicious mixnode modify packet to redirect to another mixnode => Need integrity forgery
+%   \item Malicious client manage to compute a packet that cycle on its route => probably 'impossible' but how to proove it ?! 
+%   He needs to have the filler chunks to sum up to get a precise point. 
+%   In theory, it is possible for one chunk but all the chunks, and on multiple layers seems highly impossible.
+%   In addition, despite being able to change the shared secrets using a different secret x or different mixnodes, he cannot choose a specific (because of Elligator that map a shared point to a shared integer)
+%   \item 
+% \end{itemize}
+% \todo[inline, color=red]{If the GPA is a malicious client, then can have infinite path's length.
+% For example, when the packet arrived at the last mixnode, the client can just replace the packet with a fresh new packet (since there are no 'credentials' yet)}
 
 %%%%%%%%%%%%%
 % COLLUSION %
