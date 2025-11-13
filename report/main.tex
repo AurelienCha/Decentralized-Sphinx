@@ -74,26 +74,20 @@ Communication}
 
 \begin{abstract}
 %
-Sphinx is a packet format to anonymously route messages, which is widely
-used in decentralized networks such as Nym, Katzenpost, and Lightning. % Nym, Katzenpost (Mixnets), and Lightning (Blockchain)
-Sphinx provides strong security and privacy properties such as integrity
-protection, wrap resistence and unlinkability, that protects against % necessary to specify 'wrap resistance' ?
-adversaries who aim to identify communicating parties by correlating input % "correlating input and output" is bit blur
-and output.  Yet, Sphinx does not protect against malicious clients that
-attempt to bias path selection by exploiting centralised packet
-construction. % Maybe reformulate this sentence to not highlight the "protection against biased route"
+Sphinx is a packet format widely
+used in decentralized networks such as Nym, Katzenpost, and the Lightning network with the goal to achieve network privacy. % Nym, Katzenpost (Mixnets), and Lightning (Blockchain)
+It protects against network % necessary to specify 'wrap resistance' ?
+adversaries who aim to identify communicating parties by correlating the input % "correlating input and output" is bit blur
+with the output traffic by providing strong security and privacy properties% such as integrity protection, wrap resistence and unlinkability.
+However, Sphinx does not protect against malicious clients who exploit the centralised packet construction in order to launch attacks such as denial-of-service (DoS) and $N-1$ attacks, 
+or to deviate from the prescribed routing protocol.
+% Maybe reformulate this sentence to not highlight the "protection against biased route"
 
 In this paper, we propose a decentralized variant of the
-Sphinx packet format that distributes header construction among multiple
-semi-honest third parties.  We provide a formal analysis of the main % semi-trusted
-security properties of our extended Sphinx packet format in the presence of % "extended" or simply "decentralized" ?
-global adversaries, honest-but-curious Trusted Third Parties, and malicious % semi-trusted
-clients.  We implement our scheme in Python and evaluate the unlinkability % not completely accurate, 'header randomness'
-property using the NIST SP 800-22 statistical test suite.  Our empirical
+Sphinx packet format that distributes header construction among multiple  semi-trusted third parties.  We provide a formal analysis of the main security properties of our decentralized Sphinx packet format in the presence of network adversaries, semi-trusted Third Parties, and malicious 
+clients.  Additionally, we implement our scheme in Python and evaluate the unlinkability property using the NIST SP 800-22 statistical test suite.  Our empirical
 results suggest that our decentralized scheme achieves unlinkability,
 passing more statistical tests than the original Sphinx format.
-% Should we not make a brief mention of the complexity ?
-%
 \end{abstract}
   
   % Our decentralized construction enhances deployment flexibility and paves the way for privacy-preserving mechanisms that could verify the legitimacy of packets at any hop, enabling early rejection of unauthorized traffic without compromising privacy. This work represents a first step towards a decentralized route selection and packet legitimacy enforcement.%, for example system that want to enforce exit policy.
