@@ -74,9 +74,9 @@ Communication}
 
 \begin{abstract}
 %
-Sphinx is a packet format widely used in decentralized networks such as Nym, Katzenpost, and the Lightning network with the goal to achieve network privacy. % Nym, Katzenpost (Mixnets), and Lightning (Blockchain)
+Sphinx is a packet format widely used in decentralized networks such as Nym and Katzenpost mixnets, and the Lightning network. %with the goal to achieve network privacy. 
 It provides strong security and privacy properties against network adversaries who aim to identify communicating parties by correlating the input with the output traffic.
-However, Sphinx does not protect against malicious clients who exploit the centralised packet construction to deviate from the prescribed routing protocol. % "does not protect" replaced by "is vulnerable"
+However, Sphinx is vulnerable against malicious clients who exploit the centralised packet construction to deviate from the prescribed routing protocol.
 In this paper, we propose a decentralized variant of the Sphinx packet format that distributes header construction among multiple semi-trusted third parties.  
 We provide a formal analysis of the main security properties of our decentralized Sphinx packet format in the presence of network adversaries, semi-trusted third parties, and malicious clients.  % malicious client ?!
 Additionally, we implement our scheme in Python and evaluate the unlinkability property using the NIST SP 800-22 statistical randomness test suite.  
