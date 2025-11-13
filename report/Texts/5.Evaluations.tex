@@ -43,6 +43,8 @@ The client generated additive shares and distributed them to the STTPs, which th
 %
 According to NIST requirements, each input sequence should contain at least $1\,000\,000$ bits.
 We therefore concatenated multiple generated headers to reach a sequence of this size, repeating the process to obtain 100 sequences per dataset.
+\newline
+
 
 NIST recommends interpreting results via two complementary criteria:
 \begin{itemize}
@@ -131,25 +133,15 @@ Given the established security of the original Sphinx protocol, and considering 
 \end{table}
 
 
-
-
-%%%%%%%%%%%%%%%%%%%%
-%% IMPLEMENTATION %%
-%%%%%%%%%%%%%%%%%%%%
-%Our prototype implementation is available on \href{https://github.com/AurelienCha/Decentralized-Sphinx}{GitHub}\footnote{\url{https://github.com/AurelienCha/Decentralized-Sphinx}}.
-\todo[inline, color=lightgray]{
-Our implementation, which we will release our code under the GPL license, is written in Python 3.13 using the ECPy%\href{https://pypi.org/project/ECPy/}{ECPy}\footnote{\url{https://pypi.org/project/ECPy/}} 
-library for elliptic curve operations. 
-ECPy is well-suited for prototyping due to its simplicity, but it is significantly slower than many EC python libraries (approximately one order of magnitude slower). 
-However, it is one of the few Python libraries that support Montgomery Curve25519, which is essential for our implementation.
-}
-
 \section{Computational complexity}\label{sec:complexity}\todo{change p and m into m and t (verify if no conflict with other sections)}
 
-Rather than measuring raw execution time, which depends heavily on implementation and hardware—we analyze the number of cryptographic operations, which dominate the computational cost of the protocol.  
-A direct comparison with the original Sphinx protocol is not entirely meaningful, as some primitives differ (e.g. Elligator).  
-Nevertheless, our protocol is inherently more computationally demanding and would likely exhibit higher latency in practice, as discussed below.
-Table~\ref{tab:operation_count} summarizes the asymptotic operation counts for each party, considering a path length of $p$ and $m$ semi-trusted third parties (STTPs).  
+%Our prototype implementation is available on \href{https://github.com/AurelienCha/Decentralized-Sphinx}{GitHub}\footnote{\url{https://github.com/AurelienCha/Decentralized-Sphinx}}.
+Our implementation, which will be released under the GPL license, is written in Python 3.13 using the \href{https://pypi.org/project/ECPy/}{ECPy}\footnote{\url{https://pypi.org/project/ECPy/}} library for elliptic curve operations. \todo{anonymous github link}
+ECPy is well-suited for prototyping due to its simplicity, but it is significantly slower than many EC python libraries (approximately one order of magnitude slower). 
+However, it is one of the few Python libraries that support Montgomery Curve25519, which is essential for Elligator.
+Thus, rather than measuring raw execution time, we count the number of cryptographic operations, which are the computationally most expensive part of the scheme. 
+
+Table~\ref{tab:operation_count} summarizes this asymptotic counting for each party, considering a path length of $p$ and $m$ semi-trusted third parties (STTPs).  
 The total cost of sending a single message can be obtained by multiplying the cost per STTP by $m$ and the cost per mixnode by $p$.
 \begin{table}%[t]
 \centering
@@ -183,9 +175,11 @@ In practice, most mixnet implementations employ routes of three to five mixnodes
 Accordingly, the overall computational burden is more sensitive to the number of STTPs $m$ than to the path length $p$.
 As our design remains secure as long as one STTP is honest, only a small number $m$ may be sufficient.
 Determining the precise number needed to meet a desired trust threshold is left for future work.
+\newline
 
 
-From a performance perspective, our protocol is expected to be slower than the original Sphinx header construction.  
+A direct comparison with the original Sphinx protocol is not entirely meaningful, as some primitives differ (e.g. Elligator).  
+Nevertheless, from a performance perspective, our protocol is expected to be slower than the original Sphinx header construction.  
 The main contributing factors are: (1) the extensive use of elliptic curve arithmetic, in contrast to the lightweight hashing and XOR operations in Sphinx; and (2) the distributed nature of the header construction, which introduces communication latency.  
 However, the computational load on individual mixnodes remains comparable to Sphinx, and most of the added overhead is mitigated by the parallel execution of STTPs.  
 

@@ -75,23 +75,24 @@ Communication}
 \begin{abstract}
 %
 Sphinx is a packet format to anonymously route messages, which is widely
-used in decentralized networks such as Nym, Katzenpost, and Lightning.
+used in decentralized networks such as Nym, Katzenpost, and Lightning. % Nym, Katzenpost (Mixnets), and Lightning (Blockchain)
 Sphinx provides strong security and privacy properties such as integrity
-protection, wrap resistence and unlinkability, that protects against
-adversaries who aim to identify communicating parties by correlating input
+protection, wrap resistence and unlinkability, that protects against % necessary to specify 'wrap resistance' ?
+adversaries who aim to identify communicating parties by correlating input % "correlating input and output" is bit blur
 and output.  Yet, Sphinx does not protect against malicious clients that
 attempt to bias path selection by exploiting centralised packet
-construction.
+construction. % Maybe reformulate this sentence to not highlight the "protection against biased route"
 
 In this paper, we propose a decentralized variant of the
 Sphinx packet format that distributes header construction among multiple
-semi-honest third parties.  We provide a formal analysis of the main
-security properties of our extended Sphinx packet format in the presence of
-global adversaries, honest-but-curious Trusted Third Parties, and malicious
-clients.  We implement our scheme in Python and evaluate the unlinkability
+semi-honest third parties.  We provide a formal analysis of the main % semi-trusted
+security properties of our extended Sphinx packet format in the presence of % "extended" or simply "decentralized" ?
+global adversaries, honest-but-curious Trusted Third Parties, and malicious % semi-trusted
+clients.  We implement our scheme in Python and evaluate the unlinkability % not completely accurate, 'header randomness'
 property using the NIST SP 800-22 statistical test suite.  Our empirical
 results suggest that our decentralized scheme achieves unlinkability,
 passing more statistical tests than the original Sphinx format.
+% Should we not make a brief mention of the complexity ?
 %
 \end{abstract}
   
