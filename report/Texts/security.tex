@@ -1,7 +1,7 @@
 \section{Security Analysis}\label{sec:security}
 
 This section outlines the security guarantees of our scheme.  
-We first analyze each desired property in an ideal setting (i.e. without collusion), and then discuss the effect of potential collusion, whether involving TTPs, mixnodes, or both.
+We first analyze the unlinkability and integrity forgery resistance in absence of collusion, and then discuss the effect of potential collusion with STTPs.
 
 
 %%%%%%%%%%%%%%%%%
@@ -44,7 +44,8 @@ The scheme achieves unlinkability if $\mathrm{Adv}^{\mathsf{unlink}}_{\mathcal{A
 
 \noindent\textbf{Proof Sketch:}
 As in the original Sphinx construction, all packets have a fixed size (header and payload), preventing any adversary from correlating packets based on observable size patterns.
-In addition, headers are computationally indistinguishable from random bitstrings (as verified empirically using the NIST randomness test suite), any successful distinguishing strategy by $\mathcal{A}$ must exploit a correlation between header's components $(\alpha, \beta, \gamma)$ and $(\alpha', \beta', \gamma')$.  
+In addition, headers are computationally indistinguishable from random bitstrings, as empirically confirmed by the NIST randomness test suite (see Section~\ref{sec:NIST}).
+Therefore, any successful distinguishing strategy by $\mathcal{A}$ must exploit a correlation between header's components $(\alpha, \beta, \gamma)$ and $(\alpha', \beta', \gamma')$.  
 We analyze the possible cases below.
 \newline
 
@@ -266,5 +267,5 @@ In the worst case scenario (i.e. collusion between the STTP, and both entry and 
 In summary, the security of the scheme rests on the following minimal assumptions:
 (i) at least one STTP remains honest;
 (ii) at least one mixnode on the path is not compromised; and
-(iii) adversaries cannot simultaneously collude with both a TTP and a mixnode (in particular, when entry and exit nodes are corrupted).
+(iii) adversaries cannot simultaneously collude with both a STTP and a mixnode (in particular, when entry and exit nodes are corrupted).
 Under these conditions, collusion yields at most negligible advantage beyond trivial guessing.

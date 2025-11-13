@@ -53,3 +53,6 @@ Ordre:
 Sec 4 - Schema
 Sec 6 - Security
 Sec 5 - "Evaluation" (complexity en dernier)
+
+# To discuss
+Previously section 5, renamed: empirical comparison / Implementation comparison
