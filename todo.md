@@ -28,32 +28,19 @@
 
 
 # Meeting 12/11 with Iness
-1. INTRODUCITON
-2. MOTIVATION
-3. MODEL
-4. SCHEMA
-5. EVULATION
-6. SECURITY
-
 2.1 Reseaux decentralize (mixnet & Lightning network)
 2.2 Packet format (TOR et Sphinx)
 
-3. Remove credential stuff
-3.1 Remove credentials. Et parler de STTP à la place ?
-3.2 plus développé
-3.3 Section 3 (threat model) ou section 6 (security)
+4. Repasser dessus (from 4.2 Client until section 5)
 
-4. Repasser dessus
-Remove 4.1 and section 4 becomes "Protocol Description"
 
-5. Changer nom -> NIST
-5.1 en dehors de section 5 (NIST)
+# Todo (thursday)
+- Putting section 6.0 in threat model instead (section 3)
+- Rewritte section 3
+    3. Remove credential stuff
+    3.1 Remove credentials. Et parler de STTP à la place ?
+    3.2 plus développé
+    3.3 Section 3 (threat model) ou section 6 (security)
+- Section 3 is too "bullet point" put more context
 
-Ordre:
-Sec 4 - Schema
-Sec 6 - Security
-Sec 5 - "Evaluation" (complexity en dernier)
-
-# To discuss
-- Previously section 5, renamed: empirical comparison / Implementation comparison
-- Where to put the Implementation paragraph ? In footnote ?
+- Merge section 6 and 7 (NIST and Complexity) into one section "Implementation Evaluation"
