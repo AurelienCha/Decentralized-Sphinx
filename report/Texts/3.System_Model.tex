@@ -1,7 +1,7 @@
 % A mixnet is a network of servers, called mixnodes, organized into sequential layers. 
 % Each packet traverses a fixed path of mixnodes. 
 % It enters through an entry node, passes through a set of intermediate nodes, and exits via a final node. 
-% At each layer, mixnodes shuffle and delay packets, obfuscating the link between incoming and outgoing traffic and improving resistance against global adversaries.
+% At each layer, mixnodes shuffle and delay packets, obfuscating the link between incoming and outgoing traffic and improving resistance against network adversaries.
 % This process is illustrated in Figure~\ref{fig:mixnet}, which provides a step-by-step tracing of two clients communicating with services through a 3-layer mixnet. 
 % Each timestamp (from $t_0$ to $t_6$) represents a point in time, showing how packets move and are reshuffled across layers. 
 % The packets are labeled by color (client identity) and number (message order), allowing us to visually follow how each message is mixed and relayed before reaching its destination.
@@ -19,19 +19,20 @@ Figure~\ref{fig:overall_schema} summarizes our model, which involves three types
 
 We consider different types of adversaries:
 \begin{itemize}
-        \item \textbf{Global Passive Adversary (GPA):} 
+        \item \textbf{Network Passive Adversary:} 
         An adversary able to observe the whole network, specifically all the traffic entering and leaving at each mixnode. 
-        The GPA aims to break the unlinkability by correlating mixnode's incoming packets with its outgoing packets, along the packet path to discover the sender and the recipient.
+        It aims to break the unlinkability by correlating mixnode's incoming packets with its outgoing packets, along the packet path to discover the sender and the recipient.
 
-        \item \textbf{Global Active Adversary (GAA):} 
+        \item \textbf{Network Active Adversary:} 
         An adversary able to modify or inject packets across the entire network. 
-        The GAA attempts to forge integrity tags to alter or create valid Sphinx headers.
+        It attempts to forge integrity tags to alter or create valid Sphinx headers.
 
-        \item \textbf{Honest-but-curious STTPs:} 
+        \item \textbf{Corrupted STTPs:} 
         In our decentralized scheme, multiple semi-trusted third parties participate in generating the headers. 
-        These STTPs are assumed to be honest-but-curious, meaning they follow the protocol but may collude in order to extract additional information from the data they process.
+        These STTPs are assumed to follow the protocol but may collude in order to extract additional information from the data they process.
 
-        \item \textbf{Corrupted mixnode:} % instead of malicious client
+        \item \textbf{Corrupted Mixnode:} 
+        As STTPs, some mixnodes may collude with network adversary to break unlinkability or modify a packet while preserving a valid integrity tag.
 \end{itemize}
 
 \subsection{Security \& Privacy Objectives}
@@ -40,7 +41,7 @@ We consider different types of adversaries:
 Our main security and privacy objectives are the following:
 \begin{itemize}
         \item \textbf{Unlinkability:} 
-        Our scheme aims to ensure that a global adversary cannot link incoming packets to their corresponding outgoing packets at any mixnode.
+        Our scheme aims to ensure that a network adversary cannot link incoming packets to their corresponding outgoing packets at any mixnode.
         We target a comparable level of unlinkability as the original Sphinx packet introduced by Danezis and Goldberg~\cite{sphinx} which is known to achieve strong unlinkability guarantees.
         % If packets appear uniformly random and indistinguishable from one another, we consider that this prevents correlations between incoming and outgoing packets, thereby satisfying the unlinkability requirement.
 
@@ -54,20 +55,13 @@ Our main security and privacy objectives are the following:
 \end{itemize}
 
 
-
-        % \item \textbf{Malicious Clients:} 
-        % We consider clients who misuse valid credentials to build Sphinx headers targeting unauthorized services. 
-        % Such misuse can typically only be detected at the mixnet's exit gateway, where the true destination is revealed and can be checked against the credential. 
-        % Our decentralized scheme could enable credentials that could be verified at any step in the network.
-
-
 \begin{comment}
 	conte\subsection{System Model}
 	
 	A mixnet is a network of servers, called mixnodes, organized into sequential layers. 
 	Each packet traverses a fixed path of mixnodes. 
 	It enters through an entry node, passes through a set of intermediate nodes, and exits via a final node. 
-	At each layer, mixnodes shuffle and delay packets, obfuscating the link between incoming and outgoing traffic and improving resistance against global adversaries.
+	At each layer, mixnodes shuffle and delay packets, obfuscating the link between incoming and outgoing traffic and improving resistance against network adversaries.
 	This process is illustrated in Figure~\ref{fig:mixnet}, which provides a step-by-step tracing of two clients communicating with services through a 3-layer mixnet. 
 	Each timestamp (from $t_0$ to $t_6$) represents a point in time, showing how packets move and are reshuffled across layers. 
 	The packets are labeled by color (client identity) and number (message order), allowing us to visually follow how each message is mixed and relayed before reaching its destination.
@@ -89,5 +83,12 @@ Our main security and privacy objectives are the following:
 	This decentralized scheme could enable TTPs to update credentials and/or zero-knowledge proofs in accordance with the layered encrypted header, to be verifiable by any mixnodes on the route.  
 	As a result, mixnodes could early discard unauthorized traffic before it consumes significant resources.
 	However, the credentials issuance, modification, and verification are outside the scope of this paper and are left for future work.
+
+
+        % \item \textbf{Malicious Clients:} 
+        % We consider clients who misuse valid credentials to build Sphinx headers targeting unauthorized services. 
+        % Such misuse can typically only be detected at the mixnet's exit gateway, where the true destination is revealed and can be checked against the credential. 
+        % Our decentralized scheme could enable credentials that could be verified at any step in the network.
+
 	nt...
 \end{comment}
