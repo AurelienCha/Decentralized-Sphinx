@@ -1,6 +1,66 @@
+% A mixnet is a network of servers, called mixnodes, organized into sequential layers. 
+% Each packet traverses a fixed path of mixnodes. 
+% It enters through an entry node, passes through a set of intermediate nodes, and exits via a final node. 
+% At each layer, mixnodes shuffle and delay packets, obfuscating the link between incoming and outgoing traffic and improving resistance against global adversaries.
+% This process is illustrated in Figure~\ref{fig:mixnet}, which provides a step-by-step tracing of two clients communicating with services through a 3-layer mixnet. 
+% Each timestamp (from $t_0$ to $t_6$) represents a point in time, showing how packets move and are reshuffled across layers. 
+% The packets are labeled by color (client identity) and number (message order), allowing us to visually follow how each message is mixed and relayed before reaching its destination.
+% For clarity in both formulas and figures, and without loss of generality, we consider a mixnet with three layers throughout the paper.
+
+
 \section{Threat Model and Security Properties}~\label{sec:sys_model}
 
 In this section, we present our threat model, and outline the privacy and security requirements our solution should satisfy.
+
+\subsection{Threat Model}
+
+We propose a decentralized construction of Sphinx headers involving semi-trusted third parties (STTPs). 
+Figure~\ref{fig:overall_schema} summarizes our model, which involves three types of entities: the client, a set of semi-trusted third parties (STTPs), and the set of mixnodes constituing the mixnet.
+
+We consider different types of adversaries:
+\begin{itemize}
+        \item \textbf{Global Passive Adversary (GPA):} 
+        An adversary able to observe the whole network, specifically all the traffic entering and leaving at each mixnode. 
+        The GPA aims to break the unlinkability by correlating mixnode's incoming packets with its outgoing packets, along the packet path to discover the sender and the recipient.
+
+        \item \textbf{Global Active Adversary (GAA):} 
+        An adversary able to modify or inject packets across the entire network. 
+        The GAA attempts to forge integrity tags to alter or create valid Sphinx headers.
+
+        \item \textbf{Honest-but-curious STTPs:} 
+        In our decentralized scheme, multiple semi-trusted third parties participate in generating the headers. 
+        These STTPs are assumed to be honest-but-curious, meaning they follow the protocol but may collude in order to extract additional information from the data they process.
+
+        \item \textbf{Corrupted mixnode:} % instead of malicious client
+\end{itemize}
+
+\subsection{Security \& Privacy Objectives}
+\label{sec:sp-objectives}
+
+Our main security and privacy objectives are the following:
+\begin{itemize}
+        \item \textbf{Unlinkability:} 
+        Our scheme aims to ensure that a global adversary cannot link incoming packets to their corresponding outgoing packets at any mixnode.
+        We target a comparable level of unlinkability as the original Sphinx packet introduced by Danezis and Goldberg~\cite{sphinx} which is known to achieve strong unlinkability guarantees.
+        % If packets appear uniformly random and indistinguishable from one another, we consider that this prevents correlations between incoming and outgoing packets, thereby satisfying the unlinkability requirement.
+
+        \item \textbf{Integrity forgery resistance:} 
+        Original Sphinx packet format include an integrity tags for each mixnode in the path preventing any valid packet modification.
+        Our scheme should adapt the integrity tags for a decentralized construction.
+
+        \item \textbf{Collusion Resistance:} 
+        Since our scheme introduces semi-trusted third parties (STTPs), compared to the original Sphinx format, we must ensure its resilience when those entities collude.
+        Even if a majority of STTPs collude, but not all of them, they must learn nothing about the route, destination or cryptographic secrets.
+\end{itemize}
+
+
+
+        % \item \textbf{Malicious Clients:} 
+        % We consider clients who misuse valid credentials to build Sphinx headers targeting unauthorized services. 
+        % Such misuse can typically only be detected at the mixnet's exit gateway, where the true destination is revealed and can be checked against the credential. 
+        % Our decentralized scheme could enable credentials that could be verified at any step in the network.
+
+
 \begin{comment}
 	conte\subsection{System Model}
 	
@@ -31,52 +91,3 @@ In this section, we present our threat model, and outline the privacy and securi
 	However, the credentials issuance, modification, and verification are outside the scope of this paper and are left for future work.
 	nt...
 \end{comment}
-
-
-\subsection{Threat Model}
-we propose a decentralized construction of Sphinx headers involving a set of trusted third parties (TTPs). 
-
-We consider different types of adversaries:
-\begin{itemize}
-        \item \textbf{Global Passive Adversary (GPA):} An adversary able to observe all traffic entering and leaving the network and each mixnode. 
-        The GPA aims to correlate incoming and outgoing packets. 
-        Our construction ensures \emph{bitwise unlinkability} of Sphinx packets, such that packet headers appear uniformly random and indistinguishable from one another, thereby preventing correlation.
-        
-        \item \textbf{Global Active Adversary (GAA):} An adversary able to modify or inject packets across the entire network. 
-        The GAA attempts to alter or create a valid Sphinx header. 
-        Thanks to the integrity-check mechanisms embedded in the packet format, any such tampering is detected and causes the packet to be discarded by mixnodes.
-
-        \item \textbf{Honest-but-curious TTPs:} 
-        In our decentralized scheme, multiple trusted third parties participate in generating the headers. 
-        These TTPs are assumed to be honest-but-curious, meaning they follow the protocol but may collude in order to extract additional information from the data they process.
-        Our design guarantees that even if a majority of these TTPs collude, but not all of them, they learn nothing about the final destination, the route, or the cryptographic secrets.
-        
-        \item \textbf{Malicious Clients:} We consider clients who misuse valid credentials to build Sphinx headers targeting unauthorized services. 
-        Such misuse can typically only be detected at the mixnet's exit gateway, where the true destination is revealed and can be checked against the credential. 
-        Our decentralized scheme could enable credentials that could be verified at any step in the network.
-\end{itemize}
-Figure~\ref{fig:overall_schema} summarizes our model, which involves three types of entities: the Client, a set of Trusted Third Parties (TTPs), and the Mixnet.
-The client is considered as potentially malicious.
-TTPs are assumed to be honest-but-curious, meaning that they correctly follow the protocol but may attempt to collude in order to extract additional information from the data they process.
-Mixnodes are responsible for enforcing access policies by dropping unauthorized traffic.
-
-\subsection{Security \& Privacy Objectives}
-\label{sec:sp-objectives}
-
-Our main security and privacy objectives are the following:
-\begin{itemize}
-        \item \textbf{Unlinkability:} Our scheme aims to ensure that a global adversary cannot link incoming packets to their corresponding outgoing packets at any mixnode.
-        The original Sphinx packet introduced by Danezis and Goldberg~\cite{sphinx} is known to achieve strong unlinkability guarantees.
-        We target at least the same level of unlinkability, but adopt a relaxed version called \textit{bitwise unlinkability}.
-        If packets appear uniformly random and indistinguishable from one another, we consider that this prevents correlations between incoming and outgoing packets, thereby satisfying the unlinkability requirement.
-
-        \item \textbf{Integrity:} Packets should be protected against tampering.
-        Our scheme should adapt or provide a similar integrity-check mechanism as the original Sphinx, ensuring that any modification in the header is detectable by mixnodes.
-
-        \item \textbf{Collusion Resistance:} Even if a majority of the Trusted Third Parties (TTPs) involved in header construction collude, they must learn nothing about the route, destination or cryptographic secrets.
-        Leakage of routing information could enable timing or metadata correlation attacks across different hops.
-        Therefore, collusion resistance is necessary to maintain strong anonymity and metadata protection in our decentralized scheme.
-
-        % \item \textbf{Verifiability:} In the original Sphinx design, credentials are only validated at the exit gateway, once the true destination is revealed.
-        % However, credentials should be verifiable at any step in the network, allowing for early detection and discarding of unauthorized packets, reducing wasted computational and bandwidth resources.
-\end{itemize}
