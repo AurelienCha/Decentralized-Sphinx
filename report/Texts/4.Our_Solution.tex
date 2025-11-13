@@ -82,7 +82,7 @@ Using this nonce and the public keys of each mixnodes along the path, it derives
     \A{i}    &= x_i \, G \\
     \S{i}    &= x_i \, \PK{i} \\
     \s{i}    &= \InverseMap{\S{i}} \\
-    r_i      &= \hash{{\A{i}}_y \ \| \ {\S{i}}_y} \\
+    r_i      &= \hash{{\A{i}}_y \ \| \ {\S{i}}_y} \\ % still yes ? Verify with complexity section
     x_{i+1}  &= x_i \, r_i \quad (\text{mod}\ n)
 \end{aligned}
 \right.
