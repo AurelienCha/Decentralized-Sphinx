@@ -27,13 +27,15 @@
 ## Secret sharing: Additive shares (not secret Shamir i.e. threshold)
 
 
-# Meeting 12/11 with Iness
-2.1 Reseaux decentralize (mixnet & Lightning network)
-2.2 Packet format (TOR et Sphinx)
 
-4. Repasser dessus (from 4.2 Client until section 5)
 
 
 # Todo (thursday)
+
+4. Repasser dessus (from 4.2 Client until section 5)
+
 - Putting section 6.0 in threat model instead (section 3)
 - Merge section 6 and 7 (NIST and Complexity) into one section "Implementation Evaluation"
+
+- Propose mitigiation for collusion vulnerability
+- Conclusion with future work
