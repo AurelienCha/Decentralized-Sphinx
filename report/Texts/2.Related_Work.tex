@@ -1,44 +1,60 @@
-\begin{figure*}[t]
-    \centering
-    \resizebox{1.\linewidth}{!}{\input{schema/mixnet.tex}}
-    \caption{
-        Step-by-step tracing of two clients communicating with services
-through a 3-layer mixnet with two mixnodes (large circles) at each layer.
-        In order to follow paths across each time step ($t_i$), packets are
-labeled with color and number, respectively indicating the client and
-message order.
-        Mixnodes reorder and route packets to the next layer.
-    }
-    \label{fig:mixnet}
-\end{figure*}
+\section{Motivation and Related Work}\label{sec:related}
 
-\section{Motivation and Related Work}
-\label{sec:related}
-\subsection{Decentralized Networks}
 Since Chaum's seminal work on untraceable email in 1981~\cite{chaum-mix}, there has been a great amount of research related to mixnet design~\cite{piotrowska2017loopix, van2015vuvuzela, kwon2020xrd, lazar2018karaoke, cottrell1995mixmaster, alexopoulos2017MCMIX, chaum2016cmix, chaum-mix, danezis2003mixminion}. 
 However, most deployed systems integrate their own system on top of the network meaning that they only allow one type of traffic. 
 As stated by Dingledine et al. in~\cite{dingledine2006anonymity}, \enquote{Anonymity Loves Company}, the more messages there are in the network the more privacy the network provides. 
 Ben Guirat et al.~\cite{benguirat2023blending} further support this by showing that blending different types of traffic over a mixnet improves anonymity. 
+\newline
 
-However, several research challenges remain.
-For example, how can we prevent certain types of traffic without compromising privacy guarantees ?
-Such traffic could include clients attempting to reach destinations they have not paid for, or using the network to access illegal content.
-Tor mitigates this problem through exit policies, which allow exit nodes to drop unwanted traffic.
-This works for Tor due to its circuit-based design, meaning that all traffic from a user session follows the same path, allowing the use of symmetric encryption which is computationally efficient.
-As a result, dropping traffic at the exit node does not waste significant computation power.
+% MIXNET 
+A mixnet is a network of servers, called mixnodes, organized into sequential layers. 
+Each packet traverses a fixed path of mixnodes. 
+It enters through an entry node, passes through a set of intermediate nodes, and exits via a final node. 
+At each layer, mixnodes shuffle and delay packets, obfuscating the link between incoming and outgoing traffic and improving resistance against network adversaries.
+This process is illustrated in Figure~\ref{fig:mixnet}, which provides a step-by-step tracing of two clients communicating with services through a 3-layer mixnet. 
+Each timestamp (from $t_0$ to $t_6$) represents a point in time, showing how packets move and are reshuffled across layers. 
+The packets are labeled by color (client identity) and number (message order), allowing us to visually follow how each message is mixed and relayed before reaching its destination.
+\newline
 
+\begin{figure}%\begin{figure*}[t]
+    % \centering
+    \hspace{-9mm}
+    \resizebox{1.085\linewidth}{!}{\input{schema/mixnet.tex}}
+    \caption{
+        Step-by-step tracing of two clients communicating with services through a 3-layer mixnet with two mixnodes (large circles) at each layer.
+        In order to follow paths across each time step ($t_i$), packets are labeled with color and number, respectively indicating the client and message order.
+        Mixnodes reorder and route packets to the next layer.
+    }
+    \label{fig:mixnet}
+\end{figure}
 
-\subsection{Sphinx, Tor HORNET}
-In contrast, packet-based design of mixnets present a more complex challenge. 
-Since each packet follows a different path, mixnets rely on layered public-key cryptography which is computationally intensive.
-As a result, dropping packets at the exit node wastes the processing effort of all preceding nodes.
-Moreover, unlike Tor where relays operate on a voluntary basis, mixnets such as Nym use economic incentives through payment per relayed bandwidth.
-Therefore, dropping packets at the exit node not only wastes computational resources but also impacts the economic sustainability of the network.
+% Sphinx
+Among the various cryptographic techniques enabling anonymity in mixnets, one of the most fundamental is the \emph{Sphinx} packet format introduced by Danezis and Goldberg~\cite{sphinx}.  
+Sphinx is a compact, provably secure, layer encrypted packet construction designed specifically for mix networks.  
+It provides three essential security properties that enable anonymous communicationcale: per-hop confidentiality, per-hop integrity protection, and strong unlinkability.
 
-\noindent This work raises several concrete research questions: 
-\begin{itemize}
-	\item Could the construction of Sphinx headers be effectively decentralized without compromising core security properties such as unlinkability and integrity? 
-	\item What are the computational and communication overhead introduced by the decentralization? 
-	\item Are those overhead costs preferable to the bandwidth and computational waste caused by malicious users?
-	\item Does decentralization facilitate the integration of advanced cryptographic mechanisms, such as zero-knowledge proofs for credentials verification?
-\end{itemize}
+First, Sphinx ensures \emph{per-hop confidentiality} by encrypting routing information in layers, similar to classical onion routing.  
+Each mixnode learns only its immediate predecessor and successor, but gains no knowledge about the overall path, the sender, or the final destination.  
+This layered encryption relies on a hop-by-hop elliptic-curve Diffie-Hellman (ECDH) key exchange, enabling the client to derive a distinct shared secret for every mixnode.
+
+Second, Sphinx provides \emph{per-hop integrity protection} through a cryptographic tag embedded in each layer of the header.  
+These tags prevent adversaries from tampering with routing information.  
+Any modification results in an integrity-tag verification failure at the mixnode, causing the packet to be discarded.
+This ensures that adversaries cannot tamper with routes or perform active attacks such as header tagging.
+
+Third, Sphinx offers \emph{strong unlinkability} by ensuring that packets entering and leaving a mixnode are computationally indistinguishable.  
+This is achieved by using fixed-size headers and payloads and by rerandomizing cryptographic elements at every hop through hop-by-hop ECDH, in addition to the layered encryption.
+Each hop transforms the packet into a fresh, uniformly distributed header, preventing an adversary from linking an incoming packet to its outgoing counterpart, even when observing the entire network.
+\newline
+
+These guarantees have made Sphinx the de facto standard for privacy-preserving routing in modern decentralized systems such as the Lightning Network~\cite{poon2016bitcoin} and mixnet-based architectures like Nym~\cite{nym-network-whitepaper} and Katzenpost~\cite{infeld2025echomix}.  
+However, in all these systems, the Sphinx header must be fully constructed by the client, which introduces vulnerabilities to malicious client.
+A malicious client can intentionally bias route selection, thereby reducing the anonymity honest users, or even orchestrate an (N-1) attacks to trace packets.  
+
+In addition, enforcing policies such as accountability and legitimacy verification remains inherently challenging in Sphinx-based systems, because headers are constructed to reveal minimal information to mixnodes.  
+As a result, networks cannot reliably verify client credentials, enforce usage policies, or apply access control before packets reach the exit node.  
+This trade-off between strong privacy and limited accountability, coupled with the risks posed by untrusted or misbehaving clients, presents practical obstacles for the widespread deployment of mixnet-based systems.  
+Introducing a decentralized header construction among semi-trusted third parties could provide additional flexibility, allowing policy enforcement mechanisms to be integrated without compromising the cryptographic guarantees of Sphinx.
+
+These limitations highlight the need for a mechanism to decentralized header construction while preserving the cryptographic guarantees of Sphinx.
+To the best of our knowledge, no prior work has proposed or analyzed a decentralized construction of Sphinx headers, making this a previously unexplored but increasingly necessary design direction for robust and trust-minimized anonymous communication systems.

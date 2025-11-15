@@ -36,12 +36,4 @@
 
 # Todo (thursday)
 - Putting section 6.0 in threat model instead (section 3)
-- Rewritte section 3
-    3. Remove credential stuff
-    3.1 Remove credentials. Et parler de STTP à la place ?
-    3.2 plus développé
-    3.3 Section 3 (threat model) ou section 6 (security)
-- Section 3 is too "bullet point" put more context
-- Develop adversary capabilities
-
 - Merge section 6 and 7 (NIST and Complexity) into one section "Implementation Evaluation"

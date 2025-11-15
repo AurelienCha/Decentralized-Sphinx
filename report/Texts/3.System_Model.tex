@@ -1,16 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%
-% MIXNET EXPLANATIONS % for previous sections
-%%%%%%%%%%%%%%%%%%%%%%%
-
-% A mixnet is a network of servers, called mixnodes, organized into sequential layers. 
-% Each packet traverses a fixed path of mixnodes. 
-% It enters through an entry node, passes through a set of intermediate nodes, and exits via a final node. 
-% At each layer, mixnodes shuffle and delay packets, obfuscating the link between incoming and outgoing traffic and improving resistance against network adversaries.
-% This process is illustrated in Figure~\ref{fig:mixnet}, which provides a step-by-step tracing of two clients communicating with services through a 3-layer mixnet. 
-% Each timestamp (from $t_0$ to $t_6$) represents a point in time, showing how packets move and are reshuffled across layers. 
-% The packets are labeled by color (client identity) and number (message order), allowing us to visually follow how each message is mixed and relayed before reaching its destination.
-
-
 \section{Threat Model and Security Properties}~\label{sec:sys_model}\todo{Threat and Objectives first ?}
 
 In this section, we present the overall decentralized Sphinx system, its threat model and outline the privacy and security requirements our solution should satisfy.
@@ -88,41 +75,3 @@ This guarantee is ensured through an additive secret sharing.
 Similarly, corrupted mixnodes may attempt to collude with one another or with STTPs.  
 A compromised mixnode learns only its own shared secret and the identity of its immediate predecessor and successor, but should gain no information about the rest of the path.  
 Even combined with a subset of 
-
-\begin{comment}
-	conte\subsection{System Model}
-	
-	A mixnet is a network of servers, called mixnodes, organized into sequential layers. 
-	Each packet traverses a fixed path of mixnodes. 
-	It enters through an entry node, passes through a set of intermediate nodes, and exits via a final node. 
-	At each layer, mixnodes shuffle and delay packets, obfuscating the link between incoming and outgoing traffic and improving resistance against network adversaries.
-	This process is illustrated in Figure~\ref{fig:mixnet}, which provides a step-by-step tracing of two clients communicating with services through a 3-layer mixnet. 
-	Each timestamp (from $t_0$ to $t_6$) represents a point in time, showing how packets move and are reshuffled across layers. 
-	The packets are labeled by color (client identity) and number (message order), allowing us to visually follow how each message is mixed and relayed before reaching its destination.
-	For clarity in both formulas and figures, and without loss of generality, we consider a mixnet with three layers throughout the paper.
-	
-	This kind of network often relies on privacy-preserving packet format with fixed-size, such as Sphinx~\cite{sphinx}.
-	%In this work, we will solely focus on the Sphinx packet format.
-	Some privacy-focused companies, like Nym Technologies, commercialize an advanced mixnet services that other applications can access for a fee.
-	For example, if Signal is integrated with Nym, clients who want their traffic to be anonymous would route their traffic through the mixnet instead of connecting directly to the Signal server. 
-	This prevents adversaries monitoring either the client's device, the server, or any intermediate nodes, from correlating sender and recipient.
-	In addition to Sphinx packets, they often improved the system with extra features such as \textit{anonymous credentials}.
-	For example, each Nym client receives anonymous credentials (based on Coconut credential~\cite{coconut}) to use the mixnet for routing their traffic towards specific destinations they have paid for.
-	A potential vulnerability arises when a client obtains a credential for a specific service but uses it to inject traffic directed to an unauthorized or unrelated service. 
-	Because the true destination is only revealed at the final hop of the mixnet, earlier mixnodes waste computational resources processing a packet that will ultimately be dropped. 
-	This misuse opens the door to denial-of-service (DoS) attacks, where malicious clients flood the system with unauthorized packets that will be detected at the last hop, draining bandwidth and compute capacity.
-	
-	
-	To address this, we propose a decentralized construction of Sphinx headers involving a set of trusted third parties (TTPs). 
-	This decentralized scheme could enable TTPs to update credentials and/or zero-knowledge proofs in accordance with the layered encrypted header, to be verifiable by any mixnodes on the route.  
-	As a result, mixnodes could early discard unauthorized traffic before it consumes significant resources.
-	However, the credentials issuance, modification, and verification are outside the scope of this paper and are left for future work.
-
-
-        % \item \textbf{Malicious Clients:} 
-        % We consider clients who misuse valid credentials to build Sphinx headers targeting unauthorized services. 
-        % Such misuse can typically only be detected at the mixnet's exit gateway, where the true destination is revealed and can be checked against the credential. 
-        % Our decentralized scheme could enable credentials that could be verified at any step in the network.
-
-	nt...
-\end{comment}
