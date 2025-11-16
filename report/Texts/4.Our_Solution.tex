@@ -46,7 +46,7 @@ In summary, the protocol is organized into four main components, each described 
 
 \subsection{Setup}
 
-As discussed in Section~\ref{sec:security}, each chunk requires a distinct generator to preserve the scheme's security properties. 
+As discussed in Section~\ref{sec:indep_generators}, each chunk requires a distinct generator to preserve the scheme's security properties. 
 We therefore define a set of seven generators $\{G_j\}$, one for each chunk $j$.
 
 % Synchronization
@@ -75,21 +75,21 @@ G_j = 8 \cdot \Map{\hash{\text{timestamp}} + j}.
 \subsection{Client}
 
 To send a message to a chosen destination, the client first selects a random path through the mixnet and generates an initial nonce.  
-Using this nonce and the public keys of the mixnodes along the route, the client derives a sequence of shared secrets \((\s{1}, \s{2}, \s{3})\) following a similar hop-by-hop key derivation strategy as in the original Sphinx design:
+Using this nonce and the public keys of the mixnodes along the route, the client derives a sequence of shared secrets \((\s{1}, \s{2}, \s{3})\)
+according to Eq.~\ref{eq:shared_secret}, yielding a hop-by-hop key derivation.
 \begin{equation}
 (\s{1}, \s{2}, \s{3}) \quad \left\{ \quad
 \begin{aligned}
     \A{i}    &= x_i \, G, \\
     \S{i}    &= x_i \, \PK{i}, \\
     \s{i}    &= \InverseMap{\S{i}}, \\
-    r_i      &= \hash{{\A{i}}_y \ \| \ {\S{i}}_y}, \\
-    x_{i+1}  &= x_i \, r_i \quad (\text{mod}\ n),
+    x_{i+1}  &= s_i \, x_i \quad (\text{mod}\ n),
 \end{aligned}
 \right.
 \label{eq:shared_secret}
 \end{equation}
-where $x_1$ is the client's nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ mixnode, $n$ is the lagre prime subgroup order (i.e. $(n+1)\G{} = \G{}$), $\|$ denotes concatenation, and subscripts $_y$ refer to the $y$-coordinate of a point. 
-The scalar $r_i$ acts as a per-hop pseudorandom update, ensuring that the public components $\A{i}$ remain cryptographically unlinkable across layers.
+where $x_1$ is the client's nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ mixnode, $n$ is the lagre prime subgroup order (i.e. $(n+1)\G{} = \G{}$), and $\InverseMap{}$ is the inverse Elligator, mapping EC point to integer.
+The scalar $s_i$ provides as a per-hop pseudorandom update, ensuring that the cryptographic element $\A{i}$ remain unlinkable across layers.
 
 Next, the client encodes the routing information for each hop
 IP addresses are padded with random bits and mapped to elliptic curve points via Elligator, ensuring that each address can later be recovered while appearing indistinguishable from a random point.  
@@ -222,9 +222,10 @@ It is mapped back to an integer using the inverse Elligator map, after which the
 The second chunk, $\BB{i}{2}$, becomes the integrity tag for the next hop ($\C{i+1}$).  
 The remaining five chunks constitute the next encrypted routing information $(\B{i+1}{})$.
 
-As in Eq.~\ref{eq:shared_secret}, the mixnode updates the cryptographic element $\A{i}$ in the same way as the client:
+% Update Alpha
+As specified in Eq.~\ref{eq:shared_secret}, the mixnode applies the same update rule as the client to compute the next cryptographic element $\A{i+1}$:
 \begin{equation}
-\A{i+1} = \text{hash}({\A{i}}_y \ \| \ {\S{i}}_y) \ \A{i}
+\A{i+1} = s_i \, \A{i}
 \label{eq:update_alpha}
 \end{equation}
 Finally, the mixnode forwards the updated header $(\A{i+1}, \C{i+1}, \B{i+1}{})$ to the next mixnode in the path.
