@@ -32,6 +32,9 @@
 
 # Todo (thursday)
 
+- Add a ref for Elligator
+- Check security note commented in sec 4.3 is written in security section
+
 4. Repasser dessus (from 4.2 Client until section 5)
 
 - Putting section 6.0 in threat model instead (section 3)
