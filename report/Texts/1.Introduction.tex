@@ -2,16 +2,14 @@
 \section{Introduction}
 
 The Sphinx packet format, introduced by Danezis and Goldberg~\cite{sphinx} in 2009, has become a foundational component of modern anonymous communication systems.  
-It is employed in decentralized infrastructures such as the Lightning Network~\cite{poon2016bitcoin}, as well as mixnet-based systems including Nym~\cite{nym-network-whitepaper} and Katzenpost~\cite{infeld2025echomix}.  
-In these networks, messages traverse a sequence of hops, each of which decrypts and forwards packets in a manner that prevents linking between incoming and outgoing messages, thereby ensuring strong anonymity guarantees.  
-Sphinx enables this property through a compact packet structure that provides both cryptographically robust unlinkability and per-hop integrity protection.
+It is used in decentralized infrastructures such as the Lightning Network~\cite{poon2016bitcoin}, as well as mixnet-based systems including Nym~\cite{nym-network-whitepaper} and Katzenpost~\cite{infeld2025echomix}.
 
-Despite its strengths, the Sphinx header remains inherently \emph{centralized}.
-It must be fully constructed by the client before the packet enters the mixnet.  
-This design make system based on Sphinx vulnerable to malicious client.
-\todo{do we mention some attacks ? E.g. verifiable credentials, or biased route reducing anonimity of other users and enabling n-1 attack} % This design does not protect against malicious clients who bias the routes and not follow the routing protocol either to reduce the overall anonymity provided by the mixnet~\cite{benguirat2022mixnet}, access unauthorized services, launch (N-1)-attack etc.
+In these networks, messages traverse multiple hops, where each intermediary decrypts and forwards packets to the next entity in the path.The message content is protected through layered encryption in the Sphinx payload, and the routing information is similarly layered and encrypted within the Sphinx header. With this packet format, an adversary cannot correlate an input message with an output message based on packet structure or size. Additionally, an intermediary node along the message path does not learn its position within the route; it can infer only the immediately preceding and succeeding nodes, not the entire path. Sphinx achieves this through a compact packet structure that offers cryptographically robust unlinkability as well as per-hop integrity protection.
 
-In this work, we introduce a \emph{decentralized Sphinx header construction} that distributes the computation across multiple independent semi-trusted third parties (STTPs). 
+However, despite its strengths, the Sphinx packet format is fully constructed \emph{centrally} by the clients before entering the network which makes the system vulnerable to malicious clients. For example, a client may bias route selection to reduce the number of messages mixed at a given node in order to target a specefic client or reduce the overall anonymity provided by the system~\cite{benguirat2022mixnet}, or launch an (N-1)-attack~\cite{raymond2001traffic}.
+%\todo{do we mention some attacks ? E.g. verifiable credentials, or biased route reducing anonimity of other users and enabling n-1 attack} % This design does not protect against malicious clients who bias the routes and not follow the routing protocol either to reduce the overall anonymity provided by the mixnet~\cite{benguirat2022mixnet}, access unauthorized services, launch (N-1)-attack etc.
+
+In this work, we introduce a \emph{decentralized Sphinx header construction} that distributes the computation across multiple independent semi-trusted third parties (STTPs).
 To the best of our knowledge, this is the first work to decentralize the Sphinx packet format.
 We argue that decentralizing the header construction is a necessary step toward achieving a more robust, verifiable, and flexible anonymous communication system.
 
@@ -19,11 +17,11 @@ Achieving decentralization while maintaining Sphinx's cryptographic guarantees r
 The protocol must ensure that individual STTPs, or any coalition of corrupted STTPs, cannot infer routing information;  
 that mixnodes learn only what they are intended to learn;  
 that unlinkability is preserved even under sophisticated passive traffic analysis;  
-and that distributing computations introduces no trapdoor, bias, or structural weakness exploitable by an adversary.
+and that distributing computations introduces no trapdoor, bias, or structural weakness exploitable by an adversary. \todo{reformat this paragraph, develop briefly the solution and the threat model and the security properties}
 \newline
 
 \noindent
-This paper makes the following contributions:
+In summary, our main contributions are as follows:
 \begin{itemize}
     \item We design the first \emph{decentralized Sphinx header construction}, enabling clients to distribute header computation while preserving the anonymity and cryptographic guarantees of the original Sphinx design;
     \item We provide a detailed security analysis against passive and active network adversaries, corrupted mixnodes, and colluding STTPs;
@@ -32,13 +30,11 @@ This paper makes the following contributions:
 \end{itemize}
 
 % Plan
-\todo[inline]{Update PLAN: 
 In the following, we present related work and motivation in
-Section~\ref{sec:related}, then we specify and justify our system model in
-Section~\ref{sec:sys_model}, where we also describe the considered threat
-model.  We then present our scheme that decentralizes the creation of the
-Sphinx headers in Section~\ref{sec:scheme} and the evaluation of our
-proposed solution in Section~\ref{sec:eval}.  Finally we conclude and
+Section~\ref{sec:related}, then we present the threat model and the desired securtity properties in
+Section~\ref{sec:sys_model}. We then present our protocol that decentralizes the creation of the
+Sphinx headers in Section~\ref{sec:scheme}. We then present our security analysis in Section~\ref{sec:security} and the evaluation of our
+proposed solution in Section~\ref{sec:evaluation}.  Finally we conclude and
 discuss future work in Section~\ref{sec:conclusion}.
-}
+
 
