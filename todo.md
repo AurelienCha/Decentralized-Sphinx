@@ -33,13 +33,9 @@
 # Todo (thursday)
 
 - Add a ref for Elligator
-- Check complexity table (hash, not to compute shared secret but weights)
 - Reformulation for adversary advantage. Don't like the lmbda notation
 
 - Style: subsection 4 "[Party] - [Function]" (e.g. 4.1. Setup - Independant generators, 4.2. Client - Additive shares, 4.3. STTP - Partial header, 4.4. Decryption and forward)
-
-- Putting section 6.0 in threat model instead (section 3)
-- Merge section 6 and 7 (NIST and Complexity) into one section "Implementation Evaluation"
 
 - Propose mitigiation for collusion vulnerability
 - Conclusion with future work
