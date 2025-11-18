@@ -1,6 +1,6 @@
 \section{Threat Model and Security Properties}~\label{sec:sys_model}
+%
 In this section, we present the overall decentralized Sphinx system, its threat model and outline the privacy and security requirements our solution should satisfy.
-\newline
 
 As illustrated in Figure~\ref{fig:overall_schema}, our system involves three types of entities: the client, a set of semi-trusted third parties (STTPs), and the mixnodes that constitute the mixnet. 
 The client delegates header construction to several STTPs, which operate independently of one another.
@@ -16,23 +16,23 @@ Because our construction introduces semi-trusted third parties (STTPs), we addit
 An adversary in our setting may combine these capabilities, controlling parts of the network while also corrupting a subset of mixnodes and STTPs.  
 We assume that adversaries are computationally bounded and cannot break standard cryptographic assumptions such as the hardness of the Elliptic-Curve Discrete Logarithm Problem (ECDLP).
 
-\paragraph{\textbf{Passive Network Adversary}}
+\noindent{\textbf{Passive Network Adversary.}}
 This adversary can observe all packets entering and leaving any mixnode, but cannot alter them.  
 Its primary goal is to break unlinkability by correlating an incoming packet with one of the outgoing packets at a mixnode, thereby reconstructing the packet's path and ultimately linking sender and receiver.  
 Such an adversary may attempt correlation by identifying relationships between different header components, or by detecting statistical biases in the header bitstream through advanced cryptanalytic techniques.
 
-\paragraph{\textbf{Active Network Adversary}}
+\noindent{\textbf{Active Network Adversary.}}
 This adversary extends the capabilities of the passive adversary by being able to modify, drop, replay, or inject packets at any point in the network.  
 Its main objective is to forge valid integrity tags so that it can tamper information while still producing headers that appear valid to honest mixnodes.
 To counter such an adversary, our scheme must therefore provide strong, per-hop integrity protection, analogous to the original Sphinx design but adapted to the decentralized construction.
 
-\paragraph{\textbf{Corrupted Mixnode}}
+\noindent{\textbf{Corrupted Mixnode.}}
 Following standard mixnet threat models, we allow the adversary to control a subset of mixnodes.  
 A corrupted mixnode reveals its internal state, including its shared secret, and data derived during processing.  
 The protocol must therefore ensure that compromising mixnodes does not reduce the privacy of the remaining parts of the route, and that unlinkability holds as long as at least one mixnode on the path remains honest.  
 Similarly, leaking a mixnode shared secret must not enable an adversary to recover information about other mixnodes or compromise their integrity tags.
 
-\paragraph{\textbf{Corrupted STTP}}
+\noindent{\textbf{Corrupted STTP.}}
 Decentralizing header construction introduces an additional potential adversary not present in the original Sphinx design.  
 STTPs are assumed to follow the protocol but may attempt to infer extra information during the partial header construction.
 A subset of STTPs may collude or be controlled by the adversary, combining their additive shares to reconstruct routing information or mixnodes shared secrets.  
@@ -46,7 +46,7 @@ This threat is particularly relevant in decentralized settings, where corrupted 
 This section details the security and privacy guarantees that our decentralized header construction must achieve.
 These objectives ensure that decentralization does not weaken the cryptographic or anonymity properties of the original Sphinx protocol~\cite{sphinx}, while providing robustness against partial compromise and collusion.
 
-\paragraph{\textbf{Unlinkability}}
+\noindent{\textbf{Unlinkability.}}
 Our primary goal is to preserve the strong unlinkability properties achieved by Sphinx design.  
 At each mixnode, an adversary observing both incoming and outgoing packets should be unable to correlate them, preventing reconstruction of the full communication path.
 % Other metrics
@@ -60,13 +60,13 @@ In particular, unlinkability requires that:
 The latter ensures that no structural bias in the bitstream can be exploited by advanced cryptanalytic techniques.  
 We empirically validate this requirement using the NIST SP~800-22 randomness test suite (Section~\ref{sec:NIST}).
 
-\paragraph{\textbf{Integrity-Forgery Resistance}}
+\noindent{\textbf{Integrity-Forgery Resistance.}}
 Sphinx embeds per-hop integrity tags to ensure that no mixnode processes altered headers.  
 Any active adversary capable of injecting, replaying, or modifying packets must be unable to forge an integrity tag that passes verification.
 Our decentralized construction should preserve this property, even in the presence of a strong adversary colluding with compromised STTPs or mixnodes. 
 In particular, no trapdoor or weakness should arise from distributing header construction among multiple parties.
 
-\paragraph{\textbf{Collusion Resistance}}
+\noindent{\textbf{Collusion Resistance.}}
 % STTP
 Because header generation is distributed across multiple STTPs, our scheme must remain secure even if a subset of them colludes.
 Collusion among STTPs should not reveal routing information or cryptographic secrets, as long as at least one STTP remains honest.  

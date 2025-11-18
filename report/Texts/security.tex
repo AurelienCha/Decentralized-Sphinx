@@ -180,13 +180,14 @@ $$
 Thus, the adversary can choose any $P_j$ and set $P_{j'} = -n P_j$, keeping $\gamma'_i = \gamma_i$ unchanged and thereby forging integrity.  
 \newline
 
-\noindent\textbf{Summary.}
+\noindent\textbf{Summary \& Ramarks.}
 Successful integrity forgery requires at least knowledge of scalar relations between the weights $h^{(j)}(s_i)$.  
 Since these weights are derived from one-time shared secrets through iterated hashing, such relations are computationally infeasible to obtain in the absence of collusion.
 \newline
 
-\noindent\textbf{Remark.}\label{replay_resistance}\label{wrap_resistance}
-Original Sphinx article take into account the \emph{replay resistance} and \emph{wrap resistance}.
+\label{replay_resistance}\label{wrap_resistance}
+The original Sphinx article~\cite{sphinx} takes \emph{replay resistance}
+and \emph{wrap resistance} into account.
 \emph{Wrap resistance} means an adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being processed by some mixnode $i'$, the packet becomes $(\alpha, \beta, \gamma)$ again.  
 \emph{Replay resistance} is inherited from the original Sphinx construction since mixnodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).
 Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (and consequently $\beta$) while still producing a consistent integrity tag $\gamma$. % which directly reduces to the problem of forging integrity.  
