@@ -10,7 +10,7 @@ The first one is empirically measured by evaluating output randomness, giving th
 The second count the number of cryptographic operations which are the heaviest computations in the scheme.
 
 
-\subsection{Unlinkability: Header Randomness}\label{sec:output_randomness}
+\subsection{Unlinkability: Header Randomness}\label{sec:output_randomness}\label{sec:NIST}
 
 % Empirically quantifying unlinkability in anonymous communication systems remains inherently challenging.
 % Loopix~\cite{piotrowska2017loopix}, for instance, introduces a probabilistic metric called the \emph{expected difference in likelihood} to evaluate sender-receiver unlinkability.
@@ -18,7 +18,7 @@ The second count the number of cryptographic operations which are the heaviest c
 % In contrast, our goal is to assess unlinkability at the \emph{mixnode level}, i.e. the difficulty for a network passive adversary to correlate an incoming packet with its corresponding outgoing packet through cryptanalysis.
 % Assuming that higher entropy and statistical randomness hinder such correlations, we empirically evaluate the bit-level randomness of our packet headers using the NIST randomness test suite.
 
-\noindent\textbf{NIST Randomness Test Suite.}\label{sec:NIST}
+% \noindent\textbf{NIST Randomness Test Suite.}
 %
 To evaluate the statistical quality of our generated headers, we employ the NIST SP 800-22 statistical test suite~\cite{NIST-SP80022}.
 This suite comprises 15 tests designed to assess whether a binary sequence exhibits properties expected from a truly random source.
