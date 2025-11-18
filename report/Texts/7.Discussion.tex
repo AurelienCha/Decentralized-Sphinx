@@ -18,7 +18,7 @@ Future work should investigate stronger homomorphic integrity mechanisms or alte
 \noindent\textbf{Client-Centric Trust.} 
 While our construction successfully decentralizes the Sphinx header computation, the system remains \emph{client-centric} in several key aspects.  
 The client still selects the path through the mixnet, and therefore retains significant power.  
-A malicious client can still bias route selection to reduce the anonymity set of honest users, or orchestrate classical deanonymization attacks, including (N-1) attacks, by carefully crafting routes.  
+A malicious client can still bias route selection to reduce the anonymity set of honest users, or orchestrate classical deanonymization attacks, including (N-1)-attacks, by carefully crafting routes.  
 Thus, although our scheme removes trust from the header-construction process, it does not yet mitigate threats originating from malicious clients.  
 More work is needed to distribute path selection and key derivation to STTPs in a way that preserves anonymity while limiting client influence.
 
