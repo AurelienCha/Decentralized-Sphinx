@@ -15,13 +15,12 @@
 
 # Todo (thursday)
 
-
-- Add a ref for Elligator
-- Reformulation for adversary advantage. Don't like the lmbda notation
-
 - Style: subsection 4 "[Party] - [Function]" (e.g. 4.1. Setup - Independant generators, 4.2. Client - Additive shares, 4.3. STTP - Partial header, 4.4. Decryption and forward)
-
 - Propose mitigiation for collusion vulnerability
-- Conclusion with future work
 
+- Reformulation for adversary advantage. Don't like the lmbda notation
 - Anonymous github and cleaning code (e.g. client)
+- Developper Elligator + ref
+- Faire ref à la Figure 4 (mixnode)
+- Section 4 (and 5): Reread this section and check for parts that could be unclear to add extra explanations.
+- Update beginning of section 51.: Unlinkability: Header Randomness (because removed a small paragraph)
