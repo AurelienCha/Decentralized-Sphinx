@@ -1,4 +1,4 @@
-\section{Implementation Evaluation}\label{sec:evaluation}
+\section{Implementation \& Evaluation}\label{sec:evaluation}
 
 %Our prototype implementation is available on \href{https://github.com/AurelienCha/Decentralized-Sphinx}{GitHub}\footnote{\url{https://github.com/AurelienCha/Decentralized-Sphinx}}.
 Our implementation, which will be released under the GPL license\todo{anonymous github}, is written in Python 3.13 using the \href{https://pypi.org/project/ECPy/}{ECPy}\footnote{\url{https://pypi.org/project/ECPy/}} library for elliptic curve operations.
@@ -10,7 +10,7 @@ The first one is empirically measured by evaluating output randomness, giving th
 The second count the number of cryptographic operations which are the heaviest computations in the scheme.
 
 
-\subsection{Header Randomness}\label{sec:output_randomness}
+\subsection{Unlinkability: Header Randomness}\label{sec:output_randomness}
 
 Empirically quantifying unlinkability in anonymous communication systems remains inherently challenging.
 Loopix~\cite{piotrowska2017loopix}, for instance, introduces a probabilistic metric called the \emph{expected difference in likelihood} to evaluate sender-receiver unlinkability.
@@ -18,8 +18,8 @@ However, that metric relies primarily on network-level simulations and focuses o
 In contrast, our goal is to assess unlinkability at the \emph{mixnode level}, i.e. the difficulty for a network passive adversary to correlate an incoming packet with its corresponding outgoing packet through cryptanalysis.
 Assuming that higher entropy and statistical randomness hinder such correlations, we empirically evaluate the bit-level randomness of our packet headers using the NIST randomness test suite.
 
-\subsubsection{NIST Randomness Test Suite}\label{sec:NIST}
-
+\noindent\textbf{NIST Randomness Test Suite.}\label{sec:NIST}
+%
 To evaluate the statistical quality of our generated headers, we employ the NIST SP 800-22 statistical test suite~\cite{NIST-SP80022}.
 This suite comprises 15 tests designed to assess whether a binary sequence exhibits properties expected from a truly random source.
 Each test produces a \emph{p-value}, which measures how likely the data could be produced by a uniform source. 
@@ -46,8 +46,8 @@ In short, while the \emph{Frequency} test verifies global balance, the \emph{Mat
 We compare our decentralized implementation against the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}} using identical test suite configurations.
 
 
-\subsubsection{Datasets Generation}
-
+\noindent\textbf{Datasets Generation.}
+%
 Twenty independent datasets were generated for both implementation.
 Each dataset was produced from a simulated network of 20 mixnodes and 3 semi-trusted third parties (STTPs).
 For each epoch, a random destination IP and a path of three mixnodes were selected.
@@ -63,8 +63,8 @@ NIST recommends interpreting results via two complementary criteria:
 \end{itemize}
 
 
-\subsubsection{Passing rate analysis}
-
+\noindent\textbf{Passing Rate Analysis.}
+%
 Figure~\ref{fig:proportion} highlights the proportion of sequences that passed each NIST test for both implementations.
 Following NIST guidelines, the significance level is set to $\alpha = 0.01$, and the confidence interval over $n$ samples is defined as:
 $$
@@ -81,8 +81,8 @@ In contrast, our implementation passes three tests that the original implementat
 \end{figure}
 
 
-\subsubsection{P-value distribution analysis}
-
+\noindent\textbf{P-value Distribution Analysis}
+%
 Figure~\ref{fig:hist_p-values} shows the p-value histograms for both implementations across all 15 NIST tests.
 Uniformity of these distributions is further assessed using a Chi-square goodness-of-fit test with a significance threshold of $0.0001$, as recommended by NIST.
 Figure~\ref{fig:chisquare} presents these results, highlighting that our implementation achieves uniform p-value distributions on the \textit{Frequency} and \textit{Cumulative Sums} tests, whereas the original Sphinx fails them.
@@ -102,8 +102,8 @@ Figure~\ref{fig:chisquare} presents these results, highlighting that our impleme
 \end{figure}
 
 
-\subsubsection{Discussion}
-
+\noindent\textbf{Discussion.}
+%
 In terms of output randomness, our decentralized implementation performs better than the original Sphinx, as it passes a greater number of statistical tests, as summarized in Table~\ref{tab:test_summary}.
 The results suggest that both implementations may exhibit subtle patterns or hidden structure, as indicated by failures in the \textit{Random Excursions} and the \textit{Non-overlapping Matching} tests. 
 This behavior could potentially come from the underlying mathematical framework (e.g. elliptic curves), which is not inherently truly random.
@@ -143,7 +143,7 @@ Given the established security of the original Sphinx protocol, and considering 
 \end{table}
 
 
-\subsection{Computational complexity}\label{sec:complexity}
+\subsection{Computational Complexity}\label{sec:complexity}
 
 Rather than measuring raw execution time, which depends heavily on hardware and software, we count the number of cryptographic operations as these are the computationally most expensive part of the scheme.
 Table~\ref{tab:operation_count} summarizes this asymptotic counting for each party, considering a path of $m$ mixnodes and $t$ semi-trusted third parties (STTPs).  
@@ -182,14 +182,13 @@ However, since STTPs operate in parallel, their collective workload has limited 
 Each mixnode performs EC multiplications, additions and hashes proportional only to the number of chunks (Eq.~\ref{eq:integrity_check}, Eq.~\ref{eq:decrypt}), yielding linear complexity in $m$.  
 Additionally, each mixnode executes one Elligator inverse mapping (Eq.~\ref{eq:derive_secret}) to convert the shared secret point into an integer.
 
-
 In practice, most mixnet implementations employ routes of three to five mixnodes, making \bigO{p} $\approx$ \bigO{1}.
 Accordingly, the overall computational burden is more sensitive to the number of STTPs $t$ than the path length $m$.
 As our design remains secure as long as one STTP is honest, only a small number $t$ may be sufficient.
 Determining the precise number needed to meet a desired trust threshold is left for future work.
-\newline
 
-
+\noindent\textbf{Comparison with Sphinx.}
+%
 A direct comparison with the original Sphinx protocol is not entirely meaningful, as some primitives differ (e.g. Elligator).  
 Nevertheless, from a performance perspective, our protocol is expected to be slower than the original Sphinx header construction.  
 The main contributing factors are: (1) the extensive use of elliptic curve arithmetic, in contrast to the lightweight hashing and XOR operations in Sphinx; and (2) the distributed nature of the header construction, which introduces communication latency.  
