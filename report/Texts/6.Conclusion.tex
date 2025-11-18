@@ -6,7 +6,7 @@ These limitations do not undermine the contributions of the present work, but th
 
 \subsection{Limitations}
 
-\subsubsection{Collusion between STTPs and mixnodes}
+\noindent\textbf{Collusion between STTPs and Mixnodes.} 
 Our security analysis considers several collusion scenarios involving corrupted STTPs and mixnodes.  
 The current scheme guarantees security as long as (i) at least one STTP remains honest and (ii) not all mixnodes on the path are compromised.  
 However, a subtle but significant limitation arises when an adversary simultaneously compromises a mixnode along the path and one of the STTPs that contributed to the packet construction.  
@@ -15,7 +15,7 @@ This capability enables integrity forgery and reduces unlinkability.
 This vulnerability represents an important limitation of the current design.  
 Future work should investigate stronger homomorphic integrity mechanisms or alternative constructions of the checksum that do not reveal correlation between weights of honest mixnode, even under collusion.
 
-\subsubsection{Residual client-centric trust}
+\noindent\textbf{Client-Centric Trust.} 
 While our construction successfully decentralizes the Sphinx header computation, the system remains \emph{client-centric} in several key aspects.  
 The client still selects the path through the mixnet, and therefore retains significant power.  
 A malicious client can still bias route selection to reduce the anonymity set of honest users, or orchestrate classical deanonymization attacks, including (N-1) attacks, by carefully crafting routes.  
@@ -24,19 +24,19 @@ More work is needed to distribute path selection and key derivation to STTPs in 
 
 \subsection{Future Work}
 
-\subsubsection{Decentralized path selection}
+\noindent\textbf{Decentralized Path Selection.} 
 Although our construction decentralizes the header computation itself, the overall design remains largely client-centric. 
 The client still selects the route and determines the hop-by-hop shared secrets, which preserves a considerable amount of trust and control on the client side. 
 A promising direction for future work is therefore to decentralize these remaining components, in particular, the path selection process and the derivation of shared secrets along the route. 
 Shifting these responsibilities from a single client to a collaborative set of STTPs would reduce the influence of malicious clients, while offering a more balanced and robust trust model for practical deployments.
 
-\subsubsection{Privacy-preserving policy enforcement}
+\noindent\textbf{Privacy-preserving Policy Enforcement.} 
 A major challenge in bringing mixnets into practical use is the lack of accountability and policy-enforcement mechanisms that do not undermine privacy.
 Because Sphinx reveals almost no information to mixnodes, verifying client legitimacy or enforcing policy is extremely difficult.  
 We believe that decentralized packet construction opens a path toward generating privacy-preserving credentials or zero-knowledge proofs that can be validated at any hop without revealing routing or identity information.  
 Developing such integration remains an open and promising research direction.
 
-\subsubsection{Performance evaluation and latency analysis}
+\noindent\textbf{Performance Evaluation and Latency Analysis.} 
 Finally, although we provide an asymptotic analysis of computational complexity and an empirical study of header randomness, future work should include a thorough benchmark.  
 In particular, understanding the latency overheads introduced by parallel STTPs, network delays, and additional cryptographic operations will be essential for assessing the practicality of such decentralization in large real-world deployments.  
 
