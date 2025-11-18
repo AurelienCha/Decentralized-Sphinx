@@ -6,12 +6,11 @@ It is used in decentralized infrastructures such as the Lightning Network~\cite{
 
 In these networks, messages traverse multiple hops, where each intermediary decrypts and forwards packets to the next entity in the path. 
 The message content is protected through layered encryption in the Sphinx payload, and the routing information is similarly layered and encrypted within the Sphinx header. With this packet format, an adversary cannot correlate an input message with an output message based on packet structure or size. 
-Additionally, an intermediary node along the message path does not learn its position within the route;\todo{mention in security analysis} it can infer only the immediately preceding and succeeding nodes, not the entire path. 
+Additionally, an intermediary node along the message path does not learn its position within the route; it can infer only the immediately preceding and succeeding nodes, not the entire path. 
 Sphinx achieves this through a compact packet structure that offers cryptographically robust unlinkability as well as per-hop integrity protection.
 
 However, despite its strengths, the Sphinx packet format is fully constructed \emph{centrally} by the clients before entering the network which makes the system vulnerable to malicious clients. 
 For example, a client may bias route selection to reduce the number of messages mixed at a given node in order to target a specefic client or reduce the overall anonymity provided by the system~\cite{benguirat2022mixnet}, or launch an (N-1)-attack~\cite{raymond2001traffic}.
-%\todo{do we mention some attacks ? E.g. verifiable credentials, or biased route reducing anonimity of other users and enabling n-1 attack} % This design does not protect against malicious clients who bias the routes and not follow the routing protocol either to reduce the overall anonymity provided by the mixnet~\cite{benguirat2022mixnet}, access unauthorized services, launch (N-1)-attack etc.
 
 In this work, we introduce a \emph{decentralized Sphinx header construction} that distributes the computation across multiple independent semi-trusted third parties (STTPs).
 To the best of our knowledge, this is the first work to decentralize the Sphinx packet format.

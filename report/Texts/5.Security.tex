@@ -252,7 +252,7 @@ While an STTP alone reveals only unlinked integrity weights, when colluding with
 Concretely, a corrupted mixnode computes its shared secret $s_i$ using the packet's cryptographique element $\alpha$, derive $h(s_i)$, and compare it against the set of weights disclosed by the colluding STTP.
 If the compromised STTP participated in the construction of this packet's header, a match occurs, allowing the adversary to recover the remaining weights associated to this packet across all mixnodes along its path.
 
-Once weights are associated to a packet, the adversary gains several capabilities:
+In addition to revealing the mixnode's position along the path, associating these weights to a packet grants the adversary several further capabilities:
 \begin{enumerate}
   \item \textbf{Integrity forgery.} The adversary can modify any header chunks (including the destination $\Delta$) and recompute valid integrity tags, as discussed in Section~\ref{sec:integrity_forgery}.
   \item \textbf{Weaker unlinkability.} The adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds subsequent integrity verifications.
