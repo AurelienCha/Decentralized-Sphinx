@@ -249,7 +249,7 @@ Without this association, the adversary can only attempt modifications on a rand
 
 \noindent\textbf{Case of corrupted mixnode.}  
 While an STTP alone reveals only unlinked integrity weights, when colluding with a corrupted mixnode, it enables the adversary to \emph{associate those weights to a specific packets} observed at the corrupted mixnode.  
-Concretely, a corrupted mixnode computes its shared secret $s_i$ using the packet's cryptographique element $\alpha$, derive $h(s_i)$, and compare it against the set of weights disclosed by the colluding STTP.
+Concretely, a corrupted mixnode computes its shared secret $s_i$ using the packet's cryptographic element $\alpha$, derive $h(s_i)$, and compare it against the set of weights disclosed by the colluding STTP.
 If the compromised STTP participated in the construction of this packet's header, a match occurs, allowing the adversary to recover the remaining weights associated to this packet across all mixnodes along its path.
 
 In addition to revealing the mixnode's position along the path, associating these weights to a packet grants the adversary several further capabilities:
