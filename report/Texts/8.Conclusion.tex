@@ -1,7 +1,7 @@
 \section{Conclusion}\label{sec:conclusion}
 
 % Scheme and security
-In this paper, we proposed a decentralized construction of Sphinx packet headers, in which the client outsources header generation to a set of semi-trusted third parties (STTPs). 
+In this paper, we presented DSphinx, a decentralized construction of Sphinx packet headers, in which the client outsources header generation to a set of semi-trusted third parties (STTPs). 
 Our scheme preserves the core cryptographic guarantees of Sphinx by ensuring that no coalition of STTPs, as long as at least one remains honest, can recover routing information or shared secrets. Through a game-based security analysis, we established integrity-forgery resistance and unlinkability under different adversarial models, and we identified the conditions under which collusion between STTPs and mixnodes may become problematic.
 Although this residual vulnerability could be mitigated by additional client-side computation, designing stronger homomorphic integrity mechanisms remains an open challenge. % TODO keep or add
 
