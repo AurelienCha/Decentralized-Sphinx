@@ -244,7 +244,7 @@ Since the first two items are additive shares, they provide no information unles
 Hence, as long as at least one of the $T$ STTP remains honest, neither destinations nor shared secrets can be reconstructed.
 The only additional information available to an adversary colluding with an STTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags for all mixnodes in the path.  
 However, the integrity's blinding offset $s_i G$ prevents trivial linking weights to specific packets.
-Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the mixnet.
+Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the entire network. \todo{association?}
 \newline
 
 \noindent\textbf{Case of corrupted mixnode.}  
