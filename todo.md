@@ -21,10 +21,11 @@
 - Reformulation for adversary advantage. Don't like the lmbda notation
 - Anonymous github and cleaning code (e.g. client)
 - Developper Elligator + ref
+
 - Faire ref à la Figure 4 (mixnode)
 - Section 4 (and 5): Reread this section and check for parts that could be unclear to add extra explanations.
+
 - Reformulate section 1 paragraph (see todo)
 - Try to avoid "mixnet" if not pertinent (e.g.)
 - use the nomination of DSphinx (change figures as well)
-- keywords -> 'malicious user' is maybe not relevant anymore
 - Layout: improve spacing and mise en page
