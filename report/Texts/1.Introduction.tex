@@ -16,14 +16,15 @@ In this work, we introduce a \emph{decentralized Sphinx header construction} tha
 To the best of our knowledge, this is the first work to decentralize the Sphinx packet format.
 We argue that decentralizing the header construction is a necessary step toward achieving a more robust, verifiable, and flexible anonymous communication system.
 %
-\todo{Should we call our thing \emph{DSphinx} so that we can resolve the
-confusion with \enquote{our Sphinx vs. the original Sphinx}?}
+\todo{Should we call our thing \emph{DSphinx} so that we can resolve the confusion with \enquote{our Sphinx vs. the original Sphinx}?}
 
 Achieving decentralization while maintaining Sphinx's cryptographic guarantees raises several challenges.  
-The protocol must ensure that individual STTPs, or any coalition of corrupted STTPs, cannot infer routing information;  
-that mixnodes learn only what they are intended to learn;  
-that unlinkability is preserved even under sophisticated passive traffic analysis;  
-and that distributing computations introduces no trapdoor, bias, or structural weakness exploitable by an adversary. \todo{reformat this paragraph, develop briefly the solution and the threat model and the security properties}
+First, the protocol must prevent individual STTP, or any coalition of corrupted STTPs, from learning routing information or recovering cryptographic secrets.  
+Second, mixnodes should learn no more than in the traditional Sphinx design.
+Each hop must reveal only its own shared secret and the address of the next hop, but nothing about the rest of the route.  
+Third, unlinkability must be preserved even against a powerful passive adversary capable of observing all traffic entering and leaving a mixnode and performing sophisticated cryptanalytic analysis. 
+Finally, distributing the computation must not introduce any trapdoor, bias, or structural weakness that an adversary could exploit to correlate packets or manipulate header values.
+Our construction meets these challenges by encoding routing information as elliptic curve points, splitting secrets via additive secret sharing, and using a homomorphic pseudorandom weighted checksum as an integrity mechanism that remains compatible with decentralized computation.
 \newline
 
 \noindent
@@ -33,6 +34,7 @@ In summary, our main contributions are as follows:
     \item We provide a detailed security analysis against passive and active network adversaries, corrupted mixnodes, and colluding STTPs;
     \item We provide a Python implementation of our header construction, which we will release under GPL license;
     \item Using the NIST SP-800-22 randomness test suite, we empirically demonstrate that the resulting headers are at least as indistinguishable from random bitstrings as centralized Sphinx, and in fact successfully pass slightly more randomness tests.
+    \newline
 \end{itemize}
 
 % Plan

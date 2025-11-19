@@ -118,7 +118,7 @@ As illustrated in Figure~\ref{fig:chunked_schema}, the construction proceeds lay
 % First layer
 The construction of the last layer, corresponding to the final mixnode, follows a slightly different procedure. 
 For a path of $m$ mixnodes, the destination chunk is first padded with $2(m-1)$ \emph{filler chunks}.  
-These filler chunk values are chosen so that, after the layer's masking points $\sG{i}{j}$ are applied, the last two chunks collapse to the identity point (depicted as a grey '0' block in Figure~\ref{fig:chunked_schema}).  
+These filler chunk values are computed so that, after the layer's masking points $\sG{i}{j}$ are applied, the last two chunks collapse to the identity point (depicted as a grey '0' block in Figure~\ref{fig:chunked_schema}).  
 This ensures that at each subsequent layer these two chunks can be safely truncated, preserving a fixed header size while maintaining the reversibility required for mixnode processing.
 
 Let $\Delta$ be the destination address share, $\s{i}$ the shared secret share for the $i^\text{th}$ mixnode in the path, and $G_j$ the $j^\text{th}$ generator.  
@@ -172,9 +172,9 @@ The offset therefore blinds the checksum, preventing such correlation attacks wh
 \begin{figure}%[H]
     \centering
     \resizebox{1.\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
-    \caption{Chunk-wise header encryption done by the STTP. Circled numbers \eq[x] refers to Equation x in the paper.}
+    \caption{Chunk-wise header encryption done by the STTP. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
     \label{fig:chunked_schema}
-\end{figure}\todo{Caption Fig. 3: highlighted circle 'x' should be written in red ?}
+\end{figure}
 
 % \paragraph{\textbf{Security Note.}}\label{note:security_why_indep_generators}
 % To preserve unlinkability, it is essential that the generators $ (\G{1}, \dots, \G{7}) $ are \textit{independent}, meaning their scalar relationships are unknown and computationally infeasible to derive.
@@ -233,6 +233,6 @@ Finally, the mixnode forwards the updated header $(\A{i+1}, \C{i+1}, \B{i+1}{})$
 \begin{figure}%[H]
     \centering
     \resizebox{1.\linewidth}{!}{\input{schema/chunkwise_decryption.tex}}
-    \caption{Header processing at mixnode $i$. Circled numbers \eq[x] refers to Equation x in the paper.}
+    \caption{Header processing at mixnode $i$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
     \label{fig:mixnode_decryption}
 \end{figure}
