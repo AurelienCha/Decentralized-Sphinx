@@ -15,17 +15,20 @@
 
 # Todo (thursday)
 
-- Style: subsection 4 "[Party] - [Function]" (e.g. 4.1. Setup - Independant generators, 4.2. Client - Additive shares, 4.3. STTP - Partial header, 4.4. Decryption and forward)
-- Propose mitigiation for collusion vulnerability
+- Propose mitigiation for collusion vulnerability [ATTENTION]
 
-- Reformulation for adversary advantage. Don't like the lmbda notation
+# TODO
+- Reformulation for adversary advantage. Don't like the lambda notation [IMPORTANT]
 - Anonymous github and cleaning code (e.g. client)
 - Developper Elligator + ref
+- Faire ref à la Figure 4 (mixnode) [IMPORTANT]
 
-- Faire ref à la Figure 4 (mixnode)
+# Accesibility
 - Section 4 (and 5): Reread this section and check for parts that could be unclear to add extra explanations.
+- Pseudocode [IMPORTANT]
 
-- Reformulate section 1 paragraph (see todo)
+# General
 - Try to avoid "mixnet" if not pertinent (e.g.)
 - use the nomination of DSphinx (change figures as well)
 - Layout: improve spacing and mise en page
+- Equation format (x) and figure

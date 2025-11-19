@@ -87,7 +87,7 @@ def gather_results(data_directory):
     return pd.concat([extract_data(file) for file in result_files])
 
 
-def plot_pvalue(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
+def plot_pvalue(df, colors={'DSphinx': 'steelblue', 'Sphinx': 'darkorange'}):
     plt.figure(figsize=(12, 6))
 
     # Boxplot
@@ -114,7 +114,7 @@ def plot_pvalue(df, colors={'decentralized': 'steelblue', 'original': 'darkorang
     # Create custom handle for threshold line
     threshold_line = Line2D([0], [0], color='red', linestyle=':', linewidth=1)
     # Add all handles to legend
-    plt.legend(handles + [threshold_line], labels + ['threshold'], loc='upper center')
+    plt.legend(handles[::-1] + [threshold_line], labels[::-1] + ['threshold'], loc='upper center')
 
 
     sns.despine()
@@ -122,7 +122,7 @@ def plot_pvalue(df, colors={'decentralized': 'steelblue', 'original': 'darkorang
     plt.savefig('src/experiments/results/p-values-of-p-values.png')
     plt.show()
 
-def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
+def plot_hist_pvalues(df, colors={'DSphinx': 'steelblue', 'Sphinx': 'darkorange'}):
     fig, ax = plt.subplots(5, 3, figsize=(15, 10), sharex=True, sharey=True)
     fig.subplots_adjust(hspace=0.1, wspace=0.05)
 
@@ -173,16 +173,16 @@ def plot_hist_pvalues(df, colors={'decentralized': 'steelblue', 'original': 'dar
     # Create a common legend
     handles, labels = ax[0, 0].get_legend_handles_labels()
     # ax[0,0].legend(handles, labels, loc='upper center')
-    d = Patch(facecolor=colors['decentralized'], edgecolor=colors['decentralized'], label='decentralized', alpha=.3)
-    e = Patch(facecolor=colors['original'], edgecolor=colors['original'], label='original', alpha=0.3, linewidth=1.5)
+    d = Patch(facecolor=colors['DSphinx'], edgecolor=colors['DSphinx'], label='DSphinx', alpha=.3)
+    e = Patch(facecolor=colors['Sphinx'], edgecolor=colors['Sphinx'], label='Sphinx', alpha=0.3, linewidth=1.5)
 
-    plt.legend(handles=[d,e], loc='lower right', prop={'size': 17}, labelspacing=0.3, borderpad=0.3, borderaxespad=0.5)  
+    plt.legend(handles=[e,d], loc='lower right', prop={'size': 17}, labelspacing=0.3, borderpad=0.3, borderaxespad=0.5)  
 
     plt.savefig('src/experiments/results/hist_p-values.png')
     plt.show()
     plt.close()
    
-def plot_proportion_box(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
+def plot_proportion_box(df, colors={'DSphinx': 'steelblue', 'Sphinx': 'darkorange'}):
     plt.figure(figsize=(12, 6))
 
     df = df[['TEST', 'Algo', 'PROPORTION']]
@@ -213,7 +213,8 @@ def plot_proportion_box(df, colors={'decentralized': 'steelblue', 'original': 'd
         rotation=-90,
         bbox=dict(facecolor='white', alpha=0.6, edgecolor='none')
     )
-    plt.legend(loc='lower right')
+    handles, labels = plt.gca().get_legend_handles_labels()
+    plt.legend(handles[::-1], labels[::-1], loc='lower right')
 
     sns.despine()
     plt.tight_layout()
@@ -221,14 +222,15 @@ def plot_proportion_box(df, colors={'decentralized': 'steelblue', 'original': 'd
     plt.show()
     plt.close()
 
-def plot_proportion_dot(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
+def plot_proportion_dot(df, colors={'DSphinx': 'steelblue', 'Sphinx': 'darkorange'}):
     plt.figure(figsize=(12, 6))
 
     d = df[['TEST','PROPORTION','Algo']].groupby(['TEST','Algo']).mean()
     d = d.reset_index()
-    g = sns.relplot(data=d, x='TEST', y='PROPORTION', hue='Algo', palette=colors, alpha=0.6, s=40)
+    g = sns.relplot(data=d, x='TEST', y='PROPORTION', hue='Algo', palette=colors, alpha=.6, s=40)
     g._legend.remove()
-    plt.legend(loc='lower right', fontsize=12)
+    handles, labels = plt.gca().get_legend_handles_labels()
+    plt.legend(handles[::-1], labels[::-1], loc='lower right', fontsize=12)
     plt.xticks(rotation=45, ha='right')
     plt.xlabel('')
     plt.ylabel('Proportion')
@@ -263,7 +265,7 @@ def plot_proportion_dot(df, colors={'decentralized': 'steelblue', 'original': 'd
     plt.show()
     plt.close()
 
-def plot_chisquare(df, colors={'decentralized': 'steelblue', 'original': 'darkorange'}):
+def plot_chisquare(df, colors={'DSphinx': 'steelblue', 'Sphinx': 'darkorange'}):
 
     plt.figure(figsize=(8, 5)) 
     size = len(df)/30
@@ -277,7 +279,7 @@ def plot_chisquare(df, colors={'decentralized': 'steelblue', 'original': 'darkor
         resultat.append([test, algo, chi_square[0], chi_square[1]])
         
     df = pd.DataFrame(resultat, columns=['TEST', 'Algo', 'STATISTIC', 'P-VALUE'])
-    ax = sns.barplot(data=df, x='TEST', y='P-VALUE', hue='Algo', palette=colors, alpha=0.7, gap=0, width=0.85)
+    ax = sns.barplot(data=df, x='TEST', y='P-VALUE', hue='Algo', palette=colors, alpha=.6, gap=0, width=0.85)
     plt.axhline(y=0.0001, color='red', linestyle=':', linewidth=1)
     plt.xticks(rotation=45, ha='right')
     plt.ylabel('P-value')
@@ -286,7 +288,7 @@ def plot_chisquare(df, colors={'decentralized': 'steelblue', 'original': 'darkor
 
     handles, labels = plt.gca().get_legend_handles_labels()
     threshold_line = Line2D([0], [0], color='red', linestyle=':', linewidth=1)
-    plt.legend(handles + [threshold_line], labels + ['threshold'], loc='lower right', fontsize=12)
+    plt.legend(handles[::-1] + [threshold_line], labels[::-1] + ['threshold'], loc='lower right', fontsize=12)
 
     sns.despine()
     plt.tight_layout()
@@ -296,8 +298,10 @@ def plot_chisquare(df, colors={'decentralized': 'steelblue', 'original': 'darkor
     plt.close()
 
 def plot_results(data_directory = 'src/experiments/data/'):
-    colors = {'decentralized': 'steelblue', 'original': 'darkorange'}
     df = gather_results(data_directory)
+    df = df.replace({'Algo': 'decentralized'}, 'DSphinx')
+    df = df.replace({'Algo': 'original'}, 'Sphinx')
+    colors = {'DSphinx': 'darkorange', 'Sphinx': 'darkblue'}
     plot_pvalue(df, colors)
     plot_hist_pvalues(df, colors)
     plot_proportion_box(df, colors)
