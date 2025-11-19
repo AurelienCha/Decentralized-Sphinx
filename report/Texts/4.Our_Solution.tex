@@ -118,7 +118,7 @@ As illustrated in Figure~\ref{fig:chunked_schema}, the construction proceeds lay
 % First layer
 The construction of the last layer, corresponding to the final mixnode, follows a slightly different procedure. 
 For a path of $m$ mixnodes, the destination chunk is first padded with $2(m-1)$ \emph{filler chunks}.  
-These filler chunk values are chosen so that, after the layer's masking points $\sG{i}{j}$ are applied, the last two chunks collapse to the identity point (depicted as a grey '0' block in Figure~\ref{fig:chunked_schema}).  
+These filler chunk values are computed so that, after the layer's masking points $\sG{i}{j}$ are applied, the last two chunks collapse to the identity point (depicted as a grey '0' block in Figure~\ref{fig:chunked_schema}).  
 This ensures that at each subsequent layer these two chunks can be safely truncated, preserving a fixed header size while maintaining the reversibility required for mixnode processing.
 
 Let $\Delta$ be the destination address share, $\s{i}$ the shared secret share for the $i^\text{th}$ mixnode in the path, and $G_j$ the $j^\text{th}$ generator.  
