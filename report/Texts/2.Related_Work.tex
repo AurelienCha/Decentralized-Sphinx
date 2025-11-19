@@ -1,25 +1,24 @@
 \section{Background and Related Work}\label{sec:related}
 \subsection{Decentralized Networks}
-Since Chaum's seminal work on untraceable email in 1981~\cite{chaum-mix}, there has been a great amount of research related to mixnet design~\cite{piotrowska2017loopix, van2015vuvuzela, kwon2020xrd, lazar2018karaoke, cottrell1995mixmaster, alexopoulos2017MCMIX, chaum2016cmix, chaum-mix, danezis2003mixminion}.
+Since Chaum’s seminal work on untraceable email in 1981~\cite{chaum-mix}, there has been a great amount of research related to mixnet design~\cite{piotrowska2017loopix, van2015vuvuzela, kwon2020xrd, lazar2018karaoke, cottrell1995mixmaster, alexopoulos2017MCMIX, chaum2016cmix, chaum-mix, danezis2003mixminion}. A mixnet is a network of servers, known as mixnodes, that delay and shuffle messages to prevent adversaries from correlating input and output traffic. Each packet traverses a sequence of mixnodes before reaching its final destination. Various network topologies have been proposed throughout the literature tin order to distribute trust among mixnodes as well as address scalability issues~\cite{diaz2010impact}. Figure~\ref{fig:mixnet} illustrates the stratified topology used in the Nym network~\cite{nym-network-whitepaper}.
 
-A mixnet is a network of servers, called mixnodes, organized into sequential layers. 
-Each packet traverses a fixed path of mixnodes. 
-It enters through an entry node, passes through a set of intermediate nodes, and exits via a final node. 
-Several topologies have been proposed throughout the literature. In Figure~\ref{fig:mixnet}, we illustrate a stratified topologie used in the Nym networ~\cite{nym-network-whitepaper}.
-Each timestamp (from $t_0$ to $t_6$) represents a point in time, showing how packets traverse the network and are reshuffled across layers.
-\newline
-
+Mixnets have been known to resist powerful adversaries typically called Global Passive Adversaries whose goal is to deanonymize users and trace message through traffic analysis techniques. Mixnets achieve this by mixing messages inside the mixnodes, thereby hiding the connection between incoming and outgoing packets. Equally important, however, is the use of a cryptographic packet format that prevents adversaries from tracing messages based on packet size or format. Messages in mixnets are first divided into fixed-size packets to prevent size-based correlation attacks. Each packet is then encrypted in multiple layers, together with the necessary routing information. This guarantees that every mixnode learns only its immediate predecessor and successor along the path.
 \begin{figure}%\begin{figure*}[t]
-    % \centering
-    \hspace{-9mm}
-    \resizebox{1.085\linewidth}{!}{\input{schema/mixnet.tex}}
-    \caption{
-        Step-by-step tracing of two clients communicating with services through a 3-layer mixnet with two mixnodes (large circles) at each layer.
-        In order to follow paths across each time step ($t_i$), packets are labeled with color and number, respectively indicating the client and message order.
-        Mixnodes reorder and route packets to the next layer.
-    }
-    \label{fig:mixnet}
+	% \centering
+	\hspace{-9mm}
+	\resizebox{1.085\linewidth}{!}{\input{schema/mixnet.tex}}
+	\caption{
+		Step-by-step tracing of two clients communicating with services through a 3-layer mixnet with two mixnodes (large circles) at each layer.
+		In order to follow paths across each time step ($t_i$), packets are labeled with color and number, respectively indicating the client and message order.
+	}
+	\label{fig:mixnet}
 \end{figure}
+
+The Lightning Network~\cite{poon2016bitcoin} is a payment-channel network that allow two users to send off-chain transactions without continusouly interacting with the Bitcoin blockchain. In this design, even users who do not have a direct channel may still transact by routing payments through intermediate peers. When a node (e.g., Alice) wants to pay another node (Bob) without having a direct channel, Alice first computes the shortest path to Bob and then encrypts the routing information multiple times, where each cryptographic layer corresponds to a hop along the path.
+
+Although the Lightning Network was initially introduced to address Bitcoin’s scalability, it also addresses the privacy issues introduced by this peer-to-peer network~\cite{sharma2022anonymity}. In particular adversaries should not be able to identify the sender or receiver of a transaction. Additionally an intermediate node should now know whether their predecessor is the transaction’s originator or whether their successor is the transaction's recipient. These properties are achieved by the Sphinx packet format~\cite{sphinx}.
+
+
 \subsection{Sphinx packet format}
 % Sphinx
 The \emph{Sphinx} packet format introduced by Danezis and Goldberg~\cite{sphinx} is a compact, provably secure, layer encrypted packet construction designed specifically for mix networks.  
