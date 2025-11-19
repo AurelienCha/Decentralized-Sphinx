@@ -185,13 +185,12 @@ The offset therefore blinds the checksum, preventing such correlation attacks wh
 
 
 \subsection{Mixnode}
+Upon receiving a packet, mixnode $i$ extracts the cryptographic element $\A{i}$, the integrity tag $\C{i}$, and the encrypted header chunks $\B{i}{}$.  
+As in the original Sphinx design, the mixnode stores previously seen $\A{i}$ values (until its private key is rotated).
+If the received $\A{i}$ matches a stored value, the packet is discarded to prevent replay attacks.  
+If the value is fresh, the packet is processed as illustrated in Figure~\ref{fig:mixnode_decryption}.
 
-% Secret sharing
-When receiving a packet, mixnode $i$ extracts the cryptographic element $\A{i}$, the integrity tag $\C{i}$, and the encrypted header chunks.  
-As in the original Sphinx design, if $\A{i}$ has already been seen by the mixnode, discard the packet. 
-The set of observed $\A{i}$ values is cleared whenever the node rotates its private key.
-
-Then the mixnode reconstructs its shared secret point $\S{i}$ using its private key \sk{i}, and maps it to shared integer \s{i} using Elligator inverse mapping:
+The mixnode first reconstructs its shared secret point $\S{i}$ using its private key \sk{i}, and then maps this point to the corresponding shared integer $\s{i}$ using the Elligator inverse mapping:
 \begin{equation}
 \begin{aligned}
     \S{i} &= \sk{i} \, \A{i} \\

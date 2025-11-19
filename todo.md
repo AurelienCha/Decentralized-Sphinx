@@ -18,10 +18,9 @@
 - Propose mitigiation for collusion vulnerability [ATTENTION]
 
 # TODO
-- Reformulation for adversary advantage. Don't like the lambda notation [IMPORTANT]
-- Anonymous github and cleaning code (e.g. client)
+- Reformulation for adversary advantage. Don't like the lambda notation
+- Anonymous github and cleaning code (e.g. client) [IMPORTANT]
 - Developper Elligator + ref
-- Faire ref à la Figure 4 (mixnode) [IMPORTANT]
 
 # Accesibility
 - Section 4 (and 5): Reread this section and check for parts that could be unclear to add extra explanations.
