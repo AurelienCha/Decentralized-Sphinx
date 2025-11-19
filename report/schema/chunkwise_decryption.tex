@@ -46,13 +46,13 @@
     \node (blind) [eq] at ($(A |- xor) + (0.25*\width, 0)$) {\ref{eq:update_alpha}};
     
     %% BOX
-    \node (mixnode) [draw=red, dashed, fit=(sk) (B'_) (check)] {};
-    \node[xshift=4pt, yshift=10pt] at (sk.north) {\color{red} \textbf{Mixnode $i$}};
+    \node (mixnode) [yshift=1pt, inner ysep=5pt, draw=red, dashed, fit=(sk) (B'_) (check)] {};
+    \node[xshift=6pt, yshift=12pt] at (sk.north) {\color{red} \textbf{Mixnode $i$}};
 
     %% OUTPUT
     \node (L) at ($(mixnode.south) - (0, 2.5*\height)$) {};
     \node[] (N') at (sk |- L.north) {Next};
-    \node[yshift=-7pt] at (sk |- L.north) {mixnode};
+    \node[yshift=-9pt] at (sk |- L.north) {mixnode};
     \node (A') [block=1] at (A.west |- L) {\A{i+1}};
     \node (B') [block=5] at (B.west |- L)  {\B{i+1}{}};
     \node (C') [block=1] at (C.west |- L) {\C{i+1}};
