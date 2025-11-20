@@ -28,10 +28,11 @@ Each mixnode along the path adds two chunks: one encoding its IP address and ano
 Without loss of generality, we consider paths of three mixnodes in this paper, resulting in a seven-chunks header (i.e. seven EC points), two per mixnode plus one additional chunk for the final destination's IP address.
 
 % Elligator
-Representing IP addresses as EC points requires a mapping between integers and elliptic curve points that is reversible.
-We define a mapping $\Map{}$ from integers to curve points and its inverse $\InverseMap{}$, such that $\InverseMap{\Map{x}} = x$ for any integer $x$.
-Traditional approaches map integers directly to the $x$-coordinate of a valid point, but such methods cover only about half of all possible integers.
-We instead employ the Elligator mapping~\cite{bernstein2013elligator}, which allows any integer to be mapped onto the curve, while producing outputs that are uniformly distributed and computationally indistinguishable from random curve points.
+Representing IP addresses as elliptic curve points requires a reversible mapping between integers and curve points.  
+We define a mapping $\Map{}$ from integers to points and its inverse $\InverseMap{}$ such that $\InverseMap{\Map{x}} = x$ for any integer $x$.  
+Classical encodings map an integer directly to the $x$-coordinate of a valid point, but it succeeds only for roughly half of integers and introduces structural bias. 
+To avoid this issue, we rely on the Elligator mapping~\cite{bernstein2013elligator}, which deterministically maps any integer to a curve point while ensuring that the resulting points are uniformly distributed and computationally indistinguishable from randomly sampled points.  
+This property allows IP addresses to blend seamlessly with other cryptographic elements of the Sphinx header.
 \newline
 
 % Transition with next subsections (the four main steps)

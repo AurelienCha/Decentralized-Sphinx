@@ -19,7 +19,6 @@
 
 # TODO
 - Reformulation for adversary advantage. Don't like the lambda notation
-- Developper Elligator + ref
 
 # Accesibility
 - Section 4 (and 5): Reread this section and check for parts that could be unclear to add extra explanations.
