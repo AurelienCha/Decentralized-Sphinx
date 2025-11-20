@@ -58,6 +58,9 @@ In summary, the protocol is organized into four main components, each described 
 		$n$     & header size\\
 		$\C{i}$     & integrity tag \\
 		$N_i$	& $i$-th ip address in the path \\
+		$\A{i}$ & cryptographic element \\
+		$\PK{i}$ & the public key of the $i^{th}$ hop \\
+		$x$ & the client's secret nonce \\
 		\hline
 	\end{tabular}
 	\caption{Notations}
@@ -108,7 +111,7 @@ according to Eq.~\ref{eq:shared_secret}, yielding a hop-by-hop key derivation.
 \right.
 \label{eq:shared_secret}
 \end{equation}
-where $x_1$ is the client's nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ mixnode, $n$ is the lagre prime subgroup order (i.e. $(n+1)\G{} = \G{}$), and $\InverseMap{}$ is the inverse Elligator, mapping EC point to integer.
+where $x_1$ is the client's nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ mixnode, $n$ is the large prime subgroup order (i.e. $(n+1)\G{} = \G{}$), and $\InverseMap{}$ is the inverse Elligator, mapping EC point to integer.
 The scalar $s_i$ provides as a per-hop pseudorandom update, ensuring that the cryptographic element $\A{i}$ remain unlinkable across layers.
 
 Next, the client encodes the routing information for each hop
