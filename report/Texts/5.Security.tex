@@ -249,7 +249,7 @@ However, the integrity's blinding offset $s_i G$ prevents trivially associating 
 Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the entire network.
 \newline
 
-\noindent\textbf{Case of corrupted hop.}  
+\noindent\textbf{Case of corrupted node.}  
 While an STTP alone reveals only unlinked integrity weights, when colluding with a corrupted node, it enables the adversary to \emph{associate those weights to a specific packets} observed at the corrupted node.  
 Concretely, a corrupted node computes its shared secret $s_i$ using the packet's cryptographic element $\alpha$, derive $h(s_i)$, and compare it against the set of weights disclosed by the colluding STTP.
 If the compromised STTP participated in the construction of this packet's header, a match occurs, allowing the adversary to recover the remaining weights associated to this packet across all the nodes in its path.
