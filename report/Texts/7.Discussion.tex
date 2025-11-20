@@ -10,21 +10,20 @@ At the same time, several conceptual and practical limitations remain.
 These limitations do not undermine the contributions of the present work, but they highlight important challenges that must be addressed before decentralized Sphinx-based systems can be deployed in real-world environments.
 
 \subsection{Limitations}
-
-\noindent\textbf{Collusion between STTPs and Mixnodes.} 
-Our security analysis considers several collusion scenarios involving corrupted STTPs and mixnodes.  
-The current scheme guarantees security as long as (i) at least one STTP remains honest and (ii) not all mixnodes on the path are compromised.  
-However, a subtle but significant limitation arises when an adversary simultaneously compromises a mixnode along the path and one of the STTPs that contributed to the packet construction.  
-In this case, the adversary can associate the integrity weights leaked by the STTP with the specific packet observed at the corrupted mixnode.  
-This capability enables integrity forgery and reduces unlinkability.  
-This vulnerability represents an important limitation of the current design.  
-Future work should investigate stronger homomorphic integrity mechanisms or alternative constructions of the checksum that do not reveal correlation between weights of honest mixnode, even under collusion.
-
 \noindent\textbf{Client-Centric Trust.} 
 While our construction successfully decentralizes the Sphinx header computation, our design remains \emph{client-centric} in several key aspects.  
-The client still selects the path of a message. A malicious client can still bias route selection to reduce the anonymity set of honest users, or orchestrate classical deanonymization attacks, including (N-1)-attacks, by carefully crafting routes.  
-Although our scheme removes trust from the header-construction process, it does not yet mitigate threats originating from malicious clients.
-Deciding on how to choose the the different nodes in the path will depend on the sepecefitie of the system. For example in the lightening network the path is chosen using Djikstra, in Nym the path is chosen uniformly. Therefore more work is needed to distribute path selection and key derivation to STTPs in a way that matches the systems specefics.
+The client still selects the path of a message. A malicious client can still bias route selection to reduce the anonymity set of honest users, or orchestrate classical deanonymization attacks, including (N-1)-attacks, by carefully crafting routes~\cite{oram2001peer}.  
+Although our scheme removes trust from the header-construction process, it does not yet mitigate threats originating from malicious clients. 
+Deciding how to choose the nodes in the path depends on the characteristics of the underlying system. For example, in the Lightning Network the path is selected using Dijkstra’s algorithm~\cite{poon2016bitcoin}, while in Nym every mixnode in the path is chosen uniformly from all the mixnodes in the corresponding layer~\cite{nym-network-whitepaper}. Therefore, in order to distribute path selection and key derivation to the STTPs, DSphinx must be aligned with the design of the specific system. Further work is thus required to ensure that path selection and key derivation are distributed to the STTPs in a manner that matches the requirements of each system.
+
+\noindent\textbf{Collusion between STTPs and Hops.} 
+Our security analysis considers several collusion scenarios involving corrupted STTPs and hopd.  
+The current scheme guarantees security as long as (i) at least one STTP remains honest and (ii) not all hops on the path are compromised.  
+However, a subtle but significant limitation arises when an adversary simultaneously compromises a hop along the path and one of the STTPs that contributed to the packet construction.  
+In this case, the adversary can associate the integrity weights leaked by the STTP with the specific packet observed at the corrupted hop.  
+This capability enables integrity forgery and reduces unlinkability.  
+This vulnerability represents an important limitation of the current design.  
+Future work should investigate stronger homomorphic integrity mechanisms or alternative constructions of the checksum that do not reveal correlation between weights of honest hops, even under collusion.
 
 \subsection{Future Work}
 
