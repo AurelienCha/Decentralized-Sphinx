@@ -16,14 +16,14 @@ The client still selects the path of a message. A malicious client can still bia
 Although our scheme removes trust from the header-construction process, it does not yet mitigate threats originating from malicious clients. 
 Deciding how to choose the nodes in the path depends on the characteristics of the underlying system. For example, in the Lightning Network the path is selected using Dijkstra’s algorithm~\cite{poon2016bitcoin}, while in Nym every mixnode in the path is chosen uniformly from all the mixnodes in the corresponding layer~\cite{nym-network-whitepaper}. Therefore, in order to distribute path selection and key derivation to the STTPs, DSphinx must be aligned with the design of the specific system. Further work is thus required to ensure that path selection and key derivation are distributed to the STTPs in a manner that matches the requirements of each system.
 
-\noindent\textbf{Collusion between STTPs and Hops.} 
-Our security analysis considers several collusion scenarios involving corrupted STTPs and hops.  
-The current scheme guarantees security as long as (i) at least one STTP remains honest and (ii) not all hops on the path are compromised.  
-However, a subtle but significant limitation arises when an adversary simultaneously compromises a hop along the path and one of the STTPs that contributed to the packet construction.  
-In this case, the adversary can associate the integrity weights leaked by the STTP with the specific packet observed at the corrupted hop.  
+\noindent\textbf{Collusion between STTPs and Network Nodes.} 
+Our security analysis considers several collusion scenarios involving corrupted STTPs and nodes.  
+The current scheme guarantees security as long as (i) at least one STTP remains honest and (ii) not all nodes on the path are compromised.  
+However, a subtle but significant limitation arises when an adversary simultaneously compromises a node along the path and one of the STTPs that contributed to the packet construction.  
+In this case, the adversary can associate the integrity weights leaked by the STTP with the specific packet observed at the corrupted node.  
 This capability enables integrity forgery and reduces unlinkability.  
 This vulnerability represents an important limitation of the current design.  
-Future work should investigate stronger homomorphic integrity mechanisms or alternative constructions of the checksum that do not reveal correlation between weights of honest hops, even under collusion.
+Future work should investigate stronger homomorphic integrity mechanisms or alternative constructions of the checksum that do not reveal correlation between weights of honest nodes, even under collusion.
 
 \subsection{Future Work}
 
@@ -36,7 +36,7 @@ Shifting these responsibilities from a single client to a collaborative set of S
 \noindent\textbf{Privacy-Preserving Policy Enforcement.} 
 A major challenge in bringing decentralized networks such as mixnets and peer-to-peer into practical use is the lack of accountability and policy-enforcement mechanisms that do not undermine privacy~\cite{oram2001peer}.
 Because Sphinx reveals almost no information to the different entities in the path, verifying client legitimacy or enforcing policy is extremely difficult.  
-We believe that decentralized packet construction opens a path toward generating privacy-preserving credentials or zero-knowledge proofs that can be validated at any hop without revealing routing or identity information.  
+We believe that decentralized packet construction opens a path toward generating privacy-preserving credentials or zero-knowledge proofs that can be validated at any node without revealing routing or identity information.  
 Developing such integration remains an open and promising research direction.
 % A potential approach involves STTPs dynamically updating credentials during header construction and mixnodes further updating them during packet processing.
 

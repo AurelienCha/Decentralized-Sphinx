@@ -2,8 +2,8 @@
 
 % Scheme and security
 In this paper, we presented DSphinx, a decentralized construction of Sphinx packet headers, in which the client outsources header generation to a set of semi-trusted third parties (STTPs). 
-Our scheme preserves the core cryptographic guarantees of Sphinx by ensuring that no coalition of STTPs, as long as at least one remains honest, can recover routing information or shared secrets. Through a game-based security analysis, we established integrity-forgery resistance and unlinkability under different adversarial models, and we identified the conditions under which collusion between STTPs and mixnodes may become problematic.
-Although this residual vulnerability could be mitigated by additional client-side computation, designing stronger homomorphic integrity mechanisms remains an open challenge. % TODO keep or add
+Our scheme preserves the core cryptographic guarantees of Sphinx by ensuring that no coalition of STTPs, as long as at least one remains honest, can recover routing information or shared secrets. Through a game-based security analysis, we established integrity-forgery resistance and unlinkability under different adversarial models, and we identified the conditions under which collusion between STTPs and netwrk nodes may become problematic.
+Although this residual vulnerability could be mitigated by additional client-side computation, designing stronger homomorphic integrity mechanisms remains an open challenge. 
 
 % Implementation
 To evaluate our construction, we implemented a Python prototype and applied the NIST SP-800-22 statistical test suite to the resulting headers.  
@@ -18,8 +18,8 @@ A major remaining step toward full decentralization is therefore the removal of 
 % Privacy-preserving policy enforcement
 Beyond decentralizing trust, our approach opens avenues for practical enhancements of anonymous communication systems.  
 In particular, distributed header construction may serve as a foundation for privacy-preserving policy enforcement or legitimacy verification at intermediate hops.  
-Such mechanisms could allow mixnodes to detect and discard unauthorized traffic early, reducing resource consumption and mitigating denial-of-service threats, without compromising user anonymity.
+Such mechanisms could allow network nodes to detect and discard unauthorized traffic early, reducing resource consumption and mitigating denial-of-service threats, without compromising user anonymity.
 
 % Final words
 In summary, our decentralized header construction preserves Sphinx's essential privacy and integrity guarantees while reducing reliance on a fully trusted client. 
-Although several challenges remain before reaching a fully decentralized and deployable design, we believe that our work provides a significant step toward more flexible, robust, and privacy-preserving mixnet architectures, and we hope it supports continued progress in secure anonymous communication systems.
+Although several challenges remain before reaching a fully decentralized and deployable design, we believe that our work provides a significant step toward more flexible, robust, and privacy-preserving decentralized networks such as mixnets, and we hope it supports continued progress in secure anonymous communication systems.
