@@ -176,7 +176,7 @@ The client bears most of the overhead introduced by STTPs, performing \bigO{p t}
 elliptic-curve multiplications and additions to split $m$ addresses and cryptographic secrets into $t$ shares.  
 For each mixnode, the client also computes one hash of the shared secret, one Elligator mapping to encode its IP, and one inverse mapping (Eq.~\ref{eq:shared_secret}), all of which scale linearly with $m$.
 
-For each packet layer, a STTP performs EC multiplications and additions (Eq.~\ref{eq:last_layer}, Eq.~\ref{eq:layer_i}), and hashes (Eq.~\ref{eq:integrity}) proportional to the number of chunks.  
+For each packet layer, a STTP performs EC multiplications and additions (Eq.~\ref{eq:preprocessing}, Eq.~\ref{eq:layer_i}), and hashes (Eq.~\ref{eq:integrity}) proportional to the number of chunks.  
 As both the number of chunks and layers increase linearly with $m$, the total computational cost per STTP scales quadratically as $\mathcal{O}(p^2)$.  
 However, since STTPs operate in parallel, their collective workload has limited impact on the overall latency.
 

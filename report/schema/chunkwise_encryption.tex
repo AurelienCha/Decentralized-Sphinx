@@ -24,7 +24,7 @@
     \node [zero_pad=1] at (4*\width, \y) {0}; 
     \node [zero_pad=1] at (5*\width, \y) {0}; 
     \vgap
-    \node (preprocess) [eq] at (7*\width, \y) {?};%\ref{eq:last_layer}}; 
+    \node (preprocess) [eq] at (7*\width, \y) {\ref{eq:preprocessing}}; 
     \node (phi) [block=6] at (0, \y) {$\phi$};
     \foreach \j in {1,...,5} {
         \draw[dotline] ($(phi.north west) + (\j*\width, 0)$) -- ($(phi.south west) + (\j*\width, 0)$) {}; 
@@ -181,7 +181,7 @@
     %% EQUATIONS %%
     % \color{unHighlight!75}
     % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=2*\width+30pt}]
-    %     ([xshift=4*\width] ip.north east) -- (B35.south east) node[midway, xshift=110pt]{Eq. \ref{eq:last_layer}};
+    %     ([xshift=4*\width] ip.north east) -- (B35.south east) node[midway, xshift=110pt]{Eq. \ref{eq:preprocessing}};
     % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=30pt}]
     %         (b35.north east) -- (zero2.south east) node[midway, xshift=70pt]{Eq. \ref{eq:layer_i} ($i=2$)};
     % \draw [decorate, very thin, decoration={brace, amplitude=3pt, raise=30pt}]

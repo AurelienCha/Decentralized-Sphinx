@@ -22,7 +22,7 @@
 \node (33) [draw, circle, minimum width=0.4cm] at ($(23.east) + (\width/1.5, 0)$) {};
 \node (exit) [draw, minimum height=2cm, minimum width=0.4cm] at ($(32.east) + (\width/1.5, 0)$) {};
 \node[align=center, font=\scriptsize, rotate=90] at (exit.center) {Exit gateway};
-\node (mixnet) [draw, densely dashed, color=gray, fit={(entry) (exit)}, rounded corners=5pt, inner sep=10pt, label=above:\text{\color{gray}Mixnet}] {};
+\node (mixnet) [draw, densely dashed, color=gray, fit={(entry) (exit)}, rounded corners=5pt, inner sep=10pt, label=above:\text{\color{gray}Decentralized Network}] {};
 
 
 \draw[-Latex, loop above] (client) to[out=-150,in=150,looseness=3] node[font=\small, midway, fill=white, inner sep=1pt] {(1)} (client);

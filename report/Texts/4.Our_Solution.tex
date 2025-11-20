@@ -102,76 +102,75 @@ The client aggregates these partial headers by performing chunk-wise elliptic-cu
 Once aggregation is complete, the client attaches $\A{1}$ and sends the finalized header, together with the encrypted payload, to the first mixnode on the path.
 
 
-\subsection{STTP}
+\subsection{Semi-Trusted Third Party}
 
-\input{schema/code_filler_chunks.tex}
-\input{schema/code_sttp.tex}
 
-Each STTP receives from the client a subset of the information required to construct the full Sphinx header.  
+Each semi-trusted third party (STTP) receives from the client only a subset of the information required to construct the full DSphinx header.
 It obtains a share of the destination address (EC point $\Delta$), and for every mixnode along the path:
 \begin{itemize}
     \item a share of its address (EC points $\N{i}$);
     \item a share of its shared secret (scalars $\s{i}$);
     \item the hash of its shared secret (scalars $\sHashed{i}$).
 \end{itemize}
-
 Using these shares, each STTP independently constructs a \emph{partial} encrypted header.  
-As illustrated in Figure~\ref{fig:chunked_schema}, the construction proceeds layer by layer in reverse order, beginning with the last mixnode in the path and iterating backward toward the first.
-\newline
+As illustrated in Figure~\ref{fig:chunked_schema}, the computation proceeds in two stages: (i) a preprocessing phase that generates filler chunks, and (ii) a layer-by-layer encryption phase applied in reverse order, from the last hop to the first.
 
-% First layer
-The construction of the last layer, corresponding to the final mixnode, follows a slightly different procedure. 
-For a path of $m$ mixnodes, the destination chunk is first padded with $2(m-1)$ \emph{filler chunks}.  
-These filler chunk values are computed so that, after the layer's masking points $\sG{i}{j}$ are applied, the last two chunks collapse to the identity point (depicted as a grey '0' block in Figure~\ref{fig:chunked_schema}).  
-This ensures that at each subsequent layer these two chunks can be safely truncated, preserving a fixed header size while maintaining the reversibility required for mixnode processing.
-
-Let $\Delta$ be the destination address share, $\s{i}$ the shared secret share for the $i^\text{th}$ mixnode in the path, and $G_j$ the $j^\text{th}$ generator.  
-The chunks for the last layer (assuming a 3-hop path) are computed as:
+% Preprocessing
+\noindent{\textbf{Preprocessing Phase.}}
+The preprocessing step prepares a vector of filler chunks $\phi$ whose role is to cancel out during the encryption of successive layers, thereby ensuring a constant header size and enabling reversibility at mixnodes. 
+Algorithm~\ref{algo:preprocessing} takes as input the share of the shared secrets ${s_i}$ and the generators ${G_j}$ associated with each chunk $j$, and outputs $n-1$ filler chunks, where $n = 2m+1$ is the header size for a path of length $m$.
+These filler chunks are given by (\ref{eq:preprocessing}) as illustrated in Figure~\ref{fig:chunked_schema} for the case where $m=3$.
+These filler chunks are computed according to (\ref{eq:preprocessing}), and their structure for the case $m=3$ is illustrated in Figure~\ref{fig:chunked_schema}.
+These values ensure that after each encryption layer, the last two chunks evaluate to the identity element and can therefore be safely truncated.
 \begin{equation}
-\B{3}{} \quad \left\{ \quad
-\begin{aligned}
-    \B{3}{1} &= \Delta       + \sG{3}{1} \\
-    \B{3}{2} &= - (\sG{2}{4} + \sG{1}{6}) \\
-    \B{3}{3} &= - (\sG{2}{5} + \sG{1}{7}) \\
-    \B{3}{4} &= - \sG{2}{6} \\
-    \B{3}{5} &= - \sG{2}{7} \\
-\end{aligned}
-\right.
-\label{eq:last_layer}
+    \phi_j = - \sum_{i=1}^{m} s_i\, G_{\,n+j-2i}, \qquad 1 \le j \le n-1 .
+\label{eq:preprocessing}
 \end{equation}
 
-% Non-first layers
-Subsequent layers ($ i = 2 $ and $ i = 1 $) are computed with Eq. \ref{eq:layer_i} where \N{i+1} represents next hop address, 
-and \C{i+1} is the integrity tag from previous layer.
-Once the first layer is completed, the STTP outputs the resulting partial header to the client.
-\begin{equation}
-\B{i}{} \quad \left\{ \quad
-\begin{aligned}
-    \B{i}{1} &= \N{i+1} + \sG{i}{1}\\
-    \B{i}{2} &= \C{i+1} + \sG{i}{2} \\
-    \B{i}{3} &= \B{(i+1,}{1)} + \sG{i}{3} \\
-    \B{i}{4} &= \B{(i+1,}{2)} + \sG{i}{4} \\
-    \B{i}{5} &= \B{(i+1,}{3)} + \sG{i}{5} \\
-\end{aligned}
-\right.
-\label{eq:layer_i}
-\end{equation}
+\begin{algorithm}%[t]
+\input{schema/code_filler_chunks.tex}
+\label{algo:preprocessing}
+\end{algorithm}
+
+
+% Layers
+\noindent{\textbf{Layered Encryption Phase.}}
+After preprocessing, the STTP initializes the header by appending the destination share with the filler chunks, yielding a header of $n$ chunks.
+Then, proceeding from hop $i = m$ down to $i = 1$, the STTP performs the following operations (Alg.~\ref{algo:sttp}):
+\begin{enumerate}
+    \item \textbf{Encrypt each chunk}: 
+    Every chunk $j$ is encrypted with $\sG{i}{j}$ as:
+    \begin{equation}
+    H_{ij} = H_{(i+1,j)} + \sG{i}{j}.
+    \label{eq:layer_i}
+    \end{equation}
+    Thus last two chunks whose result in identity elements and are safely removed.
+    \item \textbf{Compute the integrity tag:} 
+    The remaining chunks $\B{i}{1},\ldots,\B{i}{n-2}$ are used to compute the integrity tag as:% (\ref{eq:integrity}):
+    \begin{equation}
+        \C{i} = \sG{i}{} + \sum_{j=1}^{n-2} \big( \hashIt{\sHashed{i}}{j} \, \B{i}{j} \big)
+        \label{eq:integrity}
+    \end{equation}
+    \item \textbf{Prepend hop information}:
+    The hop address $\N{i}$ and the integrity tag $\C{i}$ are prepended to $H$, producing a new header of $n$ chunks:
+\end{enumerate}
+After processing the first hop, the STTP outputs the resulting encrypted header, which constitutes its partial contribution to the final DSphinx header.
+
+\begin{algorithm}%[t]
+    \input{schema/code_sttp.tex}
+    \label{algo:sttp}
+\end{algorithm}
 
 % Integrity
-Because the integrity mechanism in our decentralized design must be homomorphic, the integrity tag is computed as a pseudorandom weighted checksum.
-At each layer, the integrity tag which consists in a weighted sum of the chunks, offset by a secret point derived from the mixnode's shared secret, as shown in Eq.~\ref{eq:integrity}:
-\begin{equation}
-\C{i} = \sG{i}{} + \sum_{j=1}^{5} \big( \hashIt{\sHashed{i}}{j} \, \B{i}{j} \big)
-\label{eq:integrity}
-\end{equation}
-where \hashIt{\sHashed{i}}{j} denotes hashing $j$ times \sHashed{i} which is the hash of the $i^{th}$ mixnode's full shared secret.
-
-This construction combines two elements; a \emph{pseudo-random weighted sum}, and a \emph{blinding offset} term $s_i G$.  
-The pseudo-random weights $\hashIt{\sHashed{i}}{j}$ prevent adversaries from modifying chunks while preserving the total sum.  
-Without these weights, an attacker could add a random point $P$ to one chunk and subtract $P$ from another, keeping the overall sum unchanged and evading the integrity check.
-The offset term $\sG{i}{}$ ensures privacy against corrupted STTPs.  
-Since STTPs know the weights, omitting this offset would allow them to potentially link some incoming and outgoing mixnode's packets by simply verifying integrity tags.
-The offset therefore blinds the checksum, preventing such correlation attacks while preserving homomorphism.
+\noindent{\textbf{Integrity Mechanism.}}
+The integrity construction in \eqref{eq:integrity} combines two essential components:
+\begin{itemize}
+\item a \emph{pseudorandom weighted sum} where weights are derived from $\sigma_i$ through iterated hashing;
+\item a \emph{blinding offset} term $s_i G$, ensuring that integrity tags remain unlinkable to STTPs that know the weights.
+\end{itemize}
+The pseudorandom weights prevent adversaries from introducing compensating modifications across chunks that preserve the checksum.
+The blinding offset prevents STTPs from using their knowledge of the weights to correlate integrity tags across packets.
+This design preserves homomorphism while ensuring unlinkability and integrity in the presence of partially corrupted STTPs.
 
 \begin{figure}%[H]
     \centering
@@ -233,7 +232,7 @@ As specified in Eq.~\ref{eq:shared_secret}, the mixnode applies the same update 
 \end{equation}
 Finally, the mixnode forwards the updated header $(\A{i+1}, \C{i+1}, \B{i+1}{})$ to the next mixnode in the path.
 
-\begin{figure}%[H]
+\begin{figure}[b]
     \centering
     \resizebox{1.\linewidth}{!}{\input{schema/chunkwise_decryption.tex}}
     \caption{Header processing at mixnode $i$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
