@@ -193,10 +193,10 @@ Determining the precise number needed to meet a desired trust threshold is left 
 A direct comparison with the original Sphinx protocol is not entirely meaningful, as some primitives differ (e.g. Elligator).  
 Nevertheless, from a performance perspective, our protocol is expected to be slower than the original Sphinx header construction.  
 The main contributing factors are: (1) the extensive use of elliptic curve arithmetic, in contrast to the lightweight hashing and XOR operations in Sphinx; and (2) the distributed nature of the header construction, which introduces communication latency.  
-However, the computational load on individual mixnodes remains comparable to Sphinx, and most of the added overhead is mitigated by the parallel execution of STTPs.  
+However, the computational load on individual hops in the paths remains comparable to Sphinx, and most of the added overhead is mitigated by the parallel execution of STTPs.  
 
-Given that mixnets inherently trade latency for privacy, the additional cost introduced by our decentralized design is reasonable.  
-In return, it provides stronger flexibility for decentralized anonymous communication.
+Given that decentralized networks such as mixnets and Lightening inherently trade latency for privacy, the additional cost introduced by our decentralized design is reasonable.  
+In return, it provides stronger flexibility for decentralized networks.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
