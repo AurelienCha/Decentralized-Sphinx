@@ -15,7 +15,7 @@ This guarantees that every mixnode learns only its immediate predecessor and suc
 
 The Lightning Network~\cite{poon2016bitcoin} is a payment-channel network that allow two users to send off-chain transactions without continusouly interacting with the Bitcoin blockchain. 
 In this design, even users who do not have a direct channel may still transact by routing payments through intermediate peers. 
-When a node (Alice) wants to pay another node (Bob) without having a direct channel, Alice first computes the shortest path to Bob and then encrypts the routing information multiple times, where each cryptographic layer corresponds to a hop along the path.
+When a node wants to pay another node without having a direct channel, the transaction originator first computes the shortest path to the recipient and then encrypts the routing information multiple times, where each cryptographic layer corresponds to a hop along the path.
 Although the Lightning Network was initially introduced to address Bitcoin's scalability, it also addresses the privacy issues introduced by this peer-to-peer network~\cite{sharma2022anonymity}. 
 In particular adversaries should not be able to identify the sender or receiver of a transaction. 
 Additionally an intermediate node should not know whether their predecessor is the transaction's originator or whether their successor is the transaction's recipient. 
