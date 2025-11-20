@@ -99,7 +99,7 @@ G_j = 8 \cdot \Map{\hash{\text{timestamp}} + j}.
 
 To send a message to a chosen destination, the client first selects a random path through the mixnet and generates an initial nonce.  
 Using this nonce and the public keys of the mixnodes along the route, the client derives a sequence of shared secrets \((\s{1}, \s{2}, \s{3})\)
-according to Eq.~\ref{eq:shared_secret}, yielding a hop-by-hop key derivation.
+according to \eqref{eq:shared_secret}, yielding a hop-by-hop key derivation.
 \begin{equation}
 (\s{1}, \s{2}, \s{3}) \quad \left\{ \quad
 \begin{aligned}
@@ -141,8 +141,8 @@ As illustrated in Figure~\ref{fig:chunked_schema}, the computation proceeds in t
 \noindent{\textbf{Preprocessing Phase.}}
 The preprocessing step prepares a vector of filler chunks $\phi$ whose role is to cancel out during the encryption of successive layers, thereby ensuring a constant header size and enabling reversibility at mixnodes. 
 Algorithm~\ref{algo:preprocessing} takes as input the share of the shared secrets ${s_i}$ and the generators ${G_j}$ associated with each chunk $j$, and outputs $n-1$ filler chunks, where $n = 2m+1$ is the header size for a path of length $m$.
-These filler chunks are given by (\ref{eq:preprocessing}) as illustrated in Figure~\ref{fig:chunked_schema} for the case where $m=3$.
-These filler chunks are computed according to (\ref{eq:preprocessing}), and their structure for the case $m=3$ is illustrated in Figure~\ref{fig:chunked_schema}.
+These filler chunks are given by \eqref{eq:preprocessing} as illustrated in Figure~\ref{fig:chunked_schema} for the case where $m=3$.
+These filler chunks are computed according to \eqref{eq:preprocessing}, and their structure for the case $m=3$ is illustrated in Figure~\ref{fig:chunked_schema}.
 These values ensure that after each encryption layer, the last two chunks evaluate to the identity element and can therefore be safely truncated.
 \newline
 \begin{equation}
@@ -168,7 +168,7 @@ Then, proceeding from hop $i = m$ down to $i = 1$, the STTP performs the followi
     \end{equation}
     Thus last two chunks whose result in identity elements and are safely removed.
     \item \textbf{Compute the integrity tag:} 
-    The remaining chunks $\B{i}{1},\ldots,\B{i}{n-2}$ are used to compute the integrity tag as:% (\ref{eq:integrity}):
+    The remaining chunks $\B{i}{1},\ldots,\B{i}{n-2}$ are used to compute the integrity tag as:
     \begin{equation}
         \C{i} = \sG{i}{} + \sum_{j=1}^{n-2} \big( \hashIt{\sHashed{i}}{j} \, \B{i}{j} \big)
         \label{eq:integrity}
@@ -248,7 +248,7 @@ The second chunk, $\BB{i}{2}$, becomes the integrity tag for the next hop ($\C{i
 The remaining five chunks constitute the next encrypted routing information $(\B{i+1}{})$.
 
 % Update Alpha
-As specified in Eq.~\ref{eq:shared_secret}, the mixnode applies the same update rule as the client to compute the next cryptographic element $\A{i+1}$:
+As specified in \eqref{eq:shared_secret}, the mixnode applies the same update rule as the client to compute the next cryptographic element $\A{i+1}$:
 \begin{equation}
 \A{i+1} = s_i \, \A{i}
 \label{eq:update_alpha}
