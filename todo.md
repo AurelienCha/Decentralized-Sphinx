@@ -27,3 +27,4 @@
 - Generator set {G_j} should become generator list [G_j]
 - Table de variabes (debut de section 4)
 - Propose mitigiation for collusion vulnerability [ATTENTION] (would need to adapt some sentences in discussion and conclusion)
+- user -> client
