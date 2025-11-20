@@ -1,0 +1,20 @@
+
+\begin{algorithm}%[t]
+\caption{Filler Chunks Construction}
+\label{algo:preprocessing}
+\begin{algorithmic}[1]
+
+\State $m \gets pathLength$               {\color{unHighlight}\Comment{Path length}}
+\State $n \gets 2m + 1$                   {\color{unHighlight}\Comment{header size}}
+
+\State $\phi \gets$ list of ($n-1$) identity points  {\color{unHighlight}\Comment{Initialization}}
+\For{$i = m$ \textbf{down to} $1$} 
+    \For{$j = 2(m-i+1)$ \textbf{down to} $n$} 
+        \State $x \gets 2i+j-n$
+        \State $\phi[x] \gets \phi[x]  - \sG{i}{j}$
+    \EndFor
+\EndFor
+\State \Return $\phi$
+
+\end{algorithmic}
+\end{algorithm}

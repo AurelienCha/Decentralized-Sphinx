@@ -1,0 +1,35 @@
+\begin{algorithm}%[t]
+\caption{STTP Partial Header Construction}
+\label{algo:sttp}
+\begin{algorithmic}[1]
+
+% \Statex \textbf{Input:}
+% \Statex \hspace{\algorithmicindent}$\Delta$ \hspace{1em}share of destination address (EC point)
+% \Statex \hspace{\algorithmicindent}$\{N_i\}$ \hspace{1em}shares of mixnode addresses
+% \Statex \hspace{\algorithmicindent}$\{s_i\}$ \hspace{1em}shares of shared secrets (scalars)
+% \Statex \hspace{\algorithmicindent}$\{\sHashed{i}\}$ \hspace{1em}hashes of full shared secrets
+% \Statex \hspace{\algorithmicindent}$\{G_j\}$ \hspace{1em}chunk generators
+% \Statex \hspace{\algorithmicindent}$\phi$ \hspace{1em}preprocessing (filler) chunks
+% \Statex \textbf{Output:}
+% \Statex \hspace{\algorithmicindent}$H$ \hspace{1em}partial encrypted header
+% \Statex % blank separation line
+
+\State $m \gets pathLength$               {\color{unHighlight}\Comment{Path length}}
+\State $n \gets 2m + 1$                   {\color{unHighlight}\Comment{header size}}
+\State $H \gets [\,\D{} \,\|\, \phi\,]$   {\color{unHighlight}\Comment{$\phi$ from Algo~\ref{algo:preprocessing}}}
+
+\For{$i = m$ \textbf{down to} $1$}             {\color{unHighlight}\Comment{layer ecnryption}}
+    \For{$j = 1$ \textbf{to} $n$}
+        \State $H[j] \gets H[j] + \sG{i}{j}$
+    \EndFor
+
+    \State $H \gets H[1 : n-2]$  {\color{unHighlight}\Comment{Truncate identity elements}}
+    \State $\C{i} \gets checksum(H, \s{i}, \sHashed{i})$   {\color{unHighlight}\Comment{Equation (\ref{eq:integrity})}}
+
+    \State $H \gets [\,\N{i} \,\|\, \C{i} \,\|\, H\,]$  {\color{unHighlight}\Comment{Prepend next hop}}
+\EndFor
+
+\State \Return $H$
+
+\end{algorithmic}
+\end{algorithm}
