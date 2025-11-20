@@ -1,4 +1,5 @@
 \section{Background and Related Work}\label{sec:related}
+
 \subsection{Decentralized Networks}
 Since Chaum’s seminal work on untraceable email in 1981~\cite{chaum-mix}, there has been a great amount of research related to mixnet design~\cite{piotrowska2017loopix, van2015vuvuzela, kwon2020xrd, lazar2018karaoke, cottrell1995mixmaster, alexopoulos2017MCMIX, chaum2016cmix, chaum-mix, danezis2003mixminion}. 
 A mixnet is a network of servers, known as mixnodes, that delay and shuffle messages to prevent adversaries from correlating input and output traffic. 
@@ -11,16 +12,6 @@ Equally important is the use of a cryptographic packet format that prevents adve
 Messages in mixnets are first divided into fixed-size packets to prevent size-based correlation attacks. 
 Each packet is then encrypted in multiple layers, together with the necessary routing information. 
 This guarantees that every mixnode learns only its immediate predecessor and successor along the path.
-\begin{figure}%\begin{figure*}[t]
-	% \centering
-	\hspace{-9mm}
-	\resizebox{1.085\linewidth}{!}{\input{schema/mixnet.tex}}
-	\caption{
-		Step-by-step tracing of two clients communicating with services through a 3-layer mixnet with two mixnodes (large circles) at each layer.
-		In order to follow paths across each time step ($t_i$), packets are labeled with color and number, respectively indicating the client and message order.
-	}
-	\label{fig:mixnet}
-\end{figure}
 
 The Lightning Network~\cite{poon2016bitcoin} is a payment-channel network that allow two users to send off-chain transactions without continusouly interacting with the Bitcoin blockchain. 
 In this design, even users who do not have a direct channel may still transact by routing payments through intermediate peers. 
@@ -30,6 +21,17 @@ In particular adversaries should not be able to identify the sender or receiver 
 Additionally an intermediate node should not know whether their predecessor is the transaction's originator or whether their successor is the transaction's recipient. 
 
 These privacy guarantees, both in mixnets and in the Lightening Network, are achieved by the Sphinx packet format~\cite{sphinx}.
+
+\begin{figure}[t]
+	% \centering
+	\hspace{-9mm}
+	\resizebox{1.085\linewidth}{!}{\input{schema/mixnet.tex}}
+	\caption{
+		Step-by-step tracing of two clients communicating with services through a 3-layer mixnet with two mixnodes (large circles) at each layer.
+		In order to follow paths across each time step ($t_i$), packets are labeled with color and number, respectively indicating the client and message order.
+	}
+	\label{fig:mixnet}
+\end{figure}
 
 
 \subsection{Sphinx packet format}
