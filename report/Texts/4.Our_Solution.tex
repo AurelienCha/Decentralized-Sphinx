@@ -82,8 +82,7 @@ according to Eq.~\ref{eq:shared_secret}, yielding a hop-by-hop key derivation.
 (\s{1}, \s{2}, \s{3}) \quad \left\{ \quad
 \begin{aligned}
     \A{i}    &= x_i \, G, \\
-    \S{i}    &= x_i \, \PK{i}, \\
-    \s{i}    &= \InverseMap{\S{i}}, \\
+    \s{i}    &= \InverseMap{x_i \, \PK{i}}, \\
     x_{i+1}  &= s_i \, x_i \quad (\text{mod}\ n),
 \end{aligned}
 \right.
@@ -114,6 +113,7 @@ It obtains a share of the destination address (EC point $\Delta$), and for every
 \end{itemize}
 Using these shares, each STTP independently constructs a \emph{partial} encrypted header.  
 As illustrated in Figure~\ref{fig:chunked_schema}, the computation proceeds in two stages: (i) a preprocessing phase that generates filler chunks, and (ii) a layer-by-layer encryption phase applied in reverse order, from the last hop to the first.
+\newline
 
 % Preprocessing
 \noindent{\textbf{Preprocessing Phase.}}
@@ -122,6 +122,7 @@ Algorithm~\ref{algo:preprocessing} takes as input the share of the shared secret
 These filler chunks are given by (\ref{eq:preprocessing}) as illustrated in Figure~\ref{fig:chunked_schema} for the case where $m=3$.
 These filler chunks are computed according to (\ref{eq:preprocessing}), and their structure for the case $m=3$ is illustrated in Figure~\ref{fig:chunked_schema}.
 These values ensure that after each encryption layer, the last two chunks evaluate to the identity element and can therefore be safely truncated.
+\newline
 \begin{equation}
     \phi_j = - \sum_{i=1}^{m} s_i\, G_{\,n+j-2i}, \qquad 1 \le j \le n-1 .
 \label{eq:preprocessing}
@@ -131,7 +132,6 @@ These values ensure that after each encryption layer, the last two chunks evalua
 \input{schema/code_filler_chunks.tex}
 \label{algo:preprocessing}
 \end{algorithm}
-
 
 % Layers
 \noindent{\textbf{Layered Encryption Phase.}}
@@ -155,6 +155,7 @@ Then, proceeding from hop $i = m$ down to $i = 1$, the STTP performs the followi
     The hop address $\N{i}$ and the integrity tag $\C{i}$ are prepended to $H$, producing a new header of $n$ chunks:
 \end{enumerate}
 After processing the first hop, the STTP outputs the resulting encrypted header, which constitutes its partial contribution to the final DSphinx header.
+\newline
 
 \begin{algorithm}%[t]
     \input{schema/code_sttp.tex}
