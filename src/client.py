@@ -92,7 +92,7 @@ class Client:
             Header: The Sphinx header
         """
         # 1) Generate the chain of shared secrets 
-        shared_secrets = [point_to_hash(S) for S in self.generate_shared_secrets(x, path)]
+        shared_secrets = self.generate_shared_secrets(x, path)
         n0, *path = path # first node don't need further processing since it is send in 'cleartext' (first hop)
 
         # 2) Spliting information (Destination IPs, Node's IPs, Shared secret)
@@ -126,13 +126,13 @@ class Client:
         def _compute_secret(x, PK):
             alpha = x * G 
             S = x * PK  
-            b = truncated_hash((alpha.y() + S.y()).to_bytes(32)) # TODO better randomization ?
-            return (x * b, S)
+            s = point_to_hash(S)
+            return ((x * s) % N, S, s)
         
         PK = [self.mixnet[ip].get_key() for ip in path]
 
-        x1, S1 = _compute_secret(x, PK[0])
-        x2, S2 = _compute_secret(x1, PK[1])
-        _, S3 = _compute_secret(x2, PK[2])
+        x1, S1, s1 = _compute_secret(x, PK[0])
+        x2, S2, s2 = _compute_secret(x1, PK[1])
+        _, S3, s3 = _compute_secret(x2, PK[2])
 
-        return S1, S2, S3
+        return [s1, s2, s3]

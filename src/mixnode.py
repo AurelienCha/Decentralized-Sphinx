@@ -60,7 +60,7 @@ class Mixnode:
             beta[i] = beta[i] - s * G_i[i]
 
         # 5) Update cryptographic element (α)
-        alpha = truncated_hash((alpha.y() + S.y()).to_bytes(32)) * alpha
+        alpha = s * alpha
 
         return Header(
             n = point_to_hash(beta[0]) % pow(2,128), 
