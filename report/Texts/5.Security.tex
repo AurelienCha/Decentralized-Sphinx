@@ -11,24 +11,24 @@ We first analyze the unlinkability and integrity forgery resistance in absence o
 \subsection{Unlinkability}\label{sec:unlinkability}
 
 To argue about sender-receiver unlinkability, we assume that an adversary cannot link a sender to its recipient without retracing the entire communication path.  
-Thus, the problem reduces to proving unlinkability at the mixnode level, meaning that an adversary cannot determine which outgoing packet corresponds to a given incoming packet at a mixnode.
+Thus, the problem reduces to proving unlinkability at the node level, meaning that an adversary cannot determine which outgoing packet corresponds to a given incoming packet.
 
 We formalize unlinkability using a standard indistinguishability game between a challenger $\mathcal{C}$ and an adversary $\mathcal{A}$.  
-Intuitively, the adversary observes a set of packets entering and leaving a mixnode and attempts to determine which outgoing packet corresponds to a given incoming packet.
+Intuitively, the adversary observes a set of packets entering and leaving a node and attempts to determine which outgoing packet corresponds to a given incoming packet.
 \newline
 
 \noindent\textbf{Game Definition:}
 \begin{enumerate}
 \item \textbf{Setup.}
-  The challenger generates mixnode secret keys and public system parameters $(G_1, \dots, G_7)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
+  The challenger generates the node's secret keys and public system parameters $(G_1, \dots, G_7)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
   Recall that generators are said to be independent if no participant knows any scalar relations among them.
 
   \item \textbf{Oracle.}  
-  The adversary is granted access to an oracle, which on input of a nonce $x$ and routing path $\pi = (N_1, N_2, N_3, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the mixnode.
+  The adversary is granted access to an oracle, which on input of a nounce $x$ and routing path $\pi = (N_1, N_2, N_3, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the node.
 
   \item \textbf{Challenge.}
   The adversary submits two distinct headers $(\alpha_0, \beta_0, \gamma_0)$ and $(\alpha_1, \beta_1, \gamma_1)$ that were not obtained during oracle queries.  
-  The challenger selects a random bit $b \in \{0,1\}$ and processes $(\alpha_b, \beta_b, \gamma_b)$ through the mixnode, obtaining $(\alpha'_b, \beta'_b, \gamma'_b)$, which is then given to the adversary.
+  The challenger selects a random bit $b \in \{0,1\}$ and processes $(\alpha_b, \beta_b, \gamma_b)$ through the node, obtaining $(\alpha'_b, \beta'_b, \gamma'_b)$, which is then given to the adversary.
 
   \item \textbf{Guess.}
   The adversary outputs a bit $b' \in \{0,1\}$, attempting to guess which of the two input headers corresponds to the given output header.  
@@ -51,8 +51,8 @@ We analyze the possible cases below.
 \newline
 
 \noindent{\textbf{Case 1: Linking via $\boldsymbol\alpha$.}}  
-Mixnodes reject packets with duplicate $\alpha$ values, preventing trivial replay-based linkage.  
-The only relation between $\alpha$ and its processed form $\alpha'$ is $\alpha' = s \alpha$, where $s$ is the mixnode's shared secret.  
+Network nodes reject packets with duplicate $\alpha$ values, preventing trivial replay-based linkage.  
+The only relation between $\alpha$ and its processed form $\alpha'$ is $\alpha' = s \alpha$, where $s$ is the node's shared secret.  
 If $\mathcal{A}$ can link headers via $\alpha$, it can compute $s$ such that $\alpha' = s \alpha$, thereby solving an instance of the Elliptic Curve Discrete Logarithm Problem (ECDLP).
 \newline
 
@@ -68,7 +68,7 @@ $$
 \beta_j - \beta'_j = s G_j, \quad \forall j \in \{1, \dots, 7\}.
 $$
 
-To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used among all chunks, or that a fixed scalar relationship is preserved between two generators $G_j$ and $G_{j'}$ (i.e. $z$ such that $G_j = z G_{j'}$).
+To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used amoung all chunks, or that a fixed scalar relationship is preserved between two generators $G_j$ and $G_{j'}$ (i.e. $z$ such that $G_j = z G_{j'}$).
 Therefore, if generators are independent, then the adversary's task reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$.
 \newline
 
@@ -116,14 +116,14 @@ Therefore, we can conclude that the proposed scheme provides unlinkability.
 % This construction combines two elements: (i) a \emph{weighted sum}, and (ii) a blinding \emph{offset} term $s_i G$.  
 % \newline
 
-Integrity-forgery resistance requires that an adversary cannot produce a modified header that is accepted by the next mixnode.  
+Integrity-forgery resistance requires that an adversary cannot produce a modified header that is accepted by an honest node.  
 We formalize this property as a game in which the adversary attempts to forge a new header that passes integrity verification.
 \newline
 
 \noindent\textbf{Game Definition:}
 \begin{enumerate}
 \item \textbf{Setup.}
-  The challenger generates mixnode secret keys and public system parameters $(G_1, \dots, G_7)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
+  The challenger generates node's secret keys and public system parameters $(G_1, \dots, G_7)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
 
   \item \textbf{Oracle.}  
   The adversary is granted access to an oracle, which outputs a valid header $(\alpha, \beta, \gamma)$.
@@ -190,8 +190,8 @@ Since these weights are derived from one-time shared secrets through iterated ha
 \label{replay_resistance}\label{wrap_resistance}
 The original Sphinx article~\cite{sphinx} takes \emph{replay resistance}
 and \emph{wrap resistance} into account.
-\emph{Wrap resistance} means an adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being processed by some mixnode $i'$, the packet becomes $(\alpha, \beta, \gamma)$ again.  
-\emph{Replay resistance} is inherited from the original Sphinx construction since mixnodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).
+\emph{Wrap resistance} means an adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being processed by any node $i'$, the packet becomes $(\alpha, \beta, \gamma)$ again.  
+\emph{Replay resistance} is inherited from the original Sphinx construction since the nodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).
 Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (and consequently $\beta$) while still producing a consistent integrity tag $\gamma$. % which directly reduces to the problem of forging integrity.  
 Similarly, \emph{wrap resistance} also requires producing a modified header that passes integrity verification.
 Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integrity forgery resistance}. 
@@ -212,7 +212,7 @@ Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integ
 
 % \begin{itemize}
 %   \item Malicious mixnode modify packet to redirect to another mixnode => Need integrity forgery
-%   \item Malicious client manage to compute a packet that cycle on its route => probably 'impossible' but how to prove it ?! 
+%   \item Malicious client manage to compute a packet that cycle on its route => probably 'impossible' but how to proove it ?! 
 %   He needs to have the filler chunks to sum up to get a precise point. 
 %   In theory, it is possible for one chunk but all the chunks, and on multiple layers seems highly impossible.
 %   In addition, despite being able to change the shared secrets using a different secret x or different mixnodes, he cannot choose a specific (because of Elligator that map a shared point to a shared integer)
@@ -244,32 +244,33 @@ Among the set of $T$ semi-trusted third parties used to build an header, an STTP
 
 Since the first two items are additive shares, they provide no information unless all $T$ shares are collected.
 Hence, as long as at least one of the $T$ STTP remains honest, neither destinations nor shared secrets can be reconstructed.
-The only additional information available to an adversary colluding with an STTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags for all mixnodes in the path.  
+The only additional information available to an adversary colluding with an STTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags for all the nodes in the path.  
 However, the integrity's blinding offset $s_i G$ prevents trivially associating weights to specific packets.
-Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the entire network. 
+Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the entire network.
 \newline
 
 \noindent\textbf{Case of corrupted hop.}  
-While an STTP alone reveals only unlinked integrity weights, when colluding with a corrupted mixnode, it enables the adversary to \emph{associate those weights to a specific packets} observed at the corrupted mixnode.  
-Concretely, a corrupted mixnode computes its shared secret $s_i$ using the packet's cryptographic element $\alpha$, derive $h(s_i)$, and compare it against the set of weights disclosed by the colluding STTP.
-If the compromised STTP participated in the construction of this packet's header, a match occurs, allowing the adversary to recover the remaining weights associated to this packet across all mixnodes along its path.
+While an STTP alone reveals only unlinked integrity weights, when colluding with a corrupted node, it enables the adversary to \emph{associate those weights to a specific packets} observed at the corrupted node.  
+Concretely, a corrupted node computes its shared secret $s_i$ using the packet's cryptographic element $\alpha$, derive $h(s_i)$, and compare it against the set of weights disclosed by the colluding STTP.
+If the compromised STTP participated in the construction of this packet's header, a match occurs, allowing the adversary to recover the remaining weights associated to this packet across all the nodes in its path.
 
-In addition to revealing the mixnode's position along the path, associating these weights to a packet grants the adversary several further capabilities:
+In addition to revealing the node's position along the path, associating these weights to a packet grants the adversary several further capabilities:
 \begin{enumerate}
   \item \textbf{Integrity forgery.} The adversary can modify any header chunks (including the destination $\Delta$) and recompute valid integrity tags, as discussed in Section~\ref{sec:integrity_forgery}.
   \item \textbf{Weaker unlinkability.} The adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds subsequent integrity verifications.
-  This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the mixnode's batch size.
+  This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the node's batch size.\todo{this also is wrong, see comment below}
+  %The probability of a corrupted node capturing a  specefic message depends on the routing algorithm of the network. For example in a free-routing network, the probability of an adversary suceeding is $1/n$ where $n$ is the total number of messages. However in modern decentralized networks routing algorithms are more complex and takes into consideration many parameters such as geolocation, trust and bandiwdtch of the servers~\cite{rahimi2023larmix}. 
 \end{enumerate}
 % DOING THE WORST CASE SCENARIO ?
 
 \noindent\textbf{Summary.}
-Collusion with either STTPs or mixnodes alone does not compromise security.
-STTPs reveal only additive shares and unlinked weights, while mixnodes reveal only shared secrets.  
-However, when colluding simultaneously with both STTP and mixnode, an adversary can correlate integrity weights with specific packets, thereby allowing integrity forgeries.  
-Unlinkability remains computationally hard to break, but the adversary may probabilistically test packets with success probability $1/n$, where $n$ is the mixnode's batch size. 
-In the worst case scenario, namely collusion between the STTP and both the entry and exit mixnodes, the anonymity of the communication breaks down, allowing the sender and receiver to be linked.
+Collusion with either STTPs or network nodes alone does not compromise security.
+STTPs reveal only additive shares and unlinked weights, while nodes reveal only shared secrets.  
+However, when colluding simultaneously with both STTP and a network node, an adversary can correlate integrity weights with specific packets, thereby allowing integrity forgeries.  
+Unlinkability remains computationally hard to break, but the adversary may probabilistically test packets with success probability $1/n$, where $n$ is the node's batch size. 
+In the worst case scenario, namely collusion between the STTP and both the entry and exit nodes, the anonymity of the communication breaks down, allowing the sender and receiver to be linked.
 In summary, the security against collusion rests on the following minimal assumptions:
 (i) at least one STTP remains honest;
-(ii) at least one mixnode on the path is not compromised; and
-(iii) adversaries cannot simultaneously collude with both a STTP and a mixnode (in particular, when entry and exit nodes are corrupted).
+(ii) at least one node on the path is not compromised; and
+(iii) adversaries cannot simultaneously collude with both a STTP and a node (in particular, when entry and exit nodes are corrupted).
 Under these conditions, collusion yields at most negligible advantage beyond trivial guessing.

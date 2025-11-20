@@ -51,8 +51,8 @@ implementation by Danezis\footnote{\url{https://github.com/UCL-InfoSec/sphinx}} 
 \noindent\textbf{Datasets Generation.}
 %
 Twenty independent datasets were generated for both implementation.
-Each dataset was produced from a simulated network of 20 mixnodes and 3 semi-trusted third parties (STTPs).
-For each epoch, a random destination IP and a path of three mixnodes were selected.
+Each dataset was produced from a simulated network of 20 nodes and 3 semi-trusted third parties (STTPs).
+For each epoch, a random destination IP and a path of three nodes were selected.
 
 According to NIST requirements, each input sequence should contain at least $1\,000\,000$ bits.
 We therefore concatenated multiple generated headers to reach a sequence of this size, repeating the process to obtain 100 sequences per dataset.
@@ -148,15 +148,15 @@ Given the established security of the original Sphinx protocol, and considering 
 \subsection{Computational Complexity}\label{sec:complexity}
 
 Rather than measuring raw execution time, which depends heavily on hardware and software, we count the number of cryptographic operations as these are the computationally most expensive part of the scheme.
-Table~\ref{tab:operation_count} summarizes this asymptotic counting for each party, considering a path of $m$ mixnodes and $t$ semi-trusted third parties (STTPs).  
-The total cost of sending a single message can be obtained by multiplying the cost per STTP by $t$ and the cost per mixnode by $m$.
+Table~\ref{tab:operation_count} summarizes this asymptotic counting for each party, considering a path of $m$ nodes and $t$ semi-trusted third parties (STTPs).  
+The total cost of sending a single message can be obtained by multiplying the cost per STTP by $t$ and the cost per node by $m$.
 \begin{table}%[t]
 \centering
-\caption{Asymptotic number of cryptographic operations per party, with $t$ STTPs and a path of $m$ mixnodes.}
+\caption{Asymptotic number of cryptographic operations per party, with $t$ STTPs and a path of $m$ nodes.}
 \label{tab:operation_count}
     \begin{tabular}{lccc}
         \toprule
-        & \textbf{Client} & \textbf{STTP} & \textbf{Mixnode} \\
+        & \textbf{Client} & \textbf{STTP} & \textbf{Network Node} \\
         \midrule
         \textbf{EC Multiplication}              & \bigO{t \, m}\textsuperscript{\ref{cnote}}  & \bigO{m^{2}}  & \bigO{m} \\
         \textbf{EC Addition}                    & \bigO{t \, m}                             & \bigO{m^{2}}  & \bigO{m} \\
@@ -175,16 +175,16 @@ The client bears most of the overhead introduced by STTPs, performing \bigO{p t}
     but at the expense of increasing the asymptotic cost of the Elligator integer-to-point mapping to \bigO{t m}.
 }
 elliptic-curve multiplications and additions to split $m$ addresses and cryptographic secrets into $t$ shares.  
-For each mixnode, the client also computes one hash of the shared secret, one Elligator mapping to encode its IP, and one inverse mapping \eqref{eq:shared_secret}, all of which scale linearly with $m$.
+For each node, the client also computes one hash of the shared secret, one Elligator mapping to encode its IP, and one inverse mapping \eqref{eq:shared_secret}, all of which scale linearly with $m$.
 
 For each packet layer, a STTP performs EC multiplications, additions, and hashes proportional to the number of chunks \eqref{eq:preprocessing}, \eqref{eq:layer_i},  and \eqref{eq:integrity}.  
 As both the number of chunks and layers increase linearly with $m$, the total computational cost per STTP scales quadratically as $\mathcal{O}(p^2)$.  
 However, since STTPs operate in parallel, their collective workload has limited impact on the overall latency.
 
-Each mixnode performs EC multiplications, additions and hashes proportional only to the number of chunks \eqref{eq:integrity_check} and \eqref{eq:decrypt}, yielding linear complexity in $m$.  
-Additionally, each mixnode executes one Elligator inverse mapping \eqref{eq:derive_secret} to convert the shared secret point into an integer.
+Each node performs EC multiplications, additions and hashes proportional only to the number of chunks \eqref{eq:integrity_check} and \eqref{eq:decrypt}, yielding linear complexity in $m$.  
+Additionally, each node executes one Elligator inverse mapping \eqref{eq:derive_secret} to convert the shared secret point into an integer.
 
-In practice, most mixnet implementations employ routes of three to five mixnodes, making \bigO{p} $\approx$ \bigO{1}.
+In practice, most mixnet implementations employ routes of three to five nodes, making \bigO{p} $\approx$ \bigO{1}.
 Accordingly, the overall computational burden is more sensitive to the number of STTPs $t$ than the path length $m$.
 As our design remains secure as long as one STTP is honest, only a small number $t$ may be sufficient.
 Determining the precise number needed to meet a desired trust threshold is left for future work.
