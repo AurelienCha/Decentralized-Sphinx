@@ -31,7 +31,9 @@ In summary, our main contributions are as follows:
     \item We design \emph{DSphinx}, the first \emph{decentralized Sphinx header construction}, enabling clients to distribute header computation while preserving the anonymity and cryptographic guarantees of the original Sphinx design;
     \item We provide a detailed security analysis of \emph{DSphinx},
 considering passive and active network adversaries, corrupted mixnodes, and colluding STTPs;
-    \item We provide a Python implementation of our header construction, which we will release under GPL license;
+    \item We provide a Python implementation of our header construction,
+which we will release under an open-source license;\footnote{DSphinx
+implementation for review: \url{\artifact}}
     \item Using the NIST SP-800-22 randomness test suite, we empirically demonstrate that the resulting headers are at least as indistinguishable from random bitstrings as the original Sphinx. In fact, DSphinx successfully passes 3 out of 15 additional randomness tests.
 
 
