@@ -252,25 +252,25 @@ Without this association, the adversary can only attempt modifications on a rand
 \noindent\textbf{Case of corrupted hop.}  
 While an STTP alone reveals only unlinked integrity weights, when colluding with a corrupted node, it enables the adversary to \emph{associate those weights to a specific packets} observed at the corrupted node.  
 Concretely, a corrupted node computes its shared secret $s_i$ using the packet's cryptographic element $\alpha$, derive $h(s_i)$, and compare it against the set of weights disclosed by the colluding STTP.
-If the compromised STTP participated in the construction of this packet's header, a match occurs, allowing the adversary to recover the remaining weights associated to this packet across all mixnodes along its path.
+If the compromised STTP participated in the construction of this packet's header, a match occurs, allowing the adversary to recover the remaining weights associated to this packet across all the nodes in its path.
 
 In addition to revealing the node's position along the path, associating these weights to a packet grants the adversary several further capabilities:
 \begin{enumerate}
   \item \textbf{Integrity forgery.} The adversary can modify any header chunks (including the destination $\Delta$) and recompute valid integrity tags, as discussed in Section~\ref{sec:integrity_forgery}.
   \item \textbf{Weaker unlinkability.} The adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds subsequent integrity verifications.
-  This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the mixnode's batch size.\todo{this also is wrong, see comment below}
+  This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the node's batch size.\todo{this also is wrong, see comment below}
   %The probability of a corrupted node capturing a  specefic message depends on the routing algorithm of the network. For example in a free-routing network, the probability of an adversary suceeding is $1/n$ where $n$ is the total number of messages. However in modern decentralized networks routing algorithms are more complex and takes into consideration many parameters such as geolocation, trust and bandiwdtch of the servers~\cite{rahimi2023larmix}. 
 \end{enumerate}
 % DOING THE WORST CASE SCENARIO ?
 
 \noindent\textbf{Summary.}
 Collusion with either STTPs or network nodes alone does not compromise security.
-STTPs reveal only additive shares and unlinked weights, while mixnodes reveal only shared secrets.  
-However, when colluding simultaneously with both STTP and mixnode, an adversary can correlate integrity weights with specific packets, thereby allowing integrity forgeries.  
-Unlinkability remains computationally hard to break, but the adversary may probabilistically test packets with success probability $1/n$, where $n$ is the mixnode's batch size. 
-In the worst case scenario, namely collusion between the STTP and both the entry and exit mixnodes, the anonymity of the communication breaks down, allowing the sender and receiver to be linked.
+STTPs reveal only additive shares and unlinked weights, while nodes reveal only shared secrets.  
+However, when colluding simultaneously with both STTP and a network node, an adversary can correlate integrity weights with specific packets, thereby allowing integrity forgeries.  
+Unlinkability remains computationally hard to break, but the adversary may probabilistically test packets with success probability $1/n$, where $n$ is the node's batch size. 
+In the worst case scenario, namely collusion between the STTP and both the entry and exit nodes, the anonymity of the communication breaks down, allowing the sender and receiver to be linked.
 In summary, the security against collusion rests on the following minimal assumptions:
 (i) at least one STTP remains honest;
-(ii) at least one mixnode on the path is not compromised; and
-(iii) adversaries cannot simultaneously collude with both a STTP and a mixnode (in particular, when entry and exit nodes are corrupted).
+(ii) at least one node on the path is not compromised; and
+(iii) adversaries cannot simultaneously collude with both a STTP and a node (in particular, when entry and exit nodes are corrupted).
 Under these conditions, collusion yields at most negligible advantage beyond trivial guessing.
