@@ -12,7 +12,7 @@ Sphinx achieves this through a compact packet structure that offers cryptographi
 However, despite its strengths, the Sphinx packet format is fully constructed \emph{centrally} by the clients before entering the network which makes the system vulnerable to malicious clients. 
 For example, a client may bias route selection to reduce the number of messages mixed at a given node in order to target a specefic client or reduce the overall anonymity provided by the system~\cite{benguirat2022mixnet}, or launch an (N-1)-attack~\cite{raymond2001traffic}.
 
-In this work, we introduce a \emph{decentralized Sphinx header construction} that distributes the computation across multiple independent semi-trusted third parties (STTPs).
+In this work, we introduce \emph{DSphinx}, a \emph{decentralized Sphinx header construction} that distributes the computation across multiple independent semi-trusted third parties (STTPs).
 To the best of our knowledge, this is the first work to decentralize the Sphinx packet format.
 We argue that decentralizing the header construction is a necessary step toward achieving a more robust, verifiable, and flexible anonymous communication system.
 %
@@ -25,24 +25,25 @@ Each hop must reveal only its own shared secret and the address of the next hop,
 Third, unlinkability must be preserved even against a powerful passive adversary capable of observing all traffic entering and leaving a mixnode and performing sophisticated cryptanalytic analysis. 
 Finally, distributing the computation must not introduce any trapdoor, bias, or structural weakness that an adversary could exploit to correlate packets or manipulate header values.
 Our construction meets these challenges by encoding routing information as elliptic curve points, splitting secrets via additive secret sharing, and using a homomorphic pseudorandom weighted checksum as an integrity mechanism that remains compatible with decentralized computation.
-\newline
 
 \noindent
 In summary, our main contributions are as follows:
 \begin{itemize}
-    \item We design the first \emph{decentralized Sphinx header construction}, enabling clients to distribute header computation while preserving the anonymity and cryptographic guarantees of the original Sphinx design;
-    \item We provide a detailed security analysis against passive and active network adversaries, corrupted mixnodes, and colluding STTPs;
+    \item We design \emph{DSphinx}, the first \emph{decentralized Sphinx header construction}, enabling clients to distribute header computation while preserving the anonymity and cryptographic guarantees of the original Sphinx design;
+    \item We provide a detailed security analysis of \emph{DSphinx},
+considering passive and active network adversaries, corrupted mixnodes, and colluding STTPs;
     \item We provide a Python implementation of our header construction, which we will release under GPL license;
-    \item Using the NIST SP-800-22 randomness test suite, we empirically demonstrate that the resulting headers are at least as indistinguishable from random bitstrings as centralized Sphinx, and in fact successfully pass slightly more randomness tests.
+    \item Using the NIST SP-800-22 randomness test suite, we empirically demonstrate that the resulting \emph{DSphinx} headers are at least as indistinguishable from random bitstrings as centralized Sphinx, and in fact successfully pass slightly more randomness tests.
     \newline
 \end{itemize}
-
+%
 % Plan
 In the following, we present related work and motivation in
 Section~\ref{sec:related}, then we present the threat model and the desired securtity properties in
 Section~\ref{sec:sys_model}. We then present our protocol that decentralizes the creation of the
 Sphinx headers in Section~\ref{sec:scheme}. We then present our security analysis in Section~\ref{sec:security} and the evaluation of our
-proposed solution in Section~\ref{sec:evaluation}.  Finally we conclude and
-discuss future work in Section~\ref{sec:conclusion}.
+proposed solution in Section~\ref{sec:evaluation}.  Finally we discuss our
+findings, future directions, and conclude our work in
+Sections~\ref{sec:discussion} and~\ref{sec:conclusion}.
 
 
