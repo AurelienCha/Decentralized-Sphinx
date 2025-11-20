@@ -13,7 +13,7 @@ In some tests, our construction even performs significantly better, suggesting t
 % Decentralized path selection
 In its current form, our protocol remains partially client-centric since the client continues to select the route and derive the hop-by-hop shared secrets.  
 Consequently, a malicious client may still bias paths or attempt (N-1)-attacks.  
-A major remaining step toward full decentralization is therefore the removal of client control over path selection and secret derivation, ideally by distributing these responsibilities among STTPs without exposing routing information. \todo{delete this paragraph?}
+A major remaining step toward full decentralization is therefore the removal of client control over path selection and secret derivation, ideally by distributing these responsibilities among STTPs without exposing routing information. \todo{shortening paragraph?}
 
 % Privacy-preserving policy enforcement
 Beyond decentralizing trust, our approach opens avenues for practical enhancements of anonymous communication systems.  
@@ -21,5 +21,5 @@ In particular, distributed header construction may serve as a foundation for pri
 Such mechanisms could allow mixnodes to detect and discard unauthorized traffic early, reducing resource consumption and mitigating denial-of-service threats, without compromising user anonymity.
 
 % Final words
-In summary, our decentralized header construction preserves Sphinx's essential privacy and integrity guarantees while reducing reliance on a fully trusted client.  \todo{replace this sentence somewhere else?}
+In summary, our decentralized header construction preserves Sphinx's essential privacy and integrity guarantees while reducing reliance on a fully trusted client. 
 Although several challenges remain before reaching a fully decentralized and deployable design, we believe that our work provides a significant step toward more flexible, robust, and privacy-preserving mixnet architectures, and we hope it supports continued progress in secure anonymous communication systems.
