@@ -16,9 +16,6 @@
 # Todo (thursday)
 
 
-- Verify plan (up-to-date ?)
-
-
 # General Relecture
 - Try to avoid "mixnet" if not pertinent (e.g.)
 - use the nomination of DSphinx (change figures as well)
