@@ -10,19 +10,14 @@ Additionally, an intermediary node along the message path does not learn its pos
 Sphinx achieves this through a compact packet structure that offers cryptographically robust unlinkability as well as per-hop integrity protection.
 
 However, despite its strengths, the Sphinx packet format is fully constructed \emph{centrally} by the clients before entering the network which makes the system vulnerable to malicious clients. 
-For example, a client may bias route selection to reduce the number of messages mixed at a given node in order to target a specefic client or reduce the overall anonymity provided by the system~\cite{benguirat2022mixnet}, or launch an (N-1)-attack~\cite{raymond2001traffic}.
+For example, a client may bias route selection by violating the routing algorithm, thereby reducing the number of messages mixed at a specific node in order to target another user or degrade the system’s overall anonymity~\cite{benguirat2022mixnet}. An adversary may also mount an (N–1) attack~\cite{raymond2001traffic} by dropping all but one message and forwarding only its own traffic to a chosen node, again violating the routing algorithm. Additionally, enforcing exit policies has long been a serious challenge in any decentralized network~\cite{oram2001peer, dingledine2001free}, particularly when network privacy is the main goal. On one hand, clients should not be linked to their final destinations; on the other hand, the system must prevent unauthorized or abusive traffic. Therefore, we argue that decentralizing Sphinx header construction is a crucial step toward achieving more robust, verifiable, and flexible anonymous communication networks and decentralized networks in general.
 
-In this work, we introduce a \emph{decentralized Sphinx header construction} that distributes the computation across multiple independent semi-trusted third parties (STTPs).
-To the best of our knowledge, this is the first work to decentralize the Sphinx packet format.
-We argue that decentralizing the header construction is a necessary step toward achieving a more robust, verifiable, and flexible anonymous communication system.
-%
-\todo{Should we call our thing \emph{DSphinx} so that we can resolve the confusion with \enquote{our Sphinx vs. the original Sphinx}?}
-
-Achieving decentralization while maintaining Sphinx's cryptographic guarantees raises several challenges.  
+In this work, we introduce DSphinx, a \emph{decentralized Sphinx header construction} that distributes the computation across multiple independent semi-trusted third parties (STTPs).
+To the best of our knowledge, this is the first work to decentralize the Sphinx packet format.Achieving decentralization while maintaining Sphinx's cryptographic guarantees raises several challenges.  
 First, the protocol must prevent individual STTP, or any coalition of corrupted STTPs, from learning routing information or recovering cryptographic secrets.  
-Second, mixnodes should learn no more than in the traditional Sphinx design.
+Second, intermediary hops (i.e mixnodes or peers) should learn no more than in the traditional Sphinx design.
 Each hop must reveal only its own shared secret and the address of the next hop, but nothing about the rest of the route.  
-Third, unlinkability must be preserved even against a powerful passive adversary capable of observing all traffic entering and leaving a mixnode and performing sophisticated cryptanalytic analysis. 
+Third, unlinkability must be preserved even against a powerful passive adversary capable of observing all traffic inputs and outputs and performing sophisticated cryptanalytic analysis. 
 Finally, distributing the computation must not introduce any trapdoor, bias, or structural weakness that an adversary could exploit to correlate packets or manipulate header values.
 Our construction meets these challenges by encoding routing information as elliptic curve points, splitting secrets via additive secret sharing, and using a homomorphic pseudorandom weighted checksum as an integrity mechanism that remains compatible with decentralized computation.
 \newline
@@ -33,16 +28,10 @@ In summary, our main contributions are as follows:
     \item We design the first \emph{decentralized Sphinx header construction}, enabling clients to distribute header computation while preserving the anonymity and cryptographic guarantees of the original Sphinx design;
     \item We provide a detailed security analysis against passive and active network adversaries, corrupted mixnodes, and colluding STTPs;
     \item We provide a Python implementation of our header construction, which we will release under GPL license;
-    \item Using the NIST SP-800-22 randomness test suite, we empirically demonstrate that the resulting headers are at least as indistinguishable from random bitstrings as centralized Sphinx, and in fact successfully pass slightly more randomness tests.
+    \item Using the NIST SP-800-22 randomness test suite, we empirically demonstrate that the resulting headers are at least as indistinguishable from random bitstrings as the original Sphinx. In fact, DSphinx successfully passes slightly more randomness tests. \todo{replace slightly by an exact number?}
     \newline
 \end{itemize}
 
 % Plan
-In the following, we present related work and motivation in
-Section~\ref{sec:related}, then we present the threat model and the desired securtity properties in
-Section~\ref{sec:sys_model}. We then present our protocol that decentralizes the creation of the
-Sphinx headers in Section~\ref{sec:scheme}. We then present our security analysis in Section~\ref{sec:security} and the evaluation of our
-proposed solution in Section~\ref{sec:evaluation}.  Finally we conclude and
-discuss future work in Section~\ref{sec:conclusion}.
-
+This paper is organized as follows. In Section~\ref{sec:related}, we review related work. Section~\ref{sec:sys_model} introduces our threat model and outlines the desired security properties. In Section~\ref{sec:scheme}, we describe our protocol for DSphinx. Section~\ref{sec:security} provides a detailed security analysis, and Section~\ref{sec:evaluation} presents the evaluation of our proposed solution. We discuss the limitations of our design and directions for future work in Section~\ref{sec:discussion}, and conclude in Section~\ref{sec:conclusion}.
 
