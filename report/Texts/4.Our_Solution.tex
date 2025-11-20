@@ -9,6 +9,7 @@ Each shared secret is split into $t$ additive shares, alongside the IP addresses
 (3) Each STTP independently computes a \textit{partial} Sphinx header using its shares.  
 (4) The client then aggregates these partial headers to reconstruct the final header. 
 (5) Finally, the client encrypts the payload accordingly to the header and sends the message through the mixnet.
+
 \begin{figure}
     \centering
     \resizebox{1.\linewidth}{!}{\input{schema/schema_overview.tex}}
@@ -19,7 +20,7 @@ Each shared secret is split into $t$ additive shares, alongside the IP addresses
     (4) The client aggregates partial headers into the final header. 
     (5) The message is sent through the mixnet.}
     \label{fig:overall_schema}
-\end{figure}\newline
+\end{figure}
 
 % Header structure - Chunks
 In our decentralized Sphinx header construction, each piece of header information is represented as an elliptic curve (EC) point.
@@ -43,6 +44,25 @@ In summary, the protocol is organized into four main components, each described 
     \item \textbf{STTP:} encryption of shares into partial headers;
     \item \textbf{Mixnode:} decryption and forwarding of packets.
 \end{itemize}
+ We summarize the notations in Table~\ref{tab:notations}.
+\begin{table}[h]
+	\small
+	\centering
+	\begin{tabular}{|rl|}
+		\hline 
+		& \\
+		$\{G_j\}$     &  $j$-th generator \\
+		$s_i$     &  $i$-th shared secret \\
+		$\lambda_i$     & parameter of the exponential distribution for $\mathcal{T}_i$ \\
+		$m$     & number of hops \\
+		$n$     & header size\\
+		$\C{i}$     & integrity tag \\
+		$N_i$	& $i$-th ip address in the path \\
+		\hline
+	\end{tabular}
+	\caption{Notations}
+	\label{tab:notations}
+\end{table}
 
 
 \subsection{Setup}
