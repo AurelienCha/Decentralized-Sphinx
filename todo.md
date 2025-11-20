@@ -15,13 +15,6 @@
 
 # Todo (thursday)
 
-- Propose mitigiation for collusion vulnerability [ATTENTION] (would need to adapt some sentences in discussion and conclusion)
-- Verify plan (up-to-date ?)
-
-# Readability
-- Section 4 (and 5): Reread this section and check for parts that could be unclear to add extra explanations.
-- Section 4.3 - STTP: Update text to insert properly pseudocodes (merge pseudocode ?)
-- Adding inputs pseudocodes
 
 # General Relecture
 - Try to avoid "mixnet" if not pertinent (e.g.)
@@ -33,3 +26,4 @@
 - Doing readme for anonymous repo
 - Generator set {G_j} should become generator list [G_j]
 - Table de variabes (debut de section 4)
+- Propose mitigiation for collusion vulnerability [ATTENTION] (would need to adapt some sentences in discussion and conclusion)
