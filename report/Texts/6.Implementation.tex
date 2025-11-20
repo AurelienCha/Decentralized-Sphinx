@@ -1,8 +1,8 @@
 \section{Implementation \& Evaluation}\label{sec:evaluation}
 
-%Our prototype implementation is available on \href{https://github.com/AurelienCha/Decentralized-Sphinx}{GitHub}\footnote{\url{https://github.com/AurelienCha/Decentralized-Sphinx}}.
-Our implementation, which is released under the GPL license on \href{https://anonymous.4open.science/r/A_Decentralized_Sphinx_Construction_for_Decentralized_Networks}{Anonymous Github}\footnote{\url{https://anonymous.4open.science/r/A_Decentralized_Sphinx_Construction_for_Decentralized_Networks/}}, 
-is written in Python 3.13 using the \href{https://pypi.org/project/ECPy/}{ECPy}\footnote{\url{https://pypi.org/project/ECPy/}} library for elliptic curve operations.
+Our implementation, which is released under the GPL license on
+Anonymous Github\footnote{\url{\artifact}}, 
+is written in Python 3.13 using the \emph{ECPy}\footnote{\url{https://pypi.org/project/ECPy/}} library for elliptic curve operations.
 ECPy is well-suited for prototyping due to its simplicity, but it is significantly slower than many EC python libraries (approximately one order of magnitude slower). 
 However, it is one of the few Python libraries that support Montgomery Curve25519, which is essential for Elligator.
 
@@ -44,7 +44,8 @@ Below we summarize the tests most relevant to our analysis:
 In short, while the \emph{Frequency} test verifies global balance, the \emph{Matching} tests detect hidden repetitive structures, and the \emph{Random Walk} tests analyze the dynamic balance of bits over time.
 \newline
 
-We compare our decentralized implementation against the original Sphinx implementation by Danezis\footnote{\href{https://github.com/UCL-InfoSec/sphinx}{https://github.com/UCL-InfoSec/sphinx}} using identical test suite configurations.
+We compare our decentralized implementation against the original Sphinx
+implementation by Danezis\footnote{\url{https://github.com/UCL-InfoSec/sphinx}} using identical test suite configurations.
 
 
 \noindent\textbf{Datasets Generation.}
