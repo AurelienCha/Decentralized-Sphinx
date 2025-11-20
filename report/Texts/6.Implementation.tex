@@ -59,14 +59,14 @@ We therefore concatenated multiple generated headers to reach a sequence of this
 
 NIST recommends interpreting results via two complementary criteria:
 \begin{itemize}
-    \item Proportion of passing sequences (Figure~\ref{fig:proportion});
-    \item Uniformity of p-value distributions (Figures~\ref{fig:hist_p-values}-\ref{fig:chisquare}).
+    \item Proportion of passing sequences (Fig.~\ref{fig:proportion});
+    \item Uniformity of p-value distributions (Figs.~\ref{fig:hist_p-values} and \ref{fig:chisquare}).
 \end{itemize}
 
 
 \noindent\textbf{Passing Rate Analysis.}
 %
-Figure~\ref{fig:proportion} highlights the proportion of sequences that passed each NIST test for both implementations.
+Fig.~\ref{fig:proportion} highlights the proportion of sequences that passed each NIST test for both implementations.
 Following NIST guidelines, the significance level is set to $\alpha = 0.01$, and the confidence interval over $n$ samples is defined as:
 $$
 (1 - \alpha) \pm 3 \sqrt{\frac{\alpha (1 - \alpha)}{n}},
@@ -84,9 +84,9 @@ In contrast, our implementation passes three tests that the original implementat
 
 \noindent\textbf{P-value Distribution Analysis.}
 %
-Figure~\ref{fig:hist_p-values} shows the p-value histograms for both implementations across all 15 NIST tests.
+Fig.~\ref{fig:hist_p-values} shows the p-value histograms for both implementations across all 15 NIST tests.
 Uniformity of these distributions is further assessed using a Chi-square goodness-of-fit test with a significance threshold of $0.0001$, as recommended by NIST.
-Figure~\ref{fig:chisquare} presents these results, highlighting that our implementation achieves uniform p-value distributions on the \textit{Frequency} and \textit{Cumulative Sums} tests, whereas the original Sphinx fails them.
+Fig.~\ref{fig:chisquare} presents these results, highlighting that our implementation achieves uniform p-value distributions on the \textit{Frequency} and \textit{Cumulative Sums} tests, whereas the original Sphinx fails them.
 
 \begin{figure}%[H]
     \centering
