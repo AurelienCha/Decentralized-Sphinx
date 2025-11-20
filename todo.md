@@ -31,3 +31,5 @@
 
 
 - Doing readme for anonymous repo
+- Generator set {G_j} should become generator list [G_j]
+- Table de variabes (debut de section 4)
