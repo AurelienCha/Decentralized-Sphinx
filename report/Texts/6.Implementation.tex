@@ -6,7 +6,7 @@ is written in Python 3.13 using the \href{https://pypi.org/project/ECPy/}{ECPy}\
 ECPy is well-suited for prototyping due to its simplicity, but it is significantly slower than many EC python libraries (approximately one order of magnitude slower). 
 However, it is one of the few Python libraries that support Montgomery Curve25519, which is essential for Elligator.
 
-We evaluate our implementation on two main axes: unlikability and computational complexity.
+We evaluate our implementation on two main axes: unlinkability and computational complexity.
 The first one is empirically measured by evaluating output randomness, giving the raw resistance to correlation via advanced cryptanalysis techniques.
 The second count the number of cryptographic operations which are the heaviest computations in the scheme.
 

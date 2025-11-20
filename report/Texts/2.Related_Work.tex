@@ -13,7 +13,7 @@ Messages in mixnets are first divided into fixed-size packets to prevent size-ba
 Each packet is then encrypted in multiple layers, together with the necessary routing information. 
 This guarantees that every mixnode learns only its immediate predecessor and successor along the path.
 
-The Lightning Network~\cite{poon2016bitcoin} is a payment-channel network that allow two users to send off-chain transactions without continusouly interacting with the Bitcoin blockchain. 
+The Lightning Network~\cite{poon2016bitcoin} is a payment-channel network that allow two users to send off-chain transactions without continuously interacting with the Bitcoin blockchain. 
 In this design, even users who do not have a direct channel may still transact by routing payments through intermediate peers. 
 When a node wants to pay another node without having a direct channel, the transaction originator first computes the shortest path to the recipient and then encrypts the routing information multiple times, where each cryptographic layer corresponds to a hop along the path.
 Although the Lightning Network was initially introduced to address Bitcoin's scalability, it also addresses the privacy issues introduced by peer-to-peer networks~\cite{sharma2022anonymity}. 
@@ -47,7 +47,7 @@ Any modification results in an integrity-tag verification failure at the mixnode
 This ensures that adversaries cannot tamper with routes or perform active attacks such as header tagging in order to target specific messages or clients.
 
 Third, Sphinx offers \emph{strong unlinkability} by ensuring that packets entering and leaving a mixnode are computationally indistinguishable.  
-This is achieved by using fixed-size headers and payloads and by rerandomizing cryptographic elements at every hop through hop-by-hop ECDH, in addition to the layered encryption.
+This is achieved by using fixed-size headers and payloads and by re-randomizing cryptographic elements at every hop through hop-by-hop ECDH, in addition to the layered encryption.
 Each hop transforms the packet into a fresh, uniformly distributed header, preventing an adversary from linking an incoming packet to its outgoing counterpart, even when observing the entire network.
 
 These guarantees have made Sphinx the de facto standard for privacy-preserving routing in modern decentralized systems such as the Lightning Network~\cite{poon2016bitcoin} and mixnet-based architectures like Nym~\cite{nym-network-whitepaper} and Katzenpost~\cite{infeld2025echomix}.  

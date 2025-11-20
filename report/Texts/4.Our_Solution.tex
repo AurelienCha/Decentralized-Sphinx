@@ -1,13 +1,8 @@
 \section{Protocol description}\label{sec:scheme}
 
 % Overview
-<<<<<<< HEAD
-The proposed decentralized protocol distributes the header construction across multiple semi-trusted third parties (STTPs). 
-Figure~\ref{fig:overall_schema} illustrates the protocol in five steps.
-=======
 The proposed decentralized protocol distributes the Sphinx header construction across multiple semi-trusted third parties (STTPs). 
 Fig.~\ref{fig:overall_schema} illustrates the protocol in five steps.
->>>>>>> b0cd1a7f8e0f847f7599dd5a1d2e867e162cdcdf
 (1) The client randomly selects a route and a secret nonce $x$, from which he derives a sequence of shared secrets.
 Each shared secret is split into $t$ additive shares, alongside the IP addresses of the nodes and the final destination.
 (2) Each set of shares is sent to $t$ different STTP, along with the necessary cryptographic elements.  
@@ -29,15 +24,9 @@ Each shared secret is split into $t$ additive shares, alongside the IP addresses
 
 % Header structure - Chunks
 In our decentralized Sphinx header construction, each piece of header information is represented as an elliptic curve (EC) point.
-<<<<<<< HEAD
-The header is thus divided into fixed-size chunks, as illustrated in Figure~\ref{fig:chunked_schema}, where each chunk corresponds to one EC point.
-Each node along the path adds two chunks: one encoding its IP address and another representing its integrity tag.
-Without loss of generality, we consider paths of three nodes in this paper, resulting in a seven-chunks header (i.e. seven EC points), two per node plus one additional chunk for the final destination's IP address.
-=======
 The header is thus divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunked_schema}, where each chunk corresponds to one EC point.
 Each mixnode along the path adds two chunks: one encoding its IP address and another representing its integrity tag.
 Without loss of generality, we consider paths of three mixnodes in this paper, resulting in a seven-chunks header (i.e. seven EC points), two per mixnode plus one additional chunk for the final destination's IP address.
->>>>>>> b0cd1a7f8e0f847f7599dd5a1d2e867e162cdcdf
 
 % Elligator
 Representing IP addresses as elliptic curve points requires a reversible mapping between integers and curve points.  

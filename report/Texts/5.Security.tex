@@ -24,7 +24,7 @@ Intuitively, the adversary observes a set of packets entering and leaving a mixn
   Recall that generators are said to be independent if no participant knows any scalar relations among them.
 
   \item \textbf{Oracle.}  
-  The adversary is granted access to an oracle, which on input of a nounce $x$ and routing path $\pi = (N_1, N_2, N_3, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the mixnode.
+  The adversary is granted access to an oracle, which on input of a nonce $x$ and routing path $\pi = (N_1, N_2, N_3, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the mixnode.
 
   \item \textbf{Challenge.}
   The adversary submits two distinct headers $(\alpha_0, \beta_0, \gamma_0)$ and $(\alpha_1, \beta_1, \gamma_1)$ that were not obtained during oracle queries.  
@@ -68,7 +68,7 @@ $$
 \beta_j - \beta'_j = s G_j, \quad \forall j \in \{1, \dots, 7\}.
 $$
 
-To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used amoung all chunks, or that a fixed scalar relationship is preserved between two generators $G_j$ and $G_{j'}$ (i.e. $z$ such that $G_j = z G_{j'}$).
+To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used among all chunks, or that a fixed scalar relationship is preserved between two generators $G_j$ and $G_{j'}$ (i.e. $z$ such that $G_j = z G_{j'}$).
 Therefore, if generators are independent, then the adversary's task reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$.
 \newline
 
@@ -212,7 +212,7 @@ Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integ
 
 % \begin{itemize}
 %   \item Malicious mixnode modify packet to redirect to another mixnode => Need integrity forgery
-%   \item Malicious client manage to compute a packet that cycle on its route => probably 'impossible' but how to proove it ?! 
+%   \item Malicious client manage to compute a packet that cycle on its route => probably 'impossible' but how to prove it ?! 
 %   He needs to have the filler chunks to sum up to get a precise point. 
 %   In theory, it is possible for one chunk but all the chunks, and on multiple layers seems highly impossible.
 %   In addition, despite being able to change the shared secrets using a different secret x or different mixnodes, he cannot choose a specific (because of Elligator that map a shared point to a shared integer)
@@ -233,7 +233,7 @@ In this section, we formalize potential collusion scenarios and evaluate the add
 \newline
 
 \noindent{\textbf{STTP advantages.}}
-Amoung the set of $T$ semi-trusted third parties used to build an header, an STTP $t$ reveals three types of information:  
+Among the set of $T$ semi-trusted third parties used to build an header, an STTP $t$ reveals three types of information:  
 \begin{itemize}
   \item an additive share of destinations $N_{(i,t)}$, such that\newline 
   $N_i = \sum_{t=1}^T N_{(i,t)}$;  
