@@ -23,8 +23,7 @@ These privacy guarantees both in mixnets and in the Lightening Network are achie
 
 \subsection{Sphinx packet format}
 % Sphinx
-The \emph{Sphinx} packet format introduced by Danezis and Goldberg~\cite{sphinx} is a compact, provably secure, layer encrypted packet construction designed specifically for mix networks.  
-It provides three essential security properties that enable anonymous communicationca: per-hop confidentiality, per-hop integrity protection, and strong unlinkability.
+The \emph{Sphinx} packet format provides three essential security properties: per-hop confidentiality, per-hop integrity protection, and strong unlinkability.
 
 First, Sphinx ensures \emph{per-hop confidentiality} by encrypting routing information in layers, similar to classical onion routing.  
 Each mixnode learns only its immediate predecessor and successor, but gains no knowledge about the overall path, the sender, or the final destination.  
