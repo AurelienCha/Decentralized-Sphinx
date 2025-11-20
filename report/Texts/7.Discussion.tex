@@ -16,11 +16,10 @@ This vulnerability represents an important limitation of the current design.
 Future work should investigate stronger homomorphic integrity mechanisms or alternative constructions of the checksum that do not reveal correlation between weights of honest mixnode, even under collusion.
 
 \noindent\textbf{Client-Centric Trust.} 
-While our construction successfully decentralizes the Sphinx header computation, the system remains \emph{client-centric} in several key aspects.  
-The client still selects the path through the mixnet, and therefore retains significant power.  
-A malicious client can still bias route selection to reduce the anonymity set of honest users, or orchestrate classical deanonymization attacks, including (N-1)-attacks, by carefully crafting routes.  
-Thus, although our scheme removes trust from the header-construction process, it does not yet mitigate threats originating from malicious clients.  
-More work is needed to distribute path selection and key derivation to STTPs in a way that preserves anonymity while limiting client influence.
+While our construction successfully decentralizes the Sphinx header computation, our design remains \emph{client-centric} in several key aspects.  
+The client still selects the path of a message. A malicious client can still bias route selection to reduce the anonymity set of honest users, or orchestrate classical deanonymization attacks, including (N-1)-attacks, by carefully crafting routes.  
+Although our scheme removes trust from the header-construction process, it does not yet mitigate threats originating from malicious clients.
+Deciding on how to choose the the different nodes in the path will depend on the sepecefitie of the system. For example in the lightening network the path is chosen using Djikstra, in Nym the path is chosen uniformly. Therefore more work is needed to distribute path selection and key derivation to STTPs in a way that matches the systems specefics.
 
 \subsection{Future Work}
 
