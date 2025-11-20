@@ -11,33 +11,33 @@ After aggregating the partial headers returned by the STTPs, the client injects 
 \subsection{Threat Model}
 
 This section presents the adversaries considered in our model.  
-As in classical mixnet analyses, we account for both passive and active network adversaries, as well as corrupted mixnodes.  
+We consider both passive and active network adversaries, as well as corrupted network nodes.  
 Because our construction introduces semi-trusted third parties (STTPs), we additionally consider the possibility of corrupted or colluding STTPs.  
-An adversary in our setting may combine these capabilities, controlling parts of the network while also corrupting a subset of mixnodes and STTPs.  
+An adversary in our setting may combine these capabilities, controlling parts of the network while also corrupting a subset of network nodes and STTPs.  
 We assume that adversaries are computationally bounded and cannot break standard cryptographic assumptions such as the hardness of the Elliptic-Curve Discrete Logarithm Problem (ECDLP).
 
 \noindent{\textbf{Passive Network Adversary.}}
-This adversary can observe all packets entering and leaving any mixnode, but cannot alter them.  
-Its primary goal is to break unlinkability by correlating an incoming packet with one of the outgoing packets at a mixnode, thereby reconstructing the packet's path and ultimately linking sender and receiver.  
+This adversary can observe all packets entering and leaving any node, but cannot alter them.  
+Its primary goal is to break unlinkability by correlating an incoming packet with one of the outgoing packets, thereby reconstructing the packet's path and ultimately linking the sender to the receiver.  
 Such an adversary may attempt correlation by identifying relationships between different header components, or by detecting statistical biases in the header bitstream through advanced cryptanalytic techniques.
 
 \noindent{\textbf{Active Network Adversary.}}
 This adversary extends the capabilities of the passive adversary by being able to modify, drop, replay, or inject packets at any point in the network.  
-Its main objective is to forge valid integrity tags so that it can tamper information while still producing headers that appear valid to honest mixnodes.
+Its main objective is to forge valid integrity tags so that it can tamper information while still producing headers that appear valid to honest nodes.
 To counter such an adversary, our scheme must therefore provide strong, per-hop integrity protection, analogous to the original Sphinx design but adapted to the decentralized construction.
 
-\noindent{\textbf{Corrupted Mixnode.}}
-Following standard mixnet threat models, we allow the adversary to control a subset of mixnodes.  
-A corrupted mixnode reveals its internal state, including its shared secret, and data derived during processing.  
-The protocol must therefore ensure that compromising mixnodes does not reduce the privacy of the remaining parts of the route, and that unlinkability holds as long as at least one mixnode on the path remains honest.  
-Similarly, leaking a mixnode shared secret must not enable an adversary to recover information about other mixnodes or compromise their integrity tags.
+\noindent{\textbf{Corrupted Network Node.}}
+Additionally the adversary is able to control a subset of network nodes.  
+A corrupted node reveals its internal state, including its shared secret, and data derived during processing.  
+The protocol must therefore ensure that compromising nodes do not reduce the privacy of the remaining parts of the route, and that unlinkability holds as long as at least one node on the path remains honest.  
+Similarly, leaking a node's shared secret must not enable an adversary to recover information about other nodes or compromise their integrity tags.
 
 \noindent{\textbf{Corrupted STTP.}}
 Decentralizing header construction introduces an additional potential adversary not present in the original Sphinx design.  
 STTPs are assumed to follow the protocol but may attempt to infer extra information during the partial header construction.
-A subset of STTPs may collude or be controlled by the adversary, combining their additive shares to reconstruct routing information or mixnodes shared secrets.  
+A subset of STTPs may collude or be controlled by the adversary, combining their additive shares to reconstruct routing information or nodes' shared secrets.  
 % Our protocol ensures that such collusion does not compromise security or privacy as long as at least one STTP remains honest (Section~\ref{sec:collusion}).  
-This threat is particularly relevant in decentralized settings, where corrupted mixnodes and corrupted STTPs might collaborate to strengthen their combined attack capabilities.
+This threat is particularly relevant in decentralized settings, where corrupted nodes and corrupted STTPs might collaborate to strengthen their combined attack capabilities.
 
 
 \subsection{Security and Privacy Objectives}
