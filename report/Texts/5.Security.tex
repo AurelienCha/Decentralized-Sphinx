@@ -246,7 +246,7 @@ Since the first two items are additive shares, they provide no information unles
 Hence, as long as at least one of the $T$ STTP remains honest, neither destinations nor shared secrets can be reconstructed.
 The only additional information available to an adversary colluding with an STTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags for all the nodes in the path.  
 However, the integrity's blinding offset $s_i G$ prevents trivially associating weights to specific packets.
-Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the entire network. \todo{this is wrong I think}
+Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the entire network.
 \newline
 
 \noindent\textbf{Case of corrupted hop.}  
@@ -258,7 +258,7 @@ In addition to revealing the node's position along the path, associating these w
 \begin{enumerate}
   \item \textbf{Integrity forgery.} The adversary can modify any header chunks (including the destination $\Delta$) and recompute valid integrity tags, as discussed in Section~\ref{sec:integrity_forgery}.
   \item \textbf{Weaker unlinkability.} The adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds subsequent integrity verifications.
-  This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the mixnode's batch size.\todo{this also is wrong}
+  This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the mixnode's batch size.\todo{this also is wrong, see comment below}
   %The probability of a corrupted node capturing a  specefic message depends on the routing algorithm of the network. For example in a free-routing network, the probability of an adversary suceeding is $1/n$ where $n$ is the total number of messages. However in modern decentralized networks routing algorithms are more complex and takes into consideration many parameters such as geolocation, trust and bandiwdtch of the servers~\cite{rahimi2023larmix}. 
 \end{enumerate}
 % DOING THE WORST CASE SCENARIO ?
