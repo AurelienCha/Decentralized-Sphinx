@@ -37,11 +37,11 @@ Intuitively, the adversary observes a set of packets entering and leaving a mixn
 
 \noindent The adversary's advantage in breaking unlinkability is defined as
 $$
-\mathrm{Adv}^{\mathsf{unlink}}_{\mathcal{A}}(\lambda)
-= \big| \Pr[b' = b] - \tfrac{1}{2} \big|.
+\mathrm{Adv}^{\mathsf{unlink}}_{\mathcal{A}} = \big| \Pr[b' = b] - \tfrac{1}{2} \big|.
 $$
-The scheme achieves unlinkability if $\mathrm{Adv}^{\mathsf{unlink}}_{\mathcal{A}}(\lambda)$ is negligible in the security parameter $\lambda$.
-\newline
+The scheme provides unlinkability if every probabilistic polynomial-time adversary achieves only a negligible 
+advantage relative to the hardness of the underlying elliptic-curve assumptions (i.e. ECDLP on Curve25519).
+\newline 
 
 \noindent\textbf{Proof Sketch:}
 As in the original Sphinx construction, all packets have a fixed size (header and payload), preventing any adversary from correlating packets based on observable size patterns.
@@ -138,12 +138,14 @@ We formalize this property as a game in which the adversary attempts to forge a 
   The adversary wins if $\gamma_\mathcal{A} = \gamma_\mathcal{C}$, where $\gamma_\mathcal{C}$ is the integrity tag compute by the challenger on header $(\alpha, \beta_\mathcal{A})$.
 \end{enumerate}
 
-\noindent The adversary's advantage in forgering integrity tag is defined as
+\noindent
+The adversary's advantage in forging a valid integrity tag without knowing the shared secret is defined as
 $$
-\mathrm{Adv}^{\mathsf{forgery}}_{\mathcal{A}}(\lambda)
-= \big| \Pr[\gamma_\mathcal{A} = \gamma_\mathcal{C}] - \tfrac{1}{2^{\lambda}} \big|.
+\mathrm{Adv}^{\mathsf{forgery}}_{\mathcal{A}}(\lambda) = \big| \Pr[\gamma_\mathcal{A} = \gamma_\mathcal{C}] - \tfrac{1}{2^{\lambda}} \big|.
 $$
-The scheme achieves integrity-forgery resistance if $\mathrm{Adv}^{\mathsf{forgery}}_{\mathcal{A}}(\lambda)$ is negligible in the security parameter $\lambda$.
+Here, $\lambda$ denotes the bit-security of the underlying elliptic curve group (e.g. $\lambda = 128$ for Curve25519).
+The scheme achieves integrity-forgery resistance if  $\mathrm{Adv}^{\mathsf{forgery}}_{\mathcal{A}}(\lambda)$  is negligible.
+This means that the adversary cannot do better than randomly guessing the correct integrity tag.
 \newline
 
 \noindent\textbf{Proof Sketch:}
