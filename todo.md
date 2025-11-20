@@ -19,12 +19,11 @@
 
 # TODO
 - Reformulation for adversary advantage. Don't like the lambda notation
-- Anonymous github and cleaning code (e.g. client) [IMPORTANT]
 - Developper Elligator + ref
 
 # Accesibility
 - Section 4 (and 5): Reread this section and check for parts that could be unclear to add extra explanations.
-- Pseudocode [IMPORTANT]
+- Section 4.3 - STTP: Update text to insert properly pseudocodes (merge pseudocode ?)
 
 # General
 - Try to avoid "mixnet" if not pertinent (e.g.)
