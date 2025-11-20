@@ -1,10 +1,10 @@
 \section{Threat Model and Security Properties}~\label{sec:sys_model}
 %
-In this section, we present the overall decentralized Sphinx system, its threat model and outline the privacy and security requirements our solution should satisfy.
+In this section, we present the threat model of the  decentralized Sphinx design, and outline the privacy and security requirements our solution should satisfy.
 
-As illustrated in Figure~\ref{fig:overall_schema}, our system involves three types of entities: the client, a set of semi-trusted third parties (STTPs), and the mixnodes that constitute the mixnet. 
+As illustrated in Figure~\ref{fig:overall_schema}, our system involves three types of entities: the client, a set of semi-trusted third parties (STTPs), and the network nodes that participate in the decentralized network. 
 The client delegates header construction to several STTPs, which operate independently of one another.
-After aggregating the partial headers returned by the STTPs, the client injects the final packet into the mixnet, where mixnodes handle processing and forwarding.
+After aggregating the partial headers returned by the STTPs, the client injects the final packet into the network, where the nodes handle processing and forwarding.
 
 
 % THREATH MODEL - OK
