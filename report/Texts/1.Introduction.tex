@@ -9,32 +9,12 @@ The message content is protected through layered encryption in the Sphinx payloa
 Additionally, an intermediary node along the message path does not learn its position within the route; it can infer only the immediately preceding and succeeding nodes, not the entire path. 
 Sphinx achieves this through a compact packet structure that offers cryptographically robust unlinkability as well as per-hop integrity protection.
 
-<<<<<<< HEAD
-However, despite its strengths, the Sphinx packet format is constructed
-\emph{centrally} by the clients before entering the network. This makes the
-system vulnerable to various attacks. For example, a client may bias route
-selection by violating the routing algorithm, thereby reducing the number
-of messages mixed at a specific node in order to target another user or
-degrade the system’s overall anonymity~\cite{benguirat2022mixnet}. An
-adversary may also mount an (N–1) attack~\cite{raymond2001traffic} by
-dropping all but one message and forwarding only its own traffic to a
-chosen node, again violating the routing algorithm. Additionally, enforcing
-exit policies has long been a serious challenge in any decentralized
-network~\cite{oram2001peer, dingledine2001free}, in particular when network
-privacy is the main goal: On one hand, clients should not be linked to
-their final destinations; on the other hand, the system must prevent
-unauthorized or abusive traffic. We therefore argue that decentralizing
-Sphinx header construction is crucial in achieving more robust, verifiable,
-and more flexible anonymous communication networks and decentralized
-networks in general.
-=======
 However, despite its strengths, the Sphinx packet format is fully constructed \emph{centrally} by the clients before entering the network which makes the system vulnerable to various attacks. 
 For example, a client may bias route selection by violating the routing algorithm, thereby reducing the number of messages mixed at a specific node in order to target an honest client or degrade the system's overall anonymity~\cite{benguirat2022mixnet}. 
 An adversary may also mount an (N-1) attack~\cite{raymond2001traffic} by dropping all but one message and forwarding only its own traffic to a chosen node, again violating the routing algorithm. Additionally, enforcing exit policies has long been a serious challenge in any decentralized network~\cite{oram2001peer, dingledine2001free}, particularly when network privacy is the main goal. 
 On one hand, clients should not be linked to their final destinations. 
 On the other hand, the system must prevent unauthorized or abusive traffic. 
 We therefore argue that decentralizing Sphinx header construction is crucial in achieving more robust, verifiable, and flexible anonymous communication systems and decentralized networks.
->>>>>>> 2fdbd1b00510c526449f6845434fe9ac4085acfe
 
 In this work, we introduce DSphinx, a \emph{decentralized Sphinx header
 construction} that distributes the computation across multiple independent
