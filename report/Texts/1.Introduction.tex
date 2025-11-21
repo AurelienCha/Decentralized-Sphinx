@@ -20,18 +20,18 @@ preceding and succeeding nodes, not the entire path.  Sphinx achieves this
 through a compact packet structure that offers cryptographically robust
 unlinkability as well as per-hop integrity protection.
 
-However, despite its strengths, the Sphinx packet format is fully
-constructed \emph{centrally} by the clients before entering the network
-which makes the system vulnerable to various attacks.  For example, a
-client may bias route selection by violating the routing algorithm, thereby
-reducing the number of messages mixed at a specific node in order to target
-an honest client or degrade the system's overall
+However, despite its strengths, the Sphinx packet format is constructed
+\emph{centrally} by the clients before entering the network.  This
+centralisation makes the system vulnerable to various attacks.  For
+example, a client may bias route selection by violating the routing
+algorithm, thereby reducing the number of messages mixed at a specific node
+in order to target an honest client or degrade the system's overall
 anonymity~\cite{benguirat2022mixnet}.  An adversary may also mount an (N-1)
 attack~\cite{raymond2001traffic} by dropping all but one message and
 forwarding only its own traffic to a chosen node, again violating the
 routing algorithm. Additionally, enforcing exit policies has long been a
 serious challenge in any decentralized network~\cite{oram2001peer,
-dingledine2001free}, particularly when network privacy is the main goal.
+dingledine2001free}, particularly when network privacy is the main goal:
 On one hand, clients should not be linked to their final destinations.  On
 the other hand, the system must prevent unauthorized or abusive traffic.
 We therefore argue that decentralizing Sphinx header construction is
@@ -43,21 +43,19 @@ construction} that distributes the computation across multiple independent
 semi-trusted third parties (STTPs).  To the best of our knowledge, this is
 the first work to decentralize the Sphinx packet format.
 
-In this work, we introduce DSphinx, a \emph{decentralized Sphinx header
-construction} that distributes the computation across multiple independent
-semi-trusted third parties (STTPs).  Achieving decentralization while
-maintaining Sphinx's cryptographic guarantees raises several challenges.
-First, the protocol must prevent individual STTP, or any coalition of
-corrupted STTPs, from learning routing information or recovering
-cryptographic secrets.  Second, intermediary nodes (i.e mixnodes or peers)
-should learn no more than in the traditional Sphinx design.  Each node must
-reveal only its own shared secret and the address of the next node, but
-nothing about the rest of the route.  Third, unlinkability must be
-preserved even against a powerful passive adversary capable of observing
-all traffic inputs and outputs and performing sophisticated cryptanalytic
-analysis.  Finally, distributing the computation must not introduce any
-trapdoor, bias, or structural weakness that an adversary could exploit to
-correlate packets or manipulate header values.
+Achieving decentralization while maintaining Sphinx's cryptographic
+guarantees raises several challenges.  First, the protocol must prevent
+individual STTP, or any coalition of corrupted STTPs, from learning routing
+information or recovering cryptographic secrets.  Second, intermediary
+nodes (i.e mixnodes or peers) should learn no more than in the traditional
+Sphinx design.  Each node must reveal only its own shared secret and the
+address of the next node, but nothing about the rest of the route.  Third,
+unlinkability must be preserved even against a powerful passive adversary
+capable of observing all traffic inputs and outputs and performing
+sophisticated cryptanalytic analysis.  Finally, distributing the
+computation must not introduce any trapdoor, bias, or structural weakness
+that an adversary could exploit to correlate packets or manipulate header
+values.
 
 Our construction addresses these challenges by encoding routing information
 as elliptic curve points, splitting secrets via additive secret sharing,
