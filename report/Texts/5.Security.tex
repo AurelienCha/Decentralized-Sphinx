@@ -24,7 +24,7 @@ Intuitively, the adversary observes a set of packets entering and leaving a node
   Recall that generators are said to be independent if no participant knows any scalar relations among them.
 
   \item \textbf{Oracle.}  
-  The adversary is granted access to an oracle, which on input of a nounce $x$ and routing path $\pi = (N_1, N_2, N_3, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the node.
+  The adversary is granted access to an oracle, which on input of a nonce $x$ and routing path $\pi = (N_1, N_2, N_3, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the node.
 
   \item \textbf{Challenge.}
   The adversary submits two distinct headers $(\alpha_0, \beta_0, \gamma_0)$ and $(\alpha_1, \beta_1, \gamma_1)$ that were not obtained during oracle queries.  
@@ -68,7 +68,7 @@ $$
 \beta_j - \beta'_j = s G_j, \quad \forall j \in \{1, \dots, 7\}.
 $$
 
-To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used amoung all chunks, or that a fixed scalar relationship is preserved between two generators $G_j$ and $G_{j'}$ (i.e. $z$ such that $G_j = z G_{j'}$).
+To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used among all chunks, or that a fixed scalar relationship is preserved between two generators $G_j$ and $G_{j'}$ (i.e. $z$ such that $G_j = z G_{j'}$).
 Therefore, if generators are independent, then the adversary's task reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$.
 \newline
 
@@ -212,7 +212,7 @@ Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integ
 
 % \begin{itemize}
 %   \item Malicious mixnode modify packet to redirect to another mixnode => Need integrity forgery
-%   \item Malicious client manage to compute a packet that cycle on its route => probably 'impossible' but how to proove it ?! 
+%   \item Malicious client manage to compute a packet that cycle on its route => probably 'impossible' but how to prove it ?! 
 %   He needs to have the filler chunks to sum up to get a precise point. 
 %   In theory, it is possible for one chunk but all the chunks, and on multiple layers seems highly impossible.
 %   In addition, despite being able to change the shared secrets using a different secret x or different mixnodes, he cannot choose a specific (because of Elligator that map a shared point to a shared integer)
@@ -259,7 +259,7 @@ In addition to revealing the node's position along the path, associating these w
   \item \textbf{Integrity forgery.} The adversary can modify any header chunks (including the destination $\Delta$) and recompute valid integrity tags, as discussed in Section~\ref{sec:integrity_forgery}.
   \item \textbf{Weaker unlinkability.} The adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds subsequent integrity verifications.
   This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the node's batch size.\todo{this also is wrong, see comment below}
-  %The probability of a corrupted node capturing a  specefic message depends on the routing algorithm of the network. For example in a free-routing network, the probability of an adversary suceeding is $1/n$ where $n$ is the total number of messages. However in modern decentralized networks routing algorithms are more complex and takes into consideration many parameters such as geolocation, trust and bandiwdtch of the servers~\cite{rahimi2023larmix}. 
+  %The probability of a corrupted node capturing a  specific message depends on the routing algorithm of the network. For example in a free-routing network, the probability of an adversary succeeding is $1/n$ where $n$ is the total number of messages. However in modern decentralized networks routing algorithms are more complex and takes into consideration many parameters such as geolocation, trust and bandwidth of the servers~\cite{rahimi2023larmix}. 
 \end{enumerate}
 % DOING THE WORST CASE SCENARIO ?
 
