@@ -13,18 +13,6 @@
 ## Secret sharing: Additive shares (not secret Shamir i.e. threshold)
 
 
-# Todo (thursday)
 
-
-# General Relecture
-- Try to avoid "mixnet" if not pertinent (e.g.)
-- use the nomination of DSphinx (change figures as well)
-- Layout: improve spacing and mise en page
-- Equation format (x) and figure
-
-
+# TODO
 - Doing readme for anonymous repo
-- Generator set {G_j} should become generator list [G_j]
-- Table de variabes (debut de section 4)
-- Propose mitigiation for collusion vulnerability [ATTENTION] (would need to adapt some sentences in discussion and conclusion)
-- user -> client

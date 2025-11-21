@@ -36,10 +36,14 @@
     \node (N'_) [block=1] at ($(sG.west) - (0, 2*\height)$) {\BB{i}{1}};
     \node (C'_) [block=1] at (N'_.east) {\BB{i}{2}};
     \node (B'_) [block=5] at (C'_.east) {};
-    \foreach \j in {1,...,5} {
-        \node (B'_\j) at ($(B'_.west) + (\j*\width-0.5*\width, 0)$) {\BB{i}{\j}};
+    % \node [block=7] at (N'_.west) {};%{\color{black!70} $H_{i+1}$};
+    % \foreach \j in {1,...,6} {
+    %     \draw[dotline] ($(N'_.north west) + (\j*\width, 0)$) -- ($(N'_.south west) + (\j*\width, 0)$) {}; 
+    % }
+    \foreach \j in {3,...,7} {
+        \node (B'_\j) at ($(B'_.west) + (\j*\width-2.5*\width, 0)$) {\BB{i}{\j}};
         \ifnum \j<5
-        \draw[dotline] ($(B'_.north west) + (\j*\width, 0)$) -- ($(B'_.south west) + (\j*\width, 0)$) {}; 
+        \draw[dotline] ($(B'_.north west) + (\j*\width-2*\width, 0)$) -- ($(B'_.south west) + (\j*\width-2*\width, 0)$) {}; 
         \fi
     }
     \node (xor) [eq] at ($(check |- sG) - (0, \height)$) {\ref{eq:decrypt}};
@@ -47,7 +51,7 @@
     
     %% BOX
     \node (mixnode) [yshift=1pt, inner ysep=5pt, draw=red, dashed, fit=(sk) (B'_) (check)] {};
-    \node[xshift=6pt, yshift=12pt] at (sk.north) {\color{red} \textbf{Mixnode $i$}};
+    \node[xshift=2pt, yshift=12pt] at (sk.north) {\color{red} \textbf{Node $i$}};
 
     %% OUTPUT
     \node (L) at ($(mixnode.south) - (0, 2.5*\height)$) {};

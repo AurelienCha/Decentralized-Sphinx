@@ -21,7 +21,7 @@ Intuitively, the adversary observes a set of packets entering and leaving a node
 %
 \begin{enumerate}
 \item \textbf{Setup.}
-  The challenger generates the node's secret keys and public system parameters $(G_1, \dots, G_7)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
+  The challenger generates the node's secret keys and public system parameters $(G_1, \dots, G_n)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
   Recall that generators are said to be independent if no participant knows any scalar relations among them.
 
   \item \textbf{Oracle.}  
@@ -29,21 +29,21 @@ Intuitively, the adversary observes a set of packets entering and leaving a node
 
   \item \textbf{Challenge.}
   The adversary submits two distinct headers $(\alpha_0, \beta_0, \gamma_0)$ and $(\alpha_1, \beta_1, \gamma_1)$ that were not obtained during oracle queries.  
-  The challenger selects a random bit $b \in \{0,1\}$ and processes $(\alpha_b, \beta_b, \gamma_b)$ through the node, obtaining $(\alpha'_b, \beta'_b, \gamma'_b)$, which is then given to the adversary.
+  The challenger selects a random bit $b_\mathcal{C} \in \{0,1\}$ and processes $(\alpha_{b_\mathcal{C}}, \beta_{b_\mathcal{C}}, \gamma_{b_\mathcal{C}})$ through the node, obtaining $(\alpha'_{b_\mathcal{C}}, \beta'_{b_\mathcal{C}}, \gamma'_{b_\mathcal{C}})$, which is then given to the adversary.
 
   \item \textbf{Guess.}
-  The adversary outputs a bit $b' \in \{0,1\}$, attempting to guess which of the two input headers corresponds to the given output header.  
-  The adversary wins if $b' = b$.
+  The adversary outputs a bit ${b_\mathcal{A}} \in \{0,1\}$, attempting to guess which of the two input headers corresponds to the given output header.  
+  The adversary wins if ${b_\mathcal{A}} = {b_\mathcal{C}}$.
 \end{enumerate}
 
 \noindent The adversary's advantage in breaking unlinkability is defined as
 $$
-\mathrm{Adv}^{\mathsf{unlink}}_{\mathcal{A}} = \big| \Pr[b' = b] - \tfrac{1}{2} \big|.
+\mathrm{Adv}^{\mathsf{unlink}}_{\mathcal{A}} = \big| \Pr[{b_\mathcal{A}} = {b_\mathcal{C}}] - \tfrac{1}{2} \big|.
 $$
 The scheme provides unlinkability if every probabilistic polynomial-time adversary achieves only a negligible 
 advantage relative to the hardness of the underlying elliptic-curve assumptions (i.e. ECDLP on Curve25519).
 
-\medskip
+\bigskip
 \noindent\textbf{Proof Sketch:}
 As in the original Sphinx construction, all packets have a fixed size (header and payload), preventing any adversary from correlating packets based on observable size patterns.
 In addition, headers are computationally indistinguishable from random bitstrings, as empirically confirmed by the NIST randomness test suite (see Section~\ref{sec:NIST}).
@@ -64,9 +64,9 @@ If $\mathcal{A}$ can link headers via $\alpha$, it can compute $s$ such that $\a
 % Since the shared secret \s{i} remains consistent within a layer, the resulting differences would reveal a predictable pattern (uniform or preserved scalar relationships).
 % This consistency could allow an adversary to correlate incoming and outgoing packets at a mixnode, thereby breaking the unlinkability property.
 % Using independent generators for each chunk prevents such correlations and is therefore critical to the protocol's security.  
-Each routing chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy
+Each routing chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy:
 $$
-\beta_j - \beta'_j = s G_j, \quad \forall j \in \{1, \dots, 7\}.
+\beta_j - \beta'_j = s G_j, \quad \forall j \in \{1, \dots, n\}.
 $$
 
 To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used among all chunks, or that a fixed scalar relationship is preserved between two generators $G_j$ and $G_{j'}$ (i.e. $z$ such that $G_j = z G_{j'}$).
@@ -76,7 +76,7 @@ Therefore, if generators are independent, then the adversary's task reduces to s
 \noindent{\textbf{Case 3: Linking via $\boldsymbol\gamma$.}}  
 The integrity tag $\gamma$ is a weighted sum of the encrypted routing components:
 $$
-\gamma = s G + \sum_{j=1}^{5} h^{(j)}(s)\, \beta_j.
+\gamma = s G + \sum_{j=1}^{n-2} h^{(j)}(s)\, \beta_j.
 $$
 Finding a correlation between $\gamma$ and $\gamma'$ without knowledge of $s$ or its derived weights $h^{(j)}(s)$ is no easier than linking via $\beta$ (Case 2).
 
@@ -120,11 +120,11 @@ Therefore, we can conclude that the proposed scheme provides unlinkability.
 Integrity-forgery resistance requires that an adversary cannot produce a modified header that is accepted by an honest node.  
 We formalize this property as a game in which the adversary attempts to forge a new header that passes integrity verification.
 
-\medskip
+\newpage
 \noindent\textbf{Game Definition:}
 \begin{enumerate}
 \item \textbf{Setup.}
-  The challenger generates node's secret keys and public system parameters $(G_1, \dots, G_7)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
+  The challenger generates node's secret keys and public system parameters $(G_1, \dots, G_n)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
 
   \item \textbf{Oracle.}  
   The adversary is granted access to an oracle, which outputs a valid header $(\alpha, \beta, \gamma)$.
@@ -136,9 +136,10 @@ We formalize this property as a game in which the adversary attempts to forge a 
   The adversary modify chunks $\beta$ into $\beta_\mathcal{A}$, and update the integrity tag into $\gamma_\mathcal{A}$.
 
   \item \textbf{Guess.}
-  The adversary wins if $\gamma_\mathcal{A} = \gamma_\mathcal{C}$, where $\gamma_\mathcal{C}$ is the integrity tag compute by the challenger on header $(\alpha, \beta_\mathcal{A})$.
+  The adversary wins if $\gamma_\mathcal{A} = \gamma_\mathcal{C}$, where $\gamma_\mathcal{C}$ is the integrity compute by the challenger on $\beta_\mathcal{A}$.
 \end{enumerate}
 
+\medskip
 \noindent
 The adversary's advantage in forging a valid integrity tag without knowing the shared secret is defined as
 $$
@@ -148,51 +149,51 @@ Here, $\lambda$ denotes the bit-security of the underlying elliptic curve group 
 The scheme achieves integrity-forgery resistance if  $\mathrm{Adv}^{\mathsf{forgery}}_{\mathcal{A}}(\lambda)$  is negligible.
 This means that the adversary cannot do better than randomly guessing the correct integrity tag.
 
-\medskip
+\bigskip
 \noindent\textbf{Proof Sketch:}
-Each header chunk $\beta_{i,j}$ can be modified by an adversary in two possible ways: 
-either (i) the chunk is replaced by a new point $\beta'_{i,j}$, or (ii) it is incremented by an elliptic curve point $P_j$.
+Each header chunk $\beta_{j}$ can be modified by an adversary in two possible ways: 
+either (i) the chunk is replaced by a new point $\beta'_{j}$, or (ii) it is incremented by an elliptic curve point $P_j$.
 
 \medskip
-\noindent{\textbf{Case 1: Chunk replacement.}}
-Replacing $\beta_{i,j}$ with $\beta'_{i,j}$ requires updating the corresponding integrity tag $\gamma_i$ to $\gamma'_i$ such that:
+\noindent{\textbf{Case 1: Chunk Replacement.}}
+Replacing $\beta_{j}$ with $\beta'_{j}$ requires updating the corresponding integrity $\gamma$ to $\gamma'$ such that:
 $$
-\gamma'_i = \gamma_i + h^{(j)}(s_i)\, (\beta'_{i,j} - \beta_{i,j}).
+\gamma' = \gamma + h^{(j)}(\sHashed{})\, (\beta'_{j} - \beta_{j}).
 $$
-This operation necessitates knowledge of the weight $h^{(j)}(s_i)$, which is derived from the shared secret $s_i$. 
+This operation necessitates knowledge of the weight $h^{(j)}(\sHashed{})$, which is derived from the hashed of the shared secret. 
 Without this information, an adversary cannot produce a valid updated integrity tag.
-
 
 \medskip
 \noindent{\textbf{Case 2: Incremental Modification.}}
 If the adversary only adds a point $P_j$ to a single chunk, the integrity tag must be updated as:
 $$
-\gamma'_i = \gamma_i + h^{(j)}(s_i)\, P_j,
+\gamma' = \gamma + h^{(j)}(\sHashed{})\, P_j,
 $$
-which again requires knowledge of the corresponding weight $h^{(j)}(s_i)$.
+which again requires knowledge of the corresponding weight $h^{(j)}(\sHashed{})$.
 
 \medskip
 \noindent{\textbf{Case 2.b: Balanced Increment.}}
 A more sophisticated attempt consists in modifying two chunks, say $j$ and $j'$, to preserve the checksum balance:
 $$
-\gamma'_i = \gamma_i + h^{(j)}(s_i)\, P_j + h^{(j')}(s_i)\, P_{j'}
+\gamma' = \gamma + h^{(j)}(\sHashed{})\, P_j + h^{(j')}(\sHashed{})\, P_{j'}
 $$
-If the adversary knows a scalar $n$ such that $h^{(j)}(s_i) = n\,h^{(j')}(s_i)$,  it becomes:
+If the adversary knows a scalar $z$ such that $h^{(j)}(\sHashed{}) = z\,h^{(j')}(\sHashed{})$,  it becomes:
 $$
-\gamma'_i = \gamma_i + h^{(j')}(s_i)\, (n P_j + P_{j'})
+\gamma' = \gamma + h^{(j')}(\sHashed{})\, (z P_j + P_{j'})
 $$
-Thus, the adversary can choose any $P_j$ and set $P_{j'} = -n P_j$, keeping $\gamma'_i = \gamma_i$ unchanged and thereby forging integrity.  
+Thus, the adversary can choose any $P_j$ and set $P_{j'} = -z P_j$, keeping $\gamma' = \gamma$ unchanged and thereby forging integrity.  
 
 \medskip
-\noindent\textbf{Summary \& Remarks.}
-Successful integrity forgery requires at least knowledge of scalar relations between the weights $h^{(j)}(s_i)$.  
-Since these weights are derived from one-time shared secrets through iterated hashing, such relations are computationally infeasible to obtain in the absence of collusion.
+\noindent\textbf{Summary.}
+Successful integrity forgery requires at least knowledge of scalar relations between the weights $h^{(j)}(\sHashed{})$.  
+Since these weights are derived from one-time shared secrets through iterated hashing, such relations are computationally infeasible in the absence of collusion.
 
-\smallskip
+\medskip
+\noindent\textbf{Remarks.}
 \label{replay_resistance}\label{wrap_resistance}
 The original Sphinx article~\cite{sphinx} takes \emph{replay resistance}
 and \emph{wrap resistance} into account.
-\emph{Wrap resistance} means an adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being processed by any node $i'$, the packet becomes $(\alpha, \beta, \gamma)$ again.  
+\emph{Wrap resistance} means an adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being decrypted by a node, the packet becomes $(\alpha, \beta, \gamma)$ again.  
 \emph{Replay resistance} is inherited from the original Sphinx construction since the nodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).
 Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (and consequently $\beta$) while still producing a consistent integrity tag $\gamma$. % which directly reduces to the problem of forging integrity.  
 Similarly, \emph{wrap resistance} also requires producing a modified header that passes integrity verification.
@@ -241,9 +242,9 @@ Among the set of $T$ semi-trusted third parties used to build an header, an STTP
   $N_i = \sum_{t=1}^T N_{(i,t)}$;  
   \item an additive share of shared secrets $s_{(i,t)}$, such that\newline 
   $s_i = \sum_{t=1}^T s_{(i,t)}$;
-  \item the hash values of the full shared secrets $\{h(s_1), h(s_2), h(s_3)\}$.\newline 
+  \item the hash values of the full shared secrets $\{h(s_1), h(s_2), h(s_3)\}$.
 \end{itemize}
-
+%
 Since the first two items are additive shares, they provide no information unless all $T$ shares are collected.
 Hence, as long as at least one of the $T$ STTP remains honest, neither destinations nor shared secrets can be reconstructed.
 The only additional information available to an adversary colluding with an STTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags for all the nodes in the path.  
@@ -258,10 +259,10 @@ If the compromised STTP participated in the construction of this packet's header
 
 In addition to revealing the node's position along the path, associating these weights to a packet grants the adversary several further capabilities:
 \begin{enumerate}
-  \item \textbf{Integrity forgery.} The adversary can modify any header chunks (including the destination $\Delta$) and recompute valid integrity tags, as discussed in Section~\ref{sec:integrity_forgery}.
-  \item \textbf{Weaker unlinkability.} The adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds subsequent integrity verifications.
-  This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the node's batch size.\todo{this also is wrong, see comment below}
-  %The probability of a corrupted node capturing a  specific message depends on the routing algorithm of the network. For example in a free-routing network, the probability of an adversary succeeding is $1/n$ where $n$ is the total number of messages. However in modern decentralized networks routing algorithms are more complex and takes into consideration many parameters such as geolocation, trust and bandwidth of the servers~\cite{rahimi2023larmix}. 
+  \item \textbf{Integrity Forgery.} The adversary can modify any header chunks (including the destination $\Delta$) and recompute valid integrity tags, as discussed in Section~\ref{sec:integrity_forgery}.
+  \item \textbf{Weaker Unlinkability.} The adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds subsequent integrity verifications.
+  This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the node's batch size.%\todo{this also is wrong, see comment below}
+  %The probability of a corrupted node capturing a  specefic message depends on the routing algorithm of the network. For example in a free-routing network, the probability of an adversary suceeding is $1/n$ where $n$ is the total number of messages. However in modern decentralized networks routing algorithms are more complex and takes into consideration many parameters such as geolocation, trust and bandiwdtch of the servers~\cite{rahimi2023larmix}. 
 \end{enumerate}
 % DOING THE WORST CASE SCENARIO ?
 

@@ -1,4 +1,4 @@
-\section{Protocol description}\label{sec:scheme}
+\section{Protocol Description}\label{sec:scheme}
 
 % Overview
 The proposed decentralized protocol distributes the Sphinx header construction across multiple semi-trusted third parties (STTPs). 
@@ -23,67 +23,84 @@ Each shared secret is split into $t$ additive shares, alongside the IP addresses
 \end{figure}
 
 % Header structure - Chunks
-In our decentralized Sphinx header construction, each piece of header information is represented as an elliptic curve (EC) point.
-The header is thus divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunked_schema}, where each chunk corresponds to one EC point.
-Each network node along the path adds two chunks: one encoding its IP address and another representing its integrity tag.
-Without loss of generality, we consider paths of three nodes in this paper, resulting in a seven-chunks header (i.e. seven EC points), two per node plus one additional chunk for the final destination's IP address.
+In DSphinx, each header element is represented as an elliptic curve (EC) point. 
+Accordingly, the header is divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunked_schema}, with each chunk corresponding to a single EC point. 
+Every network node along the path contributes for two chunks: one encoding its IP address and another representing its integrity tag. 
+Thus, a path of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per node and an additional chunk for the final destination.
 
 % Elligator
 Representing IP addresses as elliptic curve points requires a reversible mapping between integers and curve points.  
-We define a mapping $\Map{}$ from integers to points and its inverse $\InverseMap{}$ such that $\InverseMap{\Map{x}} = x$ for any integer $x$.  
+We define a mapping $\Map{}$ from integers to points and its inverse $\InverseMap{}$ such that $\InverseMap{(\Map{(x)})} = x$ for any integer $x$.  
 Classical encodings map an integer directly to the $x$-coordinate of a valid point, but it succeeds only for roughly half of integers and introduces structural bias. 
 To avoid this issue, we rely on the Elligator mapping~\cite{bernstein2013elligator}, which deterministically maps any integer to a curve point while ensuring that the resulting points are uniformly distributed and computationally indistinguishable from randomly sampled points.  
 This property allows IP addresses to blend seamlessly with other cryptographic elements of the Sphinx header.
 
 % Transition with next subsections (the four main steps)
+\smallskip
 The DSphinx protocol is organized into four main components, each described in the following subsections:
 %
 \begin{itemize}
     \item \textbf{Setup:} generation of independent random generators;
     \item \textbf{Client:} additive sharing of information to STTPs;
     \item \textbf{STTP:} encryption of shares into partial headers;
-    \item \textbf{Network Nodes:} decryption and forwarding of packets.
+    \item \textbf{Network Nodes:} packets decryption and forwarding.
 \end{itemize}
-%
-We summarize the notations in Table~\ref{tab:notations}:
-%
+The notation used in this section is summarized in Table~\ref{tab:notations}.
 \begin{table}[h!]
-	\caption{Notations}
-	\label{tab:notations}
-	\centering
-	\begin{tabular}{|rl|}
-		\hline
+    \caption{Notation}
+    \label{tab:notations}
+    \centering
+    \begin{tabular}{c l}
+        \toprule
+        \multicolumn{2}{l}{\textbf{Indices}}\\
+        $i$          & node index \\
+        $j$          & chunk index \\
+        $t$          & STTP index \\[2pt]
 
-		$\{G_j\}$     &  $j$-th generator \\
-		$s_i$     &  $i$-th shared secret \\
-		$m$     & number of nodes \\
-		$n$     & header size\\
-		$\C{i}$     & integrity tag \\
-		$N_i$	& $i$-th IP address in the path \\
-		$\A{i}$ & cryptographic element \\
-		$\PK{i}$ & the public key of the $i^{th}$ hop \\
-		$x$ & the client's secret nonce \\
-		&\\
-		\hline
-	\end{tabular}
+        \multicolumn{2}{l}{\textbf{Parameters}}\\
+        $m$          & path length \\
+        $n$          & header size \\
+        $p$          & prime subgroup order \\[2pt]
+        
+        \multicolumn{2}{l}{\textbf{Secrets and Keys}}\\
+        $\PK{}$      & node public key \\
+        $\sk{}$      & node secret key \\
+        $x$          & client secret nonce \\
+        $s$          & shared secret \\
+        $\sHashed{}$ & hash of shared secret \\[2pt]
+
+        \multicolumn{2}{l}{\textbf{Header Elements}}\\
+        $G$          & curve generator \\
+        $N$	         & encoded IP address \\
+        $\A{}$       & cryptographic element \\
+        $\B{}{}$     & encrypted routing information \\
+        $\C{}$       & integrity tag \\
+        $\phi$       & filler chunks \\
+        $H$          & header ($N \| \C{} \| \B{}{}$) \\[2pt]
+
+        \multicolumn{2}{l}{\textbf{Functions}}\\
+        $\Map{}$         & Elligator mapping (int $\rightarrow$ EC point) \\
+        $\hspace{3.5mm}\InverseMap{}$  & inverse Elligator (EC point $\rightarrow$ int) \\
+        \bottomrule
+    \end{tabular}
 \end{table}
 
 
 \subsection{Setup}
 
 As discussed in Section~\ref{sec:indep_generators}, each chunk requires a distinct generator to preserve the scheme's security properties. 
-We therefore define a set of seven generators $\{G_j\}$, one for each chunk $j$.
+We therefore define a set of $n$ generators $\{G_j\}_{j=1..n}$, one for each chunk $j$.
 
 % Synchronization
-In principle, the setup phase can be executed only once. 
+In principle, the setup phase could be executed only once. 
 However, to maintain security over time, the set of generators should be refreshed periodically. 
 All entities (clients, nodes, and STTPs) must perform the setup phase to ensure synchronization of generators. 
 To achieve synchronization, generators are derived from a common seed computed as the hash of the current timestamp, truncated to the chosen refresh interval, and incremented to differentiate generators.
 
 % Independent
 To preserve the scheme's security properties, the generators must be \emph{independent}, meaning that the scalar relationship between any two generators is unknown. 
-Formally, no entity should know any $z_j \in \mathbb{Z}_N$ such that $G_j = z_j G$, where $G$ is the curve's base point. 
-This property is guaranteed by using the Elligator mapping~\cite{bernstein2013elligator}, which provides a uniform and pseudorandom mapping while ensuring that each $G_j$ is computationally \emph{independent} from $G$ and from the other generators.
+Formally, no entity should know any $z_j \in \mathbb{Z}_p$ such that $G_j = z_j G$, where $G$ is the curve's base point. 
+This property is guaranteed by using the Elligator mapping~\cite{bernstein2013elligator}, which provides a uniform and pseudorandom mapping while ensuring that each $G_j$ is computationally \emph{independent} from $G$ or other generators.
 
 % Clearing cofactor
 A subtlety with Elligator is that it may map integers to points on the full curve group, not exclusively within the large prime-order subgroup (i.e. the subgroup generated by $G$). 
@@ -93,34 +110,34 @@ This can be prevented by \emph{clearing the cofactor}, i.e. each generator is mu
 % Formula
 The resulting formula for the $j^{th}$ generator is therefore:
 \begin{equation}
-G_j = 8 \cdot \Map{\hash{\text{timestamp}} + j}.
+G_j = 8 \cdot \Map{(\hash{\text{timestamp}} + j)}.
 \end{equation}
 
 
 \subsection{Client}
-To send a message to a chosen destination, the client first selects a random path through the network and generates an initial nonce.  
+To send a message to a chosen destination, the client first selects a path accordingly to the routing protocol and generates an initial nonce.  
 Using this nonce and the public keys of the nodes along the route, the client derives a sequence of shared secrets \((\s{1}, \s{2}, \s{3})\)
 according to \eqref{eq:shared_secret}, yielding a hop-by-hop key derivation.
 \begin{equation}
 (\s{1}, \s{2}, \s{3}) \quad \left\{ \quad
 \begin{aligned}
     \A{i}    &= x_i \, G, \\
-    \s{i}    &= \InverseMap{x_i \, \PK{i}}, \\
-    x_{i+1}  &= s_i \, x_i \quad (\text{mod}\ n),
+    \s{i}    &= \InverseMap{(x_i \, \PK{i})}, \\
+    x_{i+1}  &= s_i \, x_i \quad (\text{mod}\ p),
 \end{aligned}
 \right.
 \label{eq:shared_secret}
 \end{equation}
-where $x_1$ is the client's nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ node, $n$ is the large prime subgroup order (i.e. $(n+1)\G{} = \G{}$), and $\InverseMap{}$ is the inverse Elligator, mapping EC point to integer.
+where $x_1$ is the client's nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ node along the path, $p$ is the large prime subgroup order, and $\InverseMap{}$ is the inverse Elligator, mapping EC point to integer.
 The scalar $s_i$ provides as a per-hop pseudorandom update, ensuring that the cryptographic element $\A{i}$ remain unlinkable across layers.
 
-Next, the client encodes the routing information for each hop
+Next, the client encodes the routing information for each hop. 
 IP addresses are padded with random bits and mapped to elliptic curve points via Elligator, ensuring that each address can later be recovered while appearing indistinguishable from a random point.  
 Both these IP points and the derived shared secrets are then additively split into $t$ shares.  
 Each STTP receives one share of every value, together with the hash of derived shared secrets.
 
-Each STTP independently processes its assigned shares and returns a \emph{partial} header to the client.  
-The client aggregates these partial headers by performing chunk-wise elliptic-curve point additions, thereby reconstructing the complete encrypted DSphinx header.
+Each STTP independently processes its assigned shares and returns a \emph{partial} header.  
+The client aggregates these partial headers by performing chunk-wise EC additions, thereby reconstructing the complete encrypted DSphinx header.
 Once aggregation is complete, the client attaches $\A{1}$ and sends the finalized header, together with the encrypted payload, to the first node on the path.
 
 
@@ -136,56 +153,64 @@ It obtains a share of the destination address (EC point $\Delta$), and for every
 \end{itemize}
 Using these shares, each STTP independently constructs a \emph{partial} encrypted header.  
 As illustrated in Fig.~\ref{fig:chunked_schema}, the computation proceeds in two stages: (i) a preprocessing phase that generates filler chunks, and (ii) a layer-by-layer encryption phase applied in reverse order, from the last hop to the first.
-\newline
+
 
 % Preprocessing
+\medskip
 \noindent{\textbf{Preprocessing Phase.}}
 The preprocessing step prepares a vector of filler chunks $\phi$ whose role is to cancel out during the encryption of successive layers, thereby ensuring a constant header size and enabling reversibility at the nodes. 
 Algorithm~\ref{algo:preprocessing} takes as input the share of the shared secrets ${s_i}$ and the generators ${G_j}$ associated with each chunk $j$, and outputs $n-1$ filler chunks, where $n = 2m+1$ is the header size for a path of length $m$.
-These filler chunks are given by \eqref{eq:preprocessing} as illustrated in Fig.~\ref{fig:chunked_schema} for the case where $m=3$.
-These filler chunks are computed according to \eqref{eq:preprocessing}, and their structure for the case $m=3$ is illustrated in Fig.~\ref{fig:chunked_schema}.
-These values ensure that after each encryption layer, the last two chunks evaluate to the identity element and can therefore be safely truncated.
-\newline
+These filler chunks are computed according to \eqref{eq:preprocessing}, and ensure that after each encryption layer, the last two chunks evaluate to the identity element and can therefore be safely truncated.
+The case $m=3$ is depicted in Fig.~\ref{fig:chunked_schema}.
+
 \begin{equation}
     \phi_j = - \sum_{i=1}^{m} s_i\, G_{\,n+j-2i}, \qquad 1 \le j \le n-1 .
 \label{eq:preprocessing}
 \end{equation}
 
-\begin{algorithm}[tb]
+\begin{algorithm}%[tb]
 \input{schema/code_filler_chunks.tex}
 \label{algo:preprocessing}
 \end{algorithm}
 
 % Layers
+\medskip
 \noindent{\textbf{Layered Encryption Phase.}}
-After preprocessing, the STTP initializes the header by appending the destination share with the filler chunks, yielding a header of $n$ chunks.
+After preprocessing, the STTP initializes the header $H$ by appending the destination share $\D{}$ with the filler chunks $\phi$, yielding a $n$-chunks header.
 Then, proceeding from node $i = m$ down to $i = 1$, the STTP performs the following operations (Alg.~\ref{algo:sttp}):
+
+\begin{algorithm}[h!]%[tb]
+    \input{schema/code_sttp.tex}
+    \label{algo:sttp}
+\end{algorithm}
+\begin{figure}[h!]%[tb]
+    \centering
+    \resizebox{1.01\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
+    \caption{Chunk-wise header encryption for a path of lenght $m=3$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
+    \label{fig:chunked_schema}
+\end{figure}
+
 \begin{enumerate}
-    \item \textbf{Encrypt each chunk}: 
-    Every chunk $j$ is encrypted with $\sG{i}{j}$ as:
+    \item \textbf{Encrypt Chunks}: 
+    Every chunk $j$ is encrypted as:
     \begin{equation}
-    H_{ij} = H_{(i+1,j)} + \sG{i}{j}.
+    H_{ij} = H_{(i+1,\,j)} + \sG{i}{j}
     \label{eq:layer_i}
     \end{equation}
-    Thus last two chunks whose result in identity elements and are safely removed.
-    \item \textbf{Compute the integrity tag:} 
-    The remaining chunks $\B{i}{1},\ldots,\B{i}{n-2}$ are used to compute the integrity tag as:
+    The last two chunks, which evaluate to the identity element, are safely truncated.
+    \item \textbf{Compute Integrity:} 
+    The remaining $n-2$ chunks are used to compute the integrity tag as:
     \begin{equation}
         \C{i} = \sG{i}{} + \sum_{j=1}^{n-2} \big( \hashIt{\sHashed{i}}{j} \, \B{i}{j} \big)
         \label{eq:integrity}
     \end{equation}
-    \item \textbf{Prepend node information}:
-    The node address $\N{i}$ and the integrity tag $\C{i}$ are prepended to $H$, producing a new header of $n$ chunks:
+    \item \textbf{Prepend Node Information}:
+    The node address $\N{i}$ and the integrity tag $\C{i}$ are prepended to $H_i$, producing a $n$-chunks header.
 \end{enumerate}
 After processing the first node, the STTP outputs the resulting encrypted header, which constitutes its partial contribution to the final DSphinx header.
-\newline
-
-\begin{algorithm}[tb]
-    \input{schema/code_sttp.tex}
-    \label{algo:sttp}
-\end{algorithm}
 
 % Integrity
+\medskip
 \noindent{\textbf{Integrity Mechanism.}}
 The integrity construction in \eqref{eq:integrity} combines two essential components:
 \begin{itemize}
@@ -194,14 +219,8 @@ The integrity construction in \eqref{eq:integrity} combines two essential compon
 \end{itemize}
 The pseudorandom weights prevent adversaries from introducing compensating modifications across chunks that preserve the checksum.
 The blinding offset prevents STTPs from using their knowledge of the weights to correlate integrity tags across packets.
-This design preserves homomorphism while ensuring unlinkability and integrity in the presence of partially corrupted STTPs.
+This design preserves homomorphism while ensuring unlinkability and integrity.
 
-\begin{figure}[tb]
-    \centering
-    \resizebox{1.\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
-    \caption{Chunk-wise header encryption done by the STTP. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
-    \label{fig:chunked_schema}
-\end{figure}
 
 % \paragraph{\textbf{Security Note.}}\label{note:security_why_indep_generators}
 % To preserve unlinkability, it is essential that the generators $ (\G{1}, \dots, \G{7}) $ are \textit{independent}, meaning their scalar relationships are unknown and computationally infeasible to derive.
@@ -212,55 +231,51 @@ This design preserves homomorphism while ensuring unlinkability and integrity in
 
 
 \subsection{Network Nodes}
-Upon receiving a packet, node $i$ extracts the cryptographic element $\A{i}$, the integrity tag $\C{i}$, and the encrypted header chunks $\B{i}{}$.  
-As in the original Sphinx design, the node stores previously seen $\A{i}$ values (until its private key is rotated).
+Upon receiving a packet, node $i$ extracts the cryptographic element $\A{i}$, the integrity tag $\C{i}$, and the encrypted routing information $\B{i}{}$.  
+As in Sphinx design, the node stores previously seen $\A{i}$ values (until its private key is rotated).
 If the received $\A{i}$ matches a stored value, the packet is discarded to prevent replay attacks.  
 If the value is fresh, the packet is processed as illustrated in Fig.~\ref{fig:mixnode_decryption}.
 
-The node first reconstructs its shared secret point $\S{i}$ using its private key \sk{i}, and then maps this point to the corresponding shared integer $\s{i}$ using the Elligator inverse mapping:
+The node first reconstructs its shared secret point using its private key \sk{i}, and maps it to the corresponding shared integer $\s{i}$ using the Elligator inverse mapping \eqref{eq:derive_secret}.
 \begin{equation}
 \begin{aligned}
-    \S{i} &= \sk{i} \, \A{i} \\
-    \s{i} &= \InverseMap{\S{i}}\\
+    \s{i} &= \InverseMap{(\sk{i} \, \A{i})}
 \end{aligned}
 \label{eq:derive_secret}
 \end{equation}
 
 % Integrity verification
 \noindent
-This value $\s{i}$ is then used to verify the integrity tag:
+This value $\s{i}$ is then used to verify the integrity tag \eqref{eq:integrity_check}.
 \begin{equation}
-\C{i} \overset{\text{?}}{=} \sG{i}{} + \sum_{j=1}^{5} \big( \hashIt{\s{i}}{j} \, \B{i}{j} \big)
+\C{i} \overset{\text{?}}{=} \sG{i}{} + \sum_{j=1}^{n-2} \big( \hashIt{\sHashed{i}}{j} \, \B{i}{j} \big)
 \label{eq:integrity_check}
 \end{equation}
 
 % Decryption
 If this check fails, the packet is discarded.
-Otherwise, the node pads the header by appending two \textit{identity} chunks (i.e. point at infinity) and then updates it as:
+Otherwise, the node appends the header with two \textit{identity} chunks (i.e. point at infinity).
+The header is then decrypted as \eqref{eq:decrypt}.
 \begin{equation}
-{\BB{i}{j}} = \B{i}{j} - \sG{i}{j} \qquad \forall j = 1, \dots, 7
+\BB{i}{j} = \B{i}{j} - \sG{i}{j}
 \label{eq:decrypt}
 \end{equation}
-
-The first resulting chunk, $\BB{i}{1}$, encodes the next node's IP address address (\N{i+1}).  
+The first resulting chunk $\BB{i}{1}$ encodes the next node's IP address (\N{i+1}).  
 It is mapped back to an integer using the inverse Elligator map, after which the padding bits are removed.
-
-The second chunk, $\BB{i}{2}$, becomes the integrity tag for the next node ($\C{i+1}$).  
-The remaining five chunks constitute the next encrypted routing information $(\B{i+1}{})$.
+The second chunk $\BB{i}{2}$ encodes the integrity tag for the next node ($\C{i+1}$).  
+The remaining chunks constitute the next encrypted routing information $(\B{i+1}{})$.
 
 % Update Alpha
-
 As specified in \eqref{eq:shared_secret}, the node applies the same update rule as the client to compute the next cryptographic element $\A{i+1}$:
-
 \begin{equation}
 \A{i+1} = s_i \, \A{i}
 \label{eq:update_alpha}
 \end{equation}
-Finally, the node forwards the updated header $(\A{i+1}, \C{i+1}, \B{i+1}{})$ to the next node in the path.
+Finally, the node forwards the updated packet with header $(\A{i+1},\, \B{i+1}{},\, \C{i+1})$ to the next node in the path.
 
-\begin{figure}[b]
+\begin{figure}%[b]
     \centering
     \resizebox{1.\linewidth}{!}{\input{schema/chunkwise_decryption.tex}}
-    \caption{Header processing at node $i$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
+    \caption{Header decryption by network node $i$ for a path $m=3$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
     \label{fig:mixnode_decryption}
 \end{figure}
