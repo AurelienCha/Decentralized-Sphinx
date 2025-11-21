@@ -10,12 +10,14 @@ At the same time, several conceptual and practical limitations remain.
 These limitations do not undermine the contributions of the present work, but they highlight important challenges that must be addressed before decentralized Sphinx-based systems can be deployed in real-world environments.
 
 \subsection{Limitations}
+
 \noindent\textbf{Client-Centric Trust.} 
 While our construction successfully decentralizes the Sphinx header computation, our design remains \emph{client-centric} in several key aspects.  
 The client still selects the path of a message. A malicious client can still bias route selection to reduce the anonymity set of honest users, or orchestrate classical deanonymization attacks, including (N-1)-attacks, by carefully crafting routes~\cite{oram2001peer}.  
 Although our scheme removes trust from the header-construction process, it does not yet mitigate threats originating from malicious clients. 
 Deciding how to choose the nodes in the path depends on the characteristics of the underlying system. For example, in the Lightning Network the path is selected using Dijkstra’s algorithm~\cite{poon2016bitcoin}, while in Nym every mixnode in the path is chosen uniformly from all the mixnodes in the corresponding layer~\cite{nym-network-whitepaper}. Therefore, in order to distribute path selection and key derivation to the STTPs, DSphinx must be aligned with the design of the specific system. Further work is thus required to ensure that path selection and key derivation are distributed to the STTPs in a manner that matches the requirements of each system.
 
+\medskip
 \noindent\textbf{Collusion between STTPs and Network Nodes.} 
 Our security analysis considers several collusion scenarios involving corrupted STTPs and nodes.  
 The current scheme guarantees security as long as (i) at least one STTP remains honest and (ii) not all nodes on the path are compromised.  
@@ -33,6 +35,7 @@ The client still selects the route and determines the hop-by-hop shared secrets,
 A promising direction for future work is therefore to decentralize these remaining components, in particular, the path selection process and the derivation of shared secrets along the route. 
 Shifting these responsibilities from a single client to a collaborative set of STTPs would reduce the influence of malicious clients, while offering a more balanced and robust trust model for practical deployments.
 
+\medskip
 \noindent\textbf{Privacy-Preserving Policy Enforcement.} 
 A major challenge in bringing decentralized networks such as mixnets and peer-to-peer into practical use is the lack of accountability and policy-enforcement mechanisms that do not undermine privacy~\cite{oram2001peer}.
 Because Sphinx reveals almost no information to the different entities in the path, verifying client legitimacy or enforcing policy is extremely difficult.  
@@ -40,6 +43,7 @@ We believe that decentralized packet construction opens a path toward generating
 Developing such integration remains an open and promising research direction.
 % A potential approach involves STTPs dynamically updating credentials during header construction and mixnodes further updating them during packet processing.
 
+\medskip
 \noindent\textbf{Performance Evaluation and Latency Analysis.} 
 Finally, although we provide an asymptotic analysis of computational complexity and an empirical study of header randomness, future work should include a thorough benchmark.  
 In particular, understanding the latency overheads introduced by parallel STTPs, network delays, and additional cryptographic operations will be essential for assessing the practicality of such decentralization in large real-world deployments.  

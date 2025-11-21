@@ -46,12 +46,12 @@ walk between two successive zero states, i.e. states where the cumulative
 sum equals $0$) or across the entire sequence.
 \end{itemize}
 In short, while the \emph{Frequency} test verifies global balance, the \emph{Matching} tests detect hidden repetitive structures, and the \emph{Random Walk} tests analyze the dynamic balance of bits over time.
-\newline
 
+\smallskip
 We compare our decentralized implementation against the original Sphinx
 implementation by Danezis\footnote{\url{https://github.com/UCL-InfoSec/sphinx}} using identical test suite configurations.
 
-
+\medskip
 \noindent\textbf{Datasets Generation.}
 %
 Twenty independent datasets were generated for both implementation.
@@ -60,15 +60,15 @@ For each epoch, a random destination IP and a path of three nodes were selected.
 
 According to NIST requirements, each input sequence should contain at least $1\,000\,000$ bits.
 We therefore concatenated multiple generated headers to reach a sequence of this size, repeating the process to obtain 100 sequences per dataset.
-\newline
 
+\smallskip
 NIST recommends interpreting results via two complementary criteria:
 \begin{itemize}
     \item Proportion of passing sequences (Fig.~\ref{fig:proportion});
     \item Uniformity of p-value distributions (Figs.~\ref{fig:hist_p-values} and \ref{fig:chisquare}).
 \end{itemize}
 
-
+\medskip
 \noindent\textbf{Passing Rate Analysis.}
 %
 Fig.~\ref{fig:proportion} highlights the proportion of sequences that passed each NIST test for both implementations.
@@ -86,7 +86,7 @@ In contrast, our implementation passes three tests that the original implementat
     \label{fig:proportion}
 \end{figure}
 
-
+\medskip
 \noindent\textbf{P-value Distribution Analysis.}
 %
 Fig.~\ref{fig:hist_p-values} shows the p-value histograms for both implementations across all 15 NIST tests.
@@ -107,7 +107,7 @@ Fig.~\ref{fig:chisquare} presents these results, highlighting that our implement
     \label{fig:chisquare}
 \end{figure}
 
-
+\medskip
 \noindent\textbf{Discussion.}
 %
 In terms of output randomness, our decentralized implementation performs better than the original Sphinx, as it passes a greater number of statistical tests, as summarized in Table~\ref{tab:test_summary}.
@@ -192,6 +192,7 @@ Accordingly, the overall computational burden is more sensitive to the number of
 As our design remains secure as long as one STTP is honest, only a small number $t$ may be sufficient.
 Determining the precise number needed to meet a desired trust threshold is left for future work.
 
+\medskip
 \noindent\textbf{Comparison with Sphinx.}
 %
 A direct comparison with the original Sphinx protocol is not entirely meaningful, as some primitives differ (e.g. Elligator).  
