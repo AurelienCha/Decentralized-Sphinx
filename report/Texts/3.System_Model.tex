@@ -68,7 +68,8 @@ We empirically validate this requirement using the NIST SP~800-22 randomness tes
 
 \medskip
 \noindent{\textbf{Integrity-Forgery Resistance.}}
-Sphinx embeds per-hop integrity tags to ensure that hones nodes are able to detect altered headers and will not process them.  
+Sphinx embeds per-hop integrity tags to ensure that honest nodes are able
+to detect and discard altered headers.  
 Any active adversary capable of injecting, replaying, or modifying packets must be unable to forge an integrity tag that passes verification.
 The decentralized construction should preserve this property, even in the presence of a strong adversary colluding with compromised STTPs or network nodes. 
 In particular, no trapdoor or weakness should arise from distributing header construction among multiple parties.

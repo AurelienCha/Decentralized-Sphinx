@@ -34,10 +34,9 @@ We define a mapping $\Map{}$ from integers to points and its inverse $\InverseMa
 Classical encodings map an integer directly to the $x$-coordinate of a valid point, but it succeeds only for roughly half of integers and introduces structural bias. 
 To avoid this issue, we rely on the Elligator mapping~\cite{bernstein2013elligator}, which deterministically maps any integer to a curve point while ensuring that the resulting points are uniformly distributed and computationally indistinguishable from randomly sampled points.  
 This property allows IP addresses to blend seamlessly with other cryptographic elements of the Sphinx header.
-\newline
 
 % Transition with next subsections (the four main steps)
-In summary, the protocol is organized into four main components, each described in the following subsections:
+The DSphinx protocol is organized into four main components, each described in the following subsections:
 %
 \begin{itemize}
     \item \textbf{Setup:} generation of independent random generators;
