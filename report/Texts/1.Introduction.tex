@@ -19,6 +19,8 @@ not learn its position within the route; it can infer only the immediately
 preceding and succeeding nodes, not the entire path.  Sphinx achieves this
 through a compact packet structure that offers cryptographically robust
 unlinkability as well as per-hop integrity protection.
+%
+\todo{Does this paragraph need one or two references?}
 
 However, despite its strengths, the Sphinx packet format is constructed
 \emph{centrally} by the clients before entering the network.  This
@@ -40,9 +42,8 @@ communication systems and decentralized networks.
 
 In this work, we introduce DSphinx, a \emph{decentralized Sphinx header
 construction} that distributes the computation across multiple independent
-semi-trusted third parties (STTPs).  To the best of our knowledge, this is
-the first work to decentralize the Sphinx packet format.
-
+semi-trusted third parties (STTPs).
+%
 Achieving decentralization while maintaining Sphinx's cryptographic
 guarantees raises several challenges.  First, the protocol must prevent
 individual STTP, or any coalition of corrupted STTPs, from learning routing
