@@ -15,9 +15,10 @@ Thus, the problem reduces to proving unlinkability at the node level, meaning th
 
 We formalize unlinkability using a standard indistinguishability game between a challenger $\mathcal{C}$ and an adversary $\mathcal{A}$.  
 Intuitively, the adversary observes a set of packets entering and leaving a node and attempts to determine which outgoing packet corresponds to a given incoming packet.
-\newline
 
+\medskip
 \noindent\textbf{Game Definition:}
+%
 \begin{enumerate}
 \item \textbf{Setup.}
   The challenger generates the node's secret keys and public system parameters $(G_1, \dots, G_7)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
@@ -41,21 +42,21 @@ $$
 $$
 The scheme provides unlinkability if every probabilistic polynomial-time adversary achieves only a negligible 
 advantage relative to the hardness of the underlying elliptic-curve assumptions (i.e. ECDLP on Curve25519).
-\newline 
 
+\medskip
 \noindent\textbf{Proof Sketch:}
 As in the original Sphinx construction, all packets have a fixed size (header and payload), preventing any adversary from correlating packets based on observable size patterns.
 In addition, headers are computationally indistinguishable from random bitstrings, as empirically confirmed by the NIST randomness test suite (see Section~\ref{sec:NIST}).
 Therefore, any successful distinguishing strategy by $\mathcal{A}$ must exploit a correlation between header's components $(\alpha, \beta, \gamma)$ and $(\alpha', \beta', \gamma')$.  
 We analyze the possible cases below.
-\newline
 
+\medskip
 \noindent{\textbf{Case 1: Linking via $\boldsymbol\alpha$.}}  
 Network nodes reject packets with duplicate $\alpha$ values, preventing trivial replay-based linkage.  
 The only relation between $\alpha$ and its processed form $\alpha'$ is $\alpha' = s \alpha$, where $s$ is the node's shared secret.  
 If $\mathcal{A}$ can link headers via $\alpha$, it can compute $s$ such that $\alpha' = s \alpha$, thereby solving an instance of the Elliptic Curve Discrete Logarithm Problem (ECDLP).
-\newline
 
+\medskip
 \noindent{\textbf{Case 2: Linking via $\boldsymbol\beta$.}}\label{sec:indep_generators}  
 % \paragraph{\textbf{Security Note.}}\label{note:security_why_indep_generators}
 % To preserve unlinkability, it is essential that the generators $ (\G{1}, \dots, \G{7}) $ are \textit{independent}, meaning their scalar relationships are unknown and computationally infeasible to derive.
@@ -70,16 +71,16 @@ $$
 
 To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used among all chunks, or that a fixed scalar relationship is preserved between two generators $G_j$ and $G_{j'}$ (i.e. $z$ such that $G_j = z G_{j'}$).
 Therefore, if generators are independent, then the adversary's task reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$.
-\newline
 
+\medskip
 \noindent{\textbf{Case 3: Linking via $\boldsymbol\gamma$.}}  
 The integrity tag $\gamma$ is a weighted sum of the encrypted routing components:
 $$
 \gamma = s G + \sum_{j=1}^{5} h^{(j)}(s)\, \beta_j.
 $$
 Finding a correlation between $\gamma$ and $\gamma'$ without knowledge of $s$ or its derived weights $h^{(j)}(s)$ is no easier than linking via $\beta$ (Case 2).
-\newline
 
+\medskip
 \noindent\textbf{Summary.}  
 Under the hardness assumption of the ECDLP, and assuming independent generators, no probabilistic polynomial-time adversary $\mathcal{A}$ can achieve a non-negligible advantage in the unlinkability game.  
 Therefore, we can conclude that the proposed scheme provides unlinkability.
@@ -118,8 +119,8 @@ Therefore, we can conclude that the proposed scheme provides unlinkability.
 
 Integrity-forgery resistance requires that an adversary cannot produce a modified header that is accepted by an honest node.  
 We formalize this property as a game in which the adversary attempts to forge a new header that passes integrity verification.
-\newline
 
+\medskip
 \noindent\textbf{Game Definition:}
 \begin{enumerate}
 \item \textbf{Setup.}
@@ -146,13 +147,13 @@ $$
 Here, $\lambda$ denotes the bit-security of the underlying elliptic curve group (e.g. $\lambda = 128$ for Curve25519).
 The scheme achieves integrity-forgery resistance if  $\mathrm{Adv}^{\mathsf{forgery}}_{\mathcal{A}}(\lambda)$  is negligible.
 This means that the adversary cannot do better than randomly guessing the correct integrity tag.
-\newline
 
+\medskip
 \noindent\textbf{Proof Sketch:}
 Each header chunk $\beta_{i,j}$ can be modified by an adversary in two possible ways: 
 either (i) the chunk is replaced by a new point $\beta'_{i,j}$, or (ii) it is incremented by an elliptic curve point $P_j$.
-\newline
 
+\medskip
 \noindent{\textbf{Case 1: Chunk replacement.}}
 Replacing $\beta_{i,j}$ with $\beta'_{i,j}$ requires updating the corresponding integrity tag $\gamma_i$ to $\gamma'_i$ such that:
 $$
@@ -160,17 +161,18 @@ $$
 $$
 This operation necessitates knowledge of the weight $h^{(j)}(s_i)$, which is derived from the shared secret $s_i$. 
 Without this information, an adversary cannot produce a valid updated integrity tag.
-\newline
 
-\noindent{\textbf{Case 2: Incremental modification.}}
+
+\medskip
+\noindent{\textbf{Case 2: Incremental Modification.}}
 If the adversary only adds a point $P_j$ to a single chunk, the integrity tag must be updated as:
 $$
 \gamma'_i = \gamma_i + h^{(j)}(s_i)\, P_j,
 $$
 which again requires knowledge of the corresponding weight $h^{(j)}(s_i)$.
-\newline
 
-\noindent{\textbf{Case 2.b: Balanced increment.}}
+\medskip
+\noindent{\textbf{Case 2.b: Balanced Increment.}}
 A more sophisticated attempt consists in modifying two chunks, say $j$ and $j'$, to preserve the checksum balance:
 $$
 \gamma'_i = \gamma_i + h^{(j)}(s_i)\, P_j + h^{(j')}(s_i)\, P_{j'}
@@ -180,13 +182,13 @@ $$
 \gamma'_i = \gamma_i + h^{(j')}(s_i)\, (n P_j + P_{j'})
 $$
 Thus, the adversary can choose any $P_j$ and set $P_{j'} = -n P_j$, keeping $\gamma'_i = \gamma_i$ unchanged and thereby forging integrity.  
-\newline
 
+\medskip
 \noindent\textbf{Summary \& Remarks.}
 Successful integrity forgery requires at least knowledge of scalar relations between the weights $h^{(j)}(s_i)$.  
 Since these weights are derived from one-time shared secrets through iterated hashing, such relations are computationally infeasible to obtain in the absence of collusion.
-\newline
 
+\smallskip
 \label{replay_resistance}\label{wrap_resistance}
 The original Sphinx article~\cite{sphinx} takes \emph{replay resistance}
 and \emph{wrap resistance} into account.
@@ -230,9 +232,9 @@ Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integ
 The preceding security arguments assume an ideal setting without collusion.
 However, since our construction relies on semi-trusted third parties (STTPs), it is essential to assess the system's resilience to collusion. 
 In this section, we formalize potential collusion scenarios and evaluate the additional capabilities an adversary may gain when colluding with subsets of STTPs.
-\newline
 
-\noindent{\textbf{STTP advantages.}}
+\medskip
+\noindent{\textbf{STTP Advantages.}}
 Among the set of $T$ semi-trusted third parties used to build an header, an STTP $t$ reveals three types of information:  
 \begin{itemize}
   \item an additive share of destinations $N_{(i,t)}$, such that\newline 
@@ -247,9 +249,9 @@ Hence, as long as at least one of the $T$ STTP remains honest, neither destinati
 The only additional information available to an adversary colluding with an STTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags for all the nodes in the path.  
 However, the integrity's blinding offset $s_i G$ prevents trivially associating weights to specific packets.
 Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the entire network.
-\newline
 
-\noindent\textbf{Case of corrupted node.}  
+\medskip
+\noindent\textbf{Case of Corrupted Node.}  
 While an STTP alone reveals only unlinked integrity weights, when colluding with a corrupted node, it enables the adversary to \emph{associate those weights to a specific packets} observed at the corrupted node.  
 Concretely, a corrupted node computes its shared secret $s_i$ using the packet's cryptographic element $\alpha$, derive $h(s_i)$, and compare it against the set of weights disclosed by the colluding STTP.
 If the compromised STTP participated in the construction of this packet's header, a match occurs, allowing the adversary to recover the remaining weights associated to this packet across all the nodes in its path.
@@ -263,6 +265,7 @@ In addition to revealing the node's position along the path, associating these w
 \end{enumerate}
 % DOING THE WORST CASE SCENARIO ?
 
+\medskip
 \noindent\textbf{Summary.}
 Collusion with either STTPs or network nodes alone does not compromise security.
 STTPs reveal only additive shares and unlinked weights, while nodes reveal only shared secrets.  
