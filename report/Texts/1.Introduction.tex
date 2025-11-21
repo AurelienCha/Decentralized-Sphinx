@@ -52,10 +52,9 @@ Finally, distributing the computation must not introduce any trapdoor, bias, or 
 Our construction addresses these challenges by encoding routing information as elliptic curve points, splitting secrets via additive secret sharing, and using a homomorphic pseudorandom weighted checksum as an integrity mechanism that remains compatible with decentralized computation.
 To the best of our knowledge, this is the first work to decentralize the Sphinx packet format. 
 We emphasize, however, that while DSphinx preserves Sphinx's security properties, it does not on its own prevent attacks related to client-side path selection. 
-Nevertheless, we view DSphinx as an essential step toward robust, verifiable, and flexible decentralized networks.\newline
-Since clients still select their own paths,
-our design does not yet prevent the aforementioned attacks. Yet, our
-decentralized header construction is an essential step towards distributed
+Yet, our
+decentralized header construction is an essential step towards robust,
+verifiable and flexible decentralized networks, enabling distributed
 path selection and key derivation, or the efficient enforcement of exit
 policies.
 
