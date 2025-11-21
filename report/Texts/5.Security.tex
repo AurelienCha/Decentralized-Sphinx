@@ -262,7 +262,7 @@ In addition to revealing the node's position along the path, associating these w
   \item \textbf{Integrity Forgery.} The adversary can modify any header chunks (including the destination $\Delta$) and recompute valid integrity tags, as discussed in Section~\ref{sec:integrity_forgery}.
   \item \textbf{Weaker Unlinkability.} The adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds subsequent integrity verifications.
   This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the node's batch size.%\todo{this also is wrong, see comment below}
-  %The probability of a corrupted node capturing a  specefic message depends on the routing algorithm of the network. For example in a free-routing network, the probability of an adversary suceeding is $1/n$ where $n$ is the total number of messages. However in modern decentralized networks routing algorithms are more complex and takes into consideration many parameters such as geolocation, trust and bandiwdtch of the servers~\cite{rahimi2023larmix}. 
+  %The probability of a corrupted node capturing a  specific message depends on the routing algorithm of the network. For example in a free-routing network, the probability of an adversary succeeding is $1/n$ where $n$ is the total number of messages. However in modern decentralized networks routing algorithms are more complex and takes into consideration many parameters such as geolocation, trust and bandwidth of the servers~\cite{rahimi2023larmix}. 
 \end{enumerate}
 % DOING THE WORST CASE SCENARIO ?
 
