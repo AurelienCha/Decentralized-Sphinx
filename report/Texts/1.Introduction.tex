@@ -18,9 +18,7 @@ or size.  Additionally, an intermediary node along the message path does
 not learn its position within the route; it can infer only the immediately
 preceding and succeeding nodes, not the entire path.  Sphinx achieves this
 through a compact packet structure that offers cryptographically robust
-unlinkability as well as per-hop integrity protection.
-%
-\todo{Does this paragraph need one or two references?}
+unlinkability as well as per-hop integrity protection~\cite{scherer2023provable}.
 
 However, despite its strengths, the Sphinx packet format is constructed
 \emph{centrally} by the clients before entering the network.  This
