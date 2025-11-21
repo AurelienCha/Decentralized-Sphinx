@@ -25,8 +25,8 @@ Each shared secret is split into $t$ additive shares, alongside the IP addresses
 % Header structure - Chunks
 In our decentralized Sphinx header construction, each piece of header information is represented as an elliptic curve (EC) point.
 The header is thus divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunked_schema}, where each chunk corresponds to one EC point.
-Each mixnode along the path adds two chunks: one encoding its IP address and another representing its integrity tag.
-Without loss of generality, we consider paths of three mixnodes in this paper, resulting in a seven-chunks header (i.e. seven EC points), two per mixnode plus one additional chunk for the final destination's IP address.
+Each network node along the path adds two chunks: one encoding its IP address and another representing its integrity tag.
+Without loss of generality, we consider paths of three nodes in this paper, resulting in a seven-chunks header (i.e. seven EC points), two per node plus one additional chunk for the final destination's IP address.
 
 % Elligator
 Representing IP addresses as elliptic curve points requires a reversible mapping between integers and curve points.  
@@ -57,7 +57,7 @@ We summarize the notations in Table~\ref{tab:notations}:
 
 		$\{G_j\}$     &  $j$-th generator \\
 		$s_i$     &  $i$-th shared secret \\
-		$m$     & number of hops \\
+		$m$     & number of nodes \\
 		$n$     & header size\\
 		$\C{i}$     & integrity tag \\
 		$N_i$	& $i$-th IP address in the path \\
@@ -160,7 +160,7 @@ These values ensure that after each encryption layer, the last two chunks evalua
 % Layers
 \noindent{\textbf{Layered Encryption Phase.}}
 After preprocessing, the STTP initializes the header by appending the destination share with the filler chunks, yielding a header of $n$ chunks.
-Then, proceeding from hop $i = m$ down to $i = 1$, the STTP performs the following operations (Alg.~\ref{algo:sttp}):
+Then, proceeding from node $i = m$ down to $i = 1$, the STTP performs the following operations (Alg.~\ref{algo:sttp}):
 \begin{enumerate}
     \item \textbf{Encrypt each chunk}: 
     Every chunk $j$ is encrypted with $\sG{i}{j}$ as:
@@ -175,10 +175,10 @@ Then, proceeding from hop $i = m$ down to $i = 1$, the STTP performs the followi
         \C{i} = \sG{i}{} + \sum_{j=1}^{n-2} \big( \hashIt{\sHashed{i}}{j} \, \B{i}{j} \big)
         \label{eq:integrity}
     \end{equation}
-    \item \textbf{Prepend hop information}:
+    \item \textbf{Prepend node information}:
     The node address $\N{i}$ and the integrity tag $\C{i}$ are prepended to $H$, producing a new header of $n$ chunks:
 \end{enumerate}
-After processing the first hop, the STTP outputs the resulting encrypted header, which constitutes its partial contribution to the final DSphinx header.
+After processing the first node, the STTP outputs the resulting encrypted header, which constitutes its partial contribution to the final DSphinx header.
 \newline
 
 \begin{algorithm}[tb]
@@ -246,7 +246,7 @@ Otherwise, the node pads the header by appending two \textit{identity} chunks (i
 The first resulting chunk, $\BB{i}{1}$, encodes the next node's IP address address (\N{i+1}).  
 It is mapped back to an integer using the inverse Elligator map, after which the padding bits are removed.
 
-The second chunk, $\BB{i}{2}$, becomes the integrity tag for the next hop ($\C{i+1}$).  
+The second chunk, $\BB{i}{2}$, becomes the integrity tag for the next node ($\C{i+1}$).  
 The remaining five chunks constitute the next encrypted routing information $(\B{i+1}{})$.
 
 % Update Alpha
