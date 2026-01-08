@@ -16,27 +16,27 @@ Because our construction introduces semi-trusted third parties (STTPs), we addit
 An adversary in our setting may combine these capabilities, controlling parts of the network while also corrupting a subset of network nodes and STTPs.  
 We assume that adversaries are computationally bounded and cannot break standard cryptographic assumptions such as the hardness of the Elliptic-Curve Discrete Logarithm Problem (ECDLP).
 
-\medskip
+% \medskip
 \noindent{\textbf{Passive Network Adversary.}}
 This adversary can observe all packets entering and leaving any node, but cannot alter them.  
 Its primary goal is to break unlinkability by correlating an incoming packet with one of the outgoing packets, thereby reconstructing the packet's path and ultimately linking the sender to the receiver.  
 Such an adversary may attempt correlation by identifying relationships between different header components, or by detecting statistical biases in the header bitstream through advanced cryptanalytic techniques.
 
-\medskip
+% \medskip
 \noindent{\textbf{Active Network Adversary.}}
 This adversary extends the capabilities of the passive adversary by being able to modify, drop, replay, or inject packets at any point in the network.  
 The attacker's main objective is to forge valid integrity tags so as to
 tamper with information while still producing headers that appear valid to honest nodes.
 To counter such an adversary, our scheme must provide strong, per-hop integrity protection, analogous to the original Sphinx design but adapted to the decentralized construction.
 
-\medskip
+% \medskip
 \noindent{\textbf{Corrupted Network Node.}}
 Additionally the adversary is able to control a subset of network nodes.  
 A corrupted node reveals its internal state, including its shared secret, and data derived during processing.  
 The protocol must therefore ensure that compromising nodes do not reduce the privacy of the remaining parts of the route, and that unlinkability holds as long as at least one node on the path remains honest.  
 Similarly, leaking a node's shared secret must not enable an adversary to recover information about other nodes or compromise their integrity tags.
 
-\medskip
+% \medskip
 \noindent{\textbf{Corrupted STTP.}}
 Decentralizing header construction introduces an additional potential adversary not present in the original Sphinx design.  
 STTPs are assumed to follow the protocol but may attempt to infer extra information during the partial header construction.
@@ -51,7 +51,7 @@ This threat is particularly relevant in decentralized settings, where corrupted 
 This section details the security and privacy guarantees that our decentralized header construction must achieve.
 These objectives ensure that decentralization does not weaken the cryptographic or anonymity properties of the original Sphinx protocol~\cite{sphinx}, while providing robustness against partial compromise and collusion.
 
-\medskip
+% \medskip
 \noindent{\textbf{Unlinkability.}}
 Our primary goal is to preserve the strong unlinkability property achieved by Sphinx design.  
 At each node, an adversary observing both incoming and outgoing packets should be unable to correlate them, preventing reconstruction of the full communication path.
@@ -66,7 +66,7 @@ In particular, unlinkability requires that:
 The latter ensures that no structural bias in the bitstream can be exploited by advanced cryptanalytic techniques.  
 We empirically validate this requirement using the NIST SP~800-22 randomness test suite (Section~\ref{sec:NIST}).
 
-\medskip
+% \medskip
 \noindent{\textbf{Integrity-Forgery Resistance.}}
 Sphinx embeds per-hop integrity tags to ensure that honest nodes are able
 to detect and discard altered headers.  
@@ -74,7 +74,7 @@ Any active adversary capable of injecting, replaying, or modifying packets must 
 The decentralized construction should preserve this property, even in the presence of a strong adversary colluding with compromised STTPs or network nodes. 
 In particular, no trapdoor or weakness should arise from distributing header construction among multiple parties.
 
-\medskip
+% \medskip
 \noindent{\textbf{Collusion Resistance.}}
 % STTP
 Because header generation is distributed across multiple STTPs, our scheme must remain secure even if a subset of them colludes.

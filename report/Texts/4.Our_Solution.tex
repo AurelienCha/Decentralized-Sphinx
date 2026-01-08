@@ -36,7 +36,7 @@ To avoid this issue, we rely on the Elligator mapping~\cite{bernstein2013elligat
 This property allows IP addresses to blend seamlessly with other cryptographic elements of the Sphinx header.
 
 % Transition with next subsections (the four main steps)
-\smallskip
+% \smallskip
 The DSphinx protocol is organized into four main components, each described in the following subsections:
 %
 \begin{itemize}
@@ -116,7 +116,7 @@ As illustrated in Fig.~\ref{fig:chunked_schema}, the computation proceeds in two
 
 
 % Preprocessing
-\medskip
+% \medskip
 \noindent{\textbf{Preprocessing Phase.}}
 The preprocessing step prepares a vector of filler chunks $\phi$ whose role is to cancel out during the encryption of successive layers, thereby ensuring a constant header size and enabling reversibility at the nodes. 
 Algorithm~\ref{algo:preprocessing} takes as input the share of the shared secrets ${s_i}$ and the generators ${G_j}$ associated with each chunk $j$, and outputs $n-1$ filler chunks, where $n = 2m+1$ is the header size for a path of length $m$.
@@ -133,12 +133,12 @@ The case $m=3$ is depicted in Fig.~\ref{fig:chunked_schema}.
 After preprocessing, the STTP initializes the header $H$ by appending the destination share $\D{}$ with the filler chunks $\phi$, yielding a $n$-chunks header.
 Then, proceeding from node $i = m$ down to $i = 1$, the STTP performs the following operations (Alg.~\ref{algo:sttp}):
 
-\begin{figure}%[h!]%[tb]
-    \centering
-    \resizebox{0.6\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
-    \caption{Chunk-wise header encryption for a path of length $m=3$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
-    \label{fig:chunked_schema}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \resizebox{0.5\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
+%     \caption{Chunk-wise header encryption for a path of length $m=3$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
+%     \label{fig:chunked_schema}
+% \end{figure}
 
 \begin{enumerate}
     \item \textbf{Encrypt Chunks}: 
@@ -160,7 +160,7 @@ Then, proceeding from node $i = m$ down to $i = 1$, the STTP performs the follow
 After processing the first node, the STTP outputs the resulting encrypted header, which constitutes its partial contribution to the final DSphinx header.
 
 % Integrity
-\medskip
+% \medskip
 \noindent{\textbf{Integrity Mechanism.}}
 The integrity construction in \eqref{eq:integrity} combines two essential components:
 \begin{itemize}
@@ -215,9 +215,48 @@ As specified in \eqref{eq:shared_secret}, the node applies the same update rule 
 \end{equation}
 Finally, the node forwards the updated packet with header $(\A{i+1},\, \B{i+1}{},\, \C{i+1})$ to the next node in the path.
 
-\begin{figure}%[b]
+% \begin{figure}
+%     \centering
+%     \resizebox{.6\linewidth}{!}{\input{schema/chunkwise_decryption.tex}}
+%     \caption{Header decryption by node $i$ for a path of length $m=3$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
+%     \label{fig:mixnode_decryption}
+% \end{figure}
+
+\begin{figure}[H]
     \centering
-    \resizebox{.6\linewidth}{!}{\input{schema/chunkwise_decryption.tex}}
-    \caption{Header decryption by node $i$ for a path of length $m=3$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
-    \label{fig:mixnode_decryption}
+
+    % -------- Left figure (a) --------
+    \begin{subfigure}[b]{0.48\linewidth}
+        % \centering
+        \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_encryption.tex}}
+        \caption{Encryption (STTP)}
+        \label{fig:chunk-encryption}
+    \end{subfigure}
+    \hfill
+    % -------- Right column --------
+    \begin{subfigure}[b]{0.48\linewidth}
+        % \centering
+
+        % (b) top-right
+        \begin{subfigure}[t]{\linewidth}
+            \centering
+            \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_preprocessing.tex}}
+            \caption{Preprocessing (STTP)}
+            \label{fig:chunk-preprocessing}
+        \end{subfigure}
+
+        \vspace{0.5em}
+
+        % (c) bottom-right
+        \begin{subfigure}[b]{\linewidth}
+            \centering
+            \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_decryption.tex}}
+            \caption{Decryption (network node)}
+            \label{fig:chunk-decryption}
+        \end{subfigure}
+
+    \end{subfigure}
+
+    \caption{Overview of chunk-wise header processing for a path of length $m=3$. Circled numbers \raisebox{1pt}{\eq[\color{red}\scriptsize x]} refers to Equation x in the paper.}
+    \label{fig:chunkwise-overview}
 \end{figure}
