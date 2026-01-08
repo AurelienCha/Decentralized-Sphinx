@@ -74,8 +74,9 @@ Fig.~\ref{fig:hist_p-values} shows the p-value histograms for both implementatio
 Uniformity of these distributions is further assessed using a Chi-square goodness-of-fit test with a significance threshold of $0.0001$, as recommended by NIST.
 Fig.~\ref{fig:chisquare} presents these results, highlighting that our implementation achieves uniform p-value distributions on the \textit{Frequency} and \textit{Cumulative Sums} tests, whereas the original Sphinx fails them.
 
-\begin{table}[H]
+\begin{table}%[H]
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \hspace{0.5mm}\Circle~=\enspace Fail)}
+\centering
 \label{tab:test_summary}
     \hspace{-1mm}
     \scalebox{.92}{

@@ -142,20 +142,22 @@ Then, proceeding from node $i = m$ down to $i = 1$, the STTP performs the follow
 
 \begin{enumerate}
     \item \textbf{Encrypt Chunks}: 
-    Every chunk $j$ is encrypted as:
+    Each chunk $j$ is encrypted according Eq.~\eqref{eq:layer_i}.
+    The last two chunks can safely be truncated as they evaluate to the identity element.
     \begin{equation}
-    H_{ij} = H_{(i+1,\,j)} + \sG{i}{j}
-    \label{eq:layer_i}
+        H_{ij} = H_{(i+1,\,j)} + \sG{i}{j}
+        \label{eq:layer_i}
     \end{equation}
-    The last two chunks, which evaluate to the identity element, are safely truncated.
-    \item \textbf{Compute Integrity:} 
-    The remaining $n-2$ chunks are used to compute the integrity tag as:
+
+    \item \textbf{Integrity Tag:} 
+    The remaining chunks are used to compute the integrity as:
     \begin{equation}
         \C{i} = \sG{i}{} + \sum_{j=1}^{n-2} \big( \hashIt{\sHashed{i}}{j} \, \B{i}{j} \big)
         \label{eq:integrity}
     \end{equation}
+
     \item \textbf{Prepend Node Information}:
-    The node address $\N{i}$ and the integrity tag $\C{i}$ are prepended to $H_i$, producing a $n$-chunks header.
+    The node address $\N{i}$ and the integrity tag $\C{i}$ are prepended to $H_i$, producing again a $n$-chunks header.
 \end{enumerate}
 After processing the first node, the STTP outputs the resulting encrypted header, which constitutes its partial contribution to the final DSphinx header.
 
@@ -222,7 +224,7 @@ Finally, the node forwards the updated packet with header $(\A{i+1},\, \B{i+1}{}
 %     \label{fig:mixnode_decryption}
 % \end{figure}
 
-\begin{figure}[H]
+\begin{figure}%[H]
     \centering
 
     % -------- Left figure (a) --------

@@ -85,37 +85,12 @@ Finding a correlation between $\gamma$ and $\gamma'$ without knowledge of $s$ or
 Under the hardness assumption of the ECDLP, and assuming independent generators, no probabilistic polynomial-time adversary $\mathcal{A}$ can achieve a non-negligible advantage in the unlinkability game.  
 Therefore, we can conclude that the proposed scheme provides unlinkability.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \paragraph{Assumptions.}
-% \begin{enumerate}
-%   \item The Elliptic Curve Discrete Logarithm Problem (ECDLP) is hard in $\mathbb{G}$.
-%   \item The hash function $h$ acts as a pseudorandom function or random oracle.
-%   \item The generators $\{G_j\}$ are independent, i.e. no scalar $x$ such that $G_j = x G_{j'}$ is known to any party.
-% \end{enumerate}
-
-% \paragraph{Attacks.}
-% \begin{enumerate}
-%   \item recovering $s_i$, 
-%   \item learning weights, 
-%   \item exploiting generator relations
-% \end{enumerate}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 %%%%%%%%%%%%%
 % INTEGRITY %
 %%%%%%%%%%%%%
 
 \subsection{Integrity Forgery Resistance}\label{sec:integrity_forgery}
-
-% A pseudorandom weighted checksum is used due to the decentralized nature of our scheme, which requires a homomorphic integrity mechanism.
-% As a remainder, the integrity checksum is computed as:
-% $$
-% \C{i} = s_i G + \sum_j h^{(j)}(s_i)\, B_{(i,j)},
-% $$
-% where $B_{(i,j)}$ denotes the $j$-th header chunk, $s_i$ is the shared secret, and $h^{(j)}(s_i)$ is the $j$-th iterated hash of $s_i$.  
-% This construction combines two elements: (i) a \emph{weighted sum}, and (ii) a blinding \emph{offset} term $s_i G$.  
-% \newline
 
 Integrity-forgery resistance requires that an adversary cannot produce a modified header that is accepted by an honest node.  
 We formalize this property as a game in which the adversary attempts to forge a new header that passes integrity verification.
@@ -198,30 +173,6 @@ Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (
 Similarly, \emph{wrap resistance} also requires producing a modified header that passes integrity verification.
 Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integrity forgery resistance}. 
 
-% \paragraph{Security theorem (informal).}
-% Assume:
-% \begin{itemize}
-%   \item[(A1)] ECDLP is hard in $\mathbb{G}$;
-%   \item[(A2)] $h$ acts as a secure PRF / random oracle (so hashed weights are pseudorandom);
-%   \item[(A3)] the chunk generators $\{G_j\}$ are independent (no known scalar relations).
-% \end{itemize}
-
-%%%%%%%%%%%%%%%
-% TERMINATION %
-%%%%%%%%%%%%%%%
-
-% \subsection{Termination guarantee}
-
-% \begin{itemize}
-%   \item Malicious mixnode modify packet to redirect to another mixnode => Need integrity forgery
-%   \item Malicious client manage to compute a packet that cycle on its route => probably 'impossible' but how to prove it ?! 
-%   He needs to have the filler chunks to sum up to get a precise point. 
-%   In theory, it is possible for one chunk but all the chunks, and on multiple layers seems highly impossible.
-%   In addition, despite being able to change the shared secrets using a different secret x or different mixnodes, he cannot choose a specific (because of Elligator that map a shared point to a shared integer)
-%   \item 
-% \end{itemize}
-% \todo[inline, color=red]{If the GPA is a malicious client, then can have infinite path's length.
-% For example, when the packet arrived at the last mixnode, the client can just replace the packet with a fresh new packet (since there are no 'credentials' yet)}
 
 %%%%%%%%%%%%%
 % COLLUSION %
@@ -237,10 +188,8 @@ In this section, we formalize potential collusion scenarios and evaluate the add
 \noindent{\textbf{STTP Advantages.}}
 Among the set of $T$ semi-trusted third parties used to build an header, an STTP $t$ reveals three types of information:  
 \begin{itemize}
-  \item an additive share of destinations $N_{(i,t)}$, such that\newline 
-  $N_i = \sum_{t=1}^T N_{(i,t)}$;  
-  \item an additive share of shared secrets $s_{(i,t)}$, such that\newline 
-  $s_i = \sum_{t=1}^T s_{(i,t)}$;
+  \item an additive share of destinations $N_{(i,t)}$, such that $N_i = \sum_{t=1}^T N_{(i,t)}$;  
+  \item an additive share of shared secrets $s_{(i,t)}$, such that\ $s_i = \sum_{t=1}^T s_{(i,t)}$;
   \item the hash values of the full shared secrets $\{h(s_1), h(s_2), h(s_3)\}$.
 \end{itemize}
 %
