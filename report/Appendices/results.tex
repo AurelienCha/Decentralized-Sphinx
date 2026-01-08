@@ -1,0 +1,41 @@
+\section*{Results}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.7\linewidth]{Images/proportion_dot.png}
+    \caption{Proportion of sequences passing each NIST test for both our implementation and the original Sphinx (significance level = 0.01).}
+    \label{fig:proportion}
+\end{figure}
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=.5\linewidth]{Images/hist_p-values.png}
+%     \caption{Distribution of p-values for both implementations across all the NIST SP 800-22 statistical tests.}
+%     \label{fig:hist_p-values}
+% \end{figure}
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=.5\linewidth]{Images/chisquare.png}
+%     \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across all the NIST SP 800-22 statistical tests.}
+%     \label{fig:chisquare}
+% \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Images/hist_p-values.png}
+        \caption{Distribution of p-values across all NIST SP 800-22 tests.}
+        \label{fig:hist_p-values}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Images/chisquare.png}
+        \caption{Chi-square test assessing uniformity of p-value distributions.}
+        \label{fig:chisquare}
+    \end{subfigure}
+    \caption{Evaluation of the NIST SP 800-22 statistical randomness test suite.}
+    \label{fig:nist-results}
+\end{figure}

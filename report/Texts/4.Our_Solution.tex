@@ -10,14 +10,14 @@ Each shared secret is split into $t$ additive shares, alongside the IP addresses
 (4) The client then aggregates these partial headers to reconstruct the final header. 
 (5) Finally, the client encrypts the payload accordingly to the header and sends the message through the decentralized network.
 
-\begin{figure}[t]
+\begin{figure}%[t]
     \centering
-    \resizebox{1.\linewidth}{!}{\input{schema/schema_overview.tex}}
+    \resizebox{.6\linewidth}{!}{\input{schema/schema_overview.tex}}
     \caption{Overview of the decentralized scheme. 
     (1) The client selects a route and generates cryptographic secrets. 
     (2) Secrets are split into shares and sent to STTPs. 
     (3) Each STTP constructs a partial header. 
-    (4) The client aggregates partial headers into the final header. 
+    (4) The client aggregates partial headers into final header. 
     (5) The message is sent through the network.}
     \label{fig:overall_schema}
 \end{figure}
@@ -43,48 +43,8 @@ The DSphinx protocol is organized into four main components, each described in t
     \item \textbf{Setup:} generation of independent random generators;
     \item \textbf{Client:} additive sharing of information to STTPs;
     \item \textbf{STTP:} encryption of shares into partial headers;
-    \item \textbf{Network Nodes:} packets decryption and forwarding.
+    \item \textbf{Network nodes:} packets decryption and forwarding.
 \end{itemize}
-The notation used in this section is summarized in Table~\ref{tab:notations}.
-\begin{table}[h!]
-    \caption{Notation}
-    \label{tab:notations}
-    \centering
-    \begin{tabular}{c l}
-        \toprule
-        \multicolumn{2}{l}{\textbf{Indices}}\\
-        $i$          & node index \\
-        $j$          & chunk index \\
-        $t$          & STTP index \\[2pt]
-
-        \multicolumn{2}{l}{\textbf{Parameters}}\\
-        $m$          & path length \\
-        $n$          & header size \\
-        $p$          & prime subgroup order \\[2pt]
-        
-        \multicolumn{2}{l}{\textbf{Secrets and Keys}}\\
-        $\PK{}$      & node public key \\
-        $\sk{}$      & node secret key \\
-        $x$          & client secret nonce \\
-        $s$          & shared secret \\
-        $\sHashed{}$ & hash of shared secret \\[2pt]
-
-        \multicolumn{2}{l}{\textbf{Header Elements}}\\
-        $G$          & curve generator \\
-        $N$	         & encoded IP address \\
-        $\A{}$       & cryptographic element \\
-        $\B{}{}$     & encrypted routing information \\
-        $\C{}$       & integrity tag \\
-        $\phi$       & filler chunks \\
-        $H$          & header ($N \| \C{} \| \B{}{}$) \\[2pt]
-
-        \multicolumn{2}{l}{\textbf{Functions}}\\
-        $\Map{}$         & Elligator mapping (int $\rightarrow$ EC point) \\
-        $\hspace{3.5mm}\InverseMap{}$  & inverse Elligator (EC point $\rightarrow$ int) \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
 
 \subsection{Setup}
 
@@ -168,24 +128,14 @@ The case $m=3$ is depicted in Fig.~\ref{fig:chunked_schema}.
 \label{eq:preprocessing}
 \end{equation}
 
-\begin{algorithm}%[tb]
-\input{schema/code_filler_chunks.tex}
-\label{algo:preprocessing}
-\end{algorithm}
-
 % Layers
-\medskip
 \noindent{\textbf{Layered Encryption Phase.}}
 After preprocessing, the STTP initializes the header $H$ by appending the destination share $\D{}$ with the filler chunks $\phi$, yielding a $n$-chunks header.
 Then, proceeding from node $i = m$ down to $i = 1$, the STTP performs the following operations (Alg.~\ref{algo:sttp}):
 
-\begin{algorithm}[h!]%[tb]
-    \input{schema/code_sttp.tex}
-    \label{algo:sttp}
-\end{algorithm}
-\begin{figure}[h!]%[tb]
+\begin{figure}%[h!]%[tb]
     \centering
-    \resizebox{1.01\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
+    \resizebox{0.6\linewidth}{!}{\input{schema/chunkwise_encryption.tex}}
     \caption{Chunk-wise header encryption for a path of length $m=3$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
     \label{fig:chunked_schema}
 \end{figure}
@@ -220,14 +170,6 @@ The integrity construction in \eqref{eq:integrity} combines two essential compon
 The pseudorandom weights prevent adversaries from introducing compensating modifications across chunks that preserve the checksum.
 The blinding offset prevents STTPs from using their knowledge of the weights to correlate integrity tags across packets.
 This design preserves homomorphism while ensuring unlinkability and integrity.
-
-
-% \paragraph{\textbf{Security Note.}}\label{note:security_why_indep_generators}
-% To preserve unlinkability, it is essential that the generators $ (\G{1}, \dots, \G{7}) $ are \textit{independent}, meaning their scalar relationships are unknown and computationally infeasible to derive.
-% If the same generator \G{} were used across chunks (or their scalar relationships known), an adversary could compute chunk-wise difference between consecutive layers: $ \B{i}{j} - \B{i+1}{j} = \sG{i}{} $.
-% Since the shared secret \s{i} remains consistent within a layer, the resulting differences would reveal a predictable pattern (uniform or preserved scalar relationships).
-% This consistency could allow an adversary to correlate incoming and outgoing packets at a mixnode, thereby breaking the unlinkability property.
-% Using independent generators for each chunk prevents such correlations and is therefore critical to the protocol's security.  
 
 
 \subsection{Network Nodes}
@@ -275,7 +217,7 @@ Finally, the node forwards the updated packet with header $(\A{i+1},\, \B{i+1}{}
 
 \begin{figure}%[b]
     \centering
-    \resizebox{1.\linewidth}{!}{\input{schema/chunkwise_decryption.tex}}
+    \resizebox{.6\linewidth}{!}{\input{schema/chunkwise_decryption.tex}}
     \caption{Header decryption by node $i$ for a path of length $m=3$. Circled numbers \eq[\color{red}x] refers to Equation x in the paper.}
     \label{fig:mixnode_decryption}
 \end{figure}

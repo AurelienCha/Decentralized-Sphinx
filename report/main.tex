@@ -1,6 +1,5 @@
-\documentclass[compsoc,conference,a4paper,10pt,times]{IEEEtran}
-\IEEEoverridecommandlockouts
-% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\documentclass[runningheads]{llncs}
+
 \usepackage[american]{babel}
 \usepackage[english=american]{csquotes}
 
@@ -26,6 +25,8 @@
 \usepackage{comment}
 \usepackage{wasysym} % Add this in your preamble for the circle symbols
 % \usepackage{stfloats} %[!b] for bottom-page figure
+\usepackage{subcaption}
+
 \input{schema/tikz-math_preamble}
 
 \usepackage{booktabs} % \toprule, \midrule, \bottomrule
@@ -43,33 +44,22 @@
 
 
 \title{DSphinx: A Decentralized Sphinx Construction for Decentralized Networks}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TODO %%%%%%%%%%%%%%%%%%%%% (uncomment if not anonymous submission)
-% \author{
-% 		\IEEEauthorblockN{\hspace{-1cm}Aurélien Chassagne}
-% 		\IEEEauthorblockA{\textit{\hspace{-1cm}Université Libre de Bruxelles} \\
-% 			\hspace{-1cm}Brussels, Belgium \\
-% 			\hspace{-1cm}aurelien.chassagne@ulb.be}
-% 		\and
-% 		\IEEEauthorblockN{Iness Ben Guirat}
-% 		\IEEEauthorblockA{\textit{Université Libre de Bruxelles} \\
-% 			Brussels, Belgium \\
-% 			iness.ben.guirat@ulb.be}
-% 		\and
-% 		\IEEEauthorblockN{Jan Tobias Mühlberg}
-% 		\IEEEauthorblockA{\textit{Université Libre de Bruxelles} \\
-% 			Brussels, Belgium \\
-% 			jan.tobias.muehlberg@ulb.be}
-% 		\and
-% 		\IEEEauthorblockN{\hspace{3cm}Jean-Michel Dricot}
-% 		\IEEEauthorblockA{\textit{\hspace{3cm}Université Libre de Bruxelles} \\
-% 			\hspace{3cm}Brussels, Belgium \\
-% 			\hspace{3cm}jean-michel.dricot@ulb.be}
-% 		\and
-% 		\IEEEauthorblockN{Olivier Markowitch}
-% 		\IEEEauthorblockA{\textit{Université Libre de Bruxelles} \\
-% 			Brussels, Belgium \\
-% 			olivier.markowitch@ulb.be}
-% 	}
+
+
+\author{Aurélien Chassagne\inst{1}\orcidID{0009-0008-7207-868X} \and
+Iness Ben Guirat\inst{1}\orcidID{0000-0002-8766-594X} \and
+Jan Tobias Mühlberg\inst{1}\orcidID{0000-0001-5035-0576} \and
+Jean-Michel Dricot\inst{1}\orcidID{0000-0002-8539-9940}}
+%
+\authorrunning{A. Chassagne et al.}
+% First names are abbreviated in the running head.
+% If there are more than two authors, 'et al.' is used.
+%
+\institute{Université Libre de Bruxelles (ULB), Brussels, Belgium
+% \email{lncs@springer.com}\\
+% \url{http://www.springer.com/gp/computer-science/lncs} 
+}
+%
 
 \maketitle
 
@@ -82,13 +72,10 @@ In this paper, we propose DSphinx, a decentralized variant of the Sphinx packet 
 We provide a formal analysis of the main security properties of our decentralized Sphinx packet format in the presence of network adversaries, corrupted mixnodes and semi-trusted third parties.
 Additionally, we implement our scheme in Python and evaluate the unlinkability property using the NIST SP 800-22 statistical randomness test suite.  
 Our empirical results show that our decentralized scheme achieves unlinkability passing more statistical tests than the original Sphinx format.
-\end{abstract}
-  
-  % Our decentralized construction enhances deployment flexibility and paves the way for privacy-preserving mechanisms that could verify the legitimacy of packets at any hop, enabling early rejection of unauthorized traffic without compromising privacy. This work represents a first step towards a decentralized route selection and packet legitimacy enforcement.%, for example system that want to enforce exit policy.
 
-\begin{IEEEkeywords}
-sphinx, mixnet, decentralized networks
-\end{IEEEkeywords}
+\keywords{Sphinx \and Mixnet \and Decentralized networks.}
+\end{abstract}
+
 
 \newcommand{\artifact}[0]{https://anonymous.4open.science/r/A_Decentralized_Sphinx_Construction_for_Decentralized_Networks}
 
@@ -101,20 +88,45 @@ sphinx, mixnet, decentralized networks
 \input{Texts/7.Discussion}
 \input{Texts/8.Conclusion}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TODO %%%%%%%%%%%%%%%%%%%%% (uncomment if not anonymous submission)
+\begin{credits}
+\subsubsection{\ackname} This research is funded by Belgium Walloon region CyberExcellence program (grant \#2110186).
+\subsubsection{\discintname}
+The authors have no competing interests to declare that are relevant to the content of this article. 
+\end{credits}
+
+%% TEMPLATE
+% \begin{credits}
+% \subsubsection{\ackname} A bold run-in heading in small font size at the end of the paper is
+% used for general acknowledgments, for example: This study was funded
+% by X (grant number Y).
+
+% \subsubsection{\discintname}
+% It is now necessary to declare any competing interests or to specifically
+% state that the authors have no competing interests. Please place the
+% statement with a bold run-in heading in small font size beneath the
+% (optional) acknowledgments\footnote{If EquinOCS, our proceedings submission
+% system, is used, then the disclaimer can be provided directly in the system.},
+% for example: The authors have no competing interests to declare that are
+% relevant to the content of this article. Or: Author A has received research
+% grants from Company W. Author B has received a speaker honorarium from
+% Company X and owns stock in Company Y. Author C is a member of committee Z.
+% \end{credits}
+
+
 % \section*{Acknowledgment}
 % This research is funded by Belgium Walloon region CyberExcellence program (grant \#2110186)
-% %This research is funded by the CyberExcellence project of the Public Service of Wallonia (SPW Recherche), convention No. 2110186.
+%This research is funded by the CyberExcellence project of the Public Service of Wallonia (SPW Recherche), convention No. 2110186.
 
 \balance
-\bibliographystyle{ieeetr}
+\bibliographystyle{splncs04}
 \bibliography{bib}
 
 % \appendices
-% \section{Data Availability}
-% \lipsum[1-4]
-% \section{Theorem proofs}
-% \lipsum[5-6]
+
+\input{Appendices/notation.tex}
+\input{Appendices/pseudo_code.tex}
+\input{Appendices/results.tex}
+
 
 
 

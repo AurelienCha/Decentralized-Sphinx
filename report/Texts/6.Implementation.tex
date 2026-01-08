@@ -40,14 +40,6 @@ In short, while the \emph{Frequency} test verifies global balance, the \emph{Mat
 We compare our decentralized implementation against the original Sphinx
 implementation by Danezis\footnote{\url{https://github.com/UCL-InfoSec/sphinx}} using identical test suite configurations.
 
-\begin{figure}[H]%[b]
-    \centering
-    \includegraphics[width=1.\linewidth]{Images/proportion_dot.png}
-    \caption{Proportion of sequences passing each NIST test for both our implementation and the original Sphinx (significance level = 0.01).}
-    \label{fig:proportion}
-\end{figure}
-
-\medskip
 \noindent\textbf{Datasets Generation.}
 %
 Twenty independent datasets were generated for both implementation.
@@ -82,7 +74,7 @@ Fig.~\ref{fig:hist_p-values} shows the p-value histograms for both implementatio
 Uniformity of these distributions is further assessed using a Chi-square goodness-of-fit test with a significance threshold of $0.0001$, as recommended by NIST.
 Fig.~\ref{fig:chisquare} presents these results, highlighting that our implementation achieves uniform p-value distributions on the \textit{Frequency} and \textit{Cumulative Sums} tests, whereas the original Sphinx fails them.
 
-\begin{table}[b]
+\begin{table}[H]
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \hspace{0.5mm}\Circle~=\enspace Fail)}
 \label{tab:test_summary}
     \hspace{-1mm}
@@ -114,21 +106,6 @@ Fig.~\ref{fig:chisquare} presents these results, highlighting that our implement
     }
 \end{table}
 
-\begin{figure}%[H]
-    \centering
-    \includegraphics[width=1.\linewidth]{Images/hist_p-values.png}
-    \caption{Distribution of p-values for both implementations across all the NIST SP 800-22 statistical tests.}
-    \label{fig:hist_p-values}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.\linewidth]{Images/chisquare.png}
-    \caption{Chi-square test assessing the uniformity of p-value distributions for each dataset across all the NIST SP 800-22 statistical tests.}
-    \label{fig:chisquare}
-\end{figure}
-
-\medskip
 \noindent\textbf{Discussion.}
 %
 In terms of output randomness, our decentralized implementation performs better than the original Sphinx, as it passes a greater number of statistical tests, as summarized in Table~\ref{tab:test_summary}.
@@ -165,7 +142,7 @@ Accordingly, the overall computational burden is more sensitive to the number of
 As our design remains secure as long as one STTP is honest, only a small number $t$ may be sufficient.
 Determining the precise number needed to meet a desired trust threshold is left for future work.
 
-\begin{table}%[t]
+\begin{table}[H]
 \centering
 \caption{Asymptotic number of cryptographic operations per party, with $t$ STTPs and a path of $m$ nodes.}
 \label{tab:operation_count}

@@ -1,0 +1,42 @@
+
+\section*{Notations}
+
+The notation used in this section is summarized in Table~\ref{tab:notations}.
+\begin{table}[H]
+    \caption{Notation}
+    \label{tab:notations}
+    \centering
+    \begin{tabular}{c l}
+        \toprule
+        \multicolumn{2}{l}{\textbf{Indices}}\\
+        $i$          & node index \\
+        $j$          & chunk index \\
+        $t$          & STTP index \\[2pt]
+
+        \multicolumn{2}{l}{\textbf{Parameters}}\\
+        $m$          & path length \\
+        $n$          & header size \\
+        $p$          & prime subgroup order \\[2pt]
+        
+        \multicolumn{2}{l}{\textbf{Secrets and Keys}}\\
+        $\PK{}$      & node public key \\
+        $\sk{}$      & node secret key \\
+        $x$          & client secret nonce \\
+        $s$          & shared secret \\
+        $\sHashed{}$ & hash of shared secret \\[2pt]
+
+        \multicolumn{2}{l}{\textbf{Header Elements}}\\
+        $G$          & curve generator \\
+        $N$	         & encoded IP address \\
+        $\A{}$       & cryptographic element \\
+        $\B{}{}$     & encrypted routing information \\
+        $\C{}$       & integrity tag \\
+        $\phi$       & filler chunks \\
+        $H$          & header ($N \| \C{} \| \B{}{}$) \\[2pt]
+
+        \multicolumn{2}{l}{\textbf{Functions}}\\
+        $\Map{}$         & Elligator mapping (int $\rightarrow$ EC point) \\
+        $\hspace{3.5mm}\InverseMap{}$  & inverse Elligator (EC point $\rightarrow$ int) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
