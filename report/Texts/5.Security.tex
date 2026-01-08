@@ -3,7 +3,6 @@
 This section outlines the security guarantees of our scheme.  
 We first analyze the unlinkability and integrity forgery resistance in absence of collusion, and then discuss the effect of potential collusion with STTPs.
 
-
 %%%%%%%%%%%%%%%%%
 % UNLINKABILITY %
 %%%%%%%%%%%%%%%%%
@@ -13,16 +12,17 @@ We first analyze the unlinkability and integrity forgery resistance in absence o
 To argue about sender-receiver unlinkability, we assume that an adversary cannot link a sender to its recipient without retracing the entire communication path.  
 Thus, the problem reduces to proving unlinkability at the node level, meaning that an adversary cannot determine which outgoing packet corresponds to a given incoming packet.
 
-We formalize unlinkability using a standard indistinguishability game between a challenger $\mathcal{C}$ and an adversary $\mathcal{A}$.  
-Intuitively, the adversary observes a set of packets entering and leaving a node and attempts to determine which outgoing packet corresponds to a given incoming packet.
+We formalize unlinkability via a standard indistinguishability game between a challenger $\mathcal{C}$ and an adversary $\mathcal{A}$.
+Intuitively, the adversary $\mathcal{A}$ observes packets entering and leaving a node and attempts to determine which outgoing packet corresponds to a given incoming packet.
+The scheme provides unlinkability if any probabilistic polynomial-time adversary achieves only a negligible advantage over random guessing, i.e. $\Pr[b_\mathcal{A} = b_\mathcal{C}] - \frac{1}{2}$ is negligible.
+% under the hardness of the underlying elliptic curve assumptions.
 
-% \medskip
-\noindent\textbf{Game Definition:}
-%
+\medskip
+\noindent\textbf{Game Definition:}\vspace*{-1.5mm}
 \begin{enumerate}
-\item \textbf{Setup.}
-  The challenger generates the node's secret keys and public system parameters $(G_1, \dots, G_n)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
-  Recall that generators are said to be independent if no participant knows any scalar relations among them.
+  \item \textbf{Setup.}
+  The challenger generates the node's secret keys and public system parameters $(G_1, \dots, G_n)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed EC points.
+  Generators are said to be independent if no participant knows any scalar relations among them.
 
   \item \textbf{Oracle.}  
   The adversary is granted access to an oracle, which on input of a nonce $x$ and routing path $\pi = (N_1, N_2, N_3, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the node.
@@ -32,59 +32,33 @@ Intuitively, the adversary observes a set of packets entering and leaving a node
   The challenger selects a random bit $b_\mathcal{C} \in \{0,1\}$ and processes $(\alpha_{b_\mathcal{C}}, \beta_{b_\mathcal{C}}, \gamma_{b_\mathcal{C}})$ through the node, obtaining $(\alpha'_{b_\mathcal{C}}, \beta'_{b_\mathcal{C}}, \gamma'_{b_\mathcal{C}})$, which is then given to the adversary.
 
   \item \textbf{Guess.}
-  The adversary outputs a bit ${b_\mathcal{A}} \in \{0,1\}$, attempting to guess which of the two input headers corresponds to the given output header.  
-  The adversary wins if ${b_\mathcal{A}} = {b_\mathcal{C}}$.
+  The adversary outputs a bit ${b_\mathcal{A}} \in \{0,1\}$, attempting to guess which input headers corresponds to the given output header.  
+  He wins if ${b_\mathcal{A}} = {b_\mathcal{C}}$.
 \end{enumerate}
 
-\noindent The adversary's advantage in breaking unlinkability is defined as
-$$
-\mathrm{Adv}^{\mathsf{unlink}}_{\mathcal{A}} = \big| \Pr[{b_\mathcal{A}} = {b_\mathcal{C}}] - \tfrac{1}{2} \big|.
-$$
-The scheme provides unlinkability if every probabilistic polynomial-time adversary achieves only a negligible 
-advantage relative to the hardness of the underlying elliptic-curve assumptions (i.e. ECDLP on Curve25519).
-
-% \bigskip
 \noindent\textbf{Proof Sketch:}
-As in the original Sphinx construction, all packets have a fixed size (header and payload), preventing any adversary from correlating packets based on observable size patterns.
-In addition, headers are computationally indistinguishable from random bitstrings, as empirically confirmed by the NIST randomness test suite (see Section~\ref{sec:NIST}).
-Therefore, any successful distinguishing strategy by $\mathcal{A}$ must exploit a correlation between header's components $(\alpha, \beta, \gamma)$ and $(\alpha', \beta', \gamma')$.  
-We analyze the possible cases below.
+As in the original Sphinx construction, all packets have a fixed size% (header and payload),
+, preventing any adversary from correlating packets based on observable size patterns.
+In addition, headers are computationally indistinguishable from random bitstrings, as empirically confirmed by the NIST randomness test suite (Section~\ref{sec:NIST}).\todo{Experiments in Appendix ?}
+Consequently, any successful distinguishing strategy must exploit correlations between header components $(\alpha, \beta, \gamma)$ across layers.
+Since the integrity tag $\gamma$ is computed independently at each layer, it cannot be used for cross-layer linkage.
 
-% \medskip
+\smallskip
 \noindent{\textbf{Case 1: Linking via $\boldsymbol\alpha$.}}  
-Network nodes reject packets with duplicate $\alpha$ values, preventing trivial replay-based linkage.  
-The only relation between $\alpha$ and its processed form $\alpha'$ is $\alpha' = s \alpha$, where $s$ is the node's shared secret.  
-If $\mathcal{A}$ can link headers via $\alpha$, it can compute $s$ such that $\alpha' = s \alpha$, thereby solving an instance of the Elliptic Curve Discrete Logarithm Problem (ECDLP).
+Network nodes reject packets with duplicate $\alpha$ values, preventing trivial replay-based linkage.
+The only relation between $\alpha$ and its processed form $\alpha'$ is the node's shared secret $s$.
+Recovering $s$ from $\alpha' = s\alpha$ requires solving an instance of the Elliptic Curve Discrete Logarithm Problem.
 
-% \medskip
+\smallskip
 \noindent{\textbf{Case 2: Linking via $\boldsymbol\beta$.}}\label{sec:indep_generators}  
-% \paragraph{\textbf{Security Note.}}\label{note:security_why_indep_generators}
-% To preserve unlinkability, it is essential that the generators $ (\G{1}, \dots, \G{7}) $ are \textit{independent}, meaning their scalar relationships are unknown and computationally infeasible to derive.
-% If the same generator \G{} were used across chunks (or their scalar relationships known), an adversary could compute chunk-wise difference between consecutive layers: $ \B{i}{j} - \B{i+1}{j} = \sG{i}{} $.
-% Since the shared secret \s{i} remains consistent within a layer, the resulting differences would reveal a predictable pattern (uniform or preserved scalar relationships).
-% This consistency could allow an adversary to correlate incoming and outgoing packets at a mixnode, thereby breaking the unlinkability property.
-% Using independent generators for each chunk prevents such correlations and is therefore critical to the protocol's security.  
-Each routing chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy:
-$$
-\beta_j - \beta'_j = s G_j, \quad \forall j \in \{1, \dots, n\}.
-$$
+Each header chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy $\beta_j - \beta'_j = s G_j$ for all $j \in \{1,\dots,n\}$.
+To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used across all chunks, or determine whether the scalar relationship between two generators $G_j$ and $G_{j'}$ is preserved (i.e. find $z$ such that $G_j = z G_{j'}$).
+When generators are independent, it reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$.
 
-To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used among all chunks, or that a fixed scalar relationship is preserved between two generators $G_j$ and $G_{j'}$ (i.e. $z$ such that $G_j = z G_{j'}$).
-Therefore, if generators are independent, then the adversary's task reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$.
-
-% \medskip
-\noindent{\textbf{Case 3: Linking via $\boldsymbol\gamma$.}}  
-The integrity tag $\gamma$ is a weighted sum of the encrypted routing components:
-$$
-\gamma = s G + \sum_{j=1}^{n-2} h^{(j)}(s)\, \beta_j.
-$$
-Finding a correlation between $\gamma$ and $\gamma'$ without knowledge of $s$ or its derived weights $h^{(j)}(s)$ is no easier than linking via $\beta$ (Case 2).
-
-% \medskip
+\smallskip
 \noindent\textbf{Summary.}  
-Under the hardness assumption of the ECDLP, and assuming independent generators, no probabilistic polynomial-time adversary $\mathcal{A}$ can achieve a non-negligible advantage in the unlinkability game.  
+Under the ECDLP hardness assumption and assuming independent generators, no probabilistic polynomial-time adversary can achieve a non-negligible advantage in the unlinkability game.
 Therefore, we can conclude that the proposed scheme provides unlinkability.
-
 
 %%%%%%%%%%%%%
 % INTEGRITY %
@@ -92,86 +66,67 @@ Therefore, we can conclude that the proposed scheme provides unlinkability.
 
 \subsection{Integrity Forgery Resistance}\label{sec:integrity_forgery}
 
-Integrity-forgery resistance requires that an adversary cannot produce a modified header that is accepted by an honest node.  
+Integrity-forgery resistance requires that an adversary cannot modify a header that is accepted by an honest node.  
 We formalize this property as a game in which the adversary attempts to forge a new header that passes integrity verification.
+The scheme achieves integrity-forgery resistance if any probabilistic polynomial-time adversary has only negligible advantage over randomly guessing the integrity tag.
 
-\noindent\textbf{Game Definition:}
+\medskip
+\noindent\textbf{Game Definition:}\vspace*{-1.5mm}
 \begin{enumerate}
-\item \textbf{Setup.}
+  \item \textbf{Setup.}
   The challenger generates node's secret keys and public system parameters $(G_1, \dots, G_n)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
 
-  \item \textbf{Oracle.}  
-  The adversary is granted access to an oracle, which outputs a valid header $(\alpha, \beta, \gamma)$.
-  Then the adversary can change the $\beta$ values to $\beta'$.
-  The adversary can then send the modified header $(\alpha, \beta', \gamma)$ to an oracle which will send the new integrity tag $\gamma'$.
+  \item \textbf{Oracle.}
+  The adversary is given access to an oracle that outputs valid headers $(\alpha,\beta,\gamma)$.
+  The adversary may modify $\beta$ into $\beta'$ and query a second oracle to obtain the corresponding integrity tag $\gamma'$.
 
   \item \textbf{Challenge.}
-  The challenger submits a header $(\alpha, \beta, \gamma)$ with an $\alpha$ that has not been used during the oracle.
-  The adversary modify chunks $\beta$ into $\beta_\mathcal{A}$, and update the integrity tag into $\gamma_\mathcal{A}$.
+  The challenger outputs a fresh header $(\alpha,\beta,\gamma)$ with unused $\alpha$.
+  The adversary outputs modified chunks $\beta_{\mathcal{A}}$ and a tag $\gamma_{\mathcal{A}}$.
 
   \item \textbf{Guess.}
-  The adversary wins if $\gamma_\mathcal{A} = \gamma_\mathcal{C}$, where $\gamma_\mathcal{C}$ is the integrity compute by the challenger on $\beta_\mathcal{A}$.
+  The adversary wins if $\gamma_{\mathcal{A}} = \gamma_{\mathcal{C}}$, where $\gamma_{\mathcal{C}}$ is the integrity tag computed by the challenger on $\beta_{\mathcal{A}}$.
 \end{enumerate}
 
-% \medskip
-\noindent
-The adversary's advantage in forging a valid integrity tag without knowing the shared secret is defined as
-$$
-\mathrm{Adv}^{\mathsf{forgery}}_{\mathcal{A}}(\lambda) = \big| \Pr[\gamma_\mathcal{A} = \gamma_\mathcal{C}] - \tfrac{1}{2^{\lambda}} \big|.
-$$
-Here, $\lambda$ denotes the bit-security of the underlying elliptic curve group (e.g. $\lambda = 128$ for Curve25519).
-The scheme achieves integrity-forgery resistance if  $\mathrm{Adv}^{\mathsf{forgery}}_{\mathcal{A}}(\lambda)$  is negligible.
-This means that the adversary cannot do better than randomly guessing the correct integrity tag.
-
-% \bigskip
 \noindent\textbf{Proof Sketch:}
-Each header chunk $\beta_{j}$ can be modified by an adversary in two possible ways: 
-either (i) the chunk is replaced by a new point $\beta'_{j}$, or (ii) it is incremented by an elliptic curve point $P_j$.
+An adversary is able to modify a header chunk $\beta_j$ in two ways; (i) by replacing it with a new elliptic curve point, or (ii) by adding a point $P_j$.
 
-% \medskip
-\noindent{\textbf{Case 1: Chunk Replacement.}}
-Replacing $\beta_{j}$ with $\beta'_{j}$ requires updating the corresponding integrity $\gamma$ to $\gamma'$ such that:
-$$
-\gamma' = \gamma + h^{(j)}(\sHashed{})\, (\beta'_{j} - \beta_{j}).
-$$
-This operation necessitates knowledge of the weight $h^{(j)}(\sHashed{})$, which is derived from the hashed of the shared secret. 
-Without this information, an adversary cannot produce a valid updated integrity tag.
+\smallskip
+\noindent\textbf{Case 1: Chunk Replacement.}
+Replacing $\beta_j$ with $\beta'_j$ requires updating the integrity tag to $\gamma' = \gamma + h^{(j)}(\sHashed{})\, (\beta'_{j} - \beta_{j})$.
+This requires knowledge of the weight $h^{(j)}(\sHashed{})$, which is derived from the hash of the shared secret ($\sHashed{}$). 
 
-% \medskip
-\noindent{\textbf{Case 2: Incremental Modification.}}
-If the adversary only adds a point $P_j$ to a single chunk, the integrity tag must be updated as:
-$$
-\gamma' = \gamma + h^{(j)}(\sHashed{})\, P_j,
-$$
-which again requires knowledge of the corresponding weight $h^{(j)}(\sHashed{})$.
+\smallskip
+\noindent\textbf{Case 2.a: Incremental Modification.}
+Adding a point $P_j$ to a single chunk requires updating the tag as $\gamma' = \gamma + h^{(j)}(\sHashed{})\, P_j$, which again requires the weight.
 
-% \medskip
-\noindent{\textbf{Case 2.b: Balanced Increment.}}
-A more sophisticated attempt consists in modifying two chunks, say $j$ and $j'$, to preserve the checksum balance:
-$$
-\gamma' = \gamma + h^{(j)}(\sHashed{})\, P_j + h^{(j')}(\sHashed{})\, P_{j'}
-$$
-If the adversary knows a scalar $z$ such that $h^{(j)}(\sHashed{}) = z\,h^{(j')}(\sHashed{})$,  it becomes:
-$$
-\gamma' = \gamma + h^{(j')}(\sHashed{})\, (z P_j + P_{j'})
-$$
-Thus, the adversary can choose any $P_j$ and set $P_{j'} = -z P_j$, keeping $\gamma' = \gamma$ unchanged and thereby forging integrity.  
+\smallskip
+\noindent\textbf{Case 2.b: Balanced Increment.}
+An adversary may attempt to modify two chunks $j$ and $j'$ so that the checksum remains unchanged: $\gamma' = \gamma + h^{(j)}(\sHashed{})\, P_j + h^{(j')}(\sHashed{})\, P_{j'}$.
+If the scalar relation between two weights is known, i.e. $z$ such that $h^{(j)}(\sHashed{}) = z\,h^{(j')}(\sHashed{})$, it becomes $\gamma' = \gamma + h^{(j')}(\sHashed{})\, (z P_j + P_{j'})$.
+Then the adversary can choose any $P_j$ and set $P_{j'} = -z P_j$, leaving $\gamma' = \gamma$ and thus forging integrity.
 
-% \medskip
+\smallskip
 \noindent\textbf{Summary.}
-Successful integrity forgery requires at least knowledge of scalar relations between the weights $h^{(j)}(\sHashed{})$.  
-Since these weights are derived from one-time shared secrets through iterated hashing, such relations are computationally infeasible in the absence of collusion.
+Integrity forgery requires knowledge of a weight or a scalar relation between weights, which are derived from the hash of a one-time shared secrets.
+
+\medskip
+\noindent\textbf{Remarks.}\label{replay_resistance}\label{wrap_resistance}
+The original Sphinx provides \emph{replay} and \emph{wrap} resistance \cite{sphinx}.
+Replay resistance is guaranteed by dropping previously seen $\alpha$ values.
+Wrap resistance prevents transforming a header $(\alpha, \beta, \gamma)$ into $(\alpha', \beta', \gamma')$ that decrypts back to $(\alpha, \beta, \gamma)$.
+Both properties require modifying a header that passes integrity verification and thus reduce to \emph{integrity forgery resistance}.
 
 % \medskip
-\noindent\textbf{Remarks.}
-\label{replay_resistance}\label{wrap_resistance}
-The original Sphinx article~\cite{sphinx} takes \emph{replay resistance}
-and \emph{wrap resistance} into account.
-\emph{Wrap resistance} means an adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being decrypted by a node, the packet becomes $(\alpha, \beta, \gamma)$ again.  
-\emph{Replay resistance} is inherited from the original Sphinx construction since the nodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).
-Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (and consequently $\beta$) while still producing a consistent integrity tag $\gamma$. % which directly reduces to the problem of forging integrity.  
-Similarly, \emph{wrap resistance} also requires producing a modified header that passes integrity verification.
-Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integrity forgery resistance}. 
+% \noindent\textbf{Remarks.}
+% \label{replay_resistance}\label{wrap_resistance}
+% The original Sphinx article~\cite{sphinx} takes \emph{replay resistance}
+% and \emph{wrap resistance} into account.
+% \emph{Wrap resistance} means an adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being decrypted by a node, the packet becomes $(\alpha, \beta, \gamma)$ again.  
+% \emph{Replay resistance} is inherited from the original Sphinx construction since the nodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).
+% Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (and consequently $\beta$) while still producing a consistent integrity tag $\gamma$. % which directly reduces to the problem of forging integrity.  
+% Similarly, \emph{wrap resistance} also requires producing a modified header that passes integrity verification.
+% Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integrity forgery resistance}. 
 
 
 %%%%%%%%%%%%%
