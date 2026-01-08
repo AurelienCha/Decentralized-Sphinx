@@ -36,6 +36,21 @@
 \usepackage{algpseudocode}
 
 
+% Conditional Text
+\def\isabridged{1}   % Uncomment if typesetting abridged version
+
+% Define and set conditionals for alternate versions
+\newif\ifabridged
+\newif\ifnotabridged
+
+\ifdefined\isabridged
+\abridgedtrue
+\fi
+
+\ifabridged\notabridgedfalse
+\else\notabridgedtrue
+\fi
+
 
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
