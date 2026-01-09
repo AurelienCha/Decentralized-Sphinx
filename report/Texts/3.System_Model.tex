@@ -10,22 +10,22 @@ We consider passive and active network adversaries, as well as corrupted nodes a
 Adversaries may combine these capabilities but are computationally bounded and cannot break standard cryptographic assumptions such as the hardness of the ECDLP.
 
 \smallskip
-\noindent{\textbf{Passive Network Adversary:}}
+\noindent{\textbf{Passive Network Adversary.}}
 Observes packets at any node without modifying them. 
 Its goal is to break unlinkability by correlating incoming and outgoing packets or exploiting statistical biases in headers.
 
 \smallskip
-\noindent{\textbf{Active Network Adversary:}}
+\noindent{\textbf{Active Network Adversary.}}
 Can modify, drop, replay, or inject packets at any point in the network.  
 Its objective is to forge valid integrity tags to tamper with headers while remaining undetected. 
 
 \smallskip
-\noindent{\textbf{Corrupted Network Node:}}
+\noindent{\textbf{Corrupted Network Node.}}
 Reveals its internal state, including private keys and shared secrets.
 Compromising a node must not compromise the privacy or integrity of the remaining path, and unlinkability must hold as long as at least one node on the path is honest.
 
 \smallskip
-\noindent{\textbf{Corrupted STTP:}}
+\noindent{\textbf{Corrupted STTP.}}
 May attempt to use or infer information during partial header construction. 
 Colluding STTPs could combine shares to reconstruct routing or shared secrets. 
 Our protocol prevents this as long as at least one STTP remains honest.
@@ -33,38 +33,23 @@ We also consider cases where corrupted STTPs collude with compromised nodes, rep
 
 \subsection{Security and Privacy Objectives}\label{sec:sp-objectives}
 
-This section details the security and privacy guarantees that our decentralized header construction must achieve.
-These objectives ensure that decentralization does not weaken the cryptographic or anonymity properties of the original Sphinx protocol~\cite{sphinx}, while providing robustness against partial compromise and collusion.
+Decentralization must preserve Sphinx's cryptographic and anonymity guarantees~\cite{sphinx}, even under partial compromise and collusion.
 
 \smallskip
-\noindent{\textbf{Unlinkability.}}
-Our primary goal is to preserve the strong unlinkability property achieved by Sphinx design.  
-At each node, an adversary observing both incoming and outgoing packets should be unable to correlate them, preventing reconstruction of the full communication path.
-% Other metrics
-Measuring unlinkability in anonymous communication systems is inherently difficult.  
-For example, Loopix~\cite{piotrowska2017loopix} proposes the \emph{expected difference in likelihood} metric, but this captures sender-receiver unlinkability through network-level simulations rather than header-level resistance to cryptanalysis.
-% Our metrics
-In contrast, we focus on unlinkability at the \emph{node level}.  
-In particular, unlinkability requires that:
-(i) header components cannot be linked across the node without the corresponding node's shared secret, and  
-(ii) headers are statistically indistinguishable from random bitstrings.  
-The latter ensures that no structural bias in the bitstream can be exploited by advanced cryptanalytic techniques.  
-We empirically validate this requirement using the NIST SP~800-22 randomness test suite (Section~\ref{sec:NIST}).
+\noindent\textbf{Unlinkability.}
+Measuring unlinkability in anonymous communication systems is inherently challenging.
+For example, Loopix~\cite{piotrowska2017loopix} proposes the \emph{expected difference in likelihood} metric, which captures sender-receiver unlinkability through network-level simulations rather than header-level resistance to cryptanalysis.
+We instead focus on unlinkability at the \emph{node level}: no adversary should be able to correlate an incoming packet with its corresponding outgoing packet at any node.
+This requires that header components cannot be linked without the node's shared secret.
+Additionally, headers must be statistically indistinguishable from random bitstrings, a property we validate empirically using the NIST SP 800-22 test suite (Section~\ref{sec:NIST}).
 
 \smallskip
 \noindent{\textbf{Integrity-Forgery Resistance.}}
-Sphinx embeds per-hop integrity tags to ensure that honest nodes are able
-to detect and discard altered headers.  
-Any active adversary capable of injecting, replaying, or modifying packets must be unable to forge an integrity tag that passes verification.
-The decentralized construction should preserve this property, even in the presence of a strong adversary colluding with compromised STTPs or network nodes. 
-In particular, no trapdoor or weakness should arise from distributing header construction among multiple parties.
+Sphinx embeds per-hop integrity tags to ensure that honest nodes are able to detect and discard altered headers.  
+Any active adversary should not be able to modify a packet and forge a valid integrity tag.
+In particular, no trapdoor or weakness should arise from decentralizing header construction among multiple parties.
 
 \smallskip
-\noindent{\textbf{Collusion Resistance.}}
-% STTP
-Because header generation is distributed across multiple STTPs, our scheme must remain secure even if a subset of them colludes.
-Collusion among STTPs should not reveal routing information or cryptographic secrets, as long as at least one STTP remains honest.  
-This guarantee is ensured through an additive secret sharing.
-% Mixnodes
-Similarly, corrupted nodes may attempt to collude with one another or with STTPs.  
-A compromised node learns only its own shared secret and the identity of its immediate predecessor and successor, but should gain no information about the rest of the path.
+\noindent{\textbf{Collusion Resistance.}} 
+Additive secret sharing ensures that collusion among STTPs does not reveal routing or cryptographic secrets, as long as one STTP is honest. 
+Similarly, compromised nodes should learn only local information and cannot infer the rest of the path or forge integrity, even when colluding with other nodes or STTPs.
