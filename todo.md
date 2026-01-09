@@ -25,3 +25,6 @@ NB: Check non-plaintext and non-ciphertext attacks
 # mixnode compute parital share secret for the next node ?
 # Possible to detect adversary ? Who did that ?
 # Try to solve Conterintuitive problem in anonymous communication
+
+
+- Collusion (+ trick), Limitations & Future Work, Conclusion

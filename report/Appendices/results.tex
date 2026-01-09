@@ -1,8 +1,20 @@
 \section*{Results}
 
+\noindent\textbf{Passing Rate Analysis.}
+Fig.~\ref{fig:proportion} highlights the proportion of sequences that passed each NIST test for both implementations.
+Following NIST guidelines, the significance level is set to $\alpha = 0.01$, and the confidence interval over $n$ samples is defined as $(1 - \alpha) \pm 3 \sqrt{\frac{\alpha (1 - \alpha)}{n}} $.
+% Our implementation fails only three tests: \textit{Non-overlapping Matching}, \textit{Random Excursions}, and \textit{Random Excursions Variant}, all of which are also failed by the original Sphinx implementation.  
+% In contrast, DSphinx passes three tests that Sĥinx fails: \textit{Frequency}, \textit{Cumulative Sums}, and \textit{Overlapping Matching}.
+
+\smallskip
+\noindent\textbf{P-value Distribution Analysis.}
+Fig.~\ref{fig:hist_p-values} shows the p-value histograms for both implementations across all 15 NIST tests.
+Uniformity of these distributions is further assessed using a Chi-square goodness-of-fit test with a significance threshold of $0.0001$, as recommended by NIST.
+% Fig.~\ref{fig:chisquare} presents these results, highlighting that our implementation achieves uniform p-value distributions on the \textit{Frequency} and \textit{Cumulative Sums} tests, whereas the original Sphinx fails them.
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.7\linewidth]{Images/proportion_dot.png}
+    \includegraphics[width=.6\linewidth]{Images/proportion_dot.png}
     \caption{Proportion of sequences passing each NIST test for both our implementation and the original Sphinx (significance level = 0.01).}
     \label{fig:proportion}
 \end{figure}

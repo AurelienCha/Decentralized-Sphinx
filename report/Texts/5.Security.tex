@@ -115,7 +115,7 @@ Integrity forgery requires knowledge of a weight or a scalar relation between we
 The original Sphinx provides \emph{replay} and \emph{wrap} resistance \cite{sphinx}.
 Replay resistance is guaranteed by dropping previously seen $\alpha$ values.
 Wrap resistance prevents transforming a header $(\alpha, \beta, \gamma)$ into $(\alpha', \beta', \gamma')$ that decrypts back to $(\alpha, \beta, \gamma)$.
-Both properties require modifying a header that passes integrity verification and thus reduce to \emph{integrity forgery resistance}.
+Both properties require modifying a header that passes integrity verification and thus reduce to integrity forgery resistance.
 
 % \medskip
 % \noindent\textbf{Remarks.}
