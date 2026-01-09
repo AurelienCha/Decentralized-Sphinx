@@ -1,4 +1,4 @@
-\section{Protocol Description}\label{sec:scheme} \todo{Double verify and adapt figures in this section (and their ref)}
+\section{Protocol Description}\label{sec:scheme}
 
 % Overview
 The proposed decentralized protocol distributes the Sphinx header construction across multiple semi-trusted third parties (STTPs). 
@@ -10,7 +10,6 @@ Each shared secret is split into $t$ additive shares, alongside the IP addresses
 (4) The client then aggregates these partial headers to reconstruct the final header. 
 (5) Finally, the client encrypts the payload accordingly and sends the message through the decentralized network.
 
-\todo{Put STTPs on the left of Client to save space ?}
 \begin{figure}%[t]
     \centering
     \resizebox{0.9\linewidth}{!}{\input{schema/schema_overview.tex}}
@@ -25,7 +24,7 @@ Each shared secret is split into $t$ additive shares, alongside the IP addresses
 
 % Header structure - Chunks
 In DSphinx, each header element is represented as an elliptic curve (EC) point. 
-Accordingly, the header is divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunked_schema}, with each chunk corresponding to a single EC point. \todo{moved to appendix?}
+Accordingly, the header is divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunkwise-overview}, with each chunk corresponding to a single EC point. 
 Every network node along the path contributes for two chunks: one encoding its IP address and another representing its integrity tag. 
 Thus, a path of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per node and an additional chunk for the final destination.
 
@@ -153,12 +152,12 @@ The pseudorandom weights prevent adversaries from forging valid checksums, while
 This design preserves homomorphism while ensuring unlinkability and integrity.
 
 \subsection{Network Nodes}
-Upon receiving a packet, node $i$ extracts the cryptographic element $\A{i}$, the integrity tag $\C{i}$, and the encrypted routing information $\B{i}{}$.  
-As in Sphinx design, the node stores previously seen $\A{i}$ values (until its private key is rotated).
-If the received $\A{i}$ matches a stored value, the packet is discarded to prevent replay attacks.  
-If the value is fresh, the packet is processed as illustrated in Fig.~\ref{fig:mixnode_decryption}.
 
-The node first reconstructs its shared secret point using its private key \sk{i}, and maps it to the corresponding shared integer $\s{i}$ using the Elligator inverse mapping \eqref{eq:derive_secret}.
+Upon receiving a packet, node $i$ extracts the cryptographic element $\A{i}$, the integrity tag $\C{i}$, and the encrypted routing information $\B{i}{}$. 
+As in the original Sphinx design, the node stores previously seen values of $\A{i}$ (until its private key is rotated) and discards the packet if a match is found, thereby preventing replay attacks. 
+Otherwise, the packet is processed as illustrated in Fig.~\ref{fig:chunk-decryption}.
+
+The node first derives the shared secret point by multiplying $\A{i}$ with its private key $\sk{i}$, and then recovers the corresponding scalar $\s{i}$ by applying the inverse Elligator mapping as in \eqref{eq:derive_secret}.
 \begin{equation}
 \begin{aligned}
     \s{i} &= \InverseMap{(\sk{i} \, \A{i})}
@@ -168,38 +167,39 @@ The node first reconstructs its shared secret point using its private key \sk{i}
 
 % Integrity verification
 \noindent
-This value $\s{i}$ is then used to verify the integrity tag \eqref{eq:integrity_check}.
+The shared secret $\s{i}$ is then used to verify the integrity tag in \eqref{eq:integrity_check}. 
 \begin{equation}
 \C{i} \overset{\text{?}}{=} \sG{i}{} + \sum_{j=1}^{n-2} \big( \hashIt{\sHashed{i}}{j} \, \B{i}{j} \big)
 \label{eq:integrity_check}
 \end{equation}
 
 % Decryption
-If this check fails, the packet is discarded.
-Otherwise, the node appends the header with two \textit{identity} chunks (i.e. point at infinity).
-The header is then decrypted as \eqref{eq:decrypt}.
+If the verification fails, the packet is discarded. 
+Otherwise, the node appends two identity chunks to the header and decrypts it as \eqref{eq:decrypt}.
 \begin{equation}
 \BB{i}{j} = \B{i}{j} - \sG{i}{j}
 \label{eq:decrypt}
 \end{equation}
-The first resulting chunk $\BB{i}{1}$ encodes the next node's IP address (\N{i+1}).  
-It is mapped back to an integer using the inverse Elligator map, after which the padding bits are removed.
-The second chunk $\BB{i}{2}$ encodes the integrity tag for the next node ($\C{i+1}$).  
-The remaining chunks constitute the next encrypted routing information $(\B{i+1}{})$.
+The first decrypted chunk $\BB{i}{1}$ encodes the next node's IP address $\N{i+1}$, 
+which is recovered via the inverse Elligator map and unpadding. 
+The second chunk $\BB{i}{2}$ contains the integrity tag $\C{i+1}$ for the next hop, 
+while the remaining chunks form the next encrypted routing information $\B{i+1}{}$.
 
 % Update Alpha
-As specified in \eqref{eq:shared_secret}, the node applies the same update rule as the client to compute the next cryptographic element $\A{i+1}$:
+Finally, it updates the cryptographic element according to \eqref{eq:shared_secret}
+and forwards the packet with header $(\A{i+1},\, \B{i+1}{},\, \C{i+1})$ to the next node along the path.
 \begin{equation}
 \A{i+1} = s_i \, \A{i}
 \label{eq:update_alpha}
 \end{equation}
-Finally, the node forwards the updated packet with header $(\A{i+1},\, \B{i+1}{},\, \C{i+1})$ to the next node in the path.
 
 \begin{figure}%[H]
     \centering
 
-    % -------- Left figure (a) --------
+    % -------- Left figure (b) --------
+    % \setcounter{sub\@captype}{1}
     \begin{subfigure}[b]{0.48\linewidth}
+        \setcounter{subfigure}{1} % forces next to be (b)
         % \centering
         \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_encryption.tex}}
         \caption{Encryption (STTP)}
@@ -210,18 +210,20 @@ Finally, the node forwards the updated packet with header $(\A{i+1},\, \B{i+1}{}
     \begin{subfigure}[b]{0.48\linewidth}
         % \centering
 
-        % (b) top-right
+        % (a) top-right
         \begin{subfigure}[t]{\linewidth}
+            \setcounter{subfigure}{0} % forces next to be (a)
             \centering
             \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_preprocessing.tex}}
             \caption{Preprocessing (STTP)}
             \label{fig:chunk-preprocessing}
         \end{subfigure}
 
-        \vspace{0.5em}
+        \vspace{1.em}
 
         % (c) bottom-right
         \begin{subfigure}[b]{\linewidth}
+            \setcounter{subfigure}{2} % forces next to be (c)
             \centering
             \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_decryption.tex}}
             \caption{Decryption (network node)}
