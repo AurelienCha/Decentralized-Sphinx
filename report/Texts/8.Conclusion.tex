@@ -11,8 +11,6 @@ Results show that DSphinx headers are at least as indistinguishable from random 
 In five out of the fifteen tests, our construction performs significantly better than Sphinx, 
 suggesting that decentralization does not degrade the statistical properties necessary for unlinkability.
 
-The current protocol remains partially client-centric since the client selects paths and derives hop-by-hop secrets, which can enable route bias or (N-1) attacks. A key future step is to decentralize path selection and secret derivation via STTPs, reducing client trust without revealing routing information. \todo{I would delete this paragraph since it is addressed in the limitation section}
+%The current protocol remains partially client-centric since the client selects paths and derives hop-by-hop secrets, which can enable route bias or (N-1) attacks. A key future step is to decentralize path selection and secret derivation via STTPs, reducing client trust without revealing routing information. \todo{I would delete this paragraph since it is addressed in the limitation section}
 
-Beyond decentralization, DSphinx opens opportunities for privacy-preserving policy enforcement or legitimacy verification at intermediate nodes, allowing unauthorized traffic to be detected and dropped without compromising client anonymity.
-
-In summary, DSphinx maintains Sphinx's core privacy and integrity guarantees while reducing reliance on a trusted client, marking a step toward more robust, flexible, and privacy-preserving decentralized networks.
+In summary, DSphinx maintains Sphinx's core privacy and integrity guarantees while reducing reliance on a trusted client, marking a step toward more robust, flexible, and privacy-preserving decentralized networks. Beyond decentralization, DSphinx opens opportunities for privacy-preserving policy enforcement or legitimacy verification at intermediate nodes, allowing unauthorized traffic to be detected and dropped without compromising client anonymity.
