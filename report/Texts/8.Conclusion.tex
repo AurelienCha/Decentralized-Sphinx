@@ -1,17 +1,18 @@
 \section{Conclusion}\label{sec:conclusion}
 
 We presented DSphinx, a decentralized construction of Sphinx packet headers where clients outsource header generation to semi-trusted third parties (STTPs).
-Our scheme preserves Sphinx's cryptographic guarantees by ensuring that no coalition of STTPs, as long as at least one remains honest, can recover routing information or shared secrets. 
-Game-based analysis demonstrates integrity-forgery resistance and unlinkability, and identifies conditions where collusion between STTPs and nodes could be exploited.
-While this vulnerability can be partially mitigated, designing stronger decentralized integrity mechanisms remains an open challenge.
 
-We implemented a Python prototype and applied the NIST SP-800-22 statistical randomness test suite.
+We provide a detailed game-based security analysis of \emph{DSphinx},
+under passive and active network adversaries, corrupted mixnodes, and colluding STTPs and showed that our scheme preserves Sphinx's cryptographic guarantees by ensuring that no coalition of STTPs, as long as at least one remains honest, can recover routing information or shared secrets.
+
+
+Additionally, we implemented a Python prototype and applied the NIST SP-800-22 statistical randomness test suite.
 Results show that DSphinx headers are at least as indistinguishable from random bitstrings as those of the original Sphinx.
 In five out of the fifteen tests, our construction performs significantly better than Sphinx, 
 suggesting that decentralization does not degrade the statistical properties necessary for unlinkability.
 
-The current protocol remains partially client-centric since the client selects paths and derives hop-by-hop secrets, which can enable route bias or (N-1) attacks.
-A key future step is to decentralize path selection and secret derivation via STTPs, reducing client trust without revealing routing information.
+The current protocol remains partially client-centric since the client selects paths and derives hop-by-hop secrets, which can enable route bias or (N-1) attacks. A key future step is to decentralize path selection and secret derivation via STTPs, reducing client trust without revealing routing information. \todo{I would delete this paragraph since it is addressed in the limitation section}
+
 Beyond decentralization, DSphinx opens opportunities for privacy-preserving policy enforcement or legitimacy verification at intermediate nodes, allowing unauthorized traffic to be detected and dropped without compromising client anonymity.
 
 In summary, DSphinx maintains Sphinx's core privacy and integrity guarantees while reducing reliance on a trusted client, marking a step toward more robust, flexible, and privacy-preserving decentralized networks.
