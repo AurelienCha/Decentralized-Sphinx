@@ -1,48 +1,31 @@
 
-\section{Discussion}
+\section{Limitations and Future Work}
 \label{sec:discussion}
 
-% We regard these directions as crucial next steps toward a practical, secure, and scalable deployment of decentralized Sphinx-based mix networks.
+Our results show that decentralizing Sphinx header construction is feasible and secure under reasonable assumptions, but several conceptual and practical limitations remain.
+These do not undermine the contributions of the present work, but highlight challenges for real-world deployment.
 
+\smallskip
+\noindent\textbf{Decentralized Path Selection.}
+While DSphinx decentralizes header construction, it remains client-centric since he still selects the path and derives hop-by-hop shared secrets.
+This allows malicious clients to bias route selection or mount classical deanonymization attacks such as (N-1)-attacks~\cite{oram2001peer}, reducing anonimity of honest clients.
+A natural direction for future work is to decentralize path selection and key derivation by distributing these tasks among STTPs to reduce client trust and enabling a better trust model for practical deployments.
 
-Our results show that decentralizing the Sphinx header construction is both feasible and secure under reasonable trust assumptions.  
-At the same time, several conceptual and practical limitations remain.  
-These limitations do not undermine the contributions of the present work, but they highlight important challenges that must be addressed before decentralized Sphinx-based systems can be deployed in real-world environments.
+\smallskip
+\noindent\textbf{Stronger Collusion Resistance.} 
+DSphinx remains secure as long as at least one STTP is honest and not all nodes on a path are compromised.
+If an adversary controls both a node and an STTP involved in the packet, they could link integrity weights to that packet, enabling integrity forgery and weakening unlinkability.
+Although we proposed a mitigation, future work should explore stronger integrity schemes that are fully resilient to any form of collusion.
 
-\subsection{Limitations}
-
-\noindent\textbf{Client-Centric Trust.} 
-While our design successfully decentralizes the Sphinx header computation, it remains \emph{client-centric} in several key aspects.  
-The client still selects the path of a message. A malicious client can still bias route selection to reduce the anonymity set of honest clients, or orchestrate classical deanonymization attacks, including (N-1)-attacks, by carefully crafting routes~\cite{oram2001peer}.  
-Although our scheme removes trust from the header-construction process, it does not yet mitigate threats originating from malicious clients. 
-Deciding how to choose the nodes in the path depends on the characteristics of the underlying system. For example, in the Lightning Network the path is selected using Dijkstra’s algorithm~\cite{poon2016bitcoin}, while in Nym every mixnode in the path is chosen uniformly from all the mixnodes in the corresponding layer~\cite{nym}. Therefore, in order to distribute path selection and key derivation to the STTPs, DSphinx must be aligned with the design of the specific system. Further work is thus required to ensure that path selection and key derivation are distributed to the STTPs in a manner that matches the requirements of each system.
-
-% \medskip
-\noindent\textbf{Collusion between STTPs and Network Nodes.} 
-Our security analysis considers several collusion scenarios involving corrupted STTPs and nodes.  
-The current scheme guarantees security as long as (i) at least one STTP remains honest and (ii) not all nodes on the path are compromised.  
-However, a subtle but significant limitation arises when an adversary simultaneously compromises a node along the path and one of the STTPs that contributed to the packet construction.  
-In this case, the adversary can associate the integrity weights leaked by the STTP with the specific packet observed at the corrupted node.  
-This capability enables integrity forgery and reduces unlinkability.  
-This vulnerability represents an important limitation of the current design.  
-Future work should investigate stronger homomorphic integrity mechanisms or alternative constructions of the checksum that do not reveal correlation between weights of honest nodes, even under collusion.
-
-\subsection{Future Work}
-
-\noindent\textbf{Decentralized Path Selection.} 
-Although our construction decentralizes the header computation itself, the overall design remains largely client-centric. 
-The client still selects the route and determines the hop-by-hop shared secrets, which preserves a considerable amount of trust and control on the client side. 
-A promising direction for future work is therefore to decentralize these remaining components, in particular, the path selection process and the derivation of shared secrets along the route. 
-Shifting these responsibilities from a single client to a collaborative set of STTPs would reduce the influence of malicious clients, while offering a more balanced and robust trust model for practical deployments.
-
-% \medskip
+\smallskip
 \noindent\textbf{Privacy-Preserving Policy Enforcement.} 
 A major challenge in bringing decentralized networks such as mixnets and peer-to-peer into practical use is the lack of accountability and policy-enforcement mechanisms that do not undermine privacy~\cite{oram2001peer}.
-Because Sphinx reveals almost no information to the different entities in the path, verifying client legitimacy or enforcing policy is extremely difficult.  
-We believe that decentralized packet construction opens a path toward generating privacy-preserving credentials or zero-knowledge proofs that can be validated at any node without revealing routing or identity information.  
+Because Sphinx reveals almost no information to the nodes in the path, verifying client legitimacy or enforcing policy is extremely difficult.  
+We believe that decentralized packet construction, such as DSphinx, opens a path toward generating privacy-preserving credentials or zero-knowledge proofs that can be validated at any node without revealing routing or identity information.  
 Developing such integration remains an open and promising research direction.
 
+\todo{"Benchmark" was removed (do we still mention it ?)}
 % \medskip
-\noindent\textbf{Performance Evaluation and Latency Analysis.} 
-Finally, although we provide an asymptotic analysis of computational complexity and an empirical study of header randomness, future work should include a thorough benchmark.  
-In particular, understanding the latency overheads introduced by parallel STTPs, network delays, and additional cryptographic operations will be essential for assessing the practicality of such decentralization in large real-world deployments.  
+% \noindent\textbf{Performance Evaluation and Latency Analysis.} 
+% Finally, although we provide an asymptotic analysis of computational complexity and an empirical study of header randomness, future work should include a thorough benchmark.  
+% In particular, understanding the latency overheads introduced by parallel STTPs, network delays, and additional cryptographic operations will be essential for assessing the practicality of such decentralization in large real-world deployments.  
