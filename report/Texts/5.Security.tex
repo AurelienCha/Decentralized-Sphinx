@@ -135,49 +135,36 @@ Both properties require modifying a header that passes integrity verification an
 
 \subsection{Collusion Analysis}\label{sec:collusion}
 
-The preceding security arguments assume an ideal setting without collusion.
-However, since our construction relies on semi-trusted third parties (STTPs), it is essential to assess the system's resilience to collusion. 
-In this section, we formalize potential collusion scenarios and evaluate the additional capabilities an adversary may gain when colluding with subsets of STTPs.
+The preceding security arguments assume no collusion. 
+Since our construction relies on semi-trusted third parties, we analyze the impact of adversaries colluding with subsets of STTPs, and the additional capabilities this may provide.
 
-% \medskip
+\smallskip
 \noindent{\textbf{STTP Advantages.}}
-Among the set of $T$ semi-trusted third parties used to build an header, an STTP $t$ reveals three types of information:  
-\begin{itemize}
-  \item an additive share of destinations $N_{(i,t)}$, such that $N_i = \sum_{t=1}^T N_{(i,t)}$;  
-  \item an additive share of shared secrets $s_{(i,t)}$, such that\ $s_i = \sum_{t=1}^T s_{(i,t)}$;
-  \item the hash values of the full shared secrets $\{h(s_1), h(s_2), h(s_3)\}$.
-\end{itemize}
-%
-Since the first two items are additive shares, they provide no information unless all $T$ shares are collected.
-Hence, as long as at least one of the $T$ STTP remains honest, neither destinations nor shared secrets can be reconstructed.
-The only additional information available to an adversary colluding with an STTP is the set of hash values $h(s_i)$, which determine the weights used in the checksum integrity tags for all the nodes in the path.  
-However, the integrity's blinding offset $s_i G$ prevents trivially associating weights to specific packets.
-Without this association, the adversary can only attempt modifications on a random packet, succeeding with probability $1/n$ among $n$ packets in the entire network.
+Each of the $T$ STTPs involved in header construction reveals an additive share of the destination $N_{(i,t)}$ (with $N_i = \sum_{t=1}^T N_{(i,t)}$), 
+an additive share of the shared secret $s_{(i,t)}$ (with $s_i = \sum_{t=1}^T s_{(i,t)}$), 
+and the hash values of shared secrets along the path $(h(s_1), h(s_2), h(s_3))$, which define the integrity weights at each layer.
+Since the first two values are additive shares, they reveal no information unless all $T$ shares are collected.
+Thus long as at least one STTP remains honest, neither destinations nor shared secrets can be reconstructed.
+The only additional information gained by an adversary colluding with an STTP is the set of integrity weights $h(s_i)$.
+However, the integrity blinding offset $s_i G$ prevents associating these weights with specific packets.
+Without this association, the adversary can only modify a random packet, succeeding with probability $1/n$ among $n$ packets in the network.
 
-% \medskip
+\smallskip
 \noindent\textbf{Case of Corrupted Node.}  
-While an STTP alone reveals only unlinked integrity weights, when colluding with a corrupted node, it enables the adversary to \emph{associate those weights to a specific packets} observed at the corrupted node.  
-Concretely, a corrupted node computes its shared secret $s_i$ using the packet's cryptographic element $\alpha$, derive $h(s_i)$, and compare it against the set of weights disclosed by the colluding STTP.
-If the compromised STTP participated in the construction of this packet's header, a match occurs, allowing the adversary to recover the remaining weights associated to this packet across all the nodes in its path.
+When an adversary colludes with both an STTP and a network node, the corrupted node can derive its shared secret $s_i$ from $\alpha$, compute $h(s_i)$, and match it against the weights disclosed by the STTP.
+If the STTP contributed to the header, this match associates integrity weights to this specific packet, and exposes the weights used along its path.
+This association enables integrity forgery, allowing arbitrary header modifications with valid tags, 
+and weakens unlinkability by enabling probabilistic packet tracing via integrity verification with success probability $1/n$, where $n$ is the node's batch size.
 
-In addition to revealing the node's position along the path, associating these weights to a packet grants the adversary several further capabilities:
-\begin{enumerate}
-  \item \textbf{Integrity Forgery.} The adversary can modify any header chunks (including the destination $\Delta$) and recompute valid integrity tags, as discussed in Section~\ref{sec:integrity_forgery}.
-  \item \textbf{Weaker Unlinkability.} The adversary may attempt to trace a packet by modifying it, updating the integrity tag, and checking if it succeeds subsequent integrity verifications.
-  This succeeds with probability $1/n$ and fails with probability $(n-1)/n$, where $n$ is the node's batch size.%\todo{this also is wrong, see comment below}
-  %The probability of a corrupted node capturing a  specific message depends on the routing algorithm of the network. For example in a free-routing network, the probability of an adversary succeeding is $1/n$ where $n$ is the total number of messages. However in modern decentralized networks routing algorithms are more complex and takes into consideration many parameters such as geolocation, trust and bandwidth of the servers~\cite{rahimi2023larmix}. 
-\end{enumerate}
-% DOING THE WORST CASE SCENARIO ?
+\smallskip
+\noindent\textbf{Mitigation.}
+Collusion between STTPs and nodes can be mitigated by reducing the hash output space used for integrity weights.
+This creates multiple candidate matches, preventing unique packet-weight associations and limiting the adversary to a probabilistic advantage (instead of breaking integrity forgery resistance).
+Although a smaller space increases random guessing chances, the blinding offset $s_i G$ prevents guess verification.
 
-% \medskip
+\smallskip
 \noindent\textbf{Summary.}
-Collusion with either STTPs or network nodes alone does not compromise security.
-STTPs reveal only additive shares and unlinked weights, while nodes reveal only shared secrets.  
-However, when colluding simultaneously with both STTP and a network node, an adversary can correlate integrity weights with specific packets, thereby allowing integrity forgeries.  
-Unlinkability remains computationally hard to break, but the adversary may probabilistically test packets with success probability $1/n$, where $n$ is the node's batch size. 
-In the worst case scenario, namely collusion between the STTP and both the entry and exit nodes, the anonymity of the communication breaks down, allowing the sender and receiver to be linked.
-In summary, the security against collusion rests on the following minimal assumptions:
-(i) at least one STTP remains honest;
-(ii) at least one node on the path is not compromised; and
-(iii) adversaries cannot simultaneously collude with both a STTP and a node (in particular, when entry and exit nodes are corrupted).
-Under these conditions, collusion yields at most negligible advantage beyond trivial guessing.
+Collusion with only STTPs or only nodes does not compromise security: STTPs reveal only additive shares and unlinked weights, while nodes reveal only shared secrets.
+However, joint collusion enables integrity forgery by linking weights to packets.
+Reducing the hash space (i.e. weight space) limits the advantage of such collusion at the cost of a higher random guessing probability.
+Thus, the hash space should balance collusion resilience and guessing resistance.
