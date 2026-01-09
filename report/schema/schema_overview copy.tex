@@ -2,12 +2,12 @@
 \begin{tikzpicture}
 
 % Nodes
-\node (client) [bob, minimum size=1.2cm, label=below:\text{\color{gray}Client}] at (0,0) {};
+\node (client) [bob, minimum size=1cm, label=below:\text{\color{gray}Client}] at (0,0) {};
 
-\node (ttp1) [draw, circle, minimum width=0.6cm] at ($(client.west) + (-3*\width, -1.5*\height)$)  {};
-\node (ttp2) [draw, circle, minimum width=0.6cm] at ($(client.west) + (-3*\width, 0)$) {};
-\node (ttp3) [draw, circle, minimum width=0.6cm] at ($(client.west) + (-3*\width, 1.5*\height)$)  {};
-\node (ttpbox) [draw, densely dashed, color=gray, fit={(ttp1) (ttp3) ($(ttp3) + (-\width, 0)$)}, rounded corners=5pt, inner sep=6pt, xshift=1mm, label=above:\text{\color{gray}STTPs}] {};
+\node (ttp1) [draw, circle, minimum width=0.5cm] at ($(client.north) + (-\width, 3*\height)$)  {};
+\node (ttp2) [draw, circle, minimum width=0.5cm] at ($(client.north) + (0, 3*\height)$) {};
+\node (ttp3) [draw, circle, minimum width=0.5cm] at ($(client.north) + (\width, 3*\height)$)  {};
+\node (ttpbox) [draw, densely dashed, color=gray, fit={(ttp1) (ttp3)}, rounded corners=5pt, inner sep=10pt, label=above:\text{\color{gray}STTPs}, yshift=2mm] {};
 
 \node (entry) [draw, minimum height=2cm, minimum width=0.4cm] at ($(client.east) + (2*\width, 0)$) {};
 \node[align=center, font=\scriptsize, rotate=90] at (entry.center) {Entry gateway};
@@ -25,20 +25,20 @@
 \node (mixnet) [draw, densely dashed, color=gray, fit={(entry) (exit)}, rounded corners=5pt, inner sep=10pt, label=above:\text{\color{gray}Decentralized Network}] {};
 
 
-\draw[-Latex, shorten <= 0pt, shorten >= 1pt, loop above] (client) to[out=70,in=120,looseness=3] node[font=\small, midway, fill=white, inner sep=1pt, yshift=-2mm] {(1)} (client);
+\draw[-Latex, loop above] (client) to[out=-150,in=150,looseness=3] node[font=\small, midway, fill=white, inner sep=1pt] {(1)} (client);
 
 
-\draw[fleche, bend left=-15] ($(client.west) - (0,\height/2)$) to (ttp1.east);
-\draw[fleche, bend left=-15] (client.west) to (ttp2.east);
-\draw[fleche, bend left=-15] ($(client.west) + (0,\height/2)$) to node[font=\small, midway, fill=white, inner sep=1pt] {(2)} (ttp3.east);
+\draw[-Latex, bend left=20] ($(client.north) - (\width/4, 0)$) to node[font=\small, midway, fill=white, inner sep=1pt] {(2)} (ttp1.south);
+\draw[-Latex, bend left=20] (client.north) to (ttp2.south);
+\draw[-Latex, bend left=20] ($(client.north) + (\width/4, 0)$) to (ttp3.south);
 
-\draw[fleche, bend right=15] (ttp1.east) to node[font=\small, midway, fill=white, inner sep=1pt] {(4)} ($(client.west) - (0,\height/2)$);
-\draw[fleche, bend right=15] (ttp2.east) to (client.west);
-\draw[fleche, bend right=15] (ttp3.east) to ($(client.west) + (0,\height/2)$);
+\draw[-Latex, bend right=-20] (ttp1.south) to ($(client.north) - (\width/4, 0)$);
+\draw[-Latex, bend right=-20] (ttp2.south) to (client.north);
+\draw[-Latex, bend right=-20] (ttp3.south) to node[font=\small, midway, fill=white, inner sep=1pt] {(4)} ($(client.north) + (\width/4, 0)$);
 
-\draw[-Latex, shorten <= 2pt, shorten >= 1pt, loop above] (ttp1) to[out=150,in=-150,looseness=5] (ttp1);
-\draw[-Latex, shorten <= 2pt, shorten >= 1pt, loop above] (ttp2) to[out=150,in=-150,looseness=5] node[yshift=-1.8mm, font=\small, midway, fill=white, inner sep=1pt, xshift=-0.7mm] {(3)} (ttp2);
-\draw[-Latex, shorten <= 2pt, shorten >= 1pt, loop above] (ttp3) to[out=150,in=-150,looseness=5] (ttp3);
+\draw[-Latex, loop above] (ttp1) to[out=140,in=40,looseness=5] (ttp1);
+\draw[-Latex, loop above] (ttp2) to[out=140,in=40,looseness=5] node[yshift=-1.5mm, font=\small, midway, fill=white, inner sep=1pt] {(3)} (ttp2);
+\draw[-Latex, loop above] (ttp3) to[out=140,in=40,looseness=5] (ttp3);
 
 \draw[-Latex] (client.east) to node[font=\small, midway, fill=white, inner sep=1pt] {(5)} (mixnet.west);
 

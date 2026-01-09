@@ -25,7 +25,7 @@ Each shared secret is split into $t$ additive shares, alongside the IP addresses
 
 % Header structure - Chunks
 In DSphinx, each header element is represented as an elliptic curve (EC) point. 
-Accordingly, the header is divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunked_schema}, with each chunk corresponding to a single EC point. \todo{moved to appendix?}
+Accordingly, the header is divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunkwise-overview}, with each chunk corresponding to a single EC point. 
 Every network node along the path contributes for two chunks: one encoding its IP address and another representing its integrity tag. 
 Thus, a path of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per node and an additional chunk for the final destination.
 
