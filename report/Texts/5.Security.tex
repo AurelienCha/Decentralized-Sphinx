@@ -39,7 +39,7 @@ The scheme provides unlinkability if any probabilistic polynomial-time adversary
 \noindent\textbf{Proof Sketch:}
 As in the original Sphinx construction, all packets have a fixed size% (header and payload),
 , preventing any adversary from correlating packets based on observable size patterns.
-In addition, headers are computationally indistinguishable from random bitstrings, as empirically confirmed by the NIST randomness test suite (Section~\ref{sec:NIST}).\todo{Experiments in Appendix ?}
+In addition, headers are computationally indistinguishable from random bitstrings, as empirically confirmed by the NIST randomness test suite (Section~\ref{sec:NIST}).
 Consequently, any successful distinguishing strategy must exploit correlations between header components $(\alpha, \beta, \gamma)$ across layers.
 Since the integrity tag $\gamma$ is computed independently at each layer, it cannot be used for cross-layer linkage.
 

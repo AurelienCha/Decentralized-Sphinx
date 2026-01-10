@@ -13,7 +13,7 @@
 
 % \subsection{Unlinkability: Header Randomness}
 \label{sec:output_randomness}\label{sec:NIST}
-To evaluate the statistical quality of our DSphinx headers, we compare our implementation\todo{github link} 
+To evaluate the statistical quality of our DSphinx headers, we compare our implementation\github  
 against the original Sphinx implementation by Danezis\footnote{\url{https://github.com/UCL-InfoSec/sphinx}}, using 
 the NIST SP 800-22 statistical test suite~\cite{NIST-SP80022} with identical configurations.
 This suite comprises 15 tests designed to assess whether a binary sequence exhibits properties expected from a truly random source.
@@ -42,6 +42,7 @@ In short, the \emph{frequency} test checks global balance, the \emph{matching} t
 
 \end{comment}
 
+\smallskip
 \noindent\textbf{Dataset Generation.}
 Twenty independent datasets were generated for both implementation.
 Each dataset was produced from a simulated network of 20 nodes and 3 semi-trusted third parties (STTPs).
@@ -49,43 +50,50 @@ For each epoch, a random destination IP and a path of three nodes were selected.
 According to NIST requirements, each input sequence should contain at least $1\,000\,000$ bits.
 We therefore concatenated multiple generated headers to reach a sequence of this size, repeating the process to obtain 100 sequences per dataset.
 
+\smallskip
 \noindent\textbf{Results Analysis.}
-The results for both, our DSphinx implementation and the original Sphinx, are summarized in Table~\ref{tab:test_summary}.
-In terms of output randomness, our decentralized implementation performs better than the original Sphinx, as it passes a greater number of statistical tests.
-The results suggest that both implementations may exhibit subtle patterns or hidden structure, as indicated by failures in the \textit{Random Excursions} and the \textit{Non-overlapping Matching} tests. 
-This behavior could potentially come from the underlying mathematical framework (e.g. elliptic curves), which is not inherently truly random.
-Nevertheless, our implementation demonstrates a better overall balance between ones and zeros, as reflected in the \textit{Frequency} and \textit{Cumulative Sums} test results.
-Given the established security of the original Sphinx protocol, and considering the similarities in core structure, our results indicate that our scheme is a solid starting point toward achieving similar privacy guarantees.
+Table~\ref{tab:test_summary} summarizes the results for both our DSphinx implementation and the original Sphinx, 
+with more detailed results provided in Appendix~\ref{app:emp_results}. 
+Overall, DSphinx exhibits better output randomness, passing a greater number of statistical tests. 
+Both implementations show occasional failures in the \textit{Random Excursions} and \textit{Non-overlapping Matchings} tests, 
+likely reflecting subtle patterns inherent to the underlying mathematical framework (e.g. elliptic curves), which is not truly random. 
+Nevertheless, DSphinx demonstrates a more balanced distribution of ones and zeros, as indicated by the \textit{Frequency} and \textit{Cumulative Sums} tests. 
+Considering the established security of the original Sphinx protocol and the structural similarities, 
+these results suggest that DSphinx provides a strong foundation to achieve comparable privacy guarantees.
 
-\begin{table}%[H]
+\begin{table}[H]
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \hspace{0.5mm}\Circle~=\enspace Fail)}
 \centering
 \vspace{1mm}
 \label{tab:test_summary}
     \hspace{-1mm}
-    \scalebox{.92}{
-    \begin{tabular}{|l|cc|cc|}
+    \scalebox{1.}{
+    \begin{tabular}{|r l|cc|cc|}
     \toprule
-                                    & \multicolumn{2}{c|}{\textbf{DSphinx}}   & \multicolumn{2}{c|}{\textbf{Sphinx}}\\
-    \cline{2-5}\vspace*{-2mm}\\
-                                    % & \textbf{\footnotesize Success}    & \textbf{\footnotesize}          & \textbf{\footnotesize Success} & \textbf{\footnotesize} \vspace*{-0.5mm} \\
-    \textbf{Statistical Test}       & \textbf{\footnotesize \hspace{1mm}Rate\hspace{1mm}}   & \textbf{\footnotesize \hspace{1mm}Uniformity\hspace{1mm}}   & \textbf{\footnotesize \hspace{1mm}Rate\hspace{1mm}}    & \textbf{\footnotesize \hspace{1mm}Uniformity\hspace{1mm}} \\
+                                &    & \multicolumn{2}{c|}{\textbf{DSphinx}}   & \multicolumn{2}{c|}{\textbf{Sphinx}}\\
+    \cline{3-6}\vspace*{-2mm}\\
+    
+    & \textbf{Statistical Test} & 
+    \textbf{\footnotesize \hspace{1mm}Rate\hspace{1mm}}   & 
+    \textbf{\footnotesize \hspace{1mm}Uniformity\hspace{1mm}}   & 
+    \textbf{\footnotesize \hspace{1mm}Rate\hspace{1mm}}    & 
+    \textbf{\footnotesize \hspace{1mm}Uniformity\hspace{1mm}} \\
     \midrule
-     \small Frequency                       & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
-     \small Block Frequency                 & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-     \small Cumulative Sums                 & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
-     \small Runs                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-     \small Longest Run                     & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-     \small Rank                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-     \small Discrete Fourier Transform      & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-     \small Non-overlapping Matchings       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
-     \small Overlapping Matchings           & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
-     \small Universal Statistical           & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-     \small Approximate Entropy             & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-     \small Random Excursions               & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
-     \small Random Excursions Variant \hspace{1mm}      & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
-     \small Serial                          & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
-     \small Linear Complexity               & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}1\hspace{1mm} & \normalsize Frequency                       & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
+     \scriptsize \hspace{1mm}2\hspace{1mm} & \normalsize Block Frequency                 & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}3\hspace{1mm} & \normalsize Cumulative Sums                 & \CIRCLE               & \CIRCLE               & \Circle            & \Circle     \\
+     \scriptsize \hspace{1mm}4\hspace{1mm} & \normalsize Runs                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}5\hspace{1mm} & \normalsize Longest Run                     & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}6\hspace{1mm} & \normalsize Rank                            & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}7\hspace{1mm} & \normalsize Discrete Fourier Transform      & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}8\hspace{1mm} & \normalsize Non-overlapping Matchings       & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}9\hspace{1mm} & \normalsize Overlapping Matchings           & \CIRCLE               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}10\hspace{1mm} & \normalsize Universal Statistical           & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}11\hspace{1mm} & \normalsize Approximate Entropy             & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}12\hspace{1mm} & \normalsize Random Excursions               & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}13\hspace{1mm} & \normalsize Random Excursions Variant \hspace{1mm}      & \Circle               & \CIRCLE               & \Circle            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}14\hspace{1mm} & \normalsize Serial                          & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
+     \scriptsize \hspace{1mm}15\hspace{1mm} & \normalsize Linear Complexity               & \CIRCLE               & \CIRCLE               & \CIRCLE            & \CIRCLE     \\
     \bottomrule
     \end{tabular}
     }

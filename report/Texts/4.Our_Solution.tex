@@ -110,9 +110,8 @@ followed by a layer-by-layer encryption phase (Fig.~\ref{fig:chunk-encryption}) 
 \noindent\textbf{Preprocessing Phase.}
 The preprocessing phase prepares a vector of filler chunks $\phi$ according to \eqref{eq:preprocessing}.
 These filler chunks ensure that after each encryption layer the last two chunks evaluate to the identity element and can thus be safely truncated, ensuring a constant header size and reversibility at the network nodes. 
-Algorithm~\ref{algo:preprocessing} takes as input the shares of the shared secrets $\{s_i\}$ and the chunk generators $\{G_j\}$, \todo{To adapt if pseudocode in Appendix}
-and outputs $n-1$ filler chunks, where $n = 2m+1$ is the header size for a path of length $m$. 
-The case $m=3$ is illustrated in Fig.~\ref{fig:chunk-preprocessing}.
+The detailed procedure is specified in Algorithm~\ref{algo:preprocessing} (Appendix~\ref{app:algos}), which takes as input the shares of the shared secrets $\{s_i\}$ and the chunk generators $\{G_j\}$, and outputs $n-1$ filler chunks, where $n = 2m+1$ is the header size for a path of length $m$. 
+An example for $m=3$ is illustrated in Fig.~\ref{fig:chunk-preprocessing}.
 \begin{equation}
     \phi_j = - \sum_{i=1}^{m} s_i\, G_{\,n+j-2i}, \qquad 1 \le j \le n-1 .
 \label{eq:preprocessing}
@@ -121,7 +120,8 @@ The case $m=3$ is illustrated in Fig.~\ref{fig:chunk-preprocessing}.
 % Layers
 \noindent{\textbf{Layered Encryption Phase.}}
 After preprocessing, the STTP initializes the header $H$ by appending the destination share $\D{}$ with the filler chunks $\phi$, producing a $n$-chunks header.
-Then, proceeding from reverse path order (from node $i = m$ down to $i = 1$), the STTP performs the following operations (Alg.~\ref{algo:sttp}):
+It then applies layered encryption in reverse path order, from node $i = m$ down to $i = 1$, as illustrated in Fig.~\ref{fig:chunk-encryption}. 
+The detailed procedure is specified in Algorithm~\ref{algo:sttp} (Appendix~\ref{app:algos}).
 \begin{enumerate}
     \item \textbf{Encrypt Chunks}: 
     Each chunk $j$ is encrypted according Eq.~\eqref{eq:layer_i}.
@@ -193,6 +193,7 @@ and forwards the packet with header $(\A{i+1},\, \B{i+1}{},\, \C{i+1})$ to the n
 \label{eq:update_alpha}
 \end{equation}
 
+\vspace*{-4mm}
 \begin{figure}%[H]
     \centering
 
@@ -235,3 +236,4 @@ and forwards the packet with header $(\A{i+1},\, \B{i+1}{},\, \C{i+1})$ to the n
     \caption{Overview of chunk-wise header processing for a path of length $m=3$. Circled numbers \raisebox{1pt}{\eq[\color{red}\scriptsize x]} refers to Equation x in the paper.}
     \label{fig:chunkwise-overview}
 \end{figure}
+\vspace*{-2mm}
