@@ -18,8 +18,8 @@ The scheme provides unlinkability if any probabilistic polynomial-time adversary
 % under the hardness of the underlying elliptic curve assumptions.
 
 \medskip
-\noindent\textbf{Game Definition:}\vspace*{-1.5mm}
-\begin{enumerate}
+\noindent\textbf{Game Definition:}
+\begin{enumerate}[topsep=1pt, itemsep=1pt]
   \item \textbf{Setup.}
   The challenger generates the node's secret keys and public system parameters $(G_1, \dots, G_n)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed EC points.
   Generators are said to be independent if no participant knows any scalar relations among them.
@@ -36,6 +36,7 @@ The scheme provides unlinkability if any probabilistic polynomial-time adversary
   He wins if ${b_\mathcal{A}} = {b_\mathcal{C}}$.
 \end{enumerate}
 
+\medskip
 \noindent\textbf{Proof Sketch:}
 As in the original Sphinx construction, all packets have a fixed size% (header and payload),
 , preventing any adversary from correlating packets based on observable size patterns.
@@ -71,8 +72,8 @@ We formalize this property as a game in which the adversary attempts to forge a 
 The scheme achieves integrity-forgery resistance if any probabilistic polynomial-time adversary has only negligible advantage over randomly guessing the integrity tag.
 
 \medskip
-\noindent\textbf{Game Definition:}\vspace*{-1.5mm}
-\begin{enumerate}
+\noindent\textbf{Game Definition:}
+\begin{enumerate}[topsep=1pt, itemsep=1pt]
   \item \textbf{Setup.}
   The challenger generates node's secret keys and public system parameters $(G_1, \dots, G_n)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
 
@@ -88,6 +89,7 @@ The scheme achieves integrity-forgery resistance if any probabilistic polynomial
   The adversary wins if $\gamma_{\mathcal{A}} = \gamma_{\mathcal{C}}$, where $\gamma_{\mathcal{C}}$ is the integrity tag computed by the challenger on $\beta_{\mathcal{A}}$.
 \end{enumerate}
 
+\medskip
 \noindent\textbf{Proof Sketch:}
 An adversary is able to modify a header chunk $\beta_j$ in two ways; (i) by replacing it with a new elliptic curve point, or (ii) by adding a point $P_j$.
 
