@@ -102,15 +102,15 @@ a share of its shared secret (scalar $\s{i}$),
 and the hash of its shared secret (scalar $\sHashed{i}$). 
 Using these shares, each STTP independently constructs a \emph{partial} encrypted header. 
 This computation proceeds in two stages: 
-a preprocessing phase (Fig.~\ref{fig:chunk-preprocessing}) that generates filler chunks, 
-followed by a layer-by-layer encryption phase (Fig.~\ref{fig:chunk-encryption}) applied in reverse order, from the last hop to the first.
+a preprocessing phase (Alg.~\ref{algo:preprocessing}, Fig.~\ref{fig:chunk-preprocessing}) that generates filler chunks, 
+followed by a layer-by-layer encryption phase (Alg.~\ref{algo:sttp}, Fig.~\ref{fig:chunk-encryption}) applied in reverse order, from the last hop to the first.
 
 % Preprocessing
 \smallskip
 \noindent\textbf{Preprocessing Phase.}
 The preprocessing phase prepares a vector of filler chunks $\phi$ according to \eqref{eq:preprocessing}.
 These filler chunks ensure that after each encryption layer the last two chunks evaluate to the identity element and can thus be safely truncated, ensuring a constant header size and reversibility at the network nodes. 
-The detailed procedure is specified in Algorithm~\ref{algo:preprocessing} (Appendix~\ref{app:algos}), which takes as input the shares of the shared secrets $\{s_i\}$ and the chunk generators $\{G_j\}$, and outputs $n-1$ filler chunks, where $n = 2m+1$ is the header size for a path of length $m$. 
+The detailed procedure is specified in Alg.~\ref{algo:preprocessing}, which takes as input the shares of the shared secrets $\{s_i\}$ and the chunk generators $\{G_j\}$, and outputs $n-1$ filler chunks, where $n = 2m+1$ is the header size for a path of length $m$. 
 An example for $m=3$ is illustrated in Fig.~\ref{fig:chunk-preprocessing}.
 \begin{equation}
     \phi_j = - \sum_{i=1}^{m} s_i\, G_{\,n+j-2i}, \qquad 1 \le j \le n-1 .
@@ -119,9 +119,9 @@ An example for $m=3$ is illustrated in Fig.~\ref{fig:chunk-preprocessing}.
 
 % Layers
 \noindent{\textbf{Layered Encryption Phase.}}
-After preprocessing, the STTP initializes the header $H$ by appending the destination share $\D{}$ with the filler chunks $\phi$, producing a $n$-chunks header.
-It then applies layered encryption in reverse path order, from node $i = m$ down to $i = 1$, as illustrated in Fig.~\ref{fig:chunk-encryption}. 
-The detailed procedure is specified in Algorithm~\ref{algo:sttp} (Appendix~\ref{app:algos}).
+After preprocessing, the STTP initializes the header $H$ by appending the filler chunks $\phi$ to the destination share $\D{}$, producing a $n$-chunks header.
+It then applies layered encryption in reverse path order, from node $i = m$ down to $i = 1$, 
+as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo:sttp}.
 \begin{enumerate}
     \item \textbf{Encrypt Chunks}: 
     Each chunk $j$ is encrypted according Eq.~\eqref{eq:layer_i}.
@@ -150,6 +150,69 @@ The integrity construction in \eqref{eq:integrity} combines a pseudorandom weigh
 with a blinding offset term $s_i G$ that prevents integrity tags from being linked by STTPs that know the weights.
 The pseudorandom weights prevent adversaries from forging valid checksums, while the blinding offset preserves unlinkability.  
 This design preserves homomorphism while ensuring unlinkability and integrity.
+
+\vspace*{-10mm}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.47\linewidth}
+\begin{algorithm}[H]
+\small
+\input{schema/code_filler_chunks_small.tex}
+\label{algo:preprocessing}
+\end{algorithm}
+\end{minipage}
+\hfill
+\begin{minipage}{0.47\linewidth}
+\begin{algorithm}[H]
+\small
+\input{schema/code_sttp_small.tex}
+\label{algo:sttp}
+\end{algorithm}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+
+    % -------- Left figure (b) --------
+    % \setcounter{sub\@captype}{1}
+    \begin{subfigure}[b]{0.48\linewidth}
+        \setcounter{subfigure}{1} % forces next to be (b)
+        % \centering
+        \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_encryption.tex}}
+        \caption{Encryption (STTP)}
+        \label{fig:chunk-encryption}
+    \end{subfigure}
+    \hfill
+    % -------- Right column --------
+    \begin{subfigure}[b]{0.48\linewidth}
+        % \centering
+
+        % (a) top-right
+        \begin{subfigure}[t]{\linewidth}
+            \setcounter{subfigure}{0} % forces next to be (a)
+            \centering
+            \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_preprocessing.tex}}
+            \caption{Preprocessing (STTP)}
+            \label{fig:chunk-preprocessing}
+        \end{subfigure}
+
+        \vspace{1.em}
+
+        % (c) bottom-right
+        \begin{subfigure}[b]{\linewidth}
+            \setcounter{subfigure}{2} % forces next to be (c)
+            \centering
+            \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_decryption.tex}}
+            \caption{Decryption (network node)}
+            \label{fig:chunk-decryption}
+        \end{subfigure}
+
+    \end{subfigure}
+
+    \caption{Overview of chunk-wise header processing for a path of length $m=3$. Circled numbers \raisebox{1pt}{\eq[\color{red}\scriptsize x]} refers to Equation x in the paper.}
+    \label{fig:chunkwise-overview}
+\end{figure}
 
 \subsection{Network Nodes}
 
@@ -192,48 +255,3 @@ and forwards the packet with header $(\A{i+1},\, \B{i+1}{},\, \C{i+1})$ to the n
 \A{i+1} = s_i \, \A{i}
 \label{eq:update_alpha}
 \end{equation}
-
-\vspace*{-4mm}
-\begin{figure}%[H]
-    \centering
-
-    % -------- Left figure (b) --------
-    % \setcounter{sub\@captype}{1}
-    \begin{subfigure}[b]{0.48\linewidth}
-        \setcounter{subfigure}{1} % forces next to be (b)
-        % \centering
-        \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_encryption.tex}}
-        \caption{Encryption (STTP)}
-        \label{fig:chunk-encryption}
-    \end{subfigure}
-    \hfill
-    % -------- Right column --------
-    \begin{subfigure}[b]{0.48\linewidth}
-        % \centering
-
-        % (a) top-right
-        \begin{subfigure}[t]{\linewidth}
-            \setcounter{subfigure}{0} % forces next to be (a)
-            \centering
-            \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_preprocessing.tex}}
-            \caption{Preprocessing (STTP)}
-            \label{fig:chunk-preprocessing}
-        \end{subfigure}
-
-        \vspace{1.em}
-
-        % (c) bottom-right
-        \begin{subfigure}[b]{\linewidth}
-            \setcounter{subfigure}{2} % forces next to be (c)
-            \centering
-            \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_decryption.tex}}
-            \caption{Decryption (network node)}
-            \label{fig:chunk-decryption}
-        \end{subfigure}
-
-    \end{subfigure}
-
-    \caption{Overview of chunk-wise header processing for a path of length $m=3$. Circled numbers \raisebox{1pt}{\eq[\color{red}\scriptsize x]} refers to Equation x in the paper.}
-    \label{fig:chunkwise-overview}
-\end{figure}
-\vspace*{-2mm}
