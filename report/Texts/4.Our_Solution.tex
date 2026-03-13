@@ -65,7 +65,7 @@ This procedure of \emph{clearing the cofactor} prevents \emph{small subgroup att
 Generators are therefore defined as $ G_j = 8 \cdot \Map{(\hash{\text{timestamp}} + j)} $.
 
 \subsection{Client}
-
+\todo{For clarity reasons we assume for now that the client first choose the path (and compute the shares $s_1$, $s_2$, $s_3$), we later propose a scheme that additionally decentralize this part.}
 To send a message to a chosen destination, the client first selects a path accordingly to the routing protocol and generates an initial nonce.  
 Using this nonce and the public keys of the nodes along the route, the client computes a hop-by-hop shared secrets derivation \((\s{1}, \s{2}, \s{3})\)
 according to \eqref{eq:shared_secret}, where $x_1$ is the client's nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ node along the path, 
