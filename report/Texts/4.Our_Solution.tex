@@ -71,6 +71,11 @@ Using this nonce and the public keys of the nodes along the route, the client co
 according to \eqref{eq:shared_secret}, where $x_1$ is the client's nonce, $\PK{i} = \sk{i}\,\G{}$ is the public key of the $i^{th}$ node along the path, 
 $p$ is the large prime subgroup order, and $\InverseMap{}$ is the inverse Elligator, mapping EC point to integer.
 The shared secret $s_i$ is used as a per-hop pseudorandom update, ensuring that the cryptographic element $\A{i}$ remain unlinkable across layers.
+%
+\todo{quick explanation that we use this to explain header construction but
+provide an idea for decintralised path
+construction~\ref{sec:distrib-path}.}
+%
 \begin{equation}
 (\s{1}, \s{2}, \s{3}) \quad \left\{ \quad
 \begin{aligned}
