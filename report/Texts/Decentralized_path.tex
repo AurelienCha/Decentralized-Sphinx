@@ -1,0 +1,107 @@
+\color{blue}
+\section{Distributed Path Sampling}
+
+The presence of semi-trusted third parties (STTPs) in our decentralized header construction naturally enables an additional functionality: distributing the path selection process itself. 
+In classical Sphinx-based systems, the client unilaterally selects the routing path by choosing a sequence of mixnodes and deriving the corresponding shared secrets from their public keys. 
+While simple, this design gives the client full control over route selection, which may enable biased routing strategies or facilitate route fingerprinting attacks.
+
+To mitigate this issue, we propose a mechanism that distributes path selection with the assistance of STTPs. 
+Instead of allowing the client to directly compute the shared secrets associated with a path, the STTPs collaboratively provide the cryptographic material required to derive them.
+
+In the current design, this functionality is implemented as a protocol executed prior to the construction of the DSphinx packet. 
+The STTPs return partial shares that allow the client to reconstruct the shared secrets associated with the sampled path. 
+The client can then proceed with the DSphinx header construction procedure described in Fig.~\ref{fig:overall_schema}, as if it had derived the secrets itself.
+
+Although effective, this mechanism remains conceptually separate from the header construction protocol. 
+We therefore conclude this section by briefly discussing how distributed path sampling could be integrated more tightly into the decentralized header construction.
+
+\subsection{Overview}
+
+In standard Sphinx routing, the client derives a sequence of shared secrets $s_i$ from the public keys $K_i$ of the selected mixnodes. 
+In contrast, our approach relies on the mixnodes' secret keys $k_i$, which are distributed among STTPs using Shamir Secret Sharing (SSS). 
+As a result, no single entity possesses sufficient information to compute the routing secrets independently.
+
+Consequently, the client cannot derive routing secrets on its own. 
+Instead, it queries a set of STTPs, which collaboratively sample a path in a pseudorandom manner and provide shares of the material required to reconstruct the corresponding secrets.
+
+After collecting shares from a threshold number of STTPs, the client reconstructs the shared secrets and proceeds with the DSphinx header construction procedure (Fig.~\ref{fig:overall_schema}).
+
+\subsection{Setup}
+
+The goal of the setup phase is to distribute shares of each mixnode's secret key and routing information among the STTPs.
+
+Each STTP $t$ is identified by a value $ID_t = H(IP_t)$, where $IP_t$ denotes the IP address of the STTP. 
+Each mixnode $i$ samples a random identifier $r_i$ and constructs two random polynomials $f_i$ and $g_i$ of degree $n-1$ satisfying the constraints in Eq.~\ref{eq:polynome_0}. 
+Here, $k_i$ denotes the mixnode's secret key, $N_i$ its address point, and $n$ the reconstruction threshold of the Shamir sharing scheme.
+\begin{equation}
+    \begin{cases}
+        f_i(0) = k_i, \\
+        g_i(0) = N_i
+    \end{cases}
+    \label{eq:polynome_0}
+\end{equation}
+
+The mixnode then distributes to each STTP $t$ the share defined in Eq.~\ref{eq:sttp_share}. 
+STTPs store these shares indexed by the identifier $r_i$, which later serves to pseudorandomly select mixnodes during path sampling.
+Ideally, shares are delivered anonymously so that STTPs cannot associate them with specific mixnodes.
+\begin{equation}
+    (r_i,\, f_i(ID_t),\, g_i(ID_t))
+    \label{eq:sttp_share}
+\end{equation}
+
+Adding a new mixnode only requires executing the setup procedure for that node. 
+Adding a new STTP requires each mixnode to generate and transmit an additional share. 
+If the threshold parameter $n$ changes, however, the entire setup procedure must be repeated.
+
+\subsection{Path Sampling}
+
+To sample a routing path, the client sends a nonce $w$ to a set of $n$ STTPs. 
+This nonce acts as a randomness seed. Each STTP first computes the elliptic curve point
+\begin{equation}
+    X = \Map(w),
+    \label{eq:map_w}
+\end{equation}
+where $\Map(\cdot)$ denotes the Elligator mapping. This mapping produces a uniformly distributed elliptic curve point whose discrete logarithm relative to the base point $G$ is unknown.
+
+For each hop position $i$, the STTP selects the mixnode share $(r_i, k_{i_t}, N_{i_t})$ whose identifier $r_i$ is closest to
+\[
+H(w \parallel \text{timestamp} \parallel i).
+\]
+
+The STTP then computes a share of the Diffie--Hellman value associated with the selected mixnode as
+\begin{equation}
+    S_{i_t} = k_{i_t} X ,
+    \label{eq:S_i_t}
+\end{equation}
+and returns to the client the tuple $(ID_t,\, N_{i_t},\, S_{i_t})$.
+
+\subsection{Secret Reconstruction} % TODO ...
+
+Upon receiving responses from a threshold number of STTPs, the client reconstructs the mixnode address points and shared secret points using Lagrange interpolation:
+\begin{equation}
+N_i = \sum_t \lambda(ID_t) N_{i_t}, \qquad
+S_i = \sum_t \lambda(ID_t) S_{i_t},
+\end{equation}
+where $\lambda(ID_t)$ denote the Lagrange interpolation coefficients.
+Since the same nonce $w$ is used by all STTPs, the reconstructed points correspond to the same sequence of mixnodes selected during the path sampling phase.
+
+To prevent linkability, the client samples a random scalar $r$ and rerandomizes the shared secrets as
+\begin{equation}
+S'_i = r S_i .
+\end{equation}
+
+Since DSphinx derives shared secrets sequentially, the client computes the scalar shared secrets in cascade. 
+For each hop $i$, the corresponding scalar secret is obtained by multiplying the reconstructed point with the secrets of the previous hops and mapping the result back to the scalar field:
+\begin{equation}
+s_i = \Map^{-1}\!\left(S'_i \prod_{j=1}^{i-1} s_j \right).
+\end{equation}
+
+Finally, the client proceeds with the standard DSphinx header construction procedure (Fig.~\ref{fig:overall_schema}) using
+\begin{equation}
+\A{} = rX           % TODO \A = rx put with eq 14
+\end{equation}
+together with the reconstructed values $N_i$ and $s_i$. 
+
+\subsection{Integration with Decentralized Header Construction (TODO)}
+
+\color{black}
