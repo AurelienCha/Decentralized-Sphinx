@@ -1,6 +1,10 @@
 
-\section{Limitations and Future Work}
+\section{Discussion, Limitations \&  Future Work}
 \label{sec:discussion}
+
+\input{Texts/Decentralized_path}
+
+\subsection{Limitations \& Future Work}
 
 Our results show that decentralizing Sphinx header construction is feasible and secure under reasonable assumptions, but several conceptual and practical limitations remain.
 These do not undermine the contributions of the present work, but highlight challenges for real-world deployment.
@@ -10,6 +14,7 @@ These do not undermine the contributions of the present work, but highlight chal
 While DSphinx decentralizes header construction, it remains client-centric since he still selects the path and derives hop-by-hop shared secrets.
 This allows malicious clients to bias route selection or mount classical deanonymization attacks such as (N-1)-attacks~\cite{oram2001peer}, reducing anonimity of honest clients.
 A natural direction for future work is to decentralize path selection and key derivation by distributing these tasks among STTPs to reduce client trust and enabling a better trust model for practical deployments.
+\todo{Move or rewrite.}
 
 \smallskip
 \noindent\textbf{Stronger Collusion Resistance.} 

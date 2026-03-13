@@ -1,5 +1,5 @@
 \color{blue}
-\section{Distributed Path Sampling}
+\subsection{Distributed Path Sampling}
 \label{sec:distrib-path}
 
 The presence of semi-trusted third parties (STTPs) in our decentralized header construction naturally enables an additional functionality: distributing the path selection process itself. 
@@ -16,7 +16,7 @@ The client can then proceed with the DSphinx header construction procedure descr
 Although effective, this mechanism remains conceptually separate from the header construction protocol. 
 We therefore conclude this section by briefly discussing how distributed path sampling could be integrated more tightly into the decentralized header construction.
 
-\subsection{Overview}
+\subsubsection{Overview}
 
 In standard Sphinx routing, the client derives a sequence of shared secrets $s_i$ from the public keys $K_i$ of the selected mixnodes. 
 In contrast, our approach relies on the mixnodes' secret keys $k_i$, which are distributed among STTPs using Shamir Secret Sharing (SSS). 
@@ -27,7 +27,7 @@ Instead, it queries a set of STTPs, which collaboratively sample a path in a pse
 
 After collecting shares from a threshold number of STTPs, the client reconstructs the shared secrets and proceeds with the DSphinx header construction procedure (Fig.~\ref{fig:overall_schema}).
 
-\subsection{Setup}
+\subsubsection{Setup}
 
 The goal of the setup phase is to distribute shares of each mixnode's secret key and routing information among the STTPs.
 
@@ -54,7 +54,7 @@ Adding a new mixnode only requires executing the setup procedure for that node.
 Adding a new STTP requires each mixnode to generate and transmit an additional share. 
 If the threshold parameter $n$ changes, however, the entire setup procedure must be repeated.
 
-\subsection{Path Sampling}
+\subsubsection{Path Sampling}
 
 To sample a routing path, the client sends a nonce $w$ to a set of $n$ STTPs. 
 This nonce acts as a randomness seed. Each STTP first computes the elliptic curve point
@@ -76,7 +76,7 @@ The STTP then computes a share of the Diffie--Hellman value associated with the 
 \end{equation}
 and returns to the client the tuple $(ID_t,\, N_{i_t},\, S_{i_t})$.
 
-\subsection{Secret Reconstruction} % TODO ...
+\subsubsection{Secret Reconstruction} % TODO ...
 
 Upon receiving responses from a threshold number of STTPs, the client reconstructs the mixnode address points and shared secret points using Lagrange interpolation:
 \begin{equation}
@@ -103,6 +103,6 @@ Finally, the client proceeds with the standard DSphinx header construction proce
 \end{equation}
 together with the reconstructed values $N_i$ and $s_i$. 
 
-\subsection{Integration with Decentralized Header Construction (TODO)}
+\subsubsection{Integration with Decentralized Header Construction (TODO)}
 
 \color{black}
