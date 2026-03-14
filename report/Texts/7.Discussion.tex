@@ -8,7 +8,7 @@
 
 \subsubsection{Distributed Integrity Mechanism.}
 
-As illustrated in Fig.~\ref{}\todo{figure}, combining decentralized path sampling with decentralized header construction currently requires two rounds of interaction between the client and the STTPs. 
+As illustrated in Fig.~\ref{}\todo{figure}, combining decentralized path selection with decentralized header construction currently requires two rounds of interaction between the client and the STTPs. 
 In the first round, STTPs collaboratively sample a routing path and return shares of the corresponding shared secrets to the client, which reconstructs them. 
 In the second round, the client redistributes shares of these secrets to the STTPs so that they can compute partial DSphinx headers, which are then aggregated into the final encrypted header.
 
@@ -20,7 +20,7 @@ Consequently, the client must first reconstruct the shared secrets in order to c
 This integrity construction therefore constitutes a central bottleneck in the protocol. 
 Designing an integrity mechanism that can be computed directly from secret shares would eliminate this limitation and enable a fully distributed workflow.
 
-Such an improvement could allow STTPs to jointly sample the path and construct partial headers in a single interaction round, thereby integrating path sampling naturally into the decentralized header construction. 
+Such an improvement could allow STTPs to jointly sample the path and construct partial headers in a single interaction round, thereby integrating path selection naturally into the decentralized header construction. 
 Exploring alternative integrity mechanisms that support distributed computation while preserving the cryptographic guarantees of DSphinx therefore remains an important direction for future work.
 
 % \subsubsection{Stronger Collusion Resistance}

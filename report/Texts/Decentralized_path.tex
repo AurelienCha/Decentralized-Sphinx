@@ -1,14 +1,14 @@
+
 \subsection{Distributed Path Sampling}
 \label{sec:distrib-path}
+In this section, we present a proof-of-concept approach for decentralizing path selection. This is particularly important to prevent attacks by malicious clients, such as biased routing~\cite{benguirat2022mixnet} and $(N-1)$ attacks~\cite{wright03}. The setup phase, which can be integrated with DSphinx, our main contribution, may be designed differently depending on the underlying network, for example mixnets or the Lightning Network and on system configurations, such as whether public IP addresses are published on the blockchain or in a centralized server. While our main contribution is the core protocol, this section provides intuition on how such a setup phase could be incorporated. In general, any mechanism that replaces the client’s computation of secret shares with a decentralized scheme can be integrated with our protocol.
 \begin{comment}
 	The presence of semi-trusted third parties (STTPs) in our decentralized header construction naturally enables an additional functionality: distributing the path selection process itself. 
 	In classical Sphinx-based systems, the client selects the routing path and derives the corresponding shared secrets from the mixnodes' public keys, giving it full control over route selection. 
 	This may enable biased routing and $(N-1)$ attacks.
 	To mitigate this issue, we propose a mechanism in which STTPs collaboratively assist in sampling the routing path. 
 	
-\end{comment}
 In order to prevent attacks such as biased routing~\cite{benguirat2022mixnet} and $(N-1)$ attacks~\cite{wright03}, the protocol should be coupled with a mechanism whereby the routing path is selected by the STTPs rather than by the client.
-\begin{comment}
 \subsubsection{Overview}
 
 Each mixnode's private key $k_i$ is distributed among STTPs using Shamir Secret Sharing, resulting in a distributed symmetric key shared among the STTPs.
@@ -38,7 +38,7 @@ STTPs store these shares indexed by the identifier $r_i$, which later serves to 
 Adding a new mixnode only requires executing the setup procedure for that node. Adding a new STTP requires each mixnode to generate and transmit an additional share. 
 If the threshold parameter $n$ changes, however, the entire setup procedure must be repeated.
 
-\subsubsection{Path Sampling.}
+\subsubsection{Path Selection.}
 
 To sample a routing path, the client sends a nonce $w$ (a randomness seed)to a set of $n$ STTPs. Each STTP first computes the elliptic curve point $\A{} = \Map(w)$, where $\Map(\cdot)$ denotes the Elligator mapping. This mapping produces a uniformly distributed elliptic curve point whose discrete logarithm relative to the base point $G$ is unknown.
 
@@ -67,4 +67,4 @@ For each hop $i$, the corresponding scalar secret is obtained by combining the r
     \label{eq:cascade_secret}
 \end{equation}
 
-Finally, the client proceeds with the standard DSphinx header construction procedure (Fig.~\ref{fig:overall_schema}) using $\A{}'$, together with the reconstructed values $N_i$ and $s'_i$ for each hop $i$ along the path.
+Finally, the client proceeds with the standard DSphinx header construction protocol (Section~\ref{sec:scheme}) using $\A{}'$, together with the reconstructed values $N_i$ and $s'_i$ for each hop $i$ along the path.
