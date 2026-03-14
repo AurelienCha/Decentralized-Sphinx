@@ -1,4 +1,3 @@
-\color{blue}
 \subsection{Distributed Path Sampling}
 \label{sec:distrib-path}
 \begin{comment}
@@ -8,7 +7,8 @@
 	To mitigate this issue, we propose a mechanism in which STTPs collaboratively assist in sampling the routing path. 
 	
 \end{comment}
-In order to prevent such as biased routing and $(N-1)$ attacks, our protcol should be accompanied by a scheme where the STTP choose the path instead of the client.
+In order to prevent attacks such as biased routing~\cite{benguirat2022mixnet} and $(N-1)$ attacks~\cite{wright03}, the protocol should be coupled with a mechanism whereby the routing path is selected by the STTPs rather than by the client.
+\begin{comment}
 \subsubsection{Overview}
 
 Each mixnode's private key $k_i$ is distributed among STTPs using Shamir Secret Sharing, resulting in a distributed symmetric key shared among the STTPs.
@@ -16,6 +16,8 @@ Consequently, the client cannot derive routing secrets independently and must qu
 
 Upon receiving a nonce from the client, the STTPs pseudorandomly sample a path and return shares of the corresponding secret materials. 
 After collecting a threshold number of responses, the client reconstructs the shared secrets and proceeds with the DSphinx header construction (Fig.~\ref{fig:overall_schema}).
+\end{comment}
+
 
 \subsubsection{Setup.}
 \begin{comment}
@@ -25,9 +27,7 @@ After collecting a threshold number of responses, the client reconstructs the sh
 
 Each STTP $t$ is identified by a value $ID_t = H(IP_t)$, where $IP_t$ denotes the IP address of the STTP. 
 Each mixnode $i$ samples a random identifier $r_i$ and constructs two random polynomials $f_i$ and $g_i$ of degree $n-1$ respectively satisfying the constraint $f_i(0) = k_i$, and $g_i(0) = N_i$. 
-Here, $k_i$ denotes the mixnode's secret key, $N_i$ its address point, and $n$ the reconstruction threshold of the Shamir sharing scheme.
-
-The mixnode then distributes to each STTP $t$ the share defined in Eq.~\ref{eq:sttp_share}. 
+Here, $k_i$ denotes the mixnode's secret key, $N_i$ its address point, and $n$ the reconstruction threshold of the Shamir sharing scheme. The mixnode then distributes to each STTP $t$ the share defined in Eq.~\ref{eq:sttp_share}. 
 STTPs store these shares indexed by the identifier $r_i$, which later serves to pseudorandomly select mixnodes during path sampling.
 %Shares are delivered anonymously so that STTPs cannot associate them with specific mixnodes.
 \begin{equation}
@@ -35,16 +35,12 @@ STTPs store these shares indexed by the identifier $r_i$, which later serves to 
     \label{eq:sttp_share}
 \end{equation}
 
-Adding a new mixnode only requires executing the setup procedure for that node. 
-Adding a new STTP requires each mixnode to generate and transmit an additional share. 
+Adding a new mixnode only requires executing the setup procedure for that node. Adding a new STTP requires each mixnode to generate and transmit an additional share. 
 If the threshold parameter $n$ changes, however, the entire setup procedure must be repeated.
 
 \subsubsection{Path Sampling.}
 
-To sample a routing path, the client sends a nonce $w$ (a randomness seed)to a set of $n$ STTPs. 
-
-Each STTP first computes the elliptic curve point $\A{} = \Map(w)$, where $\Map(\cdot)$ denotes the Elligator mapping. 
-This mapping produces a uniformly distributed elliptic curve point whose discrete logarithm relative to the base point $G$ is unknown.
+To sample a routing path, the client sends a nonce $w$ (a randomness seed)to a set of $n$ STTPs. Each STTP first computes the elliptic curve point $\A{} = \Map(w)$, where $\Map(\cdot)$ denotes the Elligator mapping. This mapping produces a uniformly distributed elliptic curve point whose discrete logarithm relative to the base point $G$ is unknown.
 
 For each hop position $i$, the STTP selects the mixnode share $(r_i, k_{i_t}, N_{i_t})$ whose identifier $r_i$ is closest to $H(w \parallel \text{timestamp} \parallel i)$.
 Then it computes a share of the Diffie-Hellman value associated with the selected mixnode shares as $S_{i_t} = k_{i_t} \A{}$,
