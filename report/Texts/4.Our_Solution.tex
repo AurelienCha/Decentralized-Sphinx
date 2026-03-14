@@ -23,7 +23,7 @@ Fig.~\ref{fig:overall_schema} illustrates the protocol in four steps:(1) The cli
 In DSphinx, each header element is represented as an elliptic curve (EC) point. 
 Accordingly, the header is divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunkwise-overview}, with each chunk corresponding to a single EC point. 
 Every network node along the path contributes for two chunks: one encoding its IP address and another representing its integrity tag. 
-Thus, a path of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per node and an additional chunk for the final destination. Table~\ref{tab:notation} provides a summary of the notation used in this work.
+Thus, a path of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per node and an additional chunk for the final destination. Table~\ref{tab:notation} provides a summary of the notation used in this paper.
 \begin{table}[H]
 	\caption{Table of Notation}
 	\centering
