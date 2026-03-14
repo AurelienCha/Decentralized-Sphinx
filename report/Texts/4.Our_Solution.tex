@@ -2,21 +2,20 @@
 
 % Overview
 The proposed decentralized protocol distributes the Sphinx header construction across multiple semi-trusted third parties (STTPs). 
-Fig.~\ref{fig:overall_schema} illustrates the protocol in five steps.\textcolor{purple}{(1) The client sends $t$ secret shares, representing the path of the packet, to $t$ different STTP, along with the necessary cryptographic elements.}
+Fig.~\ref{fig:overall_schema} illustrates the protocol in four steps:(1) The client sends $t$ secret shares, representing the path of the packet, to $t$ different STTP, along with the necessary cryptographic elements.
 (2) Each STTP independently computes a \textit{partial} Sphinx header using its shares.  
 (3) The client then aggregates these partial headers to reconstruct the final header. 
-(4) Finally, the client encrypts the payload accordingly and sends the message through the decentralized network. \textcolor{purple}{Note that, for simplicity, we assume for now that the client derives the secret shares (and thus chooses the path). However, to decentralize path selection, a scheme is required in which the STTP obtains these shares during a setup phase. While this is cryptographically straightforward, the exact mechanism depends on the particular system design and trust model. Nevertheless, we present a proof-of-concept construction for such a scheme in Sec~\ref{sec:distrib-path}}.
+(4) Finally, the client encrypts the payload accordingly and sends the message through the decentralized network. Note that, for simplicity, we assume for this section that the client derives the secret shares (and thus chooses the path). However, to decentralize path selection, a scheme is required in which the STTP obtains these shares during a setup phase. While this is cryptographically straightforward, the exact mechanism will depend on the particular system design and threat model. Nevertheless, we present a proof-of-concept construction for such a scheme in Sec~\ref{sec:distrib-path}.
 \todo{update figure; delete arrow 1}
 
 \begin{figure}%[t]
     \centering
     \resizebox{0.9\linewidth}{!}{\input{schema/schema_overview.tex}}
     \caption{Overview of the decentralized scheme. 
-    (1) The client selects a route and generates cryptographic secrets. 
-    (2) Secrets are split into shares and sent to STTPs. 
-    (3) Each STTP constructs a partial header. 
-    (4) The client aggregates partial headers into final header. 
-    (5) The message is sent through the network.}
+    (1) The client sends secrets shares to STTPs. 
+    (2) Each STTP constructs a partial header. 
+    (3) The client aggregates partial headers into final header. 
+    (4) The message is sent through the network.}
     \label{fig:overall_schema}
 \end{figure}
 
@@ -35,15 +34,18 @@ This property allows IP addresses to blend seamlessly with other cryptographic e
 
 % Transition with next subsections (the four main steps)
 The DSphinx protocol is organized into four main components: setup, client, STTP, and network nodes.
-The setup phase focuses on the generation of independent random generators. 
-The client component is responsible for the additive sharing of information to the STTPs. 
-The STTP component handles the encryption of these shares into partial headers. 
-Finally, the network nodes are in charge of decrypting packets and forwarding them through the network.
+\begin{comment}
+	contThe setup phase focuses on the generation of independent random generators. 
+	The client component is responsible for the additive sharing of information to the STTPs. 
+	The STTP component handles the encryption of these shares into partial headers. 
+	Finally, the network nodes are in charge of decrypting packets and forwarding them through the network.ent...
+\end{comment}
+
 
 \subsection{Setup}
 
 % 1 Generator by chunk + Refresh 
-As discussed in Section~\ref{sec:indep_generators}, each chunk requires a distinct generator to preserve the scheme's security properties. 
+Each chunk requires a distinct generator to preserve the scheme's security properties (Section~\ref{sec:indep_generators}). 
 Accordingly, we define a set of $n$ generators $\{G_j\}_{j=1..n}$, one per chunk.
 Although the setup phase could be executed only once, maintaining long-term security requires periodically refreshing the generators. 
 All entities (clients, nodes, and STTPs) therefore run the setup phase to remain synchronized. 

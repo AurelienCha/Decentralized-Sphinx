@@ -1,32 +1,35 @@
 \color{blue}
 \subsection{Distributed Path Sampling}
 \label{sec:distrib-path}
-
-The presence of semi-trusted third parties (STTPs) in our decentralized header construction naturally enables an additional functionality: distributing the path selection process itself. 
-In classical Sphinx-based systems, the client selects the routing path and derives the corresponding shared secrets from the mixnodes' public keys, giving it full control over route selection. 
-This may enable biased routing and $(N-1)$ attacks.
-To mitigate this issue, we propose a mechanism in which STTPs collaboratively assist in sampling the routing path. 
-
+\begin{comment}
+	The presence of semi-trusted third parties (STTPs) in our decentralized header construction naturally enables an additional functionality: distributing the path selection process itself. 
+	In classical Sphinx-based systems, the client selects the routing path and derives the corresponding shared secrets from the mixnodes' public keys, giving it full control over route selection. 
+	This may enable biased routing and $(N-1)$ attacks.
+	To mitigate this issue, we propose a mechanism in which STTPs collaboratively assist in sampling the routing path. 
+	
+\end{comment}
+In order to prevent such as biased routing and $(N-1)$ attacks, our protcol should be accompanied by a scheme where the STTP choose the path instead of the client.
 \subsubsection{Overview}
 
-In our approach, mixnode public keys are no longer used for path construction. 
-Instead, each mixnode's private key $k_i$ is distributed among STTPs using Shamir Secret Sharing, resulting in a distributed symmetric key shared among the STTPs.
+Each mixnode's private key $k_i$ is distributed among STTPs using Shamir Secret Sharing, resulting in a distributed symmetric key shared among the STTPs.
 Consequently, the client cannot derive routing secrets independently and must query a set of STTPs to obtain partial cryptographic material for the shared secrets associated with a pseudorandomly selected path.
 
 Upon receiving a nonce from the client, the STTPs pseudorandomly sample a path and return shares of the corresponding secret materials. 
 After collecting a threshold number of responses, the client reconstructs the shared secrets and proceeds with the DSphinx header construction (Fig.~\ref{fig:overall_schema}).
 
 \subsubsection{Setup.}
+\begin{comment}
+	The goal of the setup phase is to distribute shares of each mixnode's secret key and routing information among the STTPs.
+	%
+\end{comment}
 
-The goal of the setup phase is to distribute shares of each mixnode's secret key and routing information among the STTPs.
-%
 Each STTP $t$ is identified by a value $ID_t = H(IP_t)$, where $IP_t$ denotes the IP address of the STTP. 
 Each mixnode $i$ samples a random identifier $r_i$ and constructs two random polynomials $f_i$ and $g_i$ of degree $n-1$ respectively satisfying the constraint $f_i(0) = k_i$, and $g_i(0) = N_i$. 
 Here, $k_i$ denotes the mixnode's secret key, $N_i$ its address point, and $n$ the reconstruction threshold of the Shamir sharing scheme.
 
 The mixnode then distributes to each STTP $t$ the share defined in Eq.~\ref{eq:sttp_share}. 
 STTPs store these shares indexed by the identifier $r_i$, which later serves to pseudorandomly select mixnodes during path sampling.
-Ideally, shares are delivered anonymously so that STTPs cannot associate them with specific mixnodes.
+%Shares are delivered anonymously so that STTPs cannot associate them with specific mixnodes.
 \begin{equation}
     (r_i,\quad k_{i_t}=f_i(ID_t),\quad N_{i_t}=g_i(ID_t))
     \label{eq:sttp_share}
@@ -38,8 +41,8 @@ If the threshold parameter $n$ changes, however, the entire setup procedure must
 
 \subsubsection{Path Sampling.}
 
-To sample a routing path, the client sends a nonce $w$ to a set of $n$ STTPs. 
-This nonce acts as a randomness seed. 
+To sample a routing path, the client sends a nonce $w$ (a randomness seed)to a set of $n$ STTPs. 
+
 Each STTP first computes the elliptic curve point $\A{} = \Map(w)$, where $\Map(\cdot)$ denotes the Elligator mapping. 
 This mapping produces a uniformly distributed elliptic curve point whose discrete logarithm relative to the base point $G$ is unknown.
 
