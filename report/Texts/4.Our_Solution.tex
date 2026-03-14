@@ -63,14 +63,14 @@ This procedure of \emph{clearing the cofactor} prevents \emph{small subgroup att
 Generators are therefore defined as $ G_j = 8 \cdot \Map{(\hash{\text{timestamp}} + j)} $.
 
 
-\subsection{Client}\todo{shorter}
+\subsection{Client}
 To send a message to a chosen destination, the client selects a routing path and generates an initial nonce.  
 Using this nonce and the public keys of the nodes along the route, the client derives a sequence of hop-by-hop shared secrets $(s_1, s_2, s_3)$ according to Eq.~\eqref{eq:shared_secret}. 
 \textcolor{red}{As mentioned earlier, we assume for now that the client executes this part of the protocol. However, depending on the system design, the STTPs should instead receive these shares during a setup phase, as explained in Section~\ref{sec:distrib-path}.}
 
 
-
-Here, $x_1$ denotes the initial nonce, $\PK{i} = \sk{i} G$ is the public key of the $i^{\text{th}}$ node along the path, $p$ is the order of the prime subgroup, and $\InverseMap(\cdot)$ denotes the inverse Elligator mapping from elliptic curve points to scalars.
+\todo{shorter: if we add the table to the main body we do not need to include the first sentence I think? if not this is fine}
+Here, $x_1$ denotes the initial nonce, $\PK{i} = \sk{i} G$ is the public key of the $i^{\text{th}}$ node in the path, $p$ is the order of the prime subgroup, and $\InverseMap(\cdot)$ denotes the inverse Elligator mapping from elliptic curve points to scalars.
 The shared secret $s_i$ acts as a per-hop pseudorandom update that derives the next blinding factor $x_{i+1}$, ensuring that the cryptographic elements $\A{i}$ remain unlinkable across layers.
 \begin{equation}
 (\s{1}, \s{2}, \s{3}) \quad \left\{ \quad
