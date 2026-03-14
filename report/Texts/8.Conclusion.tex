@@ -8,10 +8,10 @@ In addition, we introduced a preprocessing mechanism that distributes the path s
 We provide a detailed game-based security analysis of \emph{DSphinx},
 under passive and active network adversaries, corrupted mixnodes, and colluding STTPs and showed that our scheme preserves Sphinx's cryptographic guarantees by ensuring that no coalition of STTPs, as long as at least one remains honest, can recover routing information or shared secrets.
 
-
 Additionally, we implemented a Python prototype and applied the NIST SP-800-22 statistical randomness test suite.
 Results show that DSphinx headers are at least as indistinguishable from random bitstrings as those of the original Sphinx.
 In five out of the fifteen tests, our construction performs significantly better than Sphinx, 
 suggesting that decentralization does not degrade the statistical properties necessary for unlinkability.
 
-In summary, DSphinx maintains Sphinx's core privacy and integrity guarantees while reducing reliance on a trusted client, marking a step toward more robust, flexible, and privacy-preserving decentralized networks. Beyond decentralization, DSphinx opens opportunities for privacy-preserving policy enforcement or legitimacy verification at intermediate nodes, allowing unauthorized traffic to be detected and dropped without compromising client anonymity.
+In summary, DSphinx maintains Sphinx's core privacy and integrity guarantees while reducing reliance on a trusted client, marking a step toward more robust, flexible, and privacy-preserving decentralized networks. 
+Beyond decentralization, DSphinx also opens new opportunities for privacy-preserving policy enforcement or legitimacy verification at intermediate nodes, enabling unauthorized traffic to be detected and dropped without compromising client anonymity.
