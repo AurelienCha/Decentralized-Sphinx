@@ -2,14 +2,11 @@
 
 % Overview
 The proposed decentralized protocol distributes the Sphinx header construction across multiple semi-trusted third parties (STTPs). 
-Fig.~\ref{fig:overall_schema} illustrates the protocol in five steps.\todo{Remove step '1' (text and figure)}
-(1) The client randomly selects a route and a secret nonce $x$, from which he derives a sequence of shared secrets.
-Each shared secret is split into $t$ additive shares, alongside the IP addresses of the nodes and the final destination.
-(2) Each set of shares is sent to $t$ different STTP, along with the necessary cryptographic elements.  
-(3) Each STTP independently computes a \textit{partial} Sphinx header using its shares.  
-(4) The client then aggregates these partial headers to reconstruct the final header. 
-(5) Finally, the client encrypts the payload accordingly and sends the message through the decentralized network.
-\todo{Repeat the note about decentralized path selection instead of client side}
+Fig.~\ref{fig:overall_schema} illustrates the protocol in five steps.\textcolor{purple}{(1) The client sends $t$ secret shares, representing the path of the packet, to $t$ different STTP, along with the necessary cryptographic elements.}
+(2) Each STTP independently computes a \textit{partial} Sphinx header using its shares.  
+(3) The client then aggregates these partial headers to reconstruct the final header. 
+(4) Finally, the client encrypts the payload accordingly and sends the message through the decentralized network. \textcolor{purple}{Note that, for simplicity, we assume for now that the client derives the secret shares (and thus chooses the path). However, to decentralize path selection, a scheme is required in which the STTP obtains these shares during a setup phase. While this is cryptographically straightforward, the exact mechanism depends on the particular system design and trust model. Nevertheless, we present a proof-of-concept construction for such a scheme in Sec~\ref{sec:distrib-path}}.
+\todo{update figure; delete arrow 1}
 
 \begin{figure}%[t]
     \centering
@@ -67,14 +64,13 @@ Generators are therefore defined as $ G_j = 8 \cdot \Map{(\hash{\text{timestamp}
 
 
 \subsection{Client}\todo{shorter}
-{\color{blue}
-For clarity, we first describe the decentralized header construction assuming that the client selects the routing path and derives the corresponding shared secrets. 
-Section~\ref{sec:distrib-path} later introduces an extension that distributes this path selection process among the STTPs.
-}
-
 To send a message to a chosen destination, the client selects a routing path and generates an initial nonce.  
 Using this nonce and the public keys of the nodes along the route, the client derives a sequence of hop-by-hop shared secrets $(s_1, s_2, s_3)$ according to Eq.~\eqref{eq:shared_secret}. 
-Here, $x_1$ denotes the client's initial nonce, $\PK{i} = \sk{i} G$ is the public key of the $i^{\text{th}}$ node along the path, $p$ is the order of the prime subgroup, and $\InverseMap(\cdot)$ denotes the inverse Elligator mapping from elliptic curve points to scalars.
+\textcolor{red}{As mentioned earlier, we assume for now that the client executes this part of the protocol. However, depending on the system design, the STTPs should instead receive these shares during a setup phase, as explained in Section~\ref{sec:distrib-path}.}
+
+
+
+Here, $x_1$ denotes the initial nonce, $\PK{i} = \sk{i} G$ is the public key of the $i^{\text{th}}$ node along the path, $p$ is the order of the prime subgroup, and $\InverseMap(\cdot)$ denotes the inverse Elligator mapping from elliptic curve points to scalars.
 The shared secret $s_i$ acts as a per-hop pseudorandom update that derives the next blinding factor $x_{i+1}$, ensuring that the cryptographic elements $\A{i}$ remain unlinkable across layers.
 \begin{equation}
 (\s{1}, \s{2}, \s{3}) \quad \left\{ \quad
@@ -87,16 +83,19 @@ The shared secret $s_i$ acts as a per-hop pseudorandom update that derives the n
 \label{eq:shared_secret}
 \end{equation}
 
-The client then encodes the routing information for each hop. 
-IP addresses are padded with random bits and mapped to elliptic curve points using Elligator, 
+%The client then encodes the routing information for each hop. 
+IP addresses are then padded with random bits and mapped to elliptic curve points using Elligator, 
 ensuring that each address remains recoverable while being computationally indistinguishable from a random point. 
-These IP points, together with the derived shared secrets, are additively split into $t$ shares. 
-Each STTP receives one share of every value, along with the hash of the derived shared secrets.
 
-Each STTP independently processes its assigned shares and returns a \emph{partial} header. 
-The client aggregates the partial headers by performing chunk-wise elliptic curve additions, 
-thereby reconstructing the complete encrypted header. 
-After aggregation, the client appends $\A{1}$ and sends the finalized header, together with the encrypted payload, to the first node on the path.
+\begin{comment}
+	These IP points, together with the derived shared secrets, are additively split into $t$ shares. 
+	Each STTP receives one share of every value, along with the hash of the derived shared secrets.
+	
+Each STTP independently processes its assigned shares and sends a \emph{partial} header. 
+	Upon receiving the partial headers from the STTP, the client aggregates them by performing chunk-wise elliptic curve additions, 
+	thereby reconstructing the complete encrypted header. 
+	After aggregation, the client appends $\A{1}$ and sends the finalized header, together with the encrypted payload, to the first node on the path.t...
+\end{comment}
 
 \subsection{Semi-Trusted Third Party}
 
