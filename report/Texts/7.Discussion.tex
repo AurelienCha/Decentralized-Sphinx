@@ -4,7 +4,7 @@
 
 \input{Texts/Decentralized_path}
 
-\subsection{Limitations \& Future Work} \todo{to adapt abstract, intro, discussion and conclusion (and notation table)}
+\subsection{Future Work} \todo{to adapt abstract, intro, discussion and conclusion (and notation table)}
 
 Our results show that decentralizing Sphinx header construction is feasible and secure under reasonable assumptions, but several conceptual and practical limitations remain.
 These do not undermine the contributions of the present work, but highlight challenges for real-world deployment.
@@ -17,7 +17,7 @@ A natural direction for future work is to decentralize path selection and key de
 \todo{Move or rewrite.}
 
 \smallskip
-\noindent\textbf{Stronger Collusion Resistance.} 
+\noindent\textbf{Stronger Collusion Resistance.} \todo{More efficient integrity mechanism $\rightarrow$ stronger collusion resistance + Single round decentralized path}
 DSphinx remains secure as long as at least one STTP is honest and not all nodes on a path are compromised.
 If an adversary controls both a node and an STTP involved in the packet, they could link integrity weights to that packet, enabling integrity forgery and weakening unlinkability.
 Although we proposed a mitigation, future work should explore stronger integrity schemes that are fully resilient to any form of collusion.
