@@ -23,7 +23,45 @@ Fig.~\ref{fig:overall_schema} illustrates the protocol in four steps:(1) The cli
 In DSphinx, each header element is represented as an elliptic curve (EC) point. 
 Accordingly, the header is divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunkwise-overview}, with each chunk corresponding to a single EC point. 
 Every network node along the path contributes for two chunks: one encoding its IP address and another representing its integrity tag. 
-Thus, a path of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per node and an additional chunk for the final destination.
+Thus, a path of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per node and an additional chunk for the final destination. Table~\ref{tab:notation} provides a summary of the notation used in this work.
+\begin{table}[H]
+	\caption{Table of Notation}
+	\centering
+	
+	\begin{tabular}{c l}
+		\toprule
+		\multicolumn{2}{l}{\textbf{Indices}}\\
+		$i$          & node index \\
+		$j$          & chunk index \\
+		$t$          & STTP index \\[2pt]
+		
+		\multicolumn{2}{l}{\textbf{Parameters}}\\
+		$m$          & path length \\
+		$n$          & header size \\
+		$p$          & prime subgroup order \\[2pt]
+		
+		\multicolumn{2}{l}{\textbf{Secrets and Keys}}\\
+		$\PK{}$      & node public key \\
+		$\sk{}$      & node secret key \\
+		$x$          & client secret nonce \\
+		$s$          & shared secret \\
+		$\sHashed{}$ & hash of shared secret \\[2pt]
+		
+		\multicolumn{2}{l}{\textbf{Header Elements}}\\
+		$G$          & curve generator \\
+		$N$	         & encoded IP address \\
+		$\A{}$       & cryptographic element \\
+		$\B{}{}$     & encrypted routing information \\
+		$\C{}$       & integrity tag \\
+		$\phi$       & filler chunks \\
+		$H$          & header ($N \| \C{} \| \B{}{}$) \\[2pt]
+		
+		\multicolumn{2}{l}{\textbf{Functions}}\\
+		$\Map{}$         & Elligator mapping (int $\rightarrow$ EC point) \\
+		$\hspace{3.5mm}\InverseMap{}$  & inverse Elligator (EC point $\rightarrow$ int) \\
+		\bottomrule
+	\end{tabular}~\label{tab:notation}
+\end{table}
 
 % Elligator
 Representing IP addresses as elliptic curve points requires a reversible mapping between integers and curve points.  
