@@ -27,26 +27,19 @@ Instead, it queries a set of STTPs, which collaboratively sample a path in a pse
 
 After collecting shares from a threshold number of STTPs, the client reconstructs the shared secrets and proceeds with the DSphinx header construction procedure (Fig.~\ref{fig:overall_schema}).
 
-\subsubsection{Setup}
+\subsubsection{Setup.}
 
 The goal of the setup phase is to distribute shares of each mixnode's secret key and routing information among the STTPs.
-
+%
 Each STTP $t$ is identified by a value $ID_t = H(IP_t)$, where $IP_t$ denotes the IP address of the STTP. 
-Each mixnode $i$ samples a random identifier $r_i$ and constructs two random polynomials $f_i$ and $g_i$ of degree $n-1$ satisfying the constraints in Eq.~\ref{eq:polynome_0}. 
+Each mixnode $i$ samples a random identifier $r_i$ and constructs two random polynomials $f_i$ and $g_i$ of degree $n-1$ respectively satisfying the constraint $f_i(0) = k_i$, and $g_i(0) = N_i$. 
 Here, $k_i$ denotes the mixnode's secret key, $N_i$ its address point, and $n$ the reconstruction threshold of the Shamir sharing scheme.
-\begin{equation}
-    \begin{cases}
-        f_i(0) = k_i, \\
-        g_i(0) = N_i
-    \end{cases}
-    \label{eq:polynome_0}
-\end{equation}
 
 The mixnode then distributes to each STTP $t$ the share defined in Eq.~\ref{eq:sttp_share}. 
 STTPs store these shares indexed by the identifier $r_i$, which later serves to pseudorandomly select mixnodes during path sampling.
 Ideally, shares are delivered anonymously so that STTPs cannot associate them with specific mixnodes.
 \begin{equation}
-    (r_i,\, f_i(ID_t),\, g_i(ID_t))
+    (r_i,\quad k_{i_t}=f_i(ID_t),\quad N_{i_t}=g_i(ID_t))
     \label{eq:sttp_share}
 \end{equation}
 
@@ -54,51 +47,36 @@ Adding a new mixnode only requires executing the setup procedure for that node.
 Adding a new STTP requires each mixnode to generate and transmit an additional share. 
 If the threshold parameter $n$ changes, however, the entire setup procedure must be repeated.
 
-\subsubsection{Path Sampling}
+\subsubsection{Path Sampling.}
 
 To sample a routing path, the client sends a nonce $w$ to a set of $n$ STTPs. 
-This nonce acts as a randomness seed. Each STTP first computes the elliptic curve point
-\begin{equation}
-    X = \Map(w),
-    \label{eq:map_w}
-\end{equation}
-where $\Map(\cdot)$ denotes the Elligator mapping. This mapping produces a uniformly distributed elliptic curve point whose discrete logarithm relative to the base point $G$ is unknown.
+This nonce acts as a randomness seed. 
+Each STTP first computes the elliptic curve point $\A{} = \Map(w)$, where $\Map(\cdot)$ denotes the Elligator mapping. 
+This mapping produces a uniformly distributed elliptic curve point whose discrete logarithm relative to the base point $G$ is unknown.
 
-For each hop position $i$, the STTP selects the mixnode share $(r_i, k_{i_t}, N_{i_t})$ whose identifier $r_i$ is closest to
-\[
-H(w \parallel \text{timestamp} \parallel i).
-\]
-
-The STTP then computes a share of the Diffie-Hellman value associated with the selected mixnode as
-\begin{equation}
-    S_{i_t} = k_{i_t} X ,
-    \label{eq:S_i_t}
-\end{equation}
+For each hop position $i$, the STTP selects the mixnode share $(r_i, k_{i_t}, N_{i_t})$ whose identifier $r_i$ is closest to $H(w \parallel \text{timestamp} \parallel i)$.
+Then it computes a share of the Diffie-Hellman value associated with the selected mixnode shares as $S_{i_t} = k_{i_t} \A{}$,
 and returns to the client the tuple $(ID_t,\, N_{i_t},\, S_{i_t})$.
 
-\subsubsection{Secret Reconstruction} % TODO ...
+\subsubsection{Secret Reconstruction.} 
 
-Upon receiving responses from a threshold number of STTPs, the client reconstructs the mixnode address points and shared secret points using Lagrange interpolation:
-\begin{equation}
-N_i = \sum_t \lambda(ID_t) N_{i_t}, \qquad
-S_i = \sum_t \lambda(ID_t) S_{i_t},
-\end{equation}
-where $\lambda(ID_t)$ denote the Lagrange interpolation coefficients.
+Upon receiving responses from a threshold number of STTPs, the client reconstructs the mixnode address points and shared secret points using Lagrange interpolation, as shown in Eq.~\ref{eq:lagrange_reconstruction}. 
+Here, $\lambda(ID_t)$ denotes the Lagrange interpolation coefficient associated with STTP identifier $ID_t$. 
 Since the same nonce $w$ is used by all STTPs, the reconstructed points correspond to the same sequence of mixnodes selected during the path sampling phase.
-
-To prevent linkability, the client samples a random scalar $r$ and rerandomizes the shared secrets as
 \begin{equation}
-S'_i = r S_i .
+    N_i = \sum_t \lambda(ID_t) N_{i_t}, \qquad
+    S_i = \sum_t \lambda(ID_t) S_{i_t},
+    \label{eq:lagrange_reconstruction}
 \end{equation}
+
+To prevent linkability, the client samples a random scalar $r$ and rerandomizes the shared secrets by computing $S'_i = r S_i$. 
+The corresponding cryptographic header element is updated accordingly as $\A{}' = r\A{}$.
 
 Since DSphinx derives shared secrets sequentially, the client computes the scalar shared secrets in cascade. 
-For each hop $i$, the corresponding scalar secret is obtained by combining the reconstructed point with the secrets of the previous hops and mapping the result back to the scalar field:
+For each hop $i$, the corresponding scalar secret is obtained by combining the reconstructed point with the secrets of the previous hops and mapping the result back to the scalar field, as shown in Eq.~\ref{eq:cascade_secret}. 
 \begin{equation}
-s_i = \Map^{-1}\!\left(S'_i \prod_{j=1}^{i-1} s_j \right).
+    s'_i = \Map^{-1}\!\left(S'_i \prod_{j=1}^{i-1} s'_j \right).
+    \label{eq:cascade_secret}
 \end{equation}
 
-Finally, the client proceeds with the standard DSphinx header construction procedure (Fig.~\ref{fig:overall_schema}) using
-\begin{equation}
-\A{} = rX           % TODO \A = rx put with eq 14
-\end{equation}
-together with the reconstructed values $N_i$ and $s_i$. 
+Finally, the client proceeds with the standard DSphinx header construction procedure (Fig.~\ref{fig:overall_schema}) using $\A{}'$, together with the reconstructed values $N_i$ and $s'_i$ for each hop $i$ along the path.
