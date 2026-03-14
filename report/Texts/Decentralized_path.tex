@@ -13,7 +13,7 @@ In our approach, mixnode public keys are no longer used for path construction.
 Instead, each mixnode's private key $k_i$ is distributed among STTPs using Shamir Secret Sharing, resulting in a distributed symmetric key shared among the STTPs.
 Consequently, the client cannot derive routing secrets independently and must query a set of STTPs to obtain partial cryptographic material for the shared secrets associated with a pseudorandomly selected path.
 
-Upon receiving a nonce from the client, the STTPs collaboratively sample a path in a pseudorandom manner and return shares of the corresponding secret materials. 
+Upon receiving a nonce from the client, the STTPs pseudorandomly sample a path and return shares of the corresponding secret materials. 
 After collecting a threshold number of responses, the client reconstructs the shared secrets and proceeds with the DSphinx header construction (Fig.~\ref{fig:overall_schema}).
 
 \subsubsection{Setup.}
