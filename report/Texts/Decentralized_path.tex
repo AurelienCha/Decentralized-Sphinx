@@ -1,31 +1,20 @@
 \color{blue}
-\subsection{Distributed Path Sampling}\todo{inline equation if possible}
+\subsection{Distributed Path Sampling}
 \label{sec:distrib-path}
 
 The presence of semi-trusted third parties (STTPs) in our decentralized header construction naturally enables an additional functionality: distributing the path selection process itself. 
-In classical Sphinx-based systems, the client unilaterally selects the routing path by choosing a sequence of mixnodes and deriving the corresponding shared secrets from their public keys. 
-While simple, this design gives the client full control over route selection, which may enable biased routing strategies or facilitate route fingerprinting attacks.
-
-To mitigate this issue, we propose a mechanism that distributes path selection with the assistance of STTPs. 
-Instead of allowing the client to directly compute the shared secrets associated with a path, the STTPs collaboratively provide the cryptographic material required to derive them.
-
-In the current design, this functionality is implemented as a protocol executed prior to the construction of the DSphinx packet. 
-The STTPs return partial shares that allow the client to reconstruct the shared secrets associated with the sampled path. 
-The client can then proceed with the DSphinx header construction procedure described in Fig.~\ref{fig:overall_schema}, as if it had derived the secrets itself.
-
-Although effective, this mechanism remains conceptually separate from the header construction protocol. 
-We therefore conclude this section by briefly discussing how distributed path sampling could be integrated more tightly into the decentralized header construction.
+In classical Sphinx-based systems, the client selects the routing path and derives the corresponding shared secrets from the mixnodes' public keys, giving it full control over route selection. 
+This may enable biased routing and $(N-1)$ attacks.
+To mitigate this issue, we propose a mechanism in which STTPs collaboratively assist in sampling the routing path. 
 
 \subsubsection{Overview}
 
-In standard Sphinx routing, the client derives a sequence of shared secrets $s_i$ from the public keys $K_i$ of the selected mixnodes. 
-In contrast, our approach relies on the mixnodes' secret keys $k_i$, which are distributed among STTPs using Shamir Secret Sharing (SSS). 
-As a result, no single entity possesses sufficient information to compute the routing secrets independently.
+In our approach, mixnode public keys are no longer used for path construction. 
+Instead, each mixnode's private key $k_i$ is distributed among STTPs using Shamir Secret Sharing, resulting in a distributed symmetric key shared among the STTPs.
+Consequently, the client cannot derive routing secrets independently and must query a set of STTPs to obtain partial cryptographic material for the shared secrets associated with a pseudorandomly selected path.
 
-Consequently, the client cannot derive routing secrets on its own. 
-Instead, it queries a set of STTPs, which collaboratively sample a path in a pseudorandom manner and provide shares of the material required to reconstruct the corresponding secrets.
-
-After collecting shares from a threshold number of STTPs, the client reconstructs the shared secrets and proceeds with the DSphinx header construction procedure (Fig.~\ref{fig:overall_schema}).
+Upon receiving a nonce from the client, the STTPs collaboratively sample a path in a pseudorandom manner and return shares of the corresponding secret material. 
+After collecting a threshold number of responses, the client reconstructs the shared secrets and proceeds with the DSphinx header construction procedure (Fig.~\ref{fig:overall_schema}).
 
 \subsubsection{Setup.}
 
