@@ -102,24 +102,3 @@ Finally, the client proceeds with the standard DSphinx header construction proce
 \A{} = rX           % TODO \A = rx put with eq 14
 \end{equation}
 together with the reconstructed values $N_i$ and $s_i$. 
-
-\subsubsection{Integration with Decentralized Header Construction}\todo{In future work}
-
-As illustrated in Fig.~\ref{}
-%\todo{figure}
-, combining decentralized path sampling with decentralized header construction currently requires two rounds of interaction between the client and the STTPs.
-In the first round, the STTPs pseudorandomly sample a routing path and return shares of the shared secrets to the client, which reconstructs the corresponding secrets.
-In the second round, the client splits these shared secrets into shares again and sends them back to the STTPs so that they can compute partial DSphinx headers.
-The client finally aggregates these partial headers to obtain the complete encrypted header.
-
-At first glance, reconstructing shared secrets only to redistribute them again may appear inefficient.
-However, this two-step interaction arises from the integrity mechanism used in DSphinx (Eq.~\ref{eq:integrity}).
-The integrity tag $\C{}$ is computed as a pseudorandom weighted sum of header chunks, where the weights are derived from iterated hashes of the shared secrets.
-Since each STTP only holds a share of a shared secret, it cannot compute the corresponding hash values independently.
-
-Consequently, the client must first reconstruct the shared secrets in order to compute these hash values and redistribute them to the STTPs.
-If the integrity construction allowed these hash values to be derived directly from secret shares, the two interactions could be merged into a single round.
-In such a design, STTPs would jointly sample the path and construct partial headers directly from their secret shares, eliminating the intermediate reconstruction step.
-Designing such a distributed integrity tag remains an interesting direction for future work.
-
-\color{black}

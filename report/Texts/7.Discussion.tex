@@ -4,32 +4,42 @@
 
 \input{Texts/Decentralized_path}
 
-\subsection{Future Work} \todo{Merge 'Decentralized path selectio' and 'Stronger collusion resistance' by 'Decentralized integrity mechanism (using the paragraph 'Integration with Decentralized Header Construction')}
+\subsection{Future Work} 
 
-Our results show that decentralizing Sphinx header construction is feasible and secure under reasonable assumptions, but several conceptual and practical limitations remain.
-These do not undermine the contributions of the present work, but highlight challenges for real-world deployment.
+\subsubsection{Distributed Integrity Mechanism}
 
-\smallskip
-\noindent\textbf{Decentralized Path Selection.}
-While DSphinx decentralizes header construction, it remains client-centric since he still selects the path and derives hop-by-hop shared secrets.
-This allows malicious clients to bias route selection or mount classical deanonymization attacks such as (N-1)-attacks~\cite{oram2001peer}, reducing anonimity of honest clients.
-A natural direction for future work is to decentralize path selection and key derivation by distributing these tasks among STTPs to reduce client trust and enabling a better trust model for practical deployments.
+As illustrated in Fig.~\ref{}\todo{figure}, combining decentralized path sampling with decentralized header construction currently requires two rounds of interaction between the client and the STTPs. 
+In the first round, STTPs collaboratively sample a routing path and return shares of the corresponding shared secrets to the client, which reconstructs them. 
+In the second round, the client redistributes shares of these secrets to the STTPs so that they can compute partial DSphinx headers, which are then aggregated into the final encrypted header.
 
-\smallskip
-\noindent\textbf{Stronger Collusion Resistance.}
-DSphinx remains secure as long as at least one STTP is honest and not all nodes on a path are compromised.
-If an adversary controls both a node and an STTP involved in the packet, they could link integrity weights to that packet, enabling integrity forgery and weakening unlinkability.
-Although we proposed a mitigation, future work should explore stronger integrity schemes that are fully resilient to any form of collusion.
+This two-step interaction may appear inefficient, as it requires reconstructing shared secrets only to distribute them again. 
+However, this design is a direct consequence of the integrity mechanism used in DSphinx (Eq.~\ref{eq:integrity}). 
+The integrity tag $\C{}$ is computed as a pseudorandom weighted sum of header chunks, where the weights are derived from iterated hashes of the shared secrets. 
+Since each STTP only holds a share of a shared secret, it cannot independently derive the corresponding hash values required for the integrity computation.
 
-\smallskip
-\noindent\textbf{Privacy-Preserving Policy Enforcement.} 
-A major challenge in bringing decentralized networks such as mixnets and peer-to-peer into practical use is the lack of accountability and policy-enforcement mechanisms that do not undermine privacy~\cite{oram2001peer}.
-Because Sphinx reveals almost no information to the nodes in the path, verifying client legitimacy or enforcing policy is extremely difficult.  
-We believe that decentralized packet construction, such as DSphinx, opens a path toward generating privacy-preserving credentials or zero-knowledge proofs that can be validated at any node without revealing routing or identity information.  
-Developing such integration remains an open and promising research direction.
+Consequently, the client must first reconstruct the shared secrets in order to compute these hash values and redistribute them to the STTPs. 
+This integrity construction therefore constitutes a central bottleneck in the protocol. 
+Designing an integrity mechanism that can be computed directly from secret shares would eliminate this limitation and enable a fully distributed workflow.
 
-\todo{Speak about benchmark ? yes}
-% \smallskip
-% \noindent\textbf{Performance Evaluation and Latency Analysis.} 
-% Finally, although we provide an asymptotic analysis of computational complexity and an empirical study of header randomness, future work should include a thorough benchmark.  
-% In particular, understanding the latency overheads introduced by parallel STTPs, network delays, and additional cryptographic operations will be essential for assessing the practicality of such decentralization in large real-world deployments.  
+Such an improvement could allow STTPs to jointly sample the path and construct partial headers in a single interaction round, thereby integrating path sampling naturally into the decentralized header construction. 
+Exploring alternative integrity constructions that support distributed computation while preserving the cryptographic guarantees of DSphinx therefore remains an important direction for future work.
+
+% \subsubsection{Stronger Collusion Resistance}
+% DSphinx remains secure as long as at least one STTP is honest and not all nodes on a path are compromised.
+% If an adversary controls both a node and an STTP involved in the packet, they could link integrity weights to that packet, enabling integrity forgery and weakening unlinkability.
+% Although we proposed a mitigation, future work should explore stronger integrity schemes that are fully resilient to any form of collusion.
+
+\subsubsection{Privacy-Preserving Policy Enforcement}
+
+A major challenge in deploying decentralized networks such as mixnets and peer-to-peer systems is the lack of accountability and policy enforcement mechanisms that do not compromise user privacy~\cite{oram2001peer}. 
+Because Sphinx intentionally reveals almost no information to nodes along the path, verifying client legitimacy or enforcing network policies is inherently difficult. 
+Decentralized packet construction mechanisms such as DSphinx may provide a foundation for addressing this challenge by enabling the generation of privacy-preserving credentials or zero-knowledge proofs that can be verified by intermediate nodes without revealing routing information or client identities. 
+Developing such mechanisms and integrating them with decentralized header construction remains an open research direction.
+
+\subsubsection{Performance Evaluation and Latency Analysis}
+
+Although we provide an asymptotic analysis of computational complexity (Appendix~\ref{app:complexity}) and an empirical evaluation of header randomness (Section~\ref{sec:evaluation} and Appendix~\ref{app:emp_results}), a comprehensive performance evaluation remains necessary. 
+In particular, future work should include detailed benchmarks assessing the latency and computational overhead introduced by STTP interactions, network delays, and additional cryptographic operations. 
+Such measurements will be essential for evaluating the practicality and scalability of decentralized header construction in large-scale deployments.
+
+\color{black}
