@@ -37,9 +37,8 @@ semi-trusted third parties (STTPs).
 %
 Achieving decentralization while maintaining Sphinx's cryptographic
 guarantees raises several challenges.  First, the protocol must prevent
-individual STTP, or any coalition of corrupted STTPs, from learning routing
-information or recovering cryptographic secrets.  Second, intermediary
-nodes (i.e mixnodes or peers) should learn no more than in the traditional
+individual STTP, or coalition of corrupted STTPs, from learning routing
+information or recovering cryptographic secrets.  Second, mixnodes should learn no more than in the traditional
 Sphinx design.  Each node must reveal only its own shared secret and the
 address of the next node, but nothing about the rest of the route.  Third,
 unlinkability must be preserved even against a powerful passive adversary
