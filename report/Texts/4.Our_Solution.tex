@@ -2,13 +2,14 @@
 
 % Overview
 The proposed decentralized protocol distributes the Sphinx header construction across multiple semi-trusted third parties (STTPs). 
-Fig.~\ref{fig:overall_schema} illustrates the protocol in five steps.\todo{Explain here that for clarity the client choose path ? and remove arrow '1' on Figure 2 ?}
+Fig.~\ref{fig:overall_schema} illustrates the protocol in five steps.\todo{Remove step '1' (text and figure)}
 (1) The client randomly selects a route and a secret nonce $x$, from which he derives a sequence of shared secrets.
 Each shared secret is split into $t$ additive shares, alongside the IP addresses of the nodes and the final destination.
 (2) Each set of shares is sent to $t$ different STTP, along with the necessary cryptographic elements.  
 (3) Each STTP independently computes a \textit{partial} Sphinx header using its shares.  
 (4) The client then aggregates these partial headers to reconstruct the final header. 
 (5) Finally, the client encrypts the payload accordingly and sends the message through the decentralized network.
+\todo{Repeat the note about decentralized path selection instead of client side}
 
 \begin{figure}%[t]
     \centering
@@ -65,7 +66,7 @@ This procedure of \emph{clearing the cofactor} prevents \emph{small subgroup att
 Generators are therefore defined as $ G_j = 8 \cdot \Map{(\hash{\text{timestamp}} + j)} $.
 
 
-\subsection{Client}
+\subsection{Client}\todo{shorter}
 {\color{blue}
 For clarity, we first describe the decentralized header construction assuming that the client selects the routing path and derives the corresponding shared secrets. 
 Section~\ref{sec:distrib-path} later introduces an extension that distributes this path selection process among the STTPs.

@@ -4,7 +4,7 @@
 
 \input{Texts/Decentralized_path}
 
-\subsection{Future Work} \todo{to adapt abstract, intro, discussion and conclusion (and notation table)}
+\subsection{Future Work} \todo{Merge 'Decentralized path selectio' and 'Stronger collusion resistance' by 'Decentralized integrity mechanism (using the paragraph 'Integration with Decentralized Header Construction')}
 
 Our results show that decentralizing Sphinx header construction is feasible and secure under reasonable assumptions, but several conceptual and practical limitations remain.
 These do not undermine the contributions of the present work, but highlight challenges for real-world deployment.
@@ -14,10 +14,9 @@ These do not undermine the contributions of the present work, but highlight chal
 While DSphinx decentralizes header construction, it remains client-centric since he still selects the path and derives hop-by-hop shared secrets.
 This allows malicious clients to bias route selection or mount classical deanonymization attacks such as (N-1)-attacks~\cite{oram2001peer}, reducing anonimity of honest clients.
 A natural direction for future work is to decentralize path selection and key derivation by distributing these tasks among STTPs to reduce client trust and enabling a better trust model for practical deployments.
-\todo{Move or rewrite.}
 
 \smallskip
-\noindent\textbf{Stronger Collusion Resistance.} \todo{More efficient integrity mechanism $\rightarrow$ stronger collusion resistance + Single round decentralized path}
+\noindent\textbf{Stronger Collusion Resistance.}
 DSphinx remains secure as long as at least one STTP is honest and not all nodes on a path are compromised.
 If an adversary controls both a node and an STTP involved in the packet, they could link integrity weights to that packet, enabling integrity forgery and weakening unlinkability.
 Although we proposed a mitigation, future work should explore stronger integrity schemes that are fully resilient to any form of collusion.
@@ -29,7 +28,7 @@ Because Sphinx reveals almost no information to the nodes in the path, verifying
 We believe that decentralized packet construction, such as DSphinx, opens a path toward generating privacy-preserving credentials or zero-knowledge proofs that can be validated at any node without revealing routing or identity information.  
 Developing such integration remains an open and promising research direction.
 
-\todo{as future work, speak about benchmark ?}
+\todo{Speak about benchmark ? yes}
 % \smallskip
 % \noindent\textbf{Performance Evaluation and Latency Analysis.} 
 % Finally, although we provide an asymptotic analysis of computational complexity and an empirical study of header randomness, future work should include a thorough benchmark.  

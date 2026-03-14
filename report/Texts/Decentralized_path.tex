@@ -1,5 +1,5 @@
 \color{blue}
-\subsection{Distributed Path Sampling}
+\subsection{Distributed Path Sampling}\todo{inline equation if possible}
 \label{sec:distrib-path}
 
 The presence of semi-trusted third parties (STTPs) in our decentralized header construction naturally enables an additional functionality: distributing the path selection process itself. 
@@ -103,9 +103,11 @@ Finally, the client proceeds with the standard DSphinx header construction proce
 \end{equation}
 together with the reconstructed values $N_i$ and $s_i$. 
 
-\subsubsection{Integration with Decentralized Header Construction}\todo{Better after protocol description, or at overview ?}
+\subsubsection{Integration with Decentralized Header Construction}\todo{In future work}
 
-As illustrated in Fig.~\ref{}\todo{figure}, combining decentralized path sampling with decentralized header construction currently requires two rounds of interaction between the client and the STTPs.
+As illustrated in Fig.~\ref{}
+%\todo{figure}
+, combining decentralized path sampling with decentralized header construction currently requires two rounds of interaction between the client and the STTPs.
 In the first round, the STTPs pseudorandomly sample a routing path and return shares of the shared secrets to the client, which reconstructs the corresponding secrets.
 In the second round, the client splits these shared secrets into shares again and sends them back to the STTPs so that they can compute partial DSphinx headers.
 The client finally aggregates these partial headers to obtain the complete encrypted header.
