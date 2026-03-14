@@ -7,20 +7,17 @@
 \subsection{Future Work} 
 
 \subsubsection{Distributed Integrity Mechanism.}
-
+\begin{comment}
 As illustrated in Fig.~\ref{}\todo{figure}, combining decentralized path selection with decentralized header construction currently requires two rounds of interaction between the client and the STTPs. 
 In the first round, STTPs collaboratively sample a routing path and return shares of the corresponding shared secrets to the client, which reconstructs them. 
 In the second round, the client redistributes shares of these secrets to the STTPs so that they can compute partial DSphinx headers, which are then aggregated into the final encrypted header.
 
 This two-step interaction may appear inefficient, as it requires reconstructing shared secrets only to distribute them again. 
-However, this design is a direct consequence of the integrity mechanism used in DSphinx (Eq.~\ref{eq:integrity}). 
-The integrity tag $\C{}$ is computed as a pseudorandom weighted sum of header chunks, where the weights are derived from iterated hashes of the shared secrets. 
-Since each STTP only holds a share of a shared secret, it cannot independently derive the corresponding hash values required for the integrity computation.
-Consequently, the client must first reconstruct the shared secrets in order to compute these hash values and redistribute them to the STTPs. 
-This integrity construction therefore constitutes a central bottleneck in the protocol. 
-Designing an integrity mechanism that can be computed directly from secret shares would eliminate this limitation and enable a fully distributed workflow.
+However, this design is a direct consequence of the integrity mechanism used in DSphinx (Eq.~\ref{eq:integrity}).
+\end{comment}
+\todo{check this paragraph}The main limitation of our work lies in the integrity construction, which introduces a central bottleneck in the protocol. The integrity tag $\mathcal{C}$ is computed as a pseudorandom weighted sum of header chunks, where the weights are derived from iterated hashes of shared secrets. Consequently, the shares obtained during path selection must first be reconstructed at a central entity in order to compute the corresponding hash values, and are then redistributed to the STTPs so that they can compute partial DSphinx headers. Since each STTP holds only a share of a shared secret, it cannot independently derive the hash values required for the integrity computation. 
 
-Such an improvement could allow STTPs to jointly sample the path and construct partial headers in a single interaction round, thereby integrating path selection naturally into the decentralized header construction. 
+Designing an integrity mechanism that can be computed directly from secret shares would eliminate this limitation and enable a fully distributed workflow. Such an improvement could allow STTPs to jointly sample the path and construct partial headers in a single interaction round, thereby integrating path selection naturally into the decentralized header construction. 
 Exploring alternative integrity mechanisms that support distributed computation while preserving the cryptographic guarantees of DSphinx therefore remains an important direction for future work.
 
 % \subsubsection{Stronger Collusion Resistance}
