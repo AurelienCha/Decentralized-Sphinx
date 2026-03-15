@@ -46,18 +46,8 @@ For each epoch, a random destination IP and a path of three nodes were selected.
 According to NIST requirements, each input sequence should contain at least $1\,000\,000$ bits.
 We therefore concatenated multiple generated headers to reach a sequence of this size, repeating the process to obtain 100 sequences per dataset.
 
-\smallskip
-\noindent\textbf{Results Analysis.}
-Table~\ref{tab:test_summary} summarizes the results for both our DSphinx implementation and the original Sphinx, 
-with more detailed results provided in Appendix~\ref{app:emp_results}. 
-Overall, DSphinx exhibits better output randomness, passing a greater number of statistical tests. 
-Both implementations show occasional failures in the \textit{Random Excursions} and \textit{Non-overlapping Matchings} tests, 
-likely reflecting subtle patterns inherent to the underlying mathematical framework (e.g. elliptic curves), which is not truly random. 
-Nevertheless, DSphinx demonstrates a more balanced distribution of ones and zeros, as indicated by the \textit{Frequency} and \textit{Cumulative Sums} tests. 
-Considering the established security of the original Sphinx protocol and the structural similarities, 
-these results suggest that DSphinx provides a strong foundation to achieve comparable privacy guarantees.
-
-\begin{table}[H]
+\vspace{-5mm}
+\begin{table}%[H]
 \caption{Statistical test summary for both implementations (\CIRCLE~=~Pass, \hspace{0.5mm}\Circle~=\enspace Fail)}
 \centering
 \vspace{1mm}
@@ -94,6 +84,18 @@ these results suggest that DSphinx provides a strong foundation to achieve compa
     \end{tabular}
     }
 \end{table}
+
+\smallskip
+\noindent\textbf{Results Analysis.}
+Table~\ref{tab:test_summary} summarizes the results for both our DSphinx implementation and the original Sphinx, 
+with more detailed results provided in Appendix~\ref{app:emp_results}. 
+Overall, DSphinx exhibits better output randomness, passing a greater number of statistical tests. 
+Both implementations show occasional failures in the \textit{Random Excursions} and \textit{Non-overlapping Matchings} tests, 
+likely reflecting subtle patterns inherent to the underlying mathematical framework (e.g. elliptic curves), which is not truly random. 
+Nevertheless, DSphinx demonstrates a more balanced distribution of ones and zeros, as indicated by the \textit{Frequency} and \textit{Cumulative Sums} tests. 
+Considering the established security of the original Sphinx protocol and the structural similarities, 
+these results suggest that DSphinx provides a strong foundation to achieve comparable privacy guarantees.
+
 
 % ADD A SENTENCE ABOUT COMPLEXITY (expected slower than original)
 % Preivously:
