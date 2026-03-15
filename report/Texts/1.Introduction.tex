@@ -15,16 +15,15 @@ Sphinx achieves this through a compact fixed-size packet format that provides cr
 
 However, despite its strengths, the Sphinx packet format is constructed
 \emph{centrally} by the clients before entering the network.  This
-centralization makes the system vulnerable to various attacks.  For
+centralization makes the system vulnerable to attacks by malicious clients.  For
 example, a client may bias route selection by violating the routing
 algorithm, thereby reducing the number of messages mixed at a specific node
 in order to target an honest client or degrade the system's overall
 anonymity~\cite{benguirat2022mixnet}.  An adversary may also mount an (N-1)
 attack~\cite{raymond2001traffic} by dropping all but one message and
 forwarding only its own traffic to a chosen node, again violating the
-routing algorithm. Additionally, enforcing exit policies has long been a
-serious challenge in any decentralized network~\cite{oram2001peer,
-dingledine2001free}, particularly when network privacy is the main goal:
+routing algorithm. Additionally, enforcing exit policies and accountability has long been a
+serious challenge in privacy networks~\cite{oram2001peer,diaz2007accountable, naylor2014balancing,mirkovic2008building, backes2014backref, xu2012accountable}:
 On one hand, clients should not be linked to their final destinations.  On
 the other hand, the system must prevent unauthorized or abusive traffic.
 We therefore argue that decentralizing Sphinx header construction is
@@ -67,7 +66,7 @@ Sphinx design;
 %
     \item We propose a DSphinx-based preprocessing scheme to
 decentralize path
-selection, mitigating compromised path selection in the client;
+selection, mitigating compromised path selection by malicious clients;
 %
     \item We provide a detailed security analysis of \emph{DSphinx},
 considering passive and active network adversaries, corrupted mixnodes, and
