@@ -23,7 +23,18 @@ The exact mechanism will depend on the particular system design and threat model
 In DSphinx, each header element is represented as an elliptic curve (EC) point. 
 Accordingly, the header is divided into fixed-size chunks, as illustrated in Fig.~\ref{fig:chunkwise-overview}, with each chunk corresponding to a single EC point. 
 Every network node along the path contributes for two chunks: one encoding its IP address and another representing its integrity tag. 
-Thus, a path of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per node and an additional chunk for the final destination. Table~\ref{tab:notation} provides a summary of the notation used in this paper.
+Thus, a path of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per node and an additional chunk for the final destination. 
+
+% Elligator
+Representing IP addresses as elliptic curve points requires a reversible mapping between integers and curve points.  
+We define a mapping $\Map{}$ from integers to points and its inverse $\InverseMap{}$ such that $\InverseMap{(\Map{(x)})} = x$ for any integer $x$.  
+Classical encodings map an integer directly to the $x$-coordinate of a valid point, but it succeeds only for roughly half of integers and introduces structural bias. 
+To avoid this issue, we rely on the Elligator mapping~\cite{bernstein2013elligator}, which deterministically maps any integer to a curve point while ensuring that the resulting points are uniformly distributed and computationally indistinguishable from randomly sampled points.  
+This property allows IP addresses to blend seamlessly with other cryptographic elements of the Sphinx header.
+
+% Transition with next subsections (the four main steps)
+The DSphinx protocol is described through four components: setup, client, STTPs, and network nodes.
+Before describing the protocol in detail, we summarize the notation used in this section in Table~\ref{tab:notation}.
 \begin{table}[H]
 	\caption{Table of Notation}
 	\centering
@@ -62,23 +73,6 @@ Thus, a path of length $m$ is represented by $n = 2m + 1$ chunks, accounting for
 		\bottomrule
 	\end{tabular}~\label{tab:notation}
 \end{table}
-
-% Elligator
-Representing IP addresses as elliptic curve points requires a reversible mapping between integers and curve points.  
-We define a mapping $\Map{}$ from integers to points and its inverse $\InverseMap{}$ such that $\InverseMap{(\Map{(x)})} = x$ for any integer $x$.  
-Classical encodings map an integer directly to the $x$-coordinate of a valid point, but it succeeds only for roughly half of integers and introduces structural bias. 
-To avoid this issue, we rely on the Elligator mapping~\cite{bernstein2013elligator}, which deterministically maps any integer to a curve point while ensuring that the resulting points are uniformly distributed and computationally indistinguishable from randomly sampled points.  
-This property allows IP addresses to blend seamlessly with other cryptographic elements of the Sphinx header.
-
-% Transition with next subsections (the four main steps)
-The DSphinx protocol is organized into four main components: setup, client, STTPs, and network nodes.
-\begin{comment}
-	The setup phase focuses on the generation of independent random generators. 
-	The client component is responsible for the additive sharing of information to the STTPs. 
-	The STTP component handles the encryption of these shares into partial headers. 
-	Finally, the network nodes are in charge of decrypting packets and forwarding them through the network.ent...
-\end{comment}
-
 
 \subsection{Setup}
 
