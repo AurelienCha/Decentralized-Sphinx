@@ -25,22 +25,22 @@
 \node (mixnet) [draw, densely dashed, color=gray, fit={(entry) (exit)}, rounded corners=5pt, inner sep=10pt, label=above:\text{\color{gray}Decentralized Network}] {};
 
 
-\draw[-Latex, shorten <= 0pt, shorten >= 1pt, loop above] (client) to[out=70,in=120,looseness=3] node[font=\small, midway, fill=white, inner sep=1pt, yshift=-2mm] {(1)} (client);
+%\draw[-Latex, shorten <= 0pt, shorten >= 1pt, loop above] (client) to[out=70,in=120,looseness=3] node[font=\small, midway, fill=white, inner sep=1pt, yshift=-2mm] {(1)} (client);
 
 
 \draw[fleche, bend left=-15] ($(client.west) - (0,\height/2)$) to (ttp1.east);
 \draw[fleche, bend left=-15] (client.west) to (ttp2.east);
-\draw[fleche, bend left=-15] ($(client.west) + (0,\height/2)$) to node[font=\small, midway, fill=white, inner sep=1pt] {(2)} (ttp3.east);
+\draw[fleche, bend left=-15] ($(client.west) + (0,\height/2)$) to node[font=\small, midway, fill=white, inner sep=1pt] {(1)} (ttp3.east);
 
-\draw[fleche, bend right=15] (ttp1.east) to node[font=\small, midway, fill=white, inner sep=1pt] {(4)} ($(client.west) - (0,\height/2)$);
+\draw[fleche, bend right=15] (ttp1.east) to node[font=\small, midway, fill=white, inner sep=1pt] {(3)} ($(client.west) - (0,\height/2)$);
 \draw[fleche, bend right=15] (ttp2.east) to (client.west);
 \draw[fleche, bend right=15] (ttp3.east) to ($(client.west) + (0,\height/2)$);
 
 \draw[-Latex, shorten <= 2pt, shorten >= 1pt, loop above] (ttp1) to[out=150,in=-150,looseness=5] (ttp1);
-\draw[-Latex, shorten <= 2pt, shorten >= 1pt, loop above] (ttp2) to[out=150,in=-150,looseness=5] node[yshift=-1.8mm, font=\small, midway, fill=white, inner sep=1pt, xshift=-0.7mm] {(3)} (ttp2);
+\draw[-Latex, shorten <= 2pt, shorten >= 1pt, loop above] (ttp2) to[out=150,in=-150,looseness=5] node[yshift=-1.8mm, font=\small, midway, fill=white, inner sep=1pt, xshift=-0.7mm] {(2)} (ttp2);
 \draw[-Latex, shorten <= 2pt, shorten >= 1pt, loop above] (ttp3) to[out=150,in=-150,looseness=5] (ttp3);
 
-\draw[-Latex] (client.east) to node[font=\small, midway, fill=white, inner sep=1pt] {(5)} (mixnet.west);
+\draw[-Latex] (client.east) to node[font=\small, midway, fill=white, inner sep=1pt] {(4)} (mixnet.west);
 
 \draw (entry.east) -- (11.west);
 \draw (entry.east) -- (12.west);
