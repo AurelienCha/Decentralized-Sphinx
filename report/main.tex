@@ -85,7 +85,7 @@ Sphinx is a packet format widely used in decentralized networks such as Nym, Kat
 It provides strong security and privacy properties against network adversaries and compromised nodes who aim to identify communicating parties by correlating the input with the output traffic.
 However, Sphinx is vulnerable to malicious clients who exploit the centralized packet construction to deviate from the prescribed routing protocol.
 In this paper, we propose DSphinx, a decentralized variant of the Sphinx packet format that distributes header construction among multiple semi-trusted third parties.  
-We discuss how DSphinx can support decentralised path construction to
+We discuss how DSphinx can support decentralised path selection to
 mitigate client-side attacks and provide a formal analysis of the security properties of our DSphinx packet format in the presence of network adversaries, corrupted mixnodes and semi-trusted third parties.
 Additionally, we implement our scheme in Python and evaluate the unlinkability property using the NIST SP 800-22 statistical randomness test suite.  
 Our empirical results show that our decentralized scheme achieves unlinkability passing more statistical tests than the original Sphinx format.
