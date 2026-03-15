@@ -28,8 +28,8 @@ After collecting a threshold number of responses, the client reconstructs the sh
 Each STTP $t$ is identified by a value $ID_t = H(IP_t)$, where $IP_t$ denotes the IP address of the STTP. 
 Each mixnode $i$ samples a random identifier $r_i$ and constructs two random polynomials $f_i$ and $g_i$ of degree $n-1$ respectively satisfying the constraint $f_i(0) = k_i$, and $g_i(0) = N_i$. 
 Here, $k_i$ denotes the mixnode's secret key, $N_i$ its address point, and $n$ the reconstruction threshold of the Shamir sharing scheme. The mixnode then distributes to each STTP $t$ the share defined in Eq.~\ref{eq:sttp_share}. 
+These shares are delivered anonymously so that STTPs cannot associate them with specific mixnodes.
 STTPs store these shares indexed by the identifier $r_i$, which later serves to pseudorandomly select mixnodes during path sampling.
-%Shares are delivered anonymously so that STTPs cannot associate them with specific mixnodes.
 \begin{equation}
     (r_i,\quad k_{i_t}=f_i(ID_t),\quad N_{i_t}=g_i(ID_t))
     \label{eq:sttp_share}
