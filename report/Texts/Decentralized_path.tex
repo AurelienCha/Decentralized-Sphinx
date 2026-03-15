@@ -40,7 +40,7 @@ If the threshold parameter $n$ changes, however, the entire setup procedure must
 
 \subsubsection{Path Selection.}
 
-To sample a routing path, the client sends a nonce $w$ (randomness seed) to a set of $n$ STTPs. Each STTP first computes the elliptic curve point $\A{} = \Map(w)$, where $\Map(\cdot)$ denotes the Elligator mapping. This mapping produces a uniformly distributed elliptic curve point whose discrete logarithm relative to the base point $G$ is unknown.
+To sample a routing path, the client sends a nonce $w$, which serves as a randomness seed, to a set of $n$ STTPs. Each STTP first computes the elliptic curve point $\A{} = \Map(w)$, where $\Map(\cdot)$ denotes the Elligator mapping. This mapping produces a uniformly distributed elliptic curve point whose discrete logarithm relative to the base point $G$ is unknown.
 
 For each hop position $i$, the STTP selects the mixnode share $(r_i, k_{i_t}, N_{i_t})$ whose identifier $r_i$ is closest to $H(w \parallel \text{timestamp} \parallel i)$.
 Then it computes a share of the Diffie-Hellman value associated with the selected mixnode shares as $S_{i_t} = k_{i_t} \A{}$,
