@@ -183,12 +183,13 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
 % Integrity
 \smallskip
 \noindent\textbf{Integrity Mechanism.}
-The integrity construction in \eqref{eq:integrity} combines a pseudorandom weighted sum, where the weights are derived from $\sHashed{i}$ via iterated hashing, 
+The integrity construction in Eq.\eqref{eq:integrity} combines a pseudorandom weighted sum, where the weights are derived from $\sHashed{i}$ via iterated hashing, 
 with a blinding offset term $s_i G$ that prevents integrity tags from being linked by STTPs that know the weights.
 The pseudorandom weights prevent adversaries from forging valid checksums, while the blinding offset preserves unlinkability.  
 This design preserves homomorphism while ensuring unlinkability and integrity.
+\newpage
 
-\vspace*{-10mm}
+% \vspace*{-10mm}
 \begin{figure}[H]
 \centering
 \begin{minipage}{0.47\linewidth}
