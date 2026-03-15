@@ -3,9 +3,10 @@
 % Overview
 The proposed decentralized protocol distributes the Sphinx header construction across multiple semi-trusted third parties (STTPs). 
 Fig.~\ref{fig:overall_schema} illustrates the protocol in four steps: (1) The client sends $t$ secret shares, representing the path of the packet, to $t$ different STTP, along with the necessary cryptographic elements.
-(2) Each STTP independently computes a \textit{partial} Sphinx header using its shares.  
+(2) Each STTP independently computes a partial Sphinx header using its shares.  
 (3) The client then aggregates these partial headers to reconstruct the final header. 
-(4) Finally, the client encrypts the payload accordingly and sends the message through the decentralized network. Note that, for simplicity, we assume for this section that the client derives the secret shares (and thus chooses the path). However, to decentralize path selection, a scheme is required in which the STTP obtains these shares during a setup phase. While this is cryptographically straightforward, the exact mechanism will depend on the particular system design and threat model. Nevertheless, we present a proof-of-concept construction for such a scheme in Sec~\ref{sec:distrib-path}.
+(4) Finally, the client encrypts the payload accordingly and sends the message through the decentralized network. Note that, for simplicity, we assume for this section that the client derives the secret shares (and thus chooses the path). However, to decentralize path selection, a scheme is required in which the STTP obtains these shares during a setup phase. 
+The exact mechanism will depend on the particular system design and threat model. Nevertheless, we present a proof-of-concept construction for such a scheme in Section~\ref{sec:distrib-path}.
 
 \begin{figure}%[t]
     \centering
@@ -70,7 +71,7 @@ To avoid this issue, we rely on the Elligator mapping~\cite{bernstein2013elligat
 This property allows IP addresses to blend seamlessly with other cryptographic elements of the Sphinx header.
 
 % Transition with next subsections (the four main steps)
-The DSphinx protocol is organized into four main components: setup, client, STTP, and network nodes.
+The DSphinx protocol is organized into four main components: setup, client, STTPs, and network nodes.
 \begin{comment}
 	The setup phase focuses on the generation of independent random generators. 
 	The client component is responsible for the additive sharing of information to the STTPs. 
