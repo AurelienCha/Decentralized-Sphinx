@@ -138,35 +138,16 @@ Both properties require modifying a header that passes integrity verification an
 \subsection{Collusion Analysis}\label{sec:collusion}
 
 The preceding security arguments assume no collusion. 
-Since our construction relies on semi-trusted third parties, we analyze the impact of adversaries colluding with subsets of STTPs, and the additional capabilities this may provide.
+Each STTP learns additive shares of destinations and per-hop shared secrets, which reveal no information unless all shares are combined.
+In addition, STTPs receive the values $\sigma_i = h(s_i)$ for all hops in the path, from which integrity weights are derived. 
+However, the blinding offset $s_iG$ prevents associating these values with a specific packet. 
+Consequently, collusion among a subset of STTPs does not compromise unlinkability or integrity.
 
-\smallskip
-\noindent{\textbf{STTP Advantages.}}
-Each of the $T$ STTPs involved in header construction reveals an additive share of the destination $N_{(i,t)}$ (with $N_i = \sum_{t=1}^T N_{(i,t)}$), 
-an additive share of the shared secret $s_{(i,t)}$ (with $s_i = \sum_{t=1}^T s_{(i,t)}$), 
-and the hash values of shared secrets along the path $(h(s_1), h(s_2), h(s_3))$, which define the integrity weights at each layer.
-Since the first two values are additive shares, they reveal no information unless all $T$ shares are collected.
-Thus long as at least one STTP remains honest, neither destinations nor shared secrets can be reconstructed.
-The only additional information gained by an adversary colluding with an STTP is the set of integrity weights $h(s_i)$.
-However, the integrity blinding offset $s_i G$ prevents associating these weights with specific packets.
-Without this association, the adversary can only modify a random packet, succeeding with probability $1/n$ among $n$ packets in the network.
-
-\smallskip
-\noindent\textbf{Case of Corrupted Node.}  
-When an adversary colludes with both an STTP and a network node, the corrupted node can derive its shared secret $s_i$ from $\alpha$, compute $h(s_i)$, and match it against the weights disclosed by the STTP.
-If the STTP contributed to the header, this match associates integrity weights to this specific packet, and exposes the weights used along its path.
-This association enables integrity forgery, allowing arbitrary header modifications with valid tags, 
-and weakens unlinkability by enabling probabilistic packet tracing via integrity verification with success probability $1/n$, where $n$ is the node's batch size.
-
-\smallskip
-\noindent\textbf{Mitigation.}
-Collusion between STTPs and nodes can be mitigated by reducing the hash output space used for integrity weights.
-This creates multiple candidate matches, preventing unique packet-weight associations and limiting the adversary to a probabilistic advantage (instead of breaking integrity forgery resistance).
-Although a smaller space increases random guessing chances, the blinding offset $s_i G$ prevents guess verification.
-
-\smallskip
-\noindent\textbf{Summary.}
-Collusion with only STTPs or only nodes does not compromise security: STTPs reveal only additive shares and unlinked weights, while nodes reveal only shared secrets.
-However, joint collusion enables integrity forgery by linking weights to packets.
-Reducing the hash space (i.e. weight space) limits the advantage of such collusion at the cost of a higher random guessing probability.
-Thus, the hash space should balance collusion resilience and guessing resistance.
+The main risk arises when an STTP colludes with a mixnode. 
+A corrupted mixnode can derive its shared secret $s_i$ from $\alpha$ and compute the corresponding hash $\sigma_i$, which can then be matched against the set of values observed by the STTP.
+If a match is found, the adversary can associate the packet with the set of values $\{\sigma_j\}$ used along its path. 
+This enables integrity forgery and weakens unlinkability by allowing probabilistic packet tracing. 
+To mitigate this threat, the output space of $\sigma$ can be reduced, for example by truncating the hash output, creating multiple candidate matches and preventing unique packet-weight associations.
+Although this increases the probability of random guessing, the blinding offset $s_iG$ prevents efficient guess verification. 
+Therefore, security is preserved as long as at least one STTP remains honest, while the impact of STTP-mixnode collusion can be limited through an appropriate choice of integrity-weight space, which balances collusion resilience against random-guessing resistance.
+Determining the optimal trade-off between collusion resilience and guessing resistance is left for future work.
