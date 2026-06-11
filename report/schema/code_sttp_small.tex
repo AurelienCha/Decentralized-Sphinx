@@ -6,17 +6,16 @@
 \Statex \hspace{-7mm}{%
     \begin{tabular}[t]{clr}
       %$\phi$ & preprocessing filler chunks & \\ %\color{gray} (Alg.~\ref{algo:preprocessing}) \\
-      $\Delta$ & share of destination address & \\ %\color{gray} (EC point) \\
+      $\Delta$ & \hspace{2mm} Destination  & \\ %\color{gray} (EC point) \\
       %${[G_j]}_{i=1..n}$ & chunk generators & \\ %\color{gray} (EC points) \\
-      ${[N_i]}_{i=1..m}$ & shares of mixnode addresses & \\ %\color{gray} (EC points)\\
+      ${[N_i]}_{i=1..m}$ & \hspace{2mm} Route & \\ %\color{gray} (EC points)\\
       %${[s_i]}_{i=1..m}$ & shares of shared secrets & \\ %\color{gray} (scalars) \\
-      ${[\sHashed{i}]}_{i=1..m}$ & hashes of full shared secrets & \\ %\color{gray} (scalars)\\
     \end{tabular}
   } \vspace{5pt}
 \Statex \hspace{-6mm}\textbf{Output:}
 \Statex \hspace{-1mm}{%
     \begin{tabular}[t]{clr}
-      $H$ & \hspace{4.4mm} partial encrypted header \hspace{5.3mm} & \\ %\color{gray} (EC points) \\
+      $H$ & \hspace{6.4mm} header chunks \hspace{5.3mm} & \\ %\color{gray} (EC points) \\
     \end{tabular}
   }
 \Statex
@@ -31,7 +30,7 @@
     \EndFor
 
     \State $H \gets H[1 : n-2]$  %{\color{unHighlight}\Comment{truncate identity elements}}
-    \State $\C{i} \gets checksum(H, \s{i}, \sHashed{i})$   %{\color{unHighlight}\Comment{equation (\ref{eq:integrity})}}
+    \State $\C{i} \gets \text{HMAC}(H, \s{i})$   %{\color{unHighlight}\Comment{equation (\ref{eq:integrity})}}
 
     \State $H \gets [\,\N{i} \,\|\, \C{i} \,\|\, H\,]$  %{\color{unHighlight}\Comment{prepend next hop}}
 \EndFor

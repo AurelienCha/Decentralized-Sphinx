@@ -2,7 +2,7 @@
 \begin{tikzpicture}
 
 % Nodes
-\node (client) [bob, minimum size=1.2cm, label=below:\text{\color{gray}Client}] at (0,0) {};
+\node (client) [bob, minimum size=1.2cm, label=above:\text{\color{gray}Client}] at (0,0) {};
 
 \node (ttp1) [draw, circle, minimum width=0.6cm] at ($(client.west) + (-3*\width, -1.5*\height)$)  {};
 \node (ttp2) [draw, circle, minimum width=0.6cm] at ($(client.west) + (-3*\width, 0)$) {};
@@ -25,8 +25,8 @@
 \node (mixnet) [draw, densely dashed, color=gray, fit={(entry) (exit)}, rounded corners=5pt, inner sep=10pt, label=above:\text{\color{gray}Decentralized Network}] {};
 
 
-%\draw[-Latex, shorten <= 0pt, shorten >= 1pt, loop above] (client) to[out=70,in=120,looseness=3] node[font=\small, midway, fill=white, inner sep=1pt, yshift=-2mm] {(1)} (client);
-
+\draw[-Latex, shorten <= 0pt, shorten >= 0pt, loop below] (client) to[out=-120,in=-50,looseness=2] node[font=\small, midway, fill=white, inner sep=1pt, yshift=2mm] {(4)} (client);
+\draw[-Latex, color=gray, fleche] ($(mixnet.north west) + (5mm,2mm)$) to node[font=\small, midway, fill=white, inner sep=1pt] {(0)} ($(ttpbox.north east) + (-2mm,2mm)$);
 
 \draw[fleche, bend left=-15] ($(client.west) - (0,\height/2)$) to (ttp1.east);
 \draw[fleche, bend left=-15] (client.west) to (ttp2.east);
@@ -40,7 +40,7 @@
 \draw[-Latex, shorten <= 2pt, shorten >= 1pt, loop above] (ttp2) to[out=150,in=-150,looseness=5] node[yshift=-1.8mm, font=\small, midway, fill=white, inner sep=1pt, xshift=-0.7mm] {(2)} (ttp2);
 \draw[-Latex, shorten <= 2pt, shorten >= 1pt, loop above] (ttp3) to[out=150,in=-150,looseness=5] (ttp3);
 
-\draw[-Latex] (client.east) to node[font=\small, midway, fill=white, inner sep=1pt] {(4)} (mixnet.west);
+\draw[-Latex] (client.east) to node[font=\small, midway, fill=white, inner sep=1pt] {(5)} (mixnet.west);
 
 \draw (entry.east) -- (11.west);
 \draw (entry.east) -- (12.west);
