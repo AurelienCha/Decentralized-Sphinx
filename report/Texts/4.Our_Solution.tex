@@ -9,14 +9,16 @@ Fig.~\ref{fig:overall_schema} illustrates the protocol in four steps: (1) The cl
 The exact mechanism will depend on the particular system design and threat model. Nevertheless, we present a proof-of-concept construction for such a scheme in Section~\ref{sec:distrib-path}.
 
 \begin{figure}%[t]
-    \centering
-    \resizebox{0.9\linewidth}{!}{\input{schema/schema_overview.tex}}
-    \caption{Overview of the decentralized scheme. 
-    (1) The client sends secrets shares to STTPs. 
-    (2) Each STTP constructs a partial header. 
-    (3) The client aggregates partial headers into final header. 
-    (4) The message is sent through the network.}
-    \label{fig:overall_schema}
+	\centering
+	\resizebox{0.9\linewidth}{!}{\input{schema/path_preprocessing.tex}}
+	\caption{Overview of the decentralized path selection integrated with DSphinx.
+		(0) Setup phase. 
+		(1) Client nonce. 
+		(2) Path selection. 
+		(3) Secret reconstruction. 
+		(4)-(7) DSphinx protocol from Section~\ref{sec:scheme} (Fig.~{\ref{fig:overall_schema}}).
+	}
+	\label{fig:overview_with_decentralized_path}
 \end{figure}
 
 % Header structure - Chunks

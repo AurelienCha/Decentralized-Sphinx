@@ -60,9 +60,7 @@ Our decentralized header construction represents a step toward more robust, veri
 \begin{itemize}[topsep=1pt, itemsep=1pt]
 %
     \item We design \emph{DSphinx}, the first \emph{decentralized Sphinx
-header construction}, that enables clients to distribute header computation
-while preserving the anonymity and cryptographic guarantees of the original
-Sphinx design;
+header construction}, that prevents against malicious clients\todo{rephrase}
 %
     \item We propose a DSphinx-based preprocessing scheme to
 decentralize path
@@ -72,13 +70,7 @@ selection, mitigating compromised path selection by malicious clients;
 considering passive and active network adversaries, corrupted mixnodes, and
 colluding STTPs;
 %
-    \item We provide a Python implementation\github of our header construction.
-%
-    \item Using the NIST SP-800-22 randomness test suite, we empirically
-demonstrate that the resulting headers are at least as indistinguishable
-from random bitstrings as the original Sphinx. In fact, DSphinx
-successfully passes 3 out of 15 additional randomness tests.
-%
+    \item We provide a benchmark for latency and computational overhead. \todo{to assess}
 \end{itemize}
 
 %This paper is organized as follows. In Section~\ref{sec:related}, we review related work. Section~\ref{sec:sys_model} introduces our threat model and outlines the desired security properties. In Section~\ref{sec:scheme}, we describe our protocol for DSphinx. Section~\ref{sec:security} provides a detailed security analysis, and Section~\ref{sec:evaluation} presents the evaluation of our design. We discuss the limitations of our design and directions for future work in Section~\ref{sec:discussion}, and conclude in Section~\ref{sec:conclusion}.
