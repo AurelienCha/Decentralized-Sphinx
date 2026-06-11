@@ -16,7 +16,7 @@ Consequently, the client cannot derive routing secrets independently and must qu
 
 Upon receiving a nonce from the client, the STTPs pseudorandomly sample a path and return shares of the corresponding secret materials. 
 After collecting a threshold number of responses, the client reconstructs the shared secrets and proceeds with the DSphinx header construction (Fig.~\ref{fig:overall_schema}).
-\end{comment}
+
 \begin{figure}%[t]
     \centering
     \resizebox{0.9\linewidth}{!}{\input{schema/path_preprocessing.tex}}
@@ -31,12 +31,10 @@ After collecting a threshold number of responses, the client reconstructs the sh
 \end{figure}
 
 
-\subsubsection{Setup.}
-\begin{comment}
 	The goal of the setup phase is to distribute shares of each mixnode's secret key and routing information among the STTPs.
 	%
 \end{comment}
-
+\subsubsection{Setup.}
 Each STTP $t$ is identified by a value $ID_t = H(IP_t)$, where $IP_t$ denotes the IP address of the STTP. 
 Each mixnode $i$ samples a random identifier $r_i$ and constructs two random polynomials $f_i$ and $g_i$ of degree $n-1$ respectively satisfying the constraint $f_i(0) = k_i$, and $g_i(0) = N_i$. 
 Here, $k_i$ denotes the mixnode's secret key, $N_i$ its address point, and $n$ the reconstruction threshold of the Shamir sharing scheme. The mixnode then distributes to each STTP $t$ the share defined in Eq.~\ref{eq:sttp_share}. 

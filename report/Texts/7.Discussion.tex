@@ -3,11 +3,11 @@
 \label{sec:discussion}
 In this section, we describe our preprocessing scheme that decentralizes path selection. We then discuss future work and conclude.
 \input{Texts/Decentralized_path}
-
+\begin{comment}
 \subsection{Future Work} 
 
 \subsubsection{Distributed Integrity Mechanism.}
-\begin{comment}
+
 As illustrated in Fig.~\ref{}\todo{figure}, combining decentralized path selection with decentralized header construction currently requires two rounds of interaction between the client and the STTPs. 
 In the first round, STTPs collaboratively sample a routing path and return shares of the corresponding shared secrets to the client, which reconstructs them. 
 In the second round, the client redistributes shares of these secrets to the STTPs so that they can compute partial DSphinx headers, which are then aggregated into the final encrypted header.
