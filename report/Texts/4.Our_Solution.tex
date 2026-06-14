@@ -78,7 +78,7 @@ Adding a new STTP requires each node to compute and distribute an additional pol
 However, changing the threshold $d$ requires reinitializing the entire setup.
 
 
-\subsection{Path Sampling}
+\subsection{Path Sampling}\label{sec:path_sampling}
 
 To sample a routing path, the client sends a nonce $w$, used as a randomness seed, to a set of at least $d$ STTPs. 
 Each STTP maps the nonce to an elliptic-curve point ($\A{} = \Map{w}$). 
@@ -89,7 +89,7 @@ which binds the selection to the client nonce, time, and hop position, preventin
 The STTP then selects the stored share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$, and computes a partial Diffie-Hellman shared secret as $S_{it} = k_{it} \A{}$.
 Finally, it returns $(t, N_{it}, S_{it})$ to the client.
 
-\subsection{Aggregation} 
+\subsection{Aggregation}
 
 Upon receiving responses from at least $d$ STTPs, the client reconstructs node addresses and shared secrets via Lagrange interpolation:
 \begin{equation}
@@ -218,7 +218,7 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
 
 \subsection{Network Nodes Processing}
 Upon receiving a packet, node $i$ extracts the cryptographic element $\A{i}$, the integrity tag $\C{i}$, and the encrypted routing information $\B{i}{}$. 
-As in the original Sphinx design, the node checks whether $\A{i}$ has been previously seen, discarding duplicates to prevent replay attacks.
+As in the original Sphinx design, the node checks whether $\A{i}$ has been previously observed since its last key rotation and discards duplicates to prevent replay attacks.
 
 The header is processed as illustrated in Fig.~\ref{fig:chunk-decryption}.
 The node first derives the shared secret $\s{i}$ by multiplying the cryptographic element $\A{i}$ with its private key $\sk{i}$, and then applied the inverse Elligator mapping as in \eqref{eq:derive_secret}.

@@ -1,11 +1,8 @@
 \section{Security Analysis}\label{sec:security}
 
-This section outlines the security guarantees of our scheme.  
-We first analyze the unlinkability and integrity forgery resistance in absence of collusion, and then discuss the effect of potential collusion with STTPs.
-
-%%%%%%%%%%%%%%%%%
-% UNLINKABILITY %
-%%%%%%%%%%%%%%%%%
+This section analyzes the security guarantees of DSphinx and the assumptions under which they hold. 
+We first study packet unlinkability, which constitutes the primary anonymity objective inherited from Sphinx, followed by integrity guarantees, the security of the decentralized route-sampling mechanism, and relevant collusion scenarios. 
+We assume that the Elliptic Curve Discrete Logarithm Problem (ECDLP) is hard in the underlying group, that hash functions are modeled as random oracles, that HMAC is existentially unforgeable under chosen-message attacks, and that no efficient adversary can recover scalar relations induced by the Elligator-based derivation procedure.
 
 \subsection{Unlinkability}\label{sec:unlinkability}
 
@@ -14,7 +11,7 @@ Thus, the problem reduces to proving unlinkability at the node level, meaning th
 
 We formalize unlinkability via a standard indistinguishability game between a challenger $\mathcal{C}$ and an adversary $\mathcal{A}$.
 Intuitively, the adversary $\mathcal{A}$ observes packets entering and leaving a node and attempts to determine which outgoing packet corresponds to a given incoming packet.
-The scheme provides unlinkability if any probabilistic polynomial-time adversary achieves only a negligible advantage over random guessing, i.e. $\Pr[b_\mathcal{A} = b_\mathcal{C}] - \frac{1}{2}$ is negligible.
+The scheme provides unlinkability if any probabilistic polynomial-time adversary achieves only a negligible advantage over random guessing, i.e. $\Pr[a = c] - \frac{1}{2}$ is negligible.
 % under the hardness of the underlying elliptic curve assumptions.
 
 \medskip
@@ -25,22 +22,21 @@ The scheme provides unlinkability if any probabilistic polynomial-time adversary
   Generators are said to be independent if no participant knows any scalar relations among them.
 
   \item \textbf{Oracle.}  
-  The adversary is granted access to an oracle, which on input of a nonce $x$ and routing path $\pi = (N_1, N_2, N_3, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the node.
+  The adversary is granted access to an oracle, which on input of a nonce $x$ and routing path $\pi = (N_1, \ldots, N_m, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the node.
 
   \item \textbf{Challenge.}
   The adversary submits two distinct headers $(\alpha_0, \beta_0, \gamma_0)$ and $(\alpha_1, \beta_1, \gamma_1)$ that were not obtained during oracle queries.  
-  The challenger selects a random bit $b_\mathcal{C} \in \{0,1\}$ and processes $(\alpha_{b_\mathcal{C}}, \beta_{b_\mathcal{C}}, \gamma_{b_\mathcal{C}})$ through the node, obtaining $(\alpha'_{b_\mathcal{C}}, \beta'_{b_\mathcal{C}}, \gamma'_{b_\mathcal{C}})$, which is then given to the adversary.
+  The challenger selects a random bit $c \in \{0,1\}$ and processes $(\alpha_{c}, \beta_{c}, \gamma_{c})$ through the node, obtaining $(\alpha'_{c}, \beta'_{c}, \gamma'_{c})$, which is then given to the adversary.
 
   \item \textbf{Guess.}
-  The adversary outputs a bit ${b_\mathcal{A}} \in \{0,1\}$, attempting to guess which input headers corresponds to the given output header.  
-  He wins if ${b_\mathcal{A}} = {b_\mathcal{C}}$.
+  The adversary outputs a bit ${a} \in \{0,1\}$, attempting to guess which input headers corresponds to the given output header.  
+  He wins if ${a} = {c}$.
 \end{enumerate}
 
 \medskip
 \noindent\textbf{Proof Sketch:}
-As in the original Sphinx construction, all packets have a fixed size% (header and payload),
-, preventing any adversary from correlating packets based on observable size patterns.
-In addition, headers are computationally indistinguishable from random bitstrings, as empirically confirmed by the NIST randomness test suite (Section~\ref{sec:NIST}).
+As in the original Sphinx construction, all packets have a fixed size, preventing any adversary from correlating packets based on observable size patterns.
+%In addition, headers are computationally indistinguishable from random bitstrings, as empirically confirmed by the NIST randomness test suite (Section~\ref{sec:NIST}).
 Consequently, any successful distinguishing strategy must exploit correlations between header components $(\alpha, \beta, \gamma)$ across layers.
 Since the integrity tag $\gamma$ is computed independently at each layer, it cannot be used for cross-layer linkage.
 
@@ -62,73 +58,76 @@ Under the ECDLP hardness assumption and assuming independent generators, no prob
 Therefore, we can conclude that the proposed scheme provides unlinkability.
 
 %%%%%%%%%%%%%
-% INTEGRITY %
+% INTEGRITY % ok
 %%%%%%%%%%%%%
 
-\subsection{Integrity Forgery Resistance}\label{sec:integrity_forgery}
+\subsection{Integrity, Replay and Wrap Resistance}\label{sec:integrity_forgery}
 
-Integrity-forgery resistance requires that an adversary cannot modify a header that is accepted by an honest node.  
-We formalize this property as a game in which the adversary attempts to forge a new header that passes integrity verification.
-The scheme achieves integrity-forgery resistance if any probabilistic polynomial-time adversary has only negligible advantage over randomly guessing the integrity tag.
-
-\medskip
-\noindent\textbf{Game Definition:}
-\begin{enumerate}[topsep=1pt, itemsep=1pt]
-  \item \textbf{Setup.}
-  The challenger generates node's secret keys and public system parameters $(G_1, \dots, G_n)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed elliptic curve points.
-
-  \item \textbf{Oracle.}
-  The adversary is given access to an oracle that outputs valid headers $(\alpha,\beta,\gamma)$.
-  The adversary may modify $\beta$ into $\beta'$ and query a second oracle to obtain the corresponding integrity tag $\gamma'$.
-
-  \item \textbf{Challenge.}
-  The challenger outputs a fresh header $(\alpha,\beta,\gamma)$ with unused $\alpha$.
-  The adversary outputs modified chunks $\beta_{\mathcal{A}}$ and a tag $\gamma_{\mathcal{A}}$.
-
-  \item \textbf{Guess.}
-  The adversary wins if $\gamma_{\mathcal{A}} = \gamma_{\mathcal{C}}$, where $\gamma_{\mathcal{C}}$ is the integrity tag computed by the challenger on $\beta_{\mathcal{A}}$.
-\end{enumerate}
-
-\medskip
-\noindent\textbf{Proof Sketch:}
-An adversary is able to modify a header chunk $\beta_j$ in two ways; (i) by replacing it with a new elliptic curve point, or (ii) by adding a point $P_j$.
+Packet integrity relies on a keyed HMAC computed using the network node shared secret.
+An adversary modifying any component of a packet header must therefore generate a valid replacement tag in order for the modified packet to be accepted by an honest node.
+Without knowledge of the corresponding secret key, forging such a tag is computationally infeasible under the standard security assumptions of HMAC.
+Consequently, any modification of a packet header is detected with overwhelming probability.
 
 \smallskip
-\noindent\textbf{Case 1: Chunk Replacement.}
-Replacing $\beta_j$ with $\beta'_j$ requires updating the integrity tag to $\gamma' = \gamma + h^{(j)}(\sHashed{})\, (\beta'_{j} - \beta_{j})$.
-This requires knowledge of the weight $h^{(j)}(\sHashed{})$, which is derived from the hash of the shared secret ($\sHashed{}$). 
+\noindent\textbf{Replay Resistance.}\label{replay_resistance}
+As in Sphinx, nodes maintain a replay cache containing previously observed values of $\alpha$.
+Any packet containing a duplicate value is immediately discarded.
+This prevents replay attacks intended to correlate traffic flows or influence packet processing.
 
 \smallskip
-\noindent\textbf{Case 2.a: Incremental Modification.}
-Adding a point $P_j$ to a single chunk requires updating the tag as $\gamma' = \gamma + h^{(j)}(\sHashed{})\, P_j$, which again requires the weight.
+\noindent\textbf{Wrap Resistance.}\label{wrap_resistance}
+The original Sphinx construction provides wrap resistance, meaning that an adversary cannot transform a packet
+$(\A{},\B{}{},\C{})$ into a packet $(\A{}',\B{}{}',\C{}')$ that decrypts back into the original packet after processing.
+In DSphinx, such an attack would require modifying a packet while still producing a valid integrity tag.
+Therefore, wrap resistance reduces directly to integrity-forgery resistance.
+
+
+%%%%%%%%%%%%%%%%%%%
+%% PATH SIMPLING %%
+%%%%%%%%%%%%%%%%%%%
+
+\subsection{Route Sampling Security}
+
+A primary objective of DSphinx is to prevent clients from arbitrarily selecting routing paths while ensuring that STTPs cannot influence route selection. 
+A route-sampling mechanism is said to be fair if no probabilistic polynomial-time adversary can significantly increase the probability that a specific node appears in a sampled route beyond its probability under uniform random sampling. 
+Under the preimage resistance of the route-selection hash function and the confidentiality of node pseudonyms, DSphinx satisfies route-sampling fairness, 
+since clients only control the nonce used to derive $\A{}$, while STTPs do not influence the inputs to the route-selection function.
+consequently, neither party can meaningfully bias the probability of selecting any specific node beyond the uniform sampling baseline.
 
 \smallskip
-\noindent\textbf{Case 2.b: Balanced Increment.}
-An adversary may attempt to modify two chunks $j$ and $j'$ so that the checksum remains unchanged: $\gamma' = \gamma + h^{(j)}(\sHashed{})\, P_j + h^{(j')}(\sHashed{})\, P_{j'}$.
-If the scalar relation between two weights is known, i.e. $z$ such that $h^{(j)}(\sHashed{}) = z\,h^{(j')}(\sHashed{})$, it becomes $\gamma' = \gamma + h^{(j')}(\sHashed{})\, (z P_j + P_{j'})$.
-Then the adversary can choose any $P_j$ and set $P_{j'} = -z P_j$, leaving $\gamma' = \gamma$ and thus forging integrity.
+\noindent\textbf{Client Route Biasing.}
+As described in Section~\ref{sec:path_sampling}, routing decisions are derived by hashing the tuple composed of the elliptic-curve point $\A{}$, a timestamp, and the hop index.
+The timestamp and hop index are fixed by the protocol.
+The only parameter influenced by the client is the nonce used to generate $\A{}$.
+Consequently, a malicious client wishing to bias route selection towards a specific node must search for a nonce that produces a desired routing outcome.
+This reduces to a preimage search over the route-selection hash function.
+Moreover, the client does not know the actual node associated with a given pseudonym unless collusion occurs with either an STTP or a targeted network node.
+Therefore, even if the client could influence the selection process, it would generally be unable to predict which physical node would be selected.
 
 \smallskip
-\noindent\textbf{Summary.}
-Integrity forgery requires knowledge of a weight or a scalar relation between weights, which are derived from the hash of a one-time shared secrets.
+\noindent\textbf{STTP Route Biasing.}
+The route is derived solely from the client-provided cryptographic material, the timestamp, and the hop index.
+As a result, honest execution leaves no opportunity for an STTP to influence route selection.
+If an STTP deviates from the protocol and returns inconsistent information, the resulting packet becomes invalid and is rejected by the network.
+To tolerate malicious STTPs, clients may query more than the reconstruction threshold $d$ and reconstruct the required information from any honest subset.
 
-\medskip
-\noindent\textbf{Remarks.}\label{replay_resistance}\label{wrap_resistance}
-The original Sphinx provides \emph{replay} and \emph{wrap} resistance \cite{sphinx}.
-Replay resistance is guaranteed by dropping previously seen $\alpha$ values.
-Wrap resistance prevents transforming a header $(\alpha, \beta, \gamma)$ into $(\alpha', \beta', \gamma')$ that decrypts back to $(\alpha, \beta, \gamma)$.
-Both properties require modifying a header that passes integrity verification and thus reduce to integrity forgery resistance.
+\smallskip
+\noindent\textbf{STTP Knowledge of Routes.}
+Although STTPs participate in route generation, they do not know the mapping between node pseudonyms and actual network identities.
+Consequently, observing that a route contains a pseudonym $r_i$ does not reveal which physical node is involved.
+Nevertheless, STTPs may still learn limited information from traffic patterns. 
+In particular, if multiple routes contain the same set of pseudonyms, an STTP can infer that the same route has been selected on multiple occasions, even though the identities of the corresponding nodes remain unknown.
+However, in the absence of route biasing, such observations provide limited information because routes are generated pseudorandomly.
+This highlights the importance of route-sampling fairness: if route selection could be manipulated, repeated pseudonym patterns would become significantly more informative.
 
-% \medskip
-% \noindent\textbf{Remarks.}
-% \label{replay_resistance}\label{wrap_resistance}
-% The original Sphinx article~\cite{sphinx} takes \emph{replay resistance}
-% and \emph{wrap resistance} into account.
-% \emph{Wrap resistance} means an adversary must not be able to transform a header $(\alpha, \beta, \gamma)$ into a new valid header $(\alpha', \beta', \gamma')$ such that, after being decrypted by a node, the packet becomes $(\alpha, \beta, \gamma)$ again.  
-% \emph{Replay resistance} is inherited from the original Sphinx construction since the nodes maintain a table of previously seen $\alpha$ values and discard replayed values (with tables reset only when keys are updated).
-% Thus, if an adversary want to replay a packet, he would need to alter $\alpha$ (and consequently $\beta$) while still producing a consistent integrity tag $\gamma$. % which directly reduces to the problem of forging integrity.  
-% Similarly, \emph{wrap resistance} also requires producing a modified header that passes integrity verification.
-% Hence, \emph{replay resistance} and \emph{wrap resistance} reduce to \emph{integrity forgery resistance}. 
+\smallskip
+\noindent\textbf{Impact on n-1 Attacks.} 
+Preventing route bias does not completely eliminate classical $n-1$ attacks. 
+Once a client has obtained a valid route and the associated cryptographic material, it may repeatedly reuse that route by re-randomizing $\A{}$ and the corresponding shared secrets for each packet.
+However, DSphinx significantly limits the attacker's capabilities. 
+Whereas traditional source-routing systems allow an adversary to construct arbitrary routes through a target node, DSphinx requires routes to be obtained through decentralized sampling. 
+Consequently, generating many distinct routes containing the same target node requires repeatedly sampling until suitable routes are obtained. 
+Otherwise, repeated reuse of a sampled route also creates a detectable route-level pattern, making large-scale $n-1$ attacks easier to identify.
 
 
 %%%%%%%%%%%%%
@@ -137,17 +136,41 @@ Both properties require modifying a header that passes integrity verification an
 
 \subsection{Collusion Analysis}\label{sec:collusion}
 
-The preceding security arguments assume no collusion. 
-Each STTP learns additive shares of destinations and per-hop shared secrets, which reveal no information unless all shares are combined.
-In addition, STTPs receive the values $\sigma_i = h(s_i)$ for all hops in the path, from which integrity weights are derived. 
-However, the blinding offset $s_iG$ prevents associating these values with a specific packet. 
-Consequently, collusion among a subset of STTPs does not compromise unlinkability or integrity.
+We now analyze the impact of relevant collusion scenarios between entities involved in the protocol.
 
-The main risk arises when an STTP colludes with a mixnode. 
-A corrupted mixnode can derive its shared secret $s_i$ from $\alpha$ and compute the corresponding hash $\sigma_i$, which can then be matched against the set of values observed by the STTP.
-If a match is found, the adversary can associate the packet with the set of values $\{\sigma_j\}$ used along its path. 
-This enables integrity forgery and weakens unlinkability by allowing probabilistic packet tracing. 
-To mitigate this threat, the output space of $\sigma$ can be reduced, for example by truncating the hash output, creating multiple candidate matches and preventing unique packet-weight associations.
-Although this increases the probability of random guessing, the blinding offset $s_iG$ prevents efficient guess verification. 
-Therefore, security is preserved as long as at least one STTP remains honest, while the impact of STTP-mixnode collusion can be limited through an appropriate choice of integrity-weight space, which balances collusion resilience against random-guessing resistance.
-Determining the optimal trade-off between collusion resilience and guessing resistance is left for future work.
+\smallskip
+\noindent\textbf{Threshold STTP Compromise.}
+The most severe scenario occurs when at least $d$ STTPs collude, where $d$ denotes the reconstruction threshold.
+In this case, the adversary can reconstruct all network node secrets.
+This compromises the security of the entire system.
+Accordingly, the threshold parameter $d$ must be chosen such that collusion of this magnitude remains unrealistic.
+
+\smallskip
+\noindent\textbf{STTP - Network Node Collusion.}
+A collusion between an STTP and a network node reveals the mapping between that node's pseudonym and its real identity, resulting in partial deanonymization of the routing space. 
+While a single collusion does not yield a meaningful advantage, multiple colluding nodes may enable partial identification of sampled routes. 
+From the network node's perspective, learning pseudonyms associated with other nodes may enable attempts to optimize its own pseudonym value.
+Assuming honest nodes choose pseudonyms uniformly at random, any such advantage remains negligible.
+
+\smallskip
+\noindent\textbf{Client - Network Node Collusion.}
+Unlike Sphinx, DSphinx intentionally replaces long-term node public keys with a secret-sharing architecture distributed among STTPs.
+As a consequence, clients cannot independently compute node shared secrets.
+If a client colludes with a node and learns its secret key, this restriction no longer applies for that node.
+The client may then bypass the decentralized route-sampling mechanism and force inclusion of the colluding node in arbitrary routes.
+Alternatively, the client may replace legitimate hops with the colluding node after route generation.
+Although this weakens route-sampling guarantees, it does not compromise the secrets of honest nodes and therefore does not break the security of the entire network.
+
+
+%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Preventing Discrete-Log Structure Leakage}\label{sec:hash-to-curve} \todo{Adapt protocol section with hash-to-curve}
+
+The protocol requires clients to provide a nonce $w$ to STTPs (rather than directly $\A{}$), which is deterministically mapped to an elliptic-curve point $\A{}$ using a hash-to-curve function. 
+Importantly, this mapping must be a proper hash-to-curve and not an invertible encoding such as Elligator. 
+Otherwise, a malicious client could embed a known discrete-log structure into $\A{}$ by selecting $w = \InverseMap{xG}$ for a chosen scalar $x$, thereby forcing $\A{} = xG$.
+
+Suppose a malicious client could select $\A{}=xG$ for a scalar $x$ whose discrete logarithm is known.
+For a network node with secret key $k_i$, the resulting shared secret would be $S_i=k_i\A=k_ixG$, from which the client computes $x^{-1}S_i = k_iG$, revealing a reusable node-specific point. 
+Although this does not expose $k_i$, it enables the client to derive valid shared secrets without further STTP interaction, since for any $z$ it can set $\A{}' = zG$ and compute $S_i' = z(k_iG)$, matching the legitimate protocol output and thereby bypassing route-sampling enforcement. 
+The hash-to-curve mapping prevents this attack by ensuring that clients cannot embed or recover discrete-log structure in $\A{}$ via their choice of $w$.
