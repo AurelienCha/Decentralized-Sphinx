@@ -81,8 +81,8 @@ However, changing the threshold $d$ requires reinitializing the entire setup.
 \subsection{Path Sampling}\label{sec:path_sampling}
 
 To sample a routing path, the client sends a nonce $w$, used as a randomness seed, to a set of at least $d$ STTPs. 
-Each STTP maps the nonce to an elliptic-curve point ($\A{} = \Map{w}$). 
-The resulting point acts as a cryptographically randomness source, where recovering its discrete logarithm is assumed infeasible, preventing manipulation of the sampling process.\todo{security section}
+Each STTP maps the nonce to an elliptic-curve point ($\A{} = HashToCurve(w)$) using a proper hash-to-curve function (i.e non-reversible, see section \ref{sec:hash-to-curve}). 
+The resulting point acts as a cryptographically randomness source, where recovering its discrete logarithm is assumed infeasible, preventing manipulation of the sampling process.
 
 For each hop $i$, the STTP computes an index $r'_i = hash(\A{}, \text{timestamp}, i)$, \todo{Justify why alpha, timestamp and i ?}
 which binds the selection to the client nonce, time, and hop position, preventing replay.
