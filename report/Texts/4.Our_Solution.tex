@@ -84,7 +84,7 @@ To sample a routing path, the client sends a nonce $w$, used as a randomness see
 Each STTP maps the nonce to an elliptic-curve point ($\A{} = HashToCurve(w)$) using a proper hash-to-curve function (i.e non-reversible, see section \ref{sec:hash-to-curve}). 
 The resulting point acts as a cryptographically randomness source, where recovering its discrete logarithm is assumed infeasible, preventing manipulation of the sampling process.
 
-For each hop $i$, the STTP computes an index $r'_i = hash(\A{}, \text{timestamp}, i)$, \todo{Justify why alpha, timestamp and i ?}
+For each hop $i$, the STTP computes an index $r'_i = hash(\A{}, \text{timestamp}, i)$,
 which binds the selection to the client nonce, time, and hop position, preventing replay.
 The STTP then selects the stored share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$, and computes a partial Diffie-Hellman shared secret as $S_{it} = k_{it} \A{}$.
 Finally, it returns $(t, N_{it}, S_{it})$ to the client.
