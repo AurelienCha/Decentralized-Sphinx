@@ -12,7 +12,7 @@ Messages in mixnets are first divided into fixed-size packets to prevent size-ba
 Each packet is then encrypted in multiple layers, together with the necessary routing information. 
 This guarantees that every mixnode learns only its immediate predecessor and successor along the path.
 
-The Lightning Network~\cite{poon2016bitcoin} is a payment-channel network that allow two users to send off-chain transactions without continuously interacting with the Bitcoin blockchain. 
+The Lightning Network~\cite{poon2016bitcoin} is a payment-channel that allow two users to send off-chain transactions without continuously interacting with the Bitcoin blockchain. 
 In this design, even users who do not have a direct channel may still transact by routing payments through intermediate peers. 
 When a node wants to pay another node without having a direct channel, the transaction originator first computes the shortest path to the recipient and then encrypts the routing information multiple times, where each cryptographic layer corresponds to a hop along the path.
 Although the Lightning Network was initially introduced to address Bitcoin's scalability, it also addresses the privacy issues introduced by peer-to-peer networks~\cite{sharma2022anonymity}. 
@@ -20,7 +20,7 @@ In particular adversaries should not be able to identify the sender or receiver 
 Additionally an intermediate node should not know whether their predecessor is the transaction's originator or whether their successor is the transaction's recipient. 
 
 These privacy guarantees, both in mixnets and in the Lightening Network, are achieved using the Sphinx packet format~\cite{sphinx}.
-
+\begin{comment}
 \begin{figure}
 	\hspace{-9mm}
 	\resizebox{1.085\linewidth}{!}{\input{schema/mixnet.tex}}
@@ -29,6 +29,8 @@ These privacy guarantees, both in mixnets and in the Lightening Network, are ach
 	}
 	\label{fig:mixnet}
 \end{figure}\todo{we can potentially delete this picture}
+
+\end{comment}
 
 
 \subsection{Sphinx Packet Format}
