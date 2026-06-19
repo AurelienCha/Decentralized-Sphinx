@@ -88,6 +88,7 @@ For each hop $i$, the STTP computes an index $r'_i = hash(\A{}, \text{timestamp}
 which binds the selection to the client nonce, time, and hop position, preventing replay.
 The STTP then selects the stored share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$, and computes a partial Diffie-Hellman shared secret as $S_{it} = k_{it} \A{}$.
 Finally, it returns $(t, N_{it}, S_{it})$ to the client.
+\todo{improving clarity of what is returned: list of $N_{it}$ for all $i$ in path}
 
 \subsection{Aggregation}
 
