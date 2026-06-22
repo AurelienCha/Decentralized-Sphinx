@@ -225,7 +225,7 @@ The header is processed as illustrated in Fig.~\ref{fig:chunk-decryption}.
 The node first derives the shared secret $\s{i}$ by multiplying the cryptographic element $\A{i}$ with its private key $\sk{i}$, and then applied the inverse Elligator mapping as in \eqref{eq:derive_secret}.
 \begin{equation}
 \begin{aligned}
-    \s{i} &= \InverseMap{(\sk{i} \, \A{i})}
+    \s{i} &= \InverseMap{\sk{i} \, \A{i}}
 \end{aligned}
 \label{eq:derive_secret}
 \end{equation}
