@@ -1,4 +1,4 @@
-\section{DSphinx Packet Format}
+\section{DSphinx Packet Format}\todo{replace Elligator by hash-to-curve to derive generators}
 
 % Header structure - Chunks
 DSphinx is inspired by the Sphinx packet format, with the key distinction that each header element is independently encoded as an elliptic curve (EC) point. 
@@ -133,7 +133,7 @@ The header is initialized by concatenating the destination chunk $\D{}$ with the
 Encryption is then applied iteratively in reverse path order, from $i=m$ down to $i=1$, 
 as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo:sttp}.
 \begin{enumerate}
-    \item \textbf{Chunk encryption:}: 
+    \item \textbf{Chunk encryption:}
     Each chunk $j$ is encrypted according Eq.~\eqref{eq:layer_i}.
     The last two chunks evaluate to the identity element as a consequence of the preprocessing phase and may therefore be discarded while preserving subsequent processing.
     \begin{equation}

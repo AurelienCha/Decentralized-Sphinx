@@ -128,16 +128,6 @@ In particular, if multiple routes contain the same set of pseudonyms, an STTP ca
 However, in the absence of route biasing, such observations provide limited information because routes are generated pseudorandomly.
 This highlights the importance of route sampling fairness: if route selection could be manipulated, repeated pseudonym patterns would become significantly more informative.
 
-\smallskip
-\noindent\textbf{Impact on n-1 Attacks.}\todo{More appropriate for discussion section}
-Preventing route bias does not completely eliminate classical $n-1$ attacks. 
-Once a client has obtained a valid route and the associated cryptographic material, it may repeatedly reuse that route by re-randomizing $\A{}$ and the corresponding shared secrets for each packet.
-However, DSphinx significantly limits the attacker's capabilities. 
-Whereas traditional source-routing systems allow an adversary to construct arbitrary routes through a target node, DSphinx requires routes to be obtained through decentralized sampling. 
-Consequently, generating many distinct routes containing the same target node requires repeatedly sampling until suitable routes are obtained. 
-Otherwise, repeated reuse of a sampled route also creates a detectable pattern, making large-scale $n-1$ attacks easier to identify.
-
-
 %%%%%%%%%%%%%%%
 %% COLLUSION %%
 %%%%%%%%%%%%%%%
