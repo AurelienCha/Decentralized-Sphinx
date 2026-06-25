@@ -67,18 +67,21 @@ Adding a new node only requires executing the setup procedure for that node.
 Adding a new STTP requires each node to compute and distribute an additional polynomial evaluation. 
 However, changing the threshold $d$ requires reinitializing the entire setup.
 
-
 \subsection{Path Sampling}\label{sec:path_sampling}
 
-To sample a routing path, the client sends a nonce $w$ as a randomness seed to a set of at least $d$ STTPs. 
-Each STTP maps the nonce to an elliptic-curve point using a hash-to-curve function ($\A{} = HashToCurve(w)$). 
-The resulting point acts as a cryptographic randomness source, where recovering its discrete logarithm is assumed infeasible, preventing manipulation of the sampling process.
+To sample a routing path, the client sends a nonce $w$ to at least $d$ STTPs. 
+Each STTP maps this nonce to an curve point $\A{}$ using a hash-to-curve function.% ($\A{} = HashToCurve(w)$).
 
-For each hop $i$, the STTP computes an index $r'_i = hash(\A{}, \text{timestamp}, i)$,
-which binds the selection to the client nonce, time, and hop position, preventing replay.
-The STTP then selects the stored share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$, and computes a partial Diffie-Hellman shared secret as $S_{it} = k_{it} \A{}$.
-Finally, it returns $(t, N_{it}, S_{it})$ to the client.
-\todo{improving clarity of what is returned: list of $N_{it}$ for all $i$ in path}
+For each hop $i$, the STTP computes $r'_i = hash(\A{}, \text{timestamp}, i)$, and selects the network node share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$.
+The STTP then computes the partial Diffie-Hellman shared secret $S_{it} = k_{it}\A{}$, 
+and returns its identifier together with the selected shares and partial shared secrets as $(t,\; \{N_{it}\}_{i=1}^{m},\; \{S_{it}\}_{i=1}^{m})$ to the client.
+
+\smallskip
+\noindent\textbf{Design rationale.}
+Since all STTPs receive the same nonce $w$, honest STTPs deterministically select the same sequence of network node shares and therefore produce compatible shares for reconstruction.
+The client controls only the nonce $w$, while route selection is derived from the tuple $(\A{}, \text{timestamp}, i)$.
+The timestamp ensures that route selection evolves over time, whereas the hop index $i$ yields independent selections across hops.
+Furthermore, the use of a non-invertible hash-to-curve mapping prevents clients from embedding exploitable discrete-log structure into $\A{}$, which could otherwise undermine the decentralized route sampling mechanism.
 
 \subsection{Aggregation}
 
