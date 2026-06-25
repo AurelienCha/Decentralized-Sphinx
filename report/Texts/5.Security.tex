@@ -50,8 +50,8 @@ Recovering $s$ from $\alpha' = s\alpha$ requires solving an instance of the Elli
 \smallskip
 \noindent{\textbf{Case 2: Linking via $\boldsymbol\beta$.}}\label{sec:indep_generators}  
 Each header chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy $\beta_j - \beta'_j = s G_j$ for all $j \in \{1,\dots,n\}$.
-To establish a link, $\mathcal{A}$ must either verify that the same shared secret $s$ is used across all chunks, or determine whether the scalar relationship between two generators $G_j$ and $G_{j'}$ is preserved (i.e. find $z$ such that $G_j = z G_{j'}$).
-When generators are independent, it reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$.
+To establish a link, $\mathcal{A}$ must determine whether the scalar relationship between two chunks is preserved.
+When generators are independent, it reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$ such taht $G_j = z G_{j'}$ between two chunk generators.
 
 \smallskip
 \noindent\textbf{Summary.}  
