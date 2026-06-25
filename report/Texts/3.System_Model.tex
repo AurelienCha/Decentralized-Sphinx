@@ -2,18 +2,18 @@
 
 
 In this section, we present our threat model and define the privacy and security properties that our system is designed to achieve.
-As illustrated in Fig.~\ref{fig:overall_schema}, the system involves three entities: clients, a set of semi-trusted third parties (STTPs), and network nodes.
-Clients delegate random route selection to the STTPs, which jointly sample a path and derive the corresponding shared secrets required to construct and process packets within the network.
+As illustrated in Fig.~\ref{fig:overall_schema}, the system involves three type of entities: clients, a set of semi-trusted third parties (STTPs), and network nodes.
+Clients delegate route sampling to the STTPs, which jointly derive the routing path and compute secret shares associated with the selected nodes.
+The client then reconstructs the route information and the corresponding per-hop shared secrets from a threshold number of STTP responses.
 STTPs are assumed to be \emph{honest-but-curious}, meaning that they correctly execute the protocol but are not trusted for privacy guarantees, with security ensured as long as fewer than a threshold $d$ of STTPs collude.
 
 
 \subsection{Threat Model}
 
-We consider passive and active network adversaries, corrupted network nodes, corrupted STTPs, and malicious clients.
+We consider passive and active network adversaries, maclicious client, corrupted network nodes and STTPs.
 We assume the hardness of the Elliptic Curve Discrete Logarithm Problem (ECDLP) in the underlying group.
 Hash functions are modeled as random oracles, and HMAC is assumed to be existentially unforgeable under chosen-message attacks.
-We further assume that no polynomial-time adversary can recover scalar relations derived from the Elligator-based encoding procedure.
-Finally, we assume that network nodes anonymously submit their secret shares to the STTPs during the setup phase, and that at most a threshold number $d$ of STTPs may be corrupted or colluding.
+We further assume that network nodes anonymously submit their secret shares to the STTPs during the setup phase, and less than a threshold number $d$ of STTPs may be corrupted or colluding.
 
 \smallskip
 \noindent{\textbf{Passive Network Adversary.}}
@@ -26,6 +26,10 @@ An active adversary can arbitrarily modify, drop, replay, or inject packets.
 Its objective is to forge valid integrity tags to tamper with headers while remaining undetected. 
 
 \smallskip
+\noindent{\textbf{Malicious Client.}}
+A malicious client may attempt to bias or manipulate decentralized route sampling to favor specific nodes or paths, weakening route randomness and enabling attacks such as the $n-1$ attack.
+
+\smallskip
 \noindent{\textbf{Corrupted Network Node.}}
 A corrupted node may reveal its entire internal state, including private keys and shared secrets.
 Compromising a node must not compromise the privacy or integrity of the remaining path, and unlinkability is preserved as long as at least one node on the path is honest.
@@ -36,10 +40,6 @@ Corrupted STTPs may attempt to infer additional information from their computati
 We allow collusion among STTPs, provided that fewer than $d$ STTPs are corrupted.
 Under this assumption, colluding STTPs cannot reconstruct complete routes or derive shared secrets.
 
-\smallskip
-\noindent{\textbf{Malicious Client.}}
-A malicious client may attempt to bias or manipulate decentralized route sampling to favor specific nodes or paths, weakening route randomness and enabling attacks such as the $n-1$ attack.
-
 
 \subsection{Security and Privacy Objectives}\label{sec:sp-objectives}
 
@@ -47,11 +47,11 @@ A malicious client may attempt to bias or manipulate decentralized route samplin
 Our DSphinx construction aims to preserve the security guarantees of Sphinx~\cite{sphinx}, including unlinkability and integrity protection, while extending them to a decentralized route sampling setting.
 
 \smallskip
-\noindent\textbf{Unlinkability.}
+\noindent\textbf{Unlinkability.} \todo{maybe slightly reduce the beginning ? Or put it in intro/related work ?}
 Defining unlinkability in anonymous communication systems is inherently challenging.
 For instance, Loopix~\cite{piotrowska2017loopix} proposes the \emph{expected difference in likelihood} metric, which captures sender-receiver unlinkability through network-level simulations rather than header-level resistance to cryptanalysis.
 In this work, we consider \emph{node-level unlinkability}, requiring that an adversary cannot link an incoming packet to its corresponding outgoing packet at any node.
-This is achieved if all per-hop header components are computationally unlinkable without knowledge of the node's secret key (or shared secret).
+This is achieved if all per-hop header components are computationally unlinkable without knowledge of the node's secret key.
 
 \smallskip
 \noindent{\textbf{Integrity-Forgery Resistance.}}
@@ -65,5 +65,5 @@ In particular, no adversary or colluding set of adversaries should be able to bi
 
 \smallskip
 \noindent{\textbf{Collusion Resistance.}} 
-We require that any collusion between clients, STTPs, and network nodes does not reveal additional routing or anonymity information beyond what is implied by their individual views.
-In particular, as long as the number of corrupted STTPs remains below the threshold $d$, colluding adversaries cannot reconstruct complete routing information or compromise the security of honest participants.
+We require that collusions between clients, STTPs, and network nodes reveal no additional routing or anonymity information beyond their individual views. 
+In particular, as long as fewer than $d$ STTPs are corrupted, adversaries cannot reconstruct complete routing information or compromise the security of honest participants.

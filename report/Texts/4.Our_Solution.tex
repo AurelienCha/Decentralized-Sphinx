@@ -14,9 +14,9 @@ We define a set of generators $\{G_j\}_{j=1}^{n}$, where each generator correspo
 These generators must be \emph{independent}, meaning that the scalar relationship between any pair of generators is unknown, as is their discrete logarithm with respect to the curve base point $G$. 
 More precisely, no party should know, nor be able to efficiently recover, a scalar $z_j \in \mathbb{Z}_p$ such that $G_j = z_j G$.
 To instantiate such generators, DSphinx derives them using a hash-to-curve function. 
-The generators are deterministically derived from a common seed obtained by hashing the current timestamp together with an offset $j$, yielding a distinct generator for each chunk position. 
+The generators are deterministically derived from a common seed obtained by hashing the current timestamp together with an offset $j$, yielding a distinct generator for each chunk. 
 The timestamp is truncated to a predefined refresh interval, ensuring that all entities derive the same generator set while periodically refreshing the public parameters. 
-Under the random-oracle assumption, the resulting generators are computationally indistinguishable from independently sampled random group elements.
+Under the random oracle assumption, the resulting generators are computationally indistinguishable from independently sampled group elements.
 
 \subsection{Elligator}
 
