@@ -35,17 +35,15 @@ Doing so prevents small-subgroup attacks, which could otherwise leak a few bits 
 \section{Protocol Description}\label{sec:scheme}
 
 % Overview
-The proposed decentralized protocol distributes the Sphinx header construction across multiple semi-trusted third parties (STTPs). 
-More precisely, it decentralized the path selection to a set of semi-trusted third parties to prevent bias route.
-Fig.~\ref{fig:overall_schema} illustrates the protocol which can be diveded in three phases; (i) a one-time setup phase (step 0),  
-(ii) a decentralized path sampling phase (step 1-3), and (iii) the header construction (step 4).
-\todo{Maybe need a smoother/longer description}
+The proposed decentralized protocol distributes path sampling across a threshold number of semi-trusted third parties (STTPs), in order to mitigate client-side route biasing attacks. 
+Fig.~\ref{fig:overall_schema} illustrates the protocol, which is divided into three phases: 
+a one-time setup phase (Step 0), a decentralized path sampling phase (Steps 1-3), and a header construction phase (Step 4).
 
 
 \begin{figure}%[t]
     \centering
     \resizebox{0.9\linewidth}{!}{\input{schema/schema_overview.tex}}
-    \caption{Overview of the decentralized path selection for DSphinx.
+    \caption{Overview of decentralized path selection.
     (0) Setup, (1) client nonce, (2) path sampling, (3) aggregation, (4) header construction, (5) packet forwarding.}
     \label{fig:overall_schema}
 \end{figure}
