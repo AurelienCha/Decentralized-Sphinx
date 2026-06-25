@@ -1,29 +1,28 @@
 \section{Security Analysis}\label{sec:security}
 
+
 This section analyzes the security guarantees of DSphinx and the assumptions under which they hold. 
-We first study packet unlinkability, which constitutes the primary anonymity objective inherited from Sphinx, followed by integrity guarantees, the security of the decentralized route sampling mechanism, and relevant collusion scenarios. 
-We assume that the Elliptic Curve Discrete Logarithm Problem (ECDLP) is hard in the underlying group, that hash functions are modeled as random oracles, that HMAC is existentially unforgeable under chosen-message attacks, 
-that the hash-to-curve used to compute $\A{}$ does not reveal any exploitable discrete-log structure (i.e. not-reversible), and that no efficient adversary can recover scalar relations induced by the Elligator-based derivation procedure.
+We first study packet unlinkability, the primary anonymity objective inherited from Sphinx, followed by integrity guarantees, decentralized route sampling security, and collusion scenarios.
+We assume that the ECDLP is hard in the underlying group, that hash functions are modeled as random oracles, and that HMAC is existentially unforgeable under chosen-message attacks. 
+We further assume that network nodes anonymously submit their secret shares to the STTPs during the setup phase.
 
 \subsection{Unlinkability}\label{sec:unlinkability}
 
 To argue about sender-receiver unlinkability, we assume that an adversary cannot link a sender to its recipient without retracing the entire communication path.  
 Thus, the problem reduces to proving unlinkability at the node level, meaning that an adversary cannot determine which outgoing packet corresponds to a given incoming packet.
-
 We formalize unlinkability via a standard indistinguishability game between a challenger $\mathcal{C}$ and an adversary $\mathcal{A}$.
 Intuitively, the adversary $\mathcal{A}$ observes packets entering and leaving a node and attempts to determine which outgoing packet corresponds to a given incoming packet.
-The scheme provides unlinkability if any probabilistic polynomial-time adversary achieves only a negligible advantage over random guessing, i.e. $\Pr[a = c] - \frac{1}{2}$ is negligible.
-% under the hardness of the underlying elliptic curve assumptions.
+The scheme provides unlinkability if any probabilistic polynomial-time adversary achieves only a negligible advantage over random guessing.
 
-\medskip
+\bigskip
 \noindent\textbf{Game Definition:}
 \begin{enumerate}[topsep=1pt, itemsep=1pt]
   \item \textbf{Setup.}
-  The challenger generates the node's secret keys and public system parameters $(G_1, \dots, G_n)$ as in the setup phase, ensuring all generators $G_j$ are independent and uniformly distributed EC points.
-  Generators are said to be independent if no participant knows any scalar relations among them.
+  The challenger generates the node's secret keys and public system parameters $(G_1, \dots, G_n)$, ensuring all generators $G_j$ are independent,
+  meaning no participant knows any scalar relations among them.
 
   \item \textbf{Oracle.}  
-  The adversary is granted access to an oracle, which on input of a nonce $x$ and routing path $\pi = (N_1, \ldots, N_m, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the node.
+  The adversary is granted access to an oracle, which on input of a nonce $w$ and routing path $\pi = (N_1, \ldots, N_m, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the node.
 
   \item \textbf{Challenge.}
   The adversary submits two distinct headers $(\alpha_0, \beta_0, \gamma_0)$ and $(\alpha_1, \beta_1, \gamma_1)$ that were not obtained during oracle queries.  
@@ -36,8 +35,7 @@ The scheme provides unlinkability if any probabilistic polynomial-time adversary
 
 \medskip
 \noindent\textbf{Proof Sketch:}
-As in the original Sphinx construction, all packets have a fixed size, preventing any adversary from correlating packets based on observable size patterns.
-%In addition, headers are computationally indistinguishable from random bitstrings, as empirically confirmed by the NIST randomness test suite (Section~\ref{sec:NIST}).
+As with the original Sphinx, all packets have a fixed size, preventing any adversary from correlating packets based on observable size patterns.
 Consequently, any successful distinguishing strategy must exploit correlations between header components $(\alpha, \beta, \gamma)$ across layers.
 Since the integrity tag $\gamma$ is computed independently at each layer, it cannot be used for cross-layer linkage.
 
@@ -49,9 +47,9 @@ Recovering $s$ from $\alpha' = s\alpha$ requires solving an instance of the Elli
 
 \smallskip
 \noindent{\textbf{Case 2: Linking via $\boldsymbol\beta$.}}\label{sec:indep_generators}  
-Each header chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy $\beta_j - \beta'_j = s G_j$ for all $j \in \{1,\dots,n\}$.
+Each header chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy $\beta_j - \beta'_j = s G_j$. %for all $j \in \{1,\dots,n\}$.
 To establish a link, $\mathcal{A}$ must determine whether the scalar relationship between two chunks is preserved.
-When generators are independent, it reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$ such taht $G_j = z G_{j'}$ between two chunk generators.
+When generators are independent, it reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$ such that $G_j = z G_{j'}$ between two chunk generators.
 
 \smallskip
 \noindent\textbf{Summary.}  
@@ -64,24 +62,21 @@ Therefore, we can conclude that the proposed scheme provides unlinkability.
 
 \subsection{Integrity, Replay and Wrap Resistance}\label{sec:integrity_forgery}
 
-Packet integrity relies on a keyed HMAC computed using the network node shared secret.
-An adversary modifying any component of a packet header must therefore generate a valid replacement tag in order for the modified packet to be accepted by an honest node.
-Without knowledge of the corresponding secret key, forging such a tag is computationally infeasible under the standard security assumptions of HMAC.
-Consequently, any modification of a packet header is detected with overwhelming probability.
+Packet integrity relies on a per-hop keyed HMAC computed from the network node shared secret.
+An adversary modifying any packet header component must therefore produce a valid integrity tag for the modified packet to be accepted by an honest node.
+Without knowledge of the secret key, forging such a tag is computationally infeasible under standard HMAC security assumptions.
+% Consequently, any header modification is detected with high probability.
 
 \smallskip
 \noindent\textbf{Replay Resistance.}\label{replay_resistance}
-As in Sphinx, nodes maintain a replay cache containing previously observed values of $\alpha$.
-Any packet containing a duplicate value is immediately discarded.
-This prevents replay attacks intended to correlate traffic flows or influence packet processing.
+As in Sphinx, nodes maintain a record of previously observed values of $\alpha$.
+Any packet containing a duplicate value is immediately discarded, preventing replay attacks.
 
 \smallskip
 \noindent\textbf{Wrap Resistance.}\label{wrap_resistance}
-The original Sphinx construction provides wrap resistance, meaning that an adversary cannot transform a packet
-$(\A{},\B{}{},\C{})$ into a packet $(\A{}',\B{}{}',\C{}')$ that decrypts back into the original packet after processing.
-In DSphinx, such an attack would require modifying a packet while still producing a valid integrity tag.
-Therefore, wrap resistance reduces directly to integrity-forgery resistance.
-
+Wrap resistance ensures that an adversary cannot transform a packet $(\A{},\B{}{},\C{})$ into $(\A{}',\B{}{}',\C{}')$ that decrypts to the original packet after processing.
+Such an attack requires modifying a packet while still producing a valid integrity tag.
+Therefore, wrap resistance reduces to integrity-forgery resistance.
 
 %%%%%%%%%%%%%%%%%%%
 %% PATH SIMPLING %%
