@@ -83,10 +83,9 @@
 
 \begin{abstract}
 %
-Sphinx is a packet format widely used in decentralized networks such as Nym, Katzenpost, and the Lightning network. 
-It provides strong security and privacy properties against network adversaries and compromised nodes who aim to identify communicating parties by correlating the input with the output traffic.
-However, Sphinx is vulnerable to malicious clients who exploit the centralized packet construction to deviate from the prescribed routing protocol.
-In this paper, we propose DSphinx, a decentralized variant of the Sphinx packet format that distributes path selection among multiple semi-trusted third parties in order to respect the routing algorithm and hence mitigate client-side attacks. We provide a formal analysis of the security properties of our DSphinx packet format in the presence of network adversaries, corrupted mixnodes and semi-trusted third parties. Additionally, we provide a benchmark to evaluate the latency and the coputational overhead of our scheme.  Our empirical results show that while there's a cost, we arue that this cost is negligeable given the overall costs of decentralized networks. \todo{check title and abstract}
+Sphinx is a packet format widely used in decentralized networks such as Nym, Katzenpost, and the Lightning Network. It provides strong security and privacy guarantees against passive and active adversaries whose goal is to de-anonymize traffic by correlating input and output packets based on size and format. However, Sphinx remains vulnerable to malicious clients that deviate from the prescribed routing protocols to launch flooding, jamming, and $(N-1)$ attacks in order to de-anonymize communications in mixnets and transactions in Lightning Network.
+
+In this paper, we propose DSphinx, a decentralized variant of the Sphinx packet format that distributes path selection among multiple semi-trusted third parties in order to respect the routing algorithm and hence mitigate client-side attacks. We provide a formal analysis of the security properties of our DSphinx packet format in the presence of network adversaries, corrupted routing nodes and semi-trusted third parties. Additionally, we provide a benchmark evaluating the latency and computational overhead of our scheme. Our empirical results show that the cost is negligible relative to the inherent overhead of decentralized networks.
 
 \keywords{Sphinx \and Mixnet \and Decentralized networks.}
 \end{abstract}
@@ -94,7 +93,7 @@ In this paper, we propose DSphinx, a decentralized variant of the Sphinx packet 
 % TODO change artifact
 \newcommand{\artifact}[0]{https://anonymous.4open.science/r/A_Decentralized_Sphinx_Construction_for_Decentralized_Networks}
 \newcommand{\github}{\footnote{\url{https://github.com/AurelienCha/Decentralized-Sphinx/tree/SCN}} }
-
+\todo{anonymous review, please change URL}
 \input{Texts/1.Introduction}
 \input{Texts/2.Related_Work}
 \input{Texts/3.System_Model}
