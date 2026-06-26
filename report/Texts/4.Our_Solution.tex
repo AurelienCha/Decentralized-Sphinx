@@ -57,7 +57,7 @@ $f_i(0) = k_i$ and $g_i(0) = N_i$, where $k_i$ denotes the node's secret key, $N
 Each STTP is identified by a value $t$, computed as the hash of its address. 
 For each STTP $t$, network node $i$ evaluates $f_i(t)$ and $g_i(t)$ and securely transmits the corresponding shares together with $r_i$ to the STTP $t$ as in \eqref{eq:sttp_share}.
 We assume these shares are transmitted anonymously, preventing STTPs from linking them to specific nodes. 
-Each STTP stores the received shares indexed by $r_i$, which later serves to pseudorandomly select network nodes during path sampling.
+Each STTP stores the received shares indexed by $r_i$, which later serves to pseudorandomly select network nodes during route sampling.
 \begin{equation}
     (r_i,\quad k_{it}=f_i(t),\quad N_{it}=g_i(t))
     \label{eq:sttp_share}
@@ -67,36 +67,39 @@ Adding a new node only requires executing the setup procedure for that node.
 Adding a new STTP requires each node to compute and distribute an additional polynomial evaluation. 
 However, changing the threshold $d$ requires reinitializing the entire setup.
 
-
 \subsection{Path Sampling}\label{sec:path_sampling}
 
-To sample a routing path, the client sends a nonce $w$, used as a randomness seed, to a set of at least $d$ STTPs. 
-Each STTP maps the nonce to an elliptic-curve point ($\A{} = HashToCurve(w)$) using a proper hash-to-curve function (i.e non-reversible). 
-The resulting point acts as a cryptographically randomness source, where recovering its discrete logarithm is assumed infeasible, preventing manipulation of the sampling process.
+To sample a routing path, the client sends a nonce $w$ to at least $d$ STTPs. 
+Each STTP maps this nonce to an curve point $\A{}$ using a hash-to-curve function.% ($\A{} = HashToCurve(w)$).
 
-For each hop $i$, the STTP computes an index $r'_i = hash(\A{}, \text{timestamp}, i)$,
-which binds the selection to the client nonce, time, and hop position, preventing replay.
-The STTP then selects the stored share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$, and computes a partial Diffie-Hellman shared secret as $S_{it} = k_{it} \A{}$.
-Finally, it returns $(t, N_{it}, S_{it})$ to the client.
-\todo{improving clarity of what is returned: list of $N_{it}$ for all $i$ in path}
+For each hop $i$, the STTP computes $r'_i = hash(\A{}, \text{timestamp}, i)$, and selects the network node share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$.
+The STTP then computes the partial Diffie-Hellman shared secret $S_{it} = k_{it}\A{}$, 
+and returns its identifier together with the selected shares and partial shared secrets as $(t,\; \{N_{it}\}_{i=1}^{m},\; \{S_{it}\}_{i=1}^{m})$ to the client.
+
+\smallskip
+\noindent\textbf{Design rationale.}
+Since all STTPs receive the same nonce $w$, honest STTPs deterministically select the same sequence of network node shares and therefore produce compatible shares for reconstruction.
+The client controls only the nonce $w$, while route selection is derived from the tuple $(\A{}, \text{timestamp}, i)$.
+The timestamp ensures that route selection evolves over time, whereas the hop index $i$ yields independent selections across hops.
+Furthermore, the use of a non-invertible hash-to-curve mapping prevents clients from embedding exploitable discrete-log structure into $\A{}$, which could otherwise undermine the decentralized route sampling mechanism.
 
 \subsection{Aggregation}
 
-Upon receiving responses from at least $d$ STTPs, the client reconstructs node addresses and shared secrets via Lagrange interpolation:
+Upon receiving responses from at least $d$ STTPs, the client reconstructs node addresses and shared secrets via Lagrange interpolation as in \eqref{eq:lagrange_reconstruction},
+where $\lambda(t)$ denotes the Lagrange coefficient for STTP identifier $t$.
+Since all STTPs process the same nonce $w$, the reconstructed values correspond to a consistent path.
 \begin{equation}
     N_i = \sum_t \lambda(t) N_{it}, \qquad
     S_i = \sum_t \lambda(t) S_{it},
     \label{eq:lagrange_reconstruction}
 \end{equation}
-where $\lambda(t)$ denotes the Lagrange coefficient associated with STTP identifier $t$.
-Since all STTPs process the same nonce $w$, the reconstructed values correspond to a consistent path.
 
-To prevent linkability, the client samples a random scalar $r$ to rerandomizes the shared secrets, and updates accordingly the cryptographic element $\A{}$.
-The final per-hop shared secrets are derived iteratively in a cascade, where each hop incorporates previous shared secrets:
-\begin{equation}
+To prevent linkability, the client samples a random scalar $r$ to rerandomize the shared secrets and updates the cryptographic element $\A{}$.
+Those shared secrets are derived iteratively in cascade, where each hop incorporates previous secrets:
+\begin{equation*}
     s_i = \InverseMapNoParenthesis \!\left(r S_i \prod_{j=1}^{i-1} s_j \right).
     \label{eq:cascade_secret}
-\end{equation}
+\end{equation*}
 
 
 \subsection{Header Construction}
@@ -125,14 +128,13 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
 \begin{enumerate}
     \item \textbf{Chunk encryption:}
     Each chunk $j$ is encrypted according Eq.~\eqref{eq:layer_i}.
-    The last two chunks evaluate to the identity element as a consequence of the preprocessing phase and may therefore be discarded while preserving subsequent processing.
+    The last two chunks evaluate to the identity element due to the preprocessing phase and may therefore be discarded while preserving subsequent processing.
     \begin{equation}
         H_{ij} = H_{(i+1,\,j)} + \sG{i}{j}
         \label{eq:layer_i}
     \end{equation}
 
-    \item \textbf{Integrity computation:} 
-    The remaining chunks are used to compute an HMAC as integrity tag:
+    \item \textbf{Integrity computation:} Remaining chunks are used for the integrity tag: 
     \begin{equation}
         \C{i} =  \text{HMAC}(\B{i}{}, s_i)
         \label{eq:integrity}
@@ -143,8 +145,8 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
 \end{enumerate}
 
 %\newpage
-% \vspace*{-10mm}
-\begin{figure}[h]
+\vspace*{-11mm}
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.47\linewidth}
 \begin{algorithm}[H]
@@ -162,8 +164,8 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
 \end{algorithm}
 \end{minipage}
 \end{figure}
-
-\begin{figure}[h]
+\vspace*{-10mm}
+\begin{figure}[H]
     \centering
 
     % -------- Left figure (b) --------
@@ -212,37 +214,15 @@ Upon receiving a packet, node $i$ extracts the cryptographic element $\A{i}$, th
 As in the original Sphinx design, the node checks whether $\A{i}$ has been previously observed since its last key rotation and discards duplicates to prevent replay attacks.
 
 The header is processed as illustrated in Fig.~\ref{fig:chunk-decryption}.
-The node first derives the shared secret $\s{i}$ by multiplying the cryptographic element $\A{i}$ with its private key $\sk{i}$, and then applied the inverse Elligator mapping as in \eqref{eq:derive_secret}.
-\begin{equation}
-\begin{aligned}
-    \s{i} &= \InverseMap{\sk{i} \, \A{i}}
-\end{aligned}
-\label{eq:derive_secret}
-\end{equation}
-
-% Integrity verification
-\noindent
-The shared secret $\s{i}$ is then used to verify the integrity tag in \eqref{eq:integrity_check}. 
-\begin{equation}
-\C{i} \overset{\text{?}}{=} \text{HMAC}(\B{i}{}, \s{i})
-\label{eq:integrity_check}
-\end{equation}
-
-% Decryption
-If verification succeeds, the node appends two identity chunks to the header and decrypts it as \eqref{eq:decrypt}.
-\begin{equation}
-\BB{i}{j} = \B{i}{j} - \sG{i}{j}
-\label{eq:decrypt}
-\end{equation}
+The node first derives the shared secret $\s{i}$ by multiplying the cryptographic element $\A{i}$ with its private key $\sk{i}$ and applying the inverse Elligator mapping as in \eqref{eq:derive_secret}.
+The shared secret $\s{i}$ is then used to verify the integrity tag in \eqref{eq:integrity_check}.
+If verification succeeds, the node appends two identity chunks and decrypts the header as in \eqref{eq:decrypt}. 
 The first decrypted chunk $\BB{i}{1}$ reveals the next hop $\N{i+1}$. 
-The second chunk $\BB{i}{2}$ contains the integrity tag $\C{i+1}$ for the next hop, 
-while the remaining chunks form the next encrypted routing information $\B{i+1}{}$.
-
-% Update Alpha
-Finally, the node updates the cryptographic element according to \eqref{eq:update_alpha}
-and forwards the packet with header $(\A{i+1},\, \B{i+1}{},\, \C{i+1})$ to the next hop.
-\begin{equation}
-\A{i+1} = s_i \, \A{i}
-\label{eq:update_alpha}
-\end{equation}
-% The shared secret $s_i$ acts as a per-hop pseudorandom update that derives the next blinding factor, ensuring that the cryptographic elements $\A{i}$ remain unlinkable across layers.
+The second chunk $\BB{i}{2}$ contains the integrity tag $\C{i+1}$ for the next hop, while the remaining chunks form the next encrypted routing information $\B{i+1}{}$.
+Finally, the node updates the cryptographic element according to \eqref{eq:update_alpha} and forwards the packet to the next hop.
+\begin{align}
+\s{i} &= \InverseMap{\sk{i} \, \A{i}} \label{eq:derive_secret} \\
+\C{i} &\overset{\text{?}}{=} \text{HMAC}(\B{i}{}, \s{i}) \label{eq:integrity_check} \\
+\BB{i}{j} &= \B{i}{j} - \sG{i}{j} \label{eq:decrypt} \\
+\A{i+1} &= s_i \, \A{i} \label{eq:update_alpha} 
+\end{align}
