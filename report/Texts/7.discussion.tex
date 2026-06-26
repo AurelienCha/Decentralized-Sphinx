@@ -3,14 +3,6 @@
 This section discusses the design choices of DSphinx, their implications on security and practicality, and the remaining limitations of the proposed approach.
 
 \smallskip
-\noindent\textbf{Elligator vs. hash-to-curve.}\todo{Could seems a bit repetitive with section 4. Packet Format}
-A key design aspect is the use of both, Elligator and hash-to-curve mappings. 
-Elligator provides a reversible integers to curve points mapping, which is suitable for IP address encodings. 
-However, its reversibility makes it unsuitable in contexts where adversaries must not control or recover discrete-log structure.
-Accordingly, DSphinx uses Elligator for encoding purposes, while route sampling and generator derivation rely on non-invertible hash-to-curve mappings. 
-This separation prevents adversaries from embedding algebraic structure into the route sampling queries.
-
-\smallskip
 \noindent\textbf{Impact on $n-1$ attacks.}
 DSphinx reduces a client's ability to bias route selection but does not fully eliminate classical $n-1$ attack strategies. 
 In traditional source-routing systems, a client can directly construct arbitrary routes and repeatedly enforce inclusion of a target node. 
