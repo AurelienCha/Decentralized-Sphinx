@@ -1,8 +1,7 @@
 \section{Security Analysis}\label{sec:security}
 
 This section analyzes the security guarantees of DSphinx and the assumptions under which they hold. 
-We first study the correctness and unbiasability of the route sampling procedure.
-We then examine packet unlinkability, which constitutes the primary anonymity objective inherited from Sphinx, followed by integrity guarantees and collusion scenarios.
+We first study packet unlinkability, which constitutes the primary anonymity objective inherited from Sphinx, followed by integrity guarantees and collusion scenarios.
 We assume that the ECDLP is hard in the underlying group, that hash functions are modeled as random oracles, and that HMAC is existentially unforgeable under chosen-message attacks. 
 We further assume that network nodes anonymously submit their secret shares to the STTPs during the setup phase.
 
@@ -10,7 +9,7 @@ We further assume that network nodes anonymously submit their secret shares to t
 %% PATH SIMPLING %%
 %%%%%%%%%%%%%%%%%%%
 
-\subsection{Route Sampling}
+\subsection{Route Sampling}\todo{Put into rational design paragraph before protocol setup}
 
 DSphinx is designed to prevent both clients and STTPs from biasing route selection. 
 As described in Section~\ref{sec:path_sampling}, route selection is derived from a hash of the tuple $(\A{}, \text{timestamp}, i)$, where only the nonce $w$ used to derive $\A{}$ is chosen by the client.
@@ -40,8 +39,8 @@ The scheme provides unlinkability if any probabilistic polynomial-time adversary
 \noindent\textbf{Game Definition:}
 \begin{enumerate}[topsep=1pt, itemsep=1pt]
   \item \textbf{Setup.}
-  The challenger generates the node's secret keys and public system parameters $(G_1, \dots, G_n)$, ensuring all generators $G_j$ are independent,
-  meaning no participant knows any scalar relations among them.
+  The challenger generates the node's secret keys and the public system parameters, including a set of chunk generators $(G_1,\dots,G_n)$ derived via hash-to-curve. 
+  Under the random oracle model, these generators are assumed to be computationally independent.
 
   \item \textbf{Oracle.}  
   The adversary is granted access to an oracle, which on input of a nonce $w$ and routing path $\pi = (N_1, \ldots, N_m, \Delta)$ outputs a valid header $(\alpha, \beta, \gamma)$ and its updated form $(\alpha', \beta', \gamma')$ after being processed by the node.
@@ -68,15 +67,15 @@ The only relation between $\alpha$ and its processed form $\alpha'$ is the node'
 Recovering $s$ from $\alpha' = s\alpha$ requires solving an instance of the Elliptic Curve Discrete Logarithm Problem.
 
 \smallskip
-\noindent{\textbf{Case 2: Linking via $\boldsymbol\beta$.}}\label{sec:indep_generators}  
-Each header chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy $\beta_j - \beta'_j = s G_j$. %for all $j \in \{1,\dots,n\}$.
-To establish a link, $\mathcal{A}$ must determine whether the scalar relationship between two chunks is preserved.
-When generators are independent, it reduces to solving an instance of the ECDLP, either to recover $s$ or to determine $z$ such that $G_j = z G_{j'}$ between two chunk generators.
+\noindent{\textbf{Case 2: Linking via $\boldsymbol\beta$.}}\label{sec:indep_generators}
+Each header chunk $\beta_j$ and its corresponding processed value $\beta'_j$ satisfy $\beta_j-\beta'_j=sG_j$.
+To establish a link, $\mathcal{A}$ must determine whether the same scalar $s$ was used across two chunks.
+Assuming independent chunk generators, this reduces to solving the ECDLP by either recovering $s$ or computing the discrete logarithmic relation between two generators.
 
 \smallskip
-\noindent\textbf{Summary.}  
-Under the ECDLP hardness assumption and assuming independent generators, no probabilistic polynomial-time adversary can achieve a non-negligible advantage in the unlinkability game.
-Therefore, we can conclude that the proposed scheme provides unlinkability.
+\noindent\textbf{Summary.}
+Under the ECDLP hardness assumption and the independence assumption on the chunk generators, no probabilistic polynomial-time adversary can achieve a non-negligible advantage in the unlinkability game.
+Therefore, the proposed scheme provides unlinkability.
 
 %%%%%%%%%%%%%%%
 %% INTEGRITY %%
@@ -107,7 +106,8 @@ Therefore, wrap resistance reduces to integrity-forgery resistance.
 
 \subsection{Collusion Analysis}\label{sec:collusion}
 
-We now analyze the impact of relevant collusion scenarios between entities involved in the protocol.
+We now analyze the impact of relevant collusion scenarios between entities involved in the protocol, 
+omitting Client-STTP collusion as it does not add additional capabilities beyond the cases considered below.
 
 \smallskip
 \noindent\textbf{Threshold STTP Compromise.}

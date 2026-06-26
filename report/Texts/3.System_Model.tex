@@ -1,29 +1,20 @@
+
 \section{Threat Model and Security Properties}\label{sec:sys_model}
 
-
-In this section, we present our threat model and define the privacy and security properties that our system is designed to achieve.
-As illustrated in Fig.~\ref{fig:overall_schema}, the system involves three type of entities: clients, a set of semi-trusted third parties (STTPs), and network nodes.
-Clients delegate route sampling to the STTPs, which jointly derive the routing path and compute secret shares associated with the selected nodes.
-The client then reconstructs the route information and the corresponding per-hop shared secrets from a threshold number of STTP responses.
-STTPs are assumed to be \emph{honest-but-curious}, meaning that they correctly execute the protocol but are not trusted for privacy guarantees, with security ensured as long as fewer than a threshold $d$ of STTPs collude.
-
+In this section, we present our threat model and define the privacy and security properties targeted by our system.
+As illustrated in Fig.~\ref{fig:overall_schema}, the system involves three types of entities: clients, a set of semi-trusted third parties (STTPs), and network nodes. 
+Clients delegate route sampling to the STTPs, which jointly derive the routing path and secret shares associated with the selected nodes. 
+The client subsequently reconstructs the route and the corresponding per-hop shared secrets from a threshold number of STTP responses.
+Clients are assumed to be malicious, meaning that they may deviate from the protocol to bias path selection or perform manipulation-based routing attacks. 
+STTPs and network nodes are assumed to be \emph{honest-but-curious}: they correctly execute the protocol but are not trusted for privacy guarantees. 
+Security is ensured as long as fewer than a threshold $d$ of STTPs collude.
 
 \subsection{Threat Model}
 
-We consider passive and active network adversaries, maclicious client, corrupted network nodes and STTPs.
+We consider maclicious client, corrupted network nodes and STTPs, as well as global passive and active network adversaries. 
 We assume the hardness of the Elliptic Curve Discrete Logarithm Problem (ECDLP) in the underlying group.
 Hash functions are modeled as random oracles, and HMAC is assumed to be existentially unforgeable under chosen-message attacks.
 We further assume that network nodes anonymously submit their secret shares to the STTPs during the setup phase, and less than a threshold number $d$ of STTPs may be corrupted or colluding.
-
-\smallskip
-\noindent{\textbf{Passive Network Adversary.}}
-A passive adversary can observe traffic at any point in the network but cannot modify, inject, or drop packets.
-Its goal is to break unlinkability by correlating incoming and outgoing packets.
-
-\smallskip
-\noindent{\textbf{Active Network Adversary.}}
-An active adversary can arbitrarily modify, drop, replay, or inject packets.
-Its objective is to forge valid integrity tags to tamper with headers while remaining undetected. 
 
 \smallskip
 \noindent{\textbf{Malicious Client.}}
@@ -40,12 +31,22 @@ Corrupted STTPs may attempt to infer additional information from their computati
 We allow collusion among STTPs, provided that fewer than $d$ STTPs are corrupted.
 Under this assumption, colluding STTPs cannot reconstruct complete routes or derive shared secrets.
 
+\smallskip
+\noindent{\textbf{Passive Network Adversary.}}
+A passive adversary can observe traffic at any point in the network but cannot modify, inject, or drop packets.
+Its goal is to break unlinkability by correlating incoming and outgoing packets.
+
+\smallskip
+\noindent{\textbf{Active Network Adversary.}}
+An active adversary can arbitrarily modify, drop, replay, or inject packets.
+Its objective is to forge valid integrity tags to tamper with headers while remaining undetected. 
+
+
 
 \subsection{Security and Privacy Objectives}\label{sec:sp-objectives}
 
 
 Our DSphinx construction aims to preserve the security guarantees of Sphinx~\cite{sphinx}, including unlinkability and integrity protection, while extending them to a decentralized route sampling setting.
-\todo{order ?}
 
 \smallskip
 \noindent\textbf{Unlinkability.} \todo{maybe slightly reduce the beginning ? Or put it in intro/related work ?}
@@ -59,10 +60,10 @@ This is achieved if all per-hop header components are computationally unlinkable
 As in Sphinx, DSphinx employs per-hop integrity tags to ensure that any modification of packet headers can be detected by honest nodes.
 An active adversary must not be able to alter a packet in transit while producing a valid integrity tag.
 
-\smallskip
-\noindent{\textbf{Routing Sampling Security.}}
-The route sampling procedure must remain secure against malicious clients and corrupted STTPs.
-In particular, no adversary or colluding set of adversaries should be able to bias, predict, or influence the route selection process beyond the intended randomness of the protocol.
+% \smallskip
+% \noindent{\textbf{Routing Sampling Security.}}
+% The route sampling procedure must remain secure against malicious clients and corrupted STTPs.
+% In particular, no adversary or colluding set of adversaries should be able to bias, predict, or influence the route selection process beyond the intended randomness of the protocol.
 
 \smallskip
 \noindent{\textbf{Collusion Resistance.}} 
