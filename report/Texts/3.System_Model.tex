@@ -1,12 +1,13 @@
+
 \section{Threat Model and Security Properties}\label{sec:sys_model}
 
-
-In this section, we present our threat model and define the privacy and security properties that our system is designed to achieve.
-As illustrated in Fig.~\ref{fig:overall_schema}, the system involves three type of entities: clients, a set of semi-trusted third parties (STTPs), and network nodes.
-Clients delegate route sampling to the STTPs, which jointly derive the routing path and compute secret shares associated with the selected nodes.
-The client then reconstructs the route information and the corresponding per-hop shared secrets from a threshold number of STTP responses.
-STTPs are assumed to be \emph{honest-but-curious}, meaning that they correctly execute the protocol but are not trusted for privacy guarantees, with security ensured as long as fewer than a threshold $d$ of STTPs collude.
-
+In this section, we present our threat model and define the privacy and security properties targeted by our system.
+As illustrated in Fig.~\ref{fig:overall_schema}, the system involves three types of entities: clients, a set of semi-trusted third parties (STTPs), and network nodes. 
+Clients delegate route sampling to the STTPs, which jointly derive the routing path and secret shares associated with the selected nodes. 
+The client subsequently reconstructs the route and the corresponding per-hop shared secrets from a threshold number of STTP responses.
+Clients are assumed to be malicious, meaning that they may deviate from the protocol to bias path selection or perform manipulation-based routing attacks. 
+STTPs and network nodes are assumed to be \emph{honest-but-curious}: they correctly execute the protocol but are not trusted for privacy guarantees. 
+Security is ensured as long as fewer than a threshold $d$ of STTPs collude.
 
 \subsection{Threat Model}
 
