@@ -71,9 +71,12 @@ However, changing the threshold $d$ requires reinitializing the entire setup.
 To sample a routing path, the client sends a nonce $w$ to at least $d$ STTPs. 
 Each STTP maps this nonce to an curve point $\A{}$ using a hash-to-curve function.% ($\A{} = HashToCurve(w)$).
 
-For each hop $i$, the STTP computes $r'_i = hash(\A{}, \text{timestamp}, i)$, and selects the network node share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$.
+For each hop $i$, the STTP computes $r'_i = \text{hash}\!\left(\A{}, \text{timestamp}, i\right)$, and selects the network node share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$.
 The STTP then computes the partial Diffie-Hellman shared secret $S_{it} = k_{it}\A{}$, 
-and returns its identifier together with the selected shares and partial shared secrets as $(t,\; \{N_{it}\}_{i=1}^{m},\; \{S_{it}\}_{i=1}^{m})$ to the client.
+and returns its identifier together with the selected shares and partial shared secrets to the client:
+\begin{equation*}
+    \left(t,\; \{N_{it}\}_{_{i=1}}^{^{m}},\; \{S_{it}\}_{_{i=1}}^{^{m}}\right)
+\end{equation*}
 
 \smallskip
 \noindent\textbf{Design rationale.}
@@ -96,7 +99,7 @@ Since all STTPs process the same nonce $w$, the reconstructed values correspond 
 To prevent linkability, the client samples a random scalar $r$ to rerandomize the shared secrets and updates the cryptographic element $\A{}$.
 Those shared secrets are derived iteratively in cascade, where each hop incorporates previous secrets:
 \begin{equation*}
-    s_i = \InverseMapNoParenthesis \!\left(r S_i \prod_{j=1}^{i-1} s_j \right).
+    s_i = \text{HashToScalar}\!\left(r S_i \prod_{j=1}^{i-1} s_j \right).
     \label{eq:cascade_secret}
 \end{equation*}
 
@@ -213,15 +216,15 @@ Upon receiving a packet, node $i$ extracts the cryptographic element $\A{i}$, th
 As in the original Sphinx design, the node checks whether $\A{i}$ has been previously observed since its last key rotation and discards duplicates to prevent replay attacks.
 
 The header is processed as illustrated in Fig.~\ref{fig:chunk-decryption}.
-The node first derives the shared secret $\s{i}$ by multiplying the cryptographic element $\A{i}$ with its private key $\sk{i}$ and applying the inverse Elligator mapping as in \eqref{eq:derive_secret}.
+The node first derives the shared secret $\s{i}$ by multiplying the cryptographic element $\A{i}$ with its private key $\sk{i}$, and then hashing the resulting point into a scalar as in \eqref{eq:derive_secret}.
 The shared secret $\s{i}$ is then used to verify the integrity tag in \eqref{eq:integrity_check}.
 If verification succeeds, the node appends two identity chunks and decrypts the header as in \eqref{eq:decrypt}. 
 The first decrypted chunk $\BB{i}{1}$ reveals the next hop $\N{i+1}$. 
 The second chunk $\BB{i}{2}$ contains the integrity tag $\C{i+1}$ for the next hop, while the remaining chunks form the next encrypted routing information $\B{i+1}{}$.
 Finally, the node updates the cryptographic element according to \eqref{eq:update_alpha} and forwards the packet to the next hop.
 \begin{align}
-\s{i} &= \InverseMap{\sk{i} \, \A{i}} \label{eq:derive_secret} \\
-\C{i} &\overset{\text{?}}{=} \text{HMAC}(\B{i}{}, \s{i}) \label{eq:integrity_check} \\
+\s{i} &= \text{HashToScalar}\!\left(\sk{i} \, \A{i}\right) \label{eq:derive_secret} \\
+\C{i} &\overset{\text{?}}{=} \text{HMAC}\!\left(\B{i}{}, \s{i}\right) \label{eq:integrity_check} \\
 \BB{i}{j} &= \B{i}{j} - \sG{i}{j} \label{eq:decrypt} \\
 \A{i+1} &= s_i \, \A{i} \label{eq:update_alpha} 
 \end{align}
