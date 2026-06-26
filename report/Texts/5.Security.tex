@@ -1,8 +1,7 @@
 \section{Security Analysis}\label{sec:security}
 
 This section analyzes the security guarantees of DSphinx and the assumptions under which they hold. 
-We first study the correctness and unbiasability of the route sampling procedure.
-We then examine packet unlinkability, which constitutes the primary anonymity objective inherited from Sphinx, followed by integrity guarantees and collusion scenarios.
+We first study packet unlinkability, which constitutes the primary anonymity objective inherited from Sphinx, followed by integrity guarantees and collusion scenarios.
 We assume that the ECDLP is hard in the underlying group, that hash functions are modeled as random oracles, and that HMAC is existentially unforgeable under chosen-message attacks. 
 We further assume that network nodes anonymously submit their secret shares to the STTPs during the setup phase.
 
@@ -10,7 +9,7 @@ We further assume that network nodes anonymously submit their secret shares to t
 %% PATH SIMPLING %%
 %%%%%%%%%%%%%%%%%%%
 
-\subsection{Route Sampling}\todo{Put into rational design paragraph before protocol setup (and update intro security analysis)}
+\subsection{Route Sampling}\todo{Put into rational design paragraph before protocol setup}
 
 DSphinx is designed to prevent both clients and STTPs from biasing route selection. 
 As described in Section~\ref{sec:path_sampling}, route selection is derived from a hash of the tuple $(\A{}, \text{timestamp}, i)$, where only the nonce $w$ used to derive $\A{}$ is chosen by the client.
