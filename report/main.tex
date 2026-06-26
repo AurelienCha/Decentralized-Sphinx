@@ -59,7 +59,7 @@
 \begin{document}
 
 
-\title{DSphinx: A Decentralized Sphinx Construction for Decentralized Networks}
+\title{DSphinx: A Decentralized Path Selection for Decentralized Networks}
 
 \author{}
 % \author{Aurélien Chassagne\inst{1}\orcidID{0009-0008-7207-868X} \and
@@ -81,13 +81,12 @@
 
 \maketitle
 
-\begin{abstract}\todo{Update title}
+\begin{abstract}
 %
 Sphinx is a packet format widely used in decentralized networks such as Nym, Katzenpost, and the Lightning network. 
 It provides strong security and privacy properties against network adversaries and compromised nodes who aim to identify communicating parties by correlating the input with the output traffic.
 However, Sphinx is vulnerable to malicious clients who exploit the centralized packet construction to deviate from the prescribed routing protocol.
-In this paper, we propose DSphinx, a decentralized variant of the Sphinx packet format that distributes path selection among multiple semi-trusted third parties in order to respect the routing algorithm and hence mitigate client-side attacks. We provide a formal analysis of the security properties of our DSphinx packet format in the presence of network adversaries, corrupted mixnodes and semi-trusted third parties.
-%Additionally, we implement our scheme in Python and evaluate the unlinkability property using the NIST SP 800-22 statistical randomness test suite.  Our empirical results show that our decentralized scheme achieves unlinkability passing more statistical tests than the original Sphinx format.
+In this paper, we propose DSphinx, a decentralized variant of the Sphinx packet format that distributes path selection among multiple semi-trusted third parties in order to respect the routing algorithm and hence mitigate client-side attacks. We provide a formal analysis of the security properties of our DSphinx packet format in the presence of network adversaries, corrupted mixnodes and semi-trusted third parties. Additionally, we provide a benchmark to evaluate the latency and the coputational overhead of our scheme.  Our empirical results show that while there's a cost, we arue that this cost is negligeable given the overall costs of decentralized networks. \todo{check title and abstract}
 
 \keywords{Sphinx \and Mixnet \and Decentralized networks.}
 \end{abstract}

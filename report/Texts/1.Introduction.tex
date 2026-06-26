@@ -9,9 +9,9 @@ systems including Nym~\cite{nym} and
 Katzenpost~\cite{infeld2025echomix}.
 
 In these networks, encrypted layered messages traverse multiple nodes, with each node decrypting one layer and forwarding the packet to the next hop along the path. 
-Each intermediary node does not learn its position within the route; it can infer only the immediately preceding and succeeding nodes, but not the entire path. 
-Additionally, an adversary cannot correlate input and output messages based on packet structure or size. 
-Sphinx achieves this through a compact fixed-size packet format that provides cryptographically strong unlinkability and per-hop integrity protection~\cite{scherer2023provable}.
+Each intermediary node does not learn its position within the route; it can infer only the immediately preceding and succeeding nodes, but not the entire path. Additionally, an adversary cannot correlate input and output packets based on packet structure or size. In Lightening Network (or mixnets) this is important because it prevents a malicious node in the middle of the path from learning who is sending a transaction to whome (or who is communicating with whome).
+
+These networks achieves this through the compact fixed-size packet format Sphinx that provides cryptographically strong unlinkability and per-hop integrity protection~\cite{sphinx}.
 
 However, despite its strengths, the Sphinx packet format is constructed
 \emph{centrally} by the clients before entering the network.  This
