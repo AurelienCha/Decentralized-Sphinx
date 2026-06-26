@@ -1,15 +1,3 @@
-% \subsection{Chunk Generators}
-
-% % Independent Generator for each chunk
-% To preserve the unlinkability properties discussed in Section~\ref{sec:indep_generators}, each chunk is associated with a distinct generator. 
-% We define a set of generators $\{G_j\}_{j=1}^{n}$, where each generator corresponds to a specific chunk position.
-% These generators must be \emph{independent}, meaning that the scalar relationship between any pair of generators is unknown, as is their discrete logarithm with respect to the curve base point $G$. 
-% More precisely, no party should know, nor be able to efficiently recover, a scalar $z_j \in \mathbb{Z}_p$ such that $G_j = z_j G$.
-% To instantiate such generators, DSphinx derives them using a hash-to-curve function. 
-% The generators are deterministically derived from a common seed obtained by hashing the current timestamp together with an offset $j$, yielding a distinct generator for each chunk. 
-% The timestamp is truncated to a predefined refresh interval, ensuring that all entities derive the same generator set while periodically refreshing the public parameters. 
-% Under the random oracle assumption, the resulting generators are computationally indistinguishable from independently sampled group elements.
-
 % \subsection{Elligator Encoding}
 
 % To represent routing information in the DSphinx header, IP addresses must be encoded as elliptic curve points. % ($\mathbb{Z}_p \rightarrow \mathbb{G}$).
@@ -45,11 +33,13 @@ The key distinction is that each header element is independently encoded as an e
 Consequently, the DSphinx header is structured as a sequence of fixed-size chunks, as illustrated in Fig.~\ref{fig:chunkwise-overview}, where each chunk corresponds to a single header element represented by an EC point.
 Each network node along the packet route contributes for two chunks: one encoding its address and another encoding a per-hop integrity tag. 
 Therefore, a route of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per network node and one additional chunk corresponding to the final destination.
+Some routing information such as IP addresses must be encoded using a reversible integer-to-curve mapping, such as Elligator~\cite{bernstein2013elligator}.
+
 
 \subsection{Setup} % The goal of the setup phase is to distribute shares of each network node's secret key and routing information among the STTPs.
 
 Each network node $i$ samples a random identifier $r_i$ and constructs two random polynomials $f_i$ and $g_i$ of degree $d-1$, such that:
-$f_i(0) = k_i$ and $g_i(0) = N_i$, where $k_i$ denotes the node's secret key, $N_i \in \mathbb{G}$ its encoded address, and $d$ the reconstruction threshold.
+$f_i(0) = k_i$ and $g_i(0) = N_i$, where $k_i$ denotes the node's secret key, $N_i$ its encoded address in $\mathbb{G}$, and $d$ the reconstruction threshold.
 
 Each STTP is identified by a value $t$, computed as the hash of its address. 
 For each STTP $t$, network node $i$ evaluates $f_i(t)$ and $g_i(t)$ and securely transmits the corresponding shares together with $r_i$ to the STTP $t$ as in \eqref{eq:sttp_share}.
@@ -77,7 +67,7 @@ and returns its identifier together with the selected shares and partial shared 
 \end{equation*}
 
 \smallskip
-\noindent\textbf{Design rationale.}
+\noindent\textbf{Design rationale.}\todo{Put before Setup section}
 Since all STTPs receive the same nonce $w$, honest STTPs deterministically select the same sequence of network node shares and therefore produce compatible shares for reconstruction.
 The client controls only the nonce $w$, while route selection is derived from the tuple $(\A{}, \text{timestamp}, i)$.
 The timestamp ensures that route selection evolves over time, whereas the hop index $i$ yields independent selections across hops.
