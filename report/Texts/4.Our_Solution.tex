@@ -1,34 +1,26 @@
-\section{DSphinx Packet Format}
+% \subsection{Chunk Generators}
 
-% Header structure - Chunks
-DSphinx is inspired by the Sphinx packet format \cite{sphinx}, with the key distinction that each header element is independently encoded as an elliptic curve (EC) point. 
-Consequently, the DSphinx header is structured as a sequence of fixed-size chunks, as illustrated in Fig.~\ref{fig:chunkwise-overview}, where each chunk corresponds to a single header element represented by an EC point.
-Each network node along the packet route contributes for two chunks: one encoding its address and another encoding a per-hop integrity tag. 
-Therefore, a route of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per network node and one additional chunk corresponding to the final destination.
+% % Independent Generator for each chunk
+% To preserve the unlinkability properties discussed in Section~\ref{sec:indep_generators}, each chunk is associated with a distinct generator. 
+% We define a set of generators $\{G_j\}_{j=1}^{n}$, where each generator corresponds to a specific chunk position.
+% These generators must be \emph{independent}, meaning that the scalar relationship between any pair of generators is unknown, as is their discrete logarithm with respect to the curve base point $G$. 
+% More precisely, no party should know, nor be able to efficiently recover, a scalar $z_j \in \mathbb{Z}_p$ such that $G_j = z_j G$.
+% To instantiate such generators, DSphinx derives them using a hash-to-curve function. 
+% The generators are deterministically derived from a common seed obtained by hashing the current timestamp together with an offset $j$, yielding a distinct generator for each chunk. 
+% The timestamp is truncated to a predefined refresh interval, ensuring that all entities derive the same generator set while periodically refreshing the public parameters. 
+% Under the random oracle assumption, the resulting generators are computationally indistinguishable from independently sampled group elements.
 
-\subsection{Chunk Generators}
+% \subsection{Elligator Encoding}
 
-% Independent Generator for each chunk
-To preserve the unlinkability properties discussed in Section~\ref{sec:indep_generators}, each chunk is associated with a distinct generator. 
-We define a set of generators $\{G_j\}_{j=1}^{n}$, where each generator corresponds to a specific chunk position.
-These generators must be \emph{independent}, meaning that the scalar relationship between any pair of generators is unknown, as is their discrete logarithm with respect to the curve base point $G$. 
-More precisely, no party should know, nor be able to efficiently recover, a scalar $z_j \in \mathbb{Z}_p$ such that $G_j = z_j G$.
-To instantiate such generators, DSphinx derives them using a hash-to-curve function. 
-The generators are deterministically derived from a common seed obtained by hashing the current timestamp together with an offset $j$, yielding a distinct generator for each chunk. 
-The timestamp is truncated to a predefined refresh interval, ensuring that all entities derive the same generator set while periodically refreshing the public parameters. 
-Under the random oracle assumption, the resulting generators are computationally indistinguishable from independently sampled group elements.
-
-\subsection{Elligator Encoding}
-
-To represent routing information in the DSphinx header, IP addresses must be encoded as elliptic curve points. % ($\mathbb{Z}_p \rightarrow \mathbb{G}$).
-This mapping must be reversible so that encoded addresses can later be recovered. % ($\mathbb{G} \rightarrow \mathbb{Z}_p$).
-Classical encodings typically map an integer to the x-coordinate of a valid curve point.
-However, such approaches succeed only for approximately half of all inputs and may introduce structural bias.
-To overcome these limitations, we rely on Elligator~\cite{bernstein2013elligator}, which provides a reversible mapping from integers to curve points while producing outputs that are uniformly distributed and computationally indistinguishable from randomly sampled points. 
-Since Elligator may output points outside the prime-order subgroup, all encoded points are cofactor-cleared to ensure subgroup membership and prevent small-subgroup attacks.
-Elligator is used solely to encode IP addresses. 
-All other protocol components rely on standard cryptographic primitives, 
-namely hash-to-curve ($\mathbb{Z}_p \rightarrow \mathbb{G}$) and hash-to-scalar mappings ($\mathbb{G} \rightarrow \mathbb{Z}_p$).
+% To represent routing information in the DSphinx header, IP addresses must be encoded as elliptic curve points. % ($\mathbb{Z}_p \rightarrow \mathbb{G}$).
+% This mapping must be reversible so that encoded addresses can later be recovered. % ($\mathbb{G} \rightarrow \mathbb{Z}_p$).
+% Classical encodings typically map an integer to the x-coordinate of a valid curve point.
+% However, such approaches succeed only for approximately half of all inputs and may introduce structural bias.
+% To overcome these limitations, we rely on Elligator~\cite{bernstein2013elligator}, which provides a reversible mapping from integers to curve points while producing outputs that are uniformly distributed and computationally indistinguishable from randomly sampled points. 
+% Since Elligator may output points outside the prime-order subgroup, all encoded points are cofactor-cleared to ensure subgroup membership and prevent small-subgroup attacks.
+% Elligator is used solely to encode IP addresses. 
+% All other protocol components rely on standard cryptographic primitives, 
+% namely hash-to-curve ($\mathbb{Z}_p \rightarrow \mathbb{G}$) and hash-to-scalar mappings ($\mathbb{G} \rightarrow \mathbb{Z}_p$).
 
 
 \section{Protocol Description}\label{sec:scheme}
@@ -38,7 +30,6 @@ The proposed decentralized protocol distributes path sampling across a threshold
 Fig.~\ref{fig:overall_schema} illustrates the protocol, which is divided into three phases: 
 a one-time setup phase (Step 0), a decentralized path sampling phase (Steps 1-3), and a header construction phase (Step 4).
 
-
 \begin{figure}%[t]
     \centering
     \resizebox{0.9\linewidth}{!}{\input{schema/schema_overview.tex}}
@@ -47,6 +38,13 @@ a one-time setup phase (Step 0), a decentralized path sampling phase (Steps 1-3)
     \label{fig:overall_schema}
 \end{figure}
 
+\noindent\textbf{DSphinx header.} 
+% Header structure - Chunks
+The current protocol is based on an adaptation of the Sphinx packet format that we called DSphinx.
+The key distinction is that each header element is independently encoded as an elliptic curve (EC) point. 
+Consequently, the DSphinx header is structured as a sequence of fixed-size chunks, as illustrated in Fig.~\ref{fig:chunkwise-overview}, where each chunk corresponds to a single header element represented by an EC point.
+Each network node along the packet route contributes for two chunks: one encoding its address and another encoding a per-hop integrity tag. 
+Therefore, a route of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per network node and one additional chunk corresponding to the final destination.
 
 \subsection{Setup} % The goal of the setup phase is to distribute shares of each network node's secret key and routing information among the STTPs.
 
@@ -109,6 +107,7 @@ Given the reconstructed route $\{N_i\}_{i=1}^{m}$ and per-hop shared secrets $\{
 The header construction proceeds in two phases; 
 a preprocessing phase (Alg.~\ref{algo:preprocessing}, Fig.~\ref{fig:chunk-preprocessing}) that generates filler chunks, 
 followed by a layer-by-layer encryption phase (Alg.~\ref{algo:sttp}, Fig.~\ref{fig:chunk-encryption}) applied in reverse order, from the last hop to the first.
+To ensure unlinkability, encryption is performed using a set of independently derived generators $\{G_j\}_{j=1}^{n}$, one per chunk in the header, such that no scalar relationship between any pair of generators is known.
 
 % Preprocessing
 \smallskip
