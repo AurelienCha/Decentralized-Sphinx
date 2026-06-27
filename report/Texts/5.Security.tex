@@ -5,28 +5,6 @@ We first study packet unlinkability, which constitutes the primary anonymity obj
 We assume that the ECDLP is hard in the underlying group, that hash functions are modeled as random oracles, and that HMAC is existentially unforgeable under chosen-message attacks. 
 We further assume that network nodes anonymously submit their secret shares to the STTPs during the setup phase.
 
-%%%%%%%%%%%%%%%%%%%
-%% PATH SIMPLING %%
-%%%%%%%%%%%%%%%%%%%
-
-\subsection{Route Sampling}\todo{Put into rational design paragraph before protocol setup}
-
-DSphinx is designed to prevent both clients and STTPs from biasing route selection. 
-As described in Section~\ref{sec:path_sampling}, route selection is derived from a hash of the tuple $(\A{}, \text{timestamp}, i)$, where only the nonce $w$ used to derive $\A{}$ is chosen by the client.
-
-From the client's perspective, influencing the selected route reduces to choosing a nonce $w$ that yields a desired routing outcome. 
-This is therefore equivalent to a preimage search over a cryptographic hash function, and does not provide a practical advantage beyond random trial.
-By applying a non-reversible hash-to-curve mapping to the nonce $w$, we ensure that $\A{}$ does not admit any exploitable algebraic structure that could be used to bias or bypass the route sampling process.
-
-STTPs, on the other hand, do not control the inputs of the route sampling function.
-Given the same nonce $w$, honest STTPs execute the same deterministic procedure and therefore produce consistent sampling results. 
-Any deviation from the protocol leads to inconsistent outputs that cannot be jointly reconstructed by the client, limiting the effect of faulty or malicious STTP. 
-To handle faulty or malicious STTPs, the client queries at least $d$ STTPs and performs reconstruction using any subset of $d$ consistent responses.
-
-Finally, STTPs observe only node pseudonyms during sampling, without additional information that would allow them to link these identifiers to physical nodes.  
-While repeated executions may reveal recurring pseudonym patterns, these remain statistically indistinguishable from random sampling without external collusion or prior mapping knowledge. 
-As a result, neither clients nor STTPs can significantly bias route selection beyond the intended distribution, assuming standard cryptographic assumptions and fewer than $d$ colluding STTPs.
-
 \subsection{Unlinkability}\label{sec:unlinkability}
 
 To argue about sender-receiver unlinkability, we assume that an adversary cannot link a sender to its recipient without retracing the entire communication path.  
