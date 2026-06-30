@@ -1,0 +1,103 @@
+[11:49:33.431], STTP, 1, <--, MIX, 16, list, 9482fd22, SETUP, , 1
+[11:49:33.432], STTP, 1, , , , , , store_share, CPU: 0.008941 ms, wall: 0.006230 ms1
+[11:49:33.435], STTP, 1, <--, MIX, 21, list, c296c184, SETUP, , 1
+[11:49:33.435], STTP, 1, , , , , , store_share, CPU: 0.007295 ms, wall: 0.005548 ms1
+[11:49:33.435], STTP, 1, <--, MIX, 41, list, ede9283c, SETUP, , 1
+[11:49:33.435], STTP, 1, , , , , , store_share, CPU: 0.003013 ms, wall: 0.002348 ms1
+[11:49:33.465], STTP, 1, <--, MIX, 24, list, 2dd1d998, SETUP, , 1
+[11:49:33.465], STTP, 1, , , , , , store_share, CPU: 0.006792 ms, wall: 0.004290 ms1
+[11:49:33.467], STTP, 1, <--, MIX, 36, list, 4bb8cacd, SETUP, , 1
+[11:49:33.467], STTP, 1, , , , , , store_share, CPU: 0.005942 ms, wall: 0.003818 ms1
+[11:49:33.505], STTP, 1, <--, MIX, 8, list, 9d60c3e0, SETUP, , 1
+[11:49:33.505], STTP, 1, , , , , , store_share, CPU: 0.004609 ms, wall: 0.003474 ms1
+[11:49:33.542], STTP, 1, <--, MIX, 46, list, ab13b5c6, SETUP, , 1
+[11:49:33.543], STTP, 1, , , , , , store_share, CPU: 0.004766 ms, wall: 0.003660 ms1
+[11:49:33.552], STTP, 1, <--, MIX, 10, list, c64cef69, SETUP, , 1
+[11:49:33.553], STTP, 1, , , , , , store_share, CPU: 0.004626 ms, wall: 0.003571 ms1
+[11:49:33.582], STTP, 1, <--, MIX, 35, list, 0c7a6115, SETUP, , 1
+[11:49:33.582], STTP, 1, , , , , , store_share, CPU: 0.005271 ms, wall: 0.003520 ms1
+[11:49:33.617], STTP, 1, <--, MIX, 19, list, d9c2dbee, SETUP, , 1
+[11:49:33.618], STTP, 1, , , , , , store_share, CPU: 0.005447 ms, wall: 0.003653 ms1
+[11:49:33.625], STTP, 1, <--, MIX, 45, list, a9fe7697, SETUP, , 1
+[11:49:33.625], STTP, 1, , , , , , store_share, CPU: 0.004931 ms, wall: 0.003475 ms1
+[11:49:33.649], STTP, 1, <--, MIX, 12, list, 66fd9e46, SETUP, , 1
+[11:49:33.650], STTP, 1, , , , , , store_share, CPU: 0.004915 ms, wall: 0.003770 ms1
+[11:49:33.668], STTP, 1, <--, MIX, 22, list, c1b3a02b, SETUP, , 1
+[11:49:33.668], STTP, 1, , , , , , store_share, CPU: 0.004664 ms, wall: 0.003535 ms1
+[11:49:33.695], STTP, 1, <--, MIX, 31, list, 06807f38, SETUP, , 1
+[11:49:33.696], STTP, 1, , , , , , store_share, CPU: 0.004707 ms, wall: 0.003623 ms1
+[11:49:33.702], STTP, 1, <--, MIX, 43, list, 1eb23c9a, SETUP, , 1
+[11:49:33.703], STTP, 1, , , , , , store_share, CPU: 0.004345 ms, wall: 0.003143 ms1
+[11:49:33.724], STTP, 1, <--, MIX, 33, list, 9a8ecaf6, SETUP, , 1
+[11:49:33.725], STTP, 1, , , , , , store_share, CPU: 0.004225 ms, wall: 0.003122 ms1
+[11:49:33.725], STTP, 1, <--, MIX, 37, list, 09dd0cee, SETUP, , 1
+[11:49:33.725], STTP, 1, , , , , , store_share, CPU: 0.003376 ms, wall: 0.002857 ms1
+[11:49:33.728], STTP, 1, <--, MIX, 48, list, 8ad1611c, SETUP, , 1
+[11:49:33.731], STTP, 1, , , , , , store_share, CPU: 0.011993 ms, wall: 0.006776 ms1
+[11:49:33.752], STTP, 1, <--, MIX, 34, list, e11ac151, SETUP, , 1
+[11:49:33.753], STTP, 1, , , , , , store_share, CPU: 0.005105 ms, wall: 0.003764 ms1
+[11:49:33.753], STTP, 1, <--, MIX, 39, list, 6bd01e5e, SETUP, , 1
+[11:49:33.753], STTP, 1, , , , , , store_share, CPU: 0.002850 ms, wall: 0.002277 ms1
+[11:49:33.759], STTP, 1, <--, MIX, 25, list, 7c65961f, SETUP, , 1
+[11:49:33.760], STTP, 1, , , , , , store_share, CPU: 0.004783 ms, wall: 0.003290 ms1
+[11:49:33.762], STTP, 1, <--, MIX, 15, list, d98b9486, SETUP, , 1
+[11:49:33.765], STTP, 1, , , , , , store_share, CPU: 0.019083 ms, wall: 0.011389 ms1
+[11:49:33.767], STTP, 1, <--, MIX, 44, list, 324f3c06, SETUP, , 1
+[11:49:33.767], STTP, 1, , , , , , store_share, CPU: 0.004287 ms, wall: 0.003603 ms1
+[11:49:33.783], STTP, 1, <--, MIX, 6, list, 40c06e00, SETUP, , 1
+[11:49:33.784], STTP, 1, , , , , , store_share, CPU: 0.003602 ms, wall: 0.002832 ms1
+[11:49:33.784], STTP, 1, <--, MIX, 2, list, 1f264870, SETUP, , 1
+[11:49:33.784], STTP, 1, , , , , , store_share, CPU: 0.004237 ms, wall: 0.003279 ms1
+[11:49:33.797], STTP, 1, <--, MIX, 17, list, dd174354, SETUP, , 1
+[11:49:33.797], STTP, 1, , , , , , store_share, CPU: 0.007799 ms, wall: 0.006173 ms1
+[11:49:33.798], STTP, 1, <--, MIX, 26, list, f815165a, SETUP, , 1
+[11:49:33.802], STTP, 1, , , , , , store_share, CPU: 0.007464 ms, wall: 0.005960 ms1
+[11:49:33.803], STTP, 1, <--, MIX, 40, list, 05fb29d8, SETUP, , 1
+[11:49:33.803], STTP, 1, , , , , , store_share, CPU: 0.007370 ms, wall: 0.005826 ms1
+[11:49:33.808], STTP, 1, <--, MIX, 27, list, a800dbae, SETUP, , 1
+[11:49:33.809], STTP, 1, , , , , , store_share, CPU: 0.008059 ms, wall: 0.006038 ms1
+[11:49:33.809], STTP, 1, <--, MIX, 23, list, 5e494ba8, SETUP, , 1
+[11:49:33.812], STTP, 1, , , , , , store_share, CPU: 0.025028 ms, wall: 0.014714 ms1
+[11:49:33.816], STTP, 1, <--, MIX, 30, list, 2e127bd6, SETUP, , 1
+[11:49:33.816], STTP, 1, , , , , , store_share, CPU: 0.007492 ms, wall: 0.006221 ms1
+[11:49:33.823], STTP, 1, <--, MIX, 4, list, b8dab401, SETUP, , 1
+[11:49:33.824], STTP, 1, , , , , , store_share, CPU: 0.004319 ms, wall: 0.003258 ms1
+[11:49:33.832], STTP, 1, <--, MIX, 3, list, bb8ee39b, SETUP, , 1
+[11:49:33.833], STTP, 1, , , , , , store_share, CPU: 0.004772 ms, wall: 0.003780 ms1
+[11:49:33.837], STTP, 1, <--, MIX, 47, list, b8f4e935, SETUP, , 1
+[11:49:33.838], STTP, 1, , , , , , store_share, CPU: 0.004170 ms, wall: 0.003193 ms1
+[11:49:33.878], STTP, 1, <--, MIX, 20, list, 5756f9f9, SETUP, , 1
+[11:49:33.878], STTP, 1, , , , , , store_share, CPU: 0.007242 ms, wall: 0.005854 ms1
+[11:49:33.884], STTP, 1, <--, MIX, 38, list, 336e5aa0, SETUP, , 1
+[11:49:33.884], STTP, 1, , , , , , store_share, CPU: 0.005000 ms, wall: 0.006682 ms1
+[11:49:33.887], STTP, 1, <--, MIX, 29, list, d5d6a5b9, SETUP, , 1
+[11:49:33.889], STTP, 1, , , , , , store_share, CPU: 0.016591 ms, wall: 0.010086 ms1
+[11:49:33.898], STTP, 1, <--, MIX, 5, list, f4af73ab, SETUP, , 1
+[11:49:33.898], STTP, 1, , , , , , store_share, CPU: 0.006686 ms, wall: 0.005490 ms1
+[11:49:33.899], STTP, 1, <--, MIX, 13, list, 08ae9fcd, SETUP, , 1
+[11:49:33.903], STTP, 1, , , , , , store_share, CPU: 0.009784 ms, wall: 0.014060 ms1
+[11:49:33.916], STTP, 1, <--, MIX, 11, list, ed6acda8, SETUP, , 1
+[11:49:33.916], STTP, 1, , , , , , store_share, CPU: 0.006968 ms, wall: 0.005603 ms1
+[11:49:33.921], STTP, 1, <--, MIX, 28, list, b337eb6a, SETUP, , 1
+[11:49:33.921], STTP, 1, , , , , , store_share, CPU: 0.007938 ms, wall: 0.005924 ms1
+[11:49:33.940], STTP, 1, <--, MIX, 42, list, 7da5c88d, SETUP, , 1
+[11:49:33.941], STTP, 1, , , , , , store_share, CPU: 0.004258 ms, wall: 0.003248 ms1
+[11:49:33.975], STTP, 1, <--, MIX, 32, list, 1e25a8b3, SETUP, , 1
+[11:49:33.975], STTP, 1, , , , , , store_share, CPU: 0.006930 ms, wall: 0.005555 ms1
+[11:49:33.991], STTP, 1, <--, MIX, 14, list, 8624b4b4, SETUP, , 1
+[11:49:33.992], STTP, 1, , , , , , store_share, CPU: 0.008453 ms, wall: 0.006502 ms1
+[11:49:34.025], STTP, 1, <--, MIX, 1, list, b8a9cb39, SETUP, , 1
+[11:49:34.025], STTP, 1, , , , , , store_share, CPU: 0.007760 ms, wall: 0.006129 ms1
+[11:49:34.050], STTP, 1, <--, MIX, 18, list, efec340f, SETUP, , 1
+[11:49:34.050], STTP, 1, , , , , , store_share, CPU: 0.007713 ms, wall: 0.006136 ms1
+[11:49:34.107], STTP, 1, <--, MIX, 49, list, 933ab36c, SETUP, , 1
+[11:49:34.109], STTP, 1, , , , , , store_share, CPU: 0.007920 ms, wall: 0.006343 ms1
+[11:49:34.110], STTP, 1, <--, MIX, 7, list, 31975cfd, SETUP, , 1
+[11:49:34.112], STTP, 1, , , , , , store_share, CPU: 0.006966 ms, wall: 0.005195 ms1
+[11:49:34.113], STTP, 1, <--, MIX, 9, list, f41adf52, SETUP, , 1
+[11:49:34.113], STTP, 1, , , , , , store_share, CPU: 0.006056 ms, wall: 0.004824 ms1
+[11:49:34.127], STTP, 1, <--, MIX, 50, list, c0cf2aed, SETUP, , 1
+[11:49:34.127], STTP, 1, , , , , , store_share, CPU: 0.035991 ms, wall: 0.034841 ms1
+[11:49:35.504], STTP, 1, <--, CLIENT, 1, list, fd0ef623, ROUTE, , 1
+[11:49:35.506], STTP, 1, -->, CLIENT, 1, list, e7358347, ROUTE, , 1
+[11:49:35.506], STTP, 1, , , , , , send_share, CPU: 1.379763 ms, wall: 1.442466 ms1

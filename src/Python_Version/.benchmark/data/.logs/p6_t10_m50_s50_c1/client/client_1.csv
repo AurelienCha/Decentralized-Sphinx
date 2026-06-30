@@ -1,0 +1,38 @@
+[11:49:03.119], CLIENT, 1, -->, STTP, 49, list, 022e6a63, ROUTE, , 
+[11:49:03.120], CLIENT, 1, -->, STTP, 38, list, 022e6a63, ROUTE, , 
+[11:49:03.120], CLIENT, 1, -->, STTP, 22, list, 022e6a63, ROUTE, , 
+[11:49:03.121], CLIENT, 1, -->, STTP, 13, list, 022e6a63, ROUTE, , 
+[11:49:03.121], CLIENT, 1, -->, STTP, 8, list, 022e6a63, ROUTE, , 
+[11:49:03.121], CLIENT, 1, -->, STTP, 6, list, 022e6a63, ROUTE, , 
+[11:49:03.122], CLIENT, 1, -->, STTP, 7, list, 022e6a63, ROUTE, , 
+[11:49:03.122], CLIENT, 1, -->, STTP, 42, list, 022e6a63, ROUTE, , 
+[11:49:03.122], CLIENT, 1, -->, STTP, 3, list, 022e6a63, ROUTE, , 
+[11:49:03.123], CLIENT, 1, -->, STTP, 21, list, 022e6a63, ROUTE, , 
+[11:49:03.125], CLIENT, 1, <--, STTP, 49, list, 9a500373, ROUTE, , 
+[11:49:03.128], CLIENT, 1, <--, STTP, 38, list, 107051a3, ROUTE, , 
+[11:49:03.129], CLIENT, 1, <--, STTP, 8, list, f4c459a8, ROUTE, , 
+[11:49:03.131], CLIENT, 1, <--, STTP, 42, list, 3cbfef86, ROUTE, , 
+[11:49:03.133], CLIENT, 1, <--, STTP, 3, list, a5cf6250, ROUTE, , 
+[11:49:03.135], CLIENT, 1, <--, STTP, 22, list, d47e52e0, ROUTE, , 
+[11:49:03.136], CLIENT, 1, <--, STTP, 13, list, 2928207c, ROUTE, , 
+[11:49:03.138], CLIENT, 1, <--, STTP, 21, list, aff28da5, ROUTE, , 
+[11:49:03.139], CLIENT, 1, <--, STTP, 6, list, a3e9af75, ROUTE, , 
+[11:49:03.141], CLIENT, 1, <--, STTP, 7, list, 82b7f0b3, ROUTE, , 
+[11:49:03.178], CLIENT, 1, , , , , , query_route, CPU: 58.935718 ms, wall: 59.388593 ms
+[11:49:03.179], CLIENT, 1, , , , , , shared_secret_rerandomization, CPU: 1.147186 ms, wall: 1.151381 ms
+[11:49:03.182], CLIENT, 1, , , , , , compute_gamma, CPU: 0.188445 ms, wall: 0.188505 ms
+[11:49:03.182], CLIENT, 1, , , , , , initial_layer, CPU: 2.293928 ms, wall: 2.301729 ms
+[11:49:03.183], CLIENT, 1, , , , , , compute_gamma, CPU: 0.221282 ms, wall: 0.221185 ms
+[11:49:03.183], CLIENT, 1, , , , , , add_layer, CPU: 1.015723 ms, wall: 1.020111 ms
+[11:49:03.184], CLIENT, 1, , , , , , compute_gamma, CPU: 0.159497 ms, wall: 0.159388 ms
+[11:49:03.184], CLIENT, 1, , , , , , add_layer, CPU: 0.920186 ms, wall: 0.926943 ms
+[11:49:03.185], CLIENT, 1, , , , , , compute_gamma, CPU: 0.156946 ms, wall: 0.156908 ms
+[11:49:03.185], CLIENT, 1, , , , , , add_layer, CPU: 0.924404 ms, wall: 0.928103 ms
+[11:49:03.186], CLIENT, 1, , , , , , compute_gamma, CPU: 0.158436 ms, wall: 0.158379 ms
+[11:49:03.186], CLIENT, 1, , , , , , add_layer, CPU: 0.914066 ms, wall: 0.916302 ms
+[11:49:03.187], CLIENT, 1, , , , , , compute_gamma, CPU: 0.182040 ms, wall: 0.182010 ms
+[11:49:03.187], CLIENT, 1, , , , , , add_layer, CPU: 0.945540 ms, wall: 0.947515 ms
+[11:49:03.187], CLIENT, 1, , , , , , compute_layers, CPU: 7.235071 ms, wall: 7.261621 ms
+[11:49:03.187], CLIENT, 1, , , , , , build_packet, CPU: 68.413461 ms, wall: 68.913852 ms
+[11:49:03.187], CLIENT, 1, -->, MIX, 47, Header, e7ac7c1a, RUN, , 
+[11:49:03.212], CLIENT, 1, <--, MIX, 20, Header, e9fcf077, RUN, , 

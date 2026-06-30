@@ -1,0 +1,36 @@
+[11:48:41.610], CLIENT, 1, -->, STTP, 40, list, 6efac683, ROUTE, , 
+[11:48:41.611], CLIENT, 1, -->, STTP, 17, list, 6efac683, ROUTE, , 
+[11:48:41.611], CLIENT, 1, -->, STTP, 12, list, 6efac683, ROUTE, , 
+[11:48:41.611], CLIENT, 1, -->, STTP, 9, list, 6efac683, ROUTE, , 
+[11:48:41.612], CLIENT, 1, -->, STTP, 41, list, 6efac683, ROUTE, , 
+[11:48:41.612], CLIENT, 1, -->, STTP, 6, list, 6efac683, ROUTE, , 
+[11:48:41.612], CLIENT, 1, -->, STTP, 7, list, 6efac683, ROUTE, , 
+[11:48:41.612], CLIENT, 1, -->, STTP, 15, list, 6efac683, ROUTE, , 
+[11:48:41.612], CLIENT, 1, -->, STTP, 2, list, 6efac683, ROUTE, , 
+[11:48:41.612], CLIENT, 1, -->, STTP, 48, list, 6efac683, ROUTE, , 
+[11:48:41.616], CLIENT, 1, <--, STTP, 40, list, 1555bd38, ROUTE, , 
+[11:48:41.618], CLIENT, 1, <--, STTP, 9, list, c9457a22, ROUTE, , 
+[11:48:41.620], CLIENT, 1, <--, STTP, 7, list, 9dde0922, ROUTE, , 
+[11:48:41.622], CLIENT, 1, <--, STTP, 15, list, 6af063bd, ROUTE, , 
+[11:48:41.624], CLIENT, 1, <--, STTP, 17, list, 1244460a, ROUTE, , 
+[11:48:41.626], CLIENT, 1, <--, STTP, 12, list, c1686e53, ROUTE, , 
+[11:48:41.628], CLIENT, 1, <--, STTP, 41, list, 8d46be53, ROUTE, , 
+[11:48:41.629], CLIENT, 1, <--, STTP, 2, list, def43a62, ROUTE, , 
+[11:48:41.630], CLIENT, 1, <--, STTP, 6, list, 4383dd60, ROUTE, , 
+[11:48:41.632], CLIENT, 1, <--, STTP, 48, list, e2284cfc, ROUTE, , 
+[11:48:41.662], CLIENT, 1, , , , , , query_route, CPU: 51.005085 ms, wall: 52.426724 ms
+[11:48:41.663], CLIENT, 1, , , , , , shared_secret_rerandomization, CPU: 0.940506 ms, wall: 0.943882 ms
+[11:48:41.665], CLIENT, 1, , , , , , compute_gamma, CPU: 0.203041 ms, wall: 0.205620 ms
+[11:48:41.665], CLIENT, 1, , , , , , initial_layer, CPU: 1.671987 ms, wall: 1.678284 ms
+[11:48:41.666], CLIENT, 1, , , , , , compute_gamma, CPU: 0.175861 ms, wall: 0.175863 ms
+[11:48:41.666], CLIENT, 1, , , , , , add_layer, CPU: 0.816207 ms, wall: 0.819427 ms
+[11:48:41.667], CLIENT, 1, , , , , , compute_gamma, CPU: 0.199588 ms, wall: 0.199382 ms
+[11:48:41.667], CLIENT, 1, , , , , , add_layer, CPU: 0.835514 ms, wall: 0.835524 ms
+[11:48:41.668], CLIENT, 1, , , , , , compute_gamma, CPU: 0.167193 ms, wall: 0.167033 ms
+[11:48:41.668], CLIENT, 1, , , , , , add_layer, CPU: 0.800979 ms, wall: 0.804586 ms
+[11:48:41.669], CLIENT, 1, , , , , , compute_gamma, CPU: 0.194838 ms, wall: 0.194647 ms
+[11:48:41.669], CLIENT, 1, , , , , , add_layer, CPU: 0.821838 ms, wall: 0.824592 ms
+[11:48:41.669], CLIENT, 1, , , , , , compute_layers, CPU: 5.125517 ms, wall: 5.140966 ms
+[11:48:41.669], CLIENT, 1, , , , , , build_packet, CPU: 58.236361 ms, wall: 59.698991 ms
+[11:48:41.669], CLIENT, 1, -->, MIX, 29, Header, d2940cfb, RUN, , 
+[11:48:41.688], CLIENT, 1, <--, MIX, 36, Header, 6ba695cb, RUN, , 

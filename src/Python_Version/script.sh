@@ -9,12 +9,12 @@ CLIENTS=100
 VERBOSE=1
 
 # Override defaults if provided
-while getopts "p:t:a:m:c:z:v:" opt; do
+while getopts "p:t:m:s:c:v:" opt; do
   case $opt in
     p) PATH_LENGTH="$OPTARG" ;;
+    t) THRESHOLD="$OPTARG" ;;
     m) MIXNODES="$OPTARG" ;;
     s) STTPS="$OPTARG" ;;
-    t) THRESHOLD="$OPTARG" ;;
     c) CLIENTS="$OPTARG" ;;
     v) VERBOSE="$OPTARG" ;;
     *) echo "Invalid option"; exit 1 ;;

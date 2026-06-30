@@ -1,0 +1,28 @@
+[11:48:58.063], CLIENT, 1, -->, STTP, 16, list, d958b1ab, ROUTE, , 
+[11:48:58.064], CLIENT, 1, -->, STTP, 14, list, d958b1ab, ROUTE, , 
+[11:48:58.064], CLIENT, 1, -->, STTP, 13, list, d958b1ab, ROUTE, , 
+[11:48:58.064], CLIENT, 1, -->, STTP, 22, list, d958b1ab, ROUTE, , 
+[11:48:58.064], CLIENT, 1, -->, STTP, 3, list, d958b1ab, ROUTE, , 
+[11:48:58.068], CLIENT, 1, <--, STTP, 16, list, 860751ad, ROUTE, , 
+[11:48:58.071], CLIENT, 1, <--, STTP, 14, list, 9a390d0f, ROUTE, , 
+[11:48:58.073], CLIENT, 1, <--, STTP, 3, list, b0999849, ROUTE, , 
+[11:48:58.074], CLIENT, 1, <--, STTP, 22, list, 688dfc95, ROUTE, , 
+[11:48:58.076], CLIENT, 1, <--, STTP, 13, list, 1b8147ae, ROUTE, , 
+[11:48:58.088], CLIENT, 1, , , , , , query_route, CPU: 22.730242 ms, wall: 24.588919 ms
+[11:48:58.089], CLIENT, 1, , , , , , shared_secret_rerandomization, CPU: 1.136061 ms, wall: 1.139236 ms
+[11:48:58.091], CLIENT, 1, , , , , , compute_gamma, CPU: 0.245279 ms, wall: 0.248558 ms
+[11:48:58.091], CLIENT, 1, , , , , , initial_layer, CPU: 2.352908 ms, wall: 2.365534 ms
+[11:48:58.092], CLIENT, 1, , , , , , compute_gamma, CPU: 0.219705 ms, wall: 0.223091 ms
+[11:48:58.092], CLIENT, 1, , , , , , add_layer, CPU: 0.991138 ms, wall: 0.994452 ms
+[11:48:58.093], CLIENT, 1, , , , , , compute_gamma, CPU: 0.160900 ms, wall: 0.164016 ms
+[11:48:58.093], CLIENT, 1, , , , , , add_layer, CPU: 0.924572 ms, wall: 0.927748 ms
+[11:48:58.094], CLIENT, 1, , , , , , compute_gamma, CPU: 0.209572 ms, wall: 0.213016 ms
+[11:48:58.094], CLIENT, 1, , , , , , add_layer, CPU: 0.975150 ms, wall: 0.978425 ms
+[11:48:58.095], CLIENT, 1, , , , , , compute_gamma, CPU: 0.217524 ms, wall: 0.220879 ms
+[11:48:58.095], CLIENT, 1, , , , , , add_layer, CPU: 0.993251 ms, wall: 0.996650 ms
+[11:48:58.096], CLIENT, 1, , , , , , compute_gamma, CPU: 0.214104 ms, wall: 0.213949 ms
+[11:48:58.096], CLIENT, 1, , , , , , add_layer, CPU: 0.985377 ms, wall: 0.988323 ms
+[11:48:58.096], CLIENT, 1, , , , , , compute_layers, CPU: 7.447840 ms, wall: 7.476239 ms
+[11:48:58.096], CLIENT, 1, , , , , , build_packet, CPU: 32.193396 ms, wall: 34.079295 ms
+[11:48:58.096], CLIENT, 1, -->, MIX, 30, Header, b5edd282, RUN, , 
+[11:48:58.122], CLIENT, 1, <--, MIX, 50, Header, 2c2782e3, RUN, , 

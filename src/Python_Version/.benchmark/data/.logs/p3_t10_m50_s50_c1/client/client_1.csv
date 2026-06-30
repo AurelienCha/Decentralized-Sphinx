@@ -1,0 +1,32 @@
+[11:47:55.262], CLIENT, 1, -->, STTP, 6, list, 6d6cca43, ROUTE, , 
+[11:47:55.262], CLIENT, 1, -->, STTP, 5, list, 6d6cca43, ROUTE, , 
+[11:47:55.262], CLIENT, 1, -->, STTP, 3, list, 6d6cca43, ROUTE, , 
+[11:47:55.263], CLIENT, 1, -->, STTP, 23, list, 6d6cca43, ROUTE, , 
+[11:47:55.263], CLIENT, 1, -->, STTP, 1, list, 6d6cca43, ROUTE, , 
+[11:47:55.263], CLIENT, 1, -->, STTP, 46, list, 6d6cca43, ROUTE, , 
+[11:47:55.263], CLIENT, 1, -->, STTP, 8, list, 6d6cca43, ROUTE, , 
+[11:47:55.263], CLIENT, 1, -->, STTP, 30, list, 6d6cca43, ROUTE, , 
+[11:47:55.263], CLIENT, 1, -->, STTP, 31, list, 6d6cca43, ROUTE, , 
+[11:47:55.263], CLIENT, 1, -->, STTP, 34, list, 6d6cca43, ROUTE, , 
+[11:47:55.265], CLIENT, 1, <--, STTP, 5, list, cacf91e0, ROUTE, , 
+[11:47:55.266], CLIENT, 1, <--, STTP, 23, list, f86ded64, ROUTE, , 
+[11:47:55.268], CLIENT, 1, <--, STTP, 3, list, aef6a21e, ROUTE, , 
+[11:47:55.269], CLIENT, 1, <--, STTP, 30, list, 7c5f55d0, ROUTE, , 
+[11:47:55.270], CLIENT, 1, <--, STTP, 31, list, e318e2f2, ROUTE, , 
+[11:47:55.271], CLIENT, 1, <--, STTP, 34, list, 2dcc96f0, ROUTE, , 
+[11:47:55.272], CLIENT, 1, <--, STTP, 6, list, 0da379d7, ROUTE, , 
+[11:47:55.274], CLIENT, 1, <--, STTP, 46, list, 61fcb633, ROUTE, , 
+[11:47:55.275], CLIENT, 1, <--, STTP, 1, list, c927a0de, ROUTE, , 
+[11:47:55.276], CLIENT, 1, <--, STTP, 8, list, 431db627, ROUTE, , 
+[11:47:55.295], CLIENT, 1, , , , , , query_route, CPU: 31.851662 ms, wall: 32.799487 ms
+[11:47:55.295], CLIENT, 1, , , , , , shared_secret_rerandomization, CPU: 0.661821 ms, wall: 0.664821 ms
+[11:47:55.296], CLIENT, 1, , , , , , compute_gamma, CPU: 0.151784 ms, wall: 0.154537 ms
+[11:47:55.296], CLIENT, 1, , , , , , initial_layer, CPU: 0.707481 ms, wall: 0.710369 ms
+[11:47:55.297], CLIENT, 1, , , , , , compute_gamma, CPU: 0.133875 ms, wall: 0.133874 ms
+[11:47:55.297], CLIENT, 1, , , , , , add_layer, CPU: 0.525160 ms, wall: 0.525107 ms
+[11:47:55.297], CLIENT, 1, , , , , , compute_gamma, CPU: 0.123081 ms, wall: 0.123089 ms
+[11:47:55.297], CLIENT, 1, , , , , , add_layer, CPU: 0.501745 ms, wall: 0.506470 ms
+[11:47:55.297], CLIENT, 1, , , , , , compute_layers, CPU: 1.850181 ms, wall: 1.857505 ms
+[11:47:55.297], CLIENT, 1, , , , , , build_packet, CPU: 35.037152 ms, wall: 35.991486 ms
+[11:47:55.297], CLIENT, 1, -->, MIX, 36, Header, fb9ae7fb, RUN, , 
+[11:47:55.307], CLIENT, 1, <--, MIX, 13, Header, b5c3ab1a, RUN, , 

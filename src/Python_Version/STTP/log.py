@@ -103,7 +103,7 @@ def create_logger(role: str, node_id: int) -> LoggerWrapper:
             (
                 f"[%(asctime)s.%(msecs)03d], {role}, {node_id}, "
                 "%(direction)s, %(role2)s, %(id2)s, "
-                "%(type)s, %(hash)s, %(comment)s, "
+                "%(type)s, %(hash)s, %(comment)s"
                 "1"
             ),
             datefmt="%H:%M:%S",
