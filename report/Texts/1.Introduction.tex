@@ -1,69 +1,28 @@
-
 \section{Introduction}
 
+Privacy at the network layer, such as in mixnet-based systems~\cite{nym, piotrowska2017loopix, infeld2025echomix} for communication and in the Lightning Network~\cite{poon2016bitcoin} for financial transactions, is achieved through layered encrypted packets that traverse multiple nodes, with each node decrypting one layer and forwarding the packet to the next hop. To prevent malicious routing nodes and network adversaries from de-anonymizing traffic at the network layer, each intermediary node learns only its immediately preceding and succeeding nodes, not the full path nor its position within it. Additionally, packets are padded to a fixed size and processed such that their format reveals no linkable information across hops, preventing traffic correlation based on size or format.
 
-Privacy at the network layer, such as in mixnet-based systems~\cite{nym, piotrowska2017loopix, infeld2025echomix} for communication and in the Lightning Network for financial transactions, is achieved through layered encrypted packets that traverse multiple nodes, with each node decrypting one layer and forwarding the packet to the next hop. In order to prevent malicious routing nodes as well as network adversaries from de-anonymizing traffic at the network layer, each intermediary node learns only its immediately preceding and succeeding nodes, not its position within the route. Additionally, packets are padded to a fixed size and processed such that their format reveals no linkable information across hops, preventing traffic correlation based on size or format.
+At the core of these guarantees is Sphinx~\cite{sphinx}, a compact fixed-size packet format that provides cryptographically strong unlinkability and per-hop integrity protection~\cite{sphinx}. The Sphinx packet format, introduced by Danezis and Goldberg~\cite{sphinx} in 2009, has become a foundational component of modern anonymous communication systems such as the Lightning Network~\cite{poon2016bitcoin}, Nym~\cite{nym}, and Katzenpost~\cite{infeld2025echomix}.
 
-At the core of these guarantees is Sphinx~\cite{sphinx}, a compact fixed-size packet format that provides cryptographically strong unlinkability and per-hop integrity protection~\cite{sphinx}. The Sphinx packet format, introduced by Danezis and Goldberg~\cite{sphinx}
-in 2009, has become a foundational component of modern anonymous
-communication systems such as
-the Lightning Network~\cite{poon2016bitcoin}, Nym~\cite{nym} and
-Katzenpost~\cite{infeld2025echomix}.
+However, despite its strengths, the Sphinx packet format is constructed entirely by clients before entering the network, meaning that clients retain full control over route selection and can easily deviate from the prescribed routing algorithm, making the system vulnerable to attacks by malicious clients. For example, in mixnets, a client may bias route selection by violating the routing algorithm, thereby reducing the number of messages mixed at a specific node in order to target an honest client or degrade the system's overall anonymity~\cite{benguirat2022mixnet}. In the Lightning Network, a malicious client can launch a jamming attack by sending payments through honest nodes and deliberately never resolving them, locking their channels and freezing liquidity. Additionally, by repeatedly routing through specific nodes and observing response times, the attacker can infer their current payment load and activity patterns~\cite{Rohrer2019paymentchannels, kappos2021empirical}.
 
-However, despite its strengths, the Sphinx packet format is constructed entirely by the clients before entering the network.  This
-centralization makes the system vulnerable to attacks by malicious clients.  For
-example, a client may bias route selection by violating the routing
-algorithm, thereby reducing the number of messages mixed at a specific node
-in order to target an honest client or degrade the system's overall
-anonymity~\cite{benguirat2022mixnet}. In the Lightning Network, a malicious client can launch a jamming attack by sending payments through honest nodes and deliberately never resolving them, locking their channels and freezing liquidity. By repeatedly routing through specific nodes and observing response times, the attacker can also infer their current payment load and activity patterns~\cite{Rohrer2019paymentchannels, kappos2021empirical}.
+%We therefore argue that decentralizing path selection is crucial for achieving more robust, verifiable, and flexible anonymous communication systems and decentralized networks.
 
+In this work, we introduce DSphinx, a \emph{decentralized Sphinx path-selection scheme} that distributes the computation across multiple independent semi-trusted third parties (STTPs).
 
-We therefore argue that decentralizing Sphinx header construction is
-crucial in achieving more robust, verifiable, and flexible anonymous
-communication systems and decentralized networks.
+Achieving decentralization while maintaining Sphinx's cryptographic guarantees raises several challenges. First, the protocol must prevent an individual STTP, or a coalition of corrupted STTPs, from learning routing information or recovering cryptographic secrets. Second, routing nodes should learn no more than in the traditional Sphinx design. Each node should learn only its own shared secret and the address of the next node, and nothing about the rest of the route. Third, unlinkability must be preserved even against a powerful passive adversary capable of observing all traffic inputs and outputs. Finally, distributing the computation must not introduce any trapdoor, bias, or structural weakness that an adversary could exploit to correlate packets or manipulate header values.
 
-In this work, we introduce DSphinx, a \emph{decentralized Sphinx header
-construction} that distributes the computation across multiple independent
-semi-trusted third parties (STTPs).
-%
-Achieving decentralization while maintaining Sphinx's cryptographic
-guarantees raises several challenges.  First, the protocol must prevent
-individual STTP, or coalition of corrupted STTPs, from learning routing
-information or recovering cryptographic secrets.  Second, mixnodes should learn no more than in the traditional
-Sphinx design.  Each node must reveal only its own shared secret and the
-address of the next node, but nothing about the rest of the route.  Third,
-unlinkability must be preserved even against a powerful passive adversary
-capable of observing all traffic inputs and outputs and performing
-sophisticated cryptanalytic analysis.  Finally, distributing the
-computation must not introduce any trapdoor, bias, or structural weakness
-that an adversary could exploit to correlate packets or manipulate header
-values.
-
-Our construction addresses these challenges by encoding routing information
-as elliptic curve points, splitting secrets via additive secret sharing,
-and using a homomorphic pseudorandom weighted checksum as an integrity
-mechanism that remains compatible with decentralized computation.  To the
-best of our knowledge, this is the first work to decentralize the Sphinx
-packet format. 
-Our decentralized header construction represents a step toward more robust, verifiable, and flexible decentralized networks by enabling distributed path selection, and efficient enforcement of exit policies.
+Our scheme addresses these challenges by encoding routing information as elliptic curve points, splitting secrets via additive secret sharing, and using a homomorphic pseudorandom weighted checksum as an integrity mechanism that remains compatible with decentralized computation. To the best of our knowledge, this is the first work to decentralize the Sphinx packet format. By enabling distributed path selection, our decentralized header scheme represents a step toward more robust, verifiable, and flexible decentralized networks .
 
 \medskip
 \noindent In summary, our main contributions are as follows:
 \begin{itemize}[topsep=1pt, itemsep=1pt]
-%
-    \item We design \emph{DSphinx}, the first \emph{decentralized Sphinx
-header construction}, that prevents against malicious clients\todo{rephrase}
-%
-    \item We propose a DSphinx-based preprocessing scheme to
-decentralize path
-selection, mitigating compromised path selection by malicious clients;
-%
-    \item We provide a detailed security analysis of \emph{DSphinx},
-considering passive and active network adversaries, corrupted mixnodes, and
-colluding STTPs;
-%
-    \item We provide a benchmark for latency and computational overhead. \todo{to assess}
+	%
+	\item We design \emph{DSphinx}, the first \emph{decentralized Sphinx} path-selection scheme that prevents malicious clients from deviating from the routing protocol.
+	%
+	\item We provide a detailed security analysis of \emph{DSphinx}, considering passive and active network adversaries, corrupted routing nodes, and colluding STTPs.
+	%
+	\item We provide a benchmark for latency and computational overhead. \todo{to update based on the benchmark}
 \end{itemize}
 
 %This paper is organized as follows. In Section~\ref{sec:related}, we review related work. Section~\ref{sec:sys_model} introduces our threat model and outlines the desired security properties. In Section~\ref{sec:scheme}, we describe our protocol for DSphinx. Section~\ref{sec:security} provides a detailed security analysis, and Section~\ref{sec:evaluation} presents the evaluation of our design. We discuss the limitations of our design and directions for future work in Section~\ref{sec:discussion}, and conclude in Section~\ref{sec:conclusion}.
-
