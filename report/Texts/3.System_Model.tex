@@ -1,7 +1,7 @@
 
 \section{Threat Model and Security Properties}\label{sec:sys_model}
 
-In this section, we present our threat model and define the privacy and security properties targeted by our system.
+In this section, we present our threat model and define the privacy and the desired security properties of our system.
 As illustrated in Fig.~\ref{fig:overall_schema}, the system involves three types of entities: clients, a set of semi-trusted third parties (STTPs), and network nodes. 
 Clients delegate route sampling to the STTPs, which jointly derive the routing path and secret shares associated with the selected nodes. 
 The client subsequently reconstructs the route and the corresponding per-hop shared secrets from a threshold number of STTP responses.
@@ -18,7 +18,7 @@ We further assume that network nodes anonymously submit their secret shares to t
 
 \smallskip
 \noindent{\textbf{Malicious Client.}}
-A malicious client may attempt to bias or manipulate decentralized route sampling to favor specific nodes or paths, weakening route randomness and enabling attacks such as the $n-1$ attack.
+A malicious client may attempt to bias or manipulate decentralized route sampling to favor specific nodes or paths.
 
 \smallskip
 \noindent{\textbf{Corrupted Network Node.}}
@@ -49,11 +49,7 @@ Its objective is to forge valid integrity tags to tamper with headers while rema
 Our DSphinx construction aims to preserve the security guarantees of Sphinx~\cite{sphinx}, including unlinkability and integrity protection, while extending them to a decentralized route sampling setting.
 
 \smallskip
-\noindent\textbf{Unlinkability.} \todo{maybe slightly reduce the beginning ? Or put it in intro/related work ?}
-Defining unlinkability in anonymous communication systems is inherently challenging.
-For instance, Loopix~\cite{piotrowska2017loopix} proposes the \emph{expected difference in likelihood} metric, which captures sender-receiver unlinkability through network-level simulations rather than header-level resistance to cryptanalysis.
-In this work, we consider \emph{node-level unlinkability}, requiring that an adversary cannot link an incoming packet to its corresponding outgoing packet at any node.
-This is achieved if all per-hop header components are computationally unlinkable without knowledge of the node's secret key.
+\noindent\textbf{Unlinkability.} We consider \emph{node-level unlinkability}, requiring that an adversary cannot link an incoming packet to its corresponding outgoing packet at any node. This is achieved if all per-hop header components are computationally unlinkable without knowledge of the node's secret key.
 
 \smallskip
 \noindent{\textbf{Integrity-Forgery Resistance.}}
