@@ -1,6 +1,3 @@
-[submodule "src/sphinx_Danezis_git"]
-	path = src/sphinx_Danezis_git
-	url = git@github.com:UCL-InfoSec/sphinx.git
 [submodule "src/Python_Version/.benchmark/external_code"]
 	path = src/Python_Version/.benchmark/external_code
 	url = git@github.com:UCL-InfoSec/sphinx.git

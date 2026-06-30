@@ -1,4 +1,1 @@
-# Guideline
-- Submission deadline: June 17
-- 16 pages (including appendices and references)
-- ANONYMIZED submission
+git clone --recurse-submodules https://github.com/your-org/your-repo.git
