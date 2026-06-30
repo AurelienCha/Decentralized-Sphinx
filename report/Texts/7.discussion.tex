@@ -1,8 +1,19 @@
 \section{Conclusion and Future Work}\label{sec:conclusion}
+The main contribution of this paper is DSphinx, a decentralized path sampling scheme that prevents malicious clients from deviating from the routing protocol in decentralized privacy networks. We provide a detailed game-based security analysis of the main security property in privacy network, the \emph{unlinkability}. Additionaly we reasoned about Integrity, Replay and Wrap resistance 
+under passive and active network adversaries, corrupted mixnodes, and colluding STTPs and showed that our scheme preserves Sphinx's cryptographic guarantees by ensuring that no coalition of STTPs, as long as at least one remains honest, can recover routing information or shared secrets.
 
-This section discusses the design choices of DSphinx, their implications on security and practicality, and the remaining limitations of the proposed approach.
+Finally, we implemented a benchmark, and showed that the latency introduced by decentralized is rather negligeable for DSphinx, especialy given the latency introduced by mixnets or transactions processing in the Lightening Network.
 
-\smallskip
+We leave for future work the adaption of DSphinx to various routing algorithms, we provided a scheme that gets
+
+In summary, DSphinx maintains Sphinx's core privacy and integrity guarantees while reducing reliance on a centralized entity, marking a step toward more robust, flexible, and privacy-preserving decentralized networks.
+
+DSphinx has several limitations. First, a significant deployment challenge is establishing a sufficiently large, diverse, and independent set of STTP operators. 
+Second, it relies on a threshold trust assumption: compromise of at least $d$ STTPs breaks header confidentiality and enables full path reconstruction. 
+Finally, the protocol introduces additional computational and communication overhead due to elliptic-curve operations, polynomial evaluations, and threshold reconstruction. 
+Although this overhead is non-negligible compared to Sphinx, it remains modest relative to the end-to-end latency of anonymous communication systems (around 500-800 ms), which is typically dominated by network propagation and mixing delays~\cite{diaz2024reliability}.
+
+\begin{comment}
 \noindent\textbf{Impact on $n-1$ attacks.}
 DSphinx reduces a client's ability to bias route selection but does not fully eliminate classical $n-1$ attack strategies. 
 In traditional source-routing systems, a client can directly construct arbitrary routes and repeatedly enforce inclusion of a target node. 
@@ -11,7 +22,6 @@ To repeatedly target a node, an adversary must issue multiple sampling queries u
 Once a route is acquired, it may be reused multiple times by re-randomizing $\A{}$ and the per-hop shared secrets. 
 However, repeated reuse of sampled routes may introduce observable traffic patterns, which can help detect large-scale $n-1$ attacks.
 
-\smallskip
 \noindent\textbf{Fully decentralized packet construction.}
 DSphinx was initially designed to support fully decentralized packet construction, where STTPs contribute not only to route sampling but also to header generation. 
 In the current design, STTPs are restricted to route sampling, while packet construction remains client-side to reduce complexity.
@@ -19,11 +29,5 @@ In principle, the header construction phase could also be delegated to STTPs by 
 However, this would require a two-round protocol: one for route sampling and a second for header construction, increasing communication overhead and system complexity. 
 Moreover, we do not currently identify a compelling application that justifies this additional cost. 
 We therefore leave fully decentralized packet construction as future work.
+\end{comment}
 
-\smallskip
-\noindent\textbf{Limitations.}
-DSphinx has several limitations. 
-First, a significant deployment challenge is establishing a sufficiently large, diverse, and independent set of STTP operators. 
-Second, it relies on a threshold trust assumption: compromise of at least $d$ STTPs breaks header confidentiality and enables full path reconstruction. 
-Finally, the protocol introduces additional computational and communication overhead due to elliptic-curve operations, polynomial evaluations, and threshold reconstruction. 
-Although this overhead is non-negligible compared to Sphinx, it remains modest relative to the end-to-end latency of anonymous communication systems (around 500-800 ms), which is typically dominated by network propagation and mixing delays~\cite{diaz2024reliability}.
