@@ -24,6 +24,7 @@ class Client:
     def __init__(self, node_id: int):
         self.network = Network(f"127.0.100.{node_id}", self.handle_message)
         self.route_sampling_queue = asyncio.Queue()
+        self.shutdown_event = asyncio.Event()
     
     # ========================================================
     # NETWORK
@@ -40,7 +41,7 @@ class Client:
             case Stage.ROUTE:
                 await self.route_sampling_queue.put(message)
             case Stage.RUN:
-                pass 
+                self.shutdown_event.set() # await self.send_packet(self.network.ip) # resend packet
 
     # ========================================================
     # QUERY ROUTE
@@ -51,17 +52,18 @@ class Client:
         """Query shares to a THRESHOLD number of STTP"""
 
         timestamp = int(time())
-
-        for sttp in sample(range(NBR_STTPS), k=THRESHOLD): 
+        
+        for sttp in sample(range(1,1+NBR_STTPS), k=THRESHOLD): 
             await self.send(f"127.0.1.{sttp}", Stage.ROUTE, [nonce, timestamp])
-    
+
+    @timing
+    async def aggregate_shares(self, shares):
         # Getting shares
-        all_shares = [await self.route_sampling_queue.get() for _ in range(THRESHOLD)]
-        all_shares = [[(t, share) for share in shares] for t, *shares in all_shares]
+        shares = [[(t, share) for share in shares] for t, *shares in shares]
         
         # Lagrange interpolation (reconstitution)
-        all_shares = [Crypto.lagrange_interpolation(points) for points in zip(*all_shares)]
-        route, shared_secret_points = all_shares[::2], all_shares[1::2]
+        shares = [Crypto.lagrange_interpolation(points) for points in zip(*shares)]
+        route, shared_secret_points = shares[::2], shares[1::2]
         return route, shared_secret_points
     
     @timing
@@ -88,14 +90,15 @@ class Client:
         await self.send(decode_ip(first_hop), Stage.RUN, header)
 
 
-    @timing
     async def build_packet(self, destination_ip: str) -> None:
 
         delta = encode_ip(destination_ip) 
 
         # Decentralized Route Sampling (STTPs)
         nonce = Fr().randomize()  
-        route, shared_secret_points = await self.query_route(nonce)
+        await self.query_route(nonce)
+        shares = [await self.route_sampling_queue.get() for _ in range(THRESHOLD)] # non-negligeable time
+        route, shared_secret_points = await self.aggregate_shares(shares)
         alpha, shared_secrets = self.shared_secret_rerandomization(nonce, shared_secret_points)
 
         header = Header.build(

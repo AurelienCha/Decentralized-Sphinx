@@ -1,7 +1,7 @@
 import asyncio, argparse, json
-from itertools import islice
 from hashlib import sha256
 from enum import StrEnum
+from pathlib import Path
 
 from config import PATH_LENGTH, NBR_MIXNODES
 from log import create_logger, timing
@@ -67,7 +67,10 @@ async def main(ID):
 
     # == START ==
     await node.start()
-    await asyncio.sleep(1)
+    
+    # flag file to signal ready
+    Path(".tmp").mkdir(exist_ok=True)
+    Path(f".tmp/sttp_{ID}.flag").touch()
 
     await asyncio.Event().wait()  # <- keeps program alive
 
