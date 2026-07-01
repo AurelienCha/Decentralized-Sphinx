@@ -1,4 +1,5 @@
 import asyncio, argparse
+from pathlib import Path
 
 from config import NBR_MIXNODES
 from mixnode import Mixnode
@@ -20,6 +21,10 @@ async def main(node_id: int) -> None:
 
     # == SETUP: Send shares to STTPs ==
     await node.setup() 
+
+    # flag file to signal ready
+    Path(".tmp").mkdir(exist_ok=True)
+    Path(f".tmp/node_{node_id}.flag").touch()
 
     # == WAIT TO PROCESS PACKET ==
     await asyncio.Event().wait()  # <- keeps alive

@@ -4,7 +4,7 @@ PATH_LENGTH=5
 THRESHOLD=5
 STTPS=20
 MIXNODES=50
-CLIENTS=100
+CLIENTS=1
 
 VERBOSE=1
 
@@ -35,6 +35,7 @@ pkill -f Client/main.py
 # CLEAN LOGS and config
 # ==========================================
 
+rm -rf .tmp
 rm -rf .logs
 
 mkdir -p .logs/sttp
@@ -59,10 +60,13 @@ do
 done
 
 # ==========================================
-# WAIT FOR STTP TO INITIALIZE
+# WAIT FOR STTP TO START
 # ==========================================
 
-sleep 1 # Needed ? otherwise "touch tmp.md" then "rm tmp.md"
+while [ "$(ls .tmp/*.flag 2>/dev/null | wc -l)" -lt "$STTPS" ]; do
+    sleep 0.1
+done
+rm -rf .tmp/*
 
 # ==========================================
 # START MIXNODES
@@ -78,7 +82,10 @@ done
 # WAIT FOR END OF SETUP
 # ==========================================
 
-sleep 1 # needed ?
+while [ "$(ls .tmp/*.flag 2>/dev/null | wc -l)" -lt "$MIXNODES" ]; do
+    sleep 0.1
+done
+rm -rf .tmp
 
 # ==========================================
 # START Client
@@ -88,34 +95,34 @@ sleep 1 # needed ?
 # echo "RUNNING CLIENTS ..."
 for ((i=1; i<=CLIENTS; i++))
 do
-    python3 Client/main.py --id $i &
+    python3 Client/main.py --id $i #&
 done
 
 # ==========================================
 # Automatically stop the script if no UDP activity is detected
 # ==========================================
 
-touch /tmp/udp_activity
-tshark -l -i lo -f "udp port 5000" 2>/dev/null |
-sleep 0.1
-while read -r line; do
-    touch /tmp/udp_activity
-done &
+# touch /tmp/udp_activity
+# tshark -l -i lo -f "udp port 5000" 2>/dev/null |
+# sleep 0.1
+# while read -r line; do
+#     touch /tmp/udp_activity
+# done &
 
-while true; do
-    last=$(stat -c %Y /tmp/udp_activity)
-    now=$(date +%s)
+# while true; do
+#     last=$(stat -c %Y /tmp/udp_activity)
+#     now=$(date +%s)
 
-    if (( now - last >= 3 )); then
-        # echo "No activity for 3 seconds - exiting..."
+#     if (( now - last >= 3 )); then
+#         # echo "No activity for 3 seconds - exiting..."
 
-        pkill -f STTP/node.py
-        pkill -f Mixnode/main.py
-        pkill -f Client/main.py
-        rm -f /tmp/udp_activity
+#         pkill -f STTP/node.py
+#         pkill -f Mixnode/main.py
+#         pkill -f Client/main.py
+#         rm -f /tmp/udp_activity
         
-        sleep 0.1
-        exit 0
-    fi
-    sleep 1
-done
+#         sleep 0.1
+#         exit 0
+#     fi
+#     sleep 1
+# done

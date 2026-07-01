@@ -6,10 +6,11 @@ rm -rf .benchmark/data/.logs/*
 
 # Parameters values
 PATH_LENGTH=(3 4 5 6 7)
-THRESHOLD=(5 10 20 40) 
-MIXNODES=(50)
+THRESHOLD=(3 5 10 20) 
+MIXNODES=(100)
 STTPS=(50)
-CLIENTS=(1)
+CLIENTS=(40)
+# Most important parameters: 'PATH_LENGTH', 'THRESHOLD'
 
 # Compute the number of runs
 total_runs=$((${#PATH_LENGTH[@]} * ${#THRESHOLD[@]} * ${#MIXNODES[@]} * ${#STTPS[@]} * ${#CLIENTS[@]}))
@@ -34,11 +35,13 @@ for p in "${PATH_LENGTH[@]}"; do  # PATH_LENGTH
 done
 
 end=$(date +%s)
-echo "All $(total_runs) runs achieved in $((end - start)) sec"
+echo "All ${total_runs} runs achieved in $((end - start)) sec"
 
 python .benchmark/data/gather_data.py
 
 python .benchmark/run_original_sphinx.py
+
+python .benchmark/comparison_time.py
 
 end=$(date +%s)
 echo "Benchmark finished in $((end - start)) sec"

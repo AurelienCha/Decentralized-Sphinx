@@ -52,11 +52,11 @@ class Header:
 
         return (decode_ip(self.next_hop), self)
 
-    @timing
+    #@timing
     def compute_shared_secret(self, secret_key: Fr) -> Fr:
         return (self.alpha * secret_key) >> Fr()    
     
-    @timing
+    #@timing
     def verify_integrity(self, shared_secret: Fr) -> None:
         concatenate_encoding = b"".join(beta.serialize() for beta in self.beta) 
         expected_gamma = G1().hash(hmac.new(shared_secret.serialize(), concatenate_encoding, sha256).digest())
@@ -64,7 +64,7 @@ class Header:
         if self.gamma != expected_gamma:
             raise IntegrityError("Header integrity verification failed")
 
-    @timing
+    #@timing
     def decrypt_beta(self, shared_secret: Fr) -> None:
         header = [*self.beta, G1().clear(), G1().clear()]
 
@@ -73,6 +73,6 @@ class Header:
 
         self.next_hop, self.gamma, *self.beta = header
 
-    @timing
+    #@timing
     def update_alpha(self, shared_secret: Fr) -> None:
         self.alpha *= shared_secret
