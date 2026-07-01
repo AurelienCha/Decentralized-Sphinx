@@ -1,1 +1,15 @@
+\section{Conclusion}
 
+The main contribution of this paper is DSphinx, a decentralized path sampling scheme designed to prevent malicious clients from deviating from the routing protocol in decentralized privacy networks.
+
+We provide a formal game-based security analysis of unlinkability, a core security notion in privacy-preserving communication systems. 
+Furthermore, we analyze integrity, replay resistance, and wrap resistance under both passive and active network adversaries, corrupted network nodes, and colluding STTPs. 
+We show that DSphinx preserves the cryptographic guarantees of Sphinx, provided that fewer than a threshold number $d$ of STTPs collude.
+
+We also implement a prototype and evaluate its performance. 
+The results show that DSphinx introduces a latency overhead of less than 50 ms, which remains acceptable compared to the end-to-end latency of typical decentralized networks (approximately 500-800 ms in mixnets).
+In terms of scalability, we show that the protocol runs in $\mathcal{O}(md \log d)$ time, where $m$ denotes the number of hops in the route and $d$ the reconstruction threshold of STTPs.
+
+Overall, DSphinx preserves the core privacy and integrity guarantees of Sphinx while reducing reliance on centralized components, thereby representing a step toward more robust and flexible decentralized privacy networks.
+A limitation of our current design is that it supports only random route selection. 
+Exploring compatibility with more expressive routing strategies is an interesting direction for future work.

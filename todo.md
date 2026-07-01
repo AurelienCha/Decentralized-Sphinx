@@ -17,3 +17,8 @@ Mixnode
 STTP
 # store_share: /
 # send_shares: /
+
+
+
+# Todo:
+Before setup could have the mixnodes communicating together (and send their pseudonyme) to build a map of network and send it to STTPs afterwards

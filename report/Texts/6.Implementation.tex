@@ -27,6 +27,8 @@ Network latency and communication overhead are intentionally excluded so that th
 \end{tabular}
 \end{table}
 
+\todo[inline]{Figure instead of table (and box plot for table 2) + adapt  text accordingly}
+
 Table~\ref{tab:scalability} reports the total client-side runtime required for decentralized route sampling and packet construction. 
 Depending on the parameter configuration, the runtime ranges from 2.84 ms to 53.12 ms, compared with approximately 0.5-2 ms for the original Sphinx. 
 As expected, the execution time increases with both the path length and the reconstruction threshold.
@@ -89,7 +91,7 @@ ccc
 \end{table}
 
 The measured runtimes are consistent with the theoretical complexity of the protocol. 
-In particular, the dominant cost arises from decentralized route sampling, whose threshold reconstruction requires $O(d \log d)$ operations for each of the $m$ routing hops, yielding an overall client-side complexity of $O(m d\log d)$. 
+In particular, the dominant cost arises from decentralized route sampling, whose threshold reconstruction requires $\mathcal{O}(d \log d)$ operations for each of the $m$ routing hops, yielding an overall client-side complexity of $\mathcal{O}(md \log d)$. 
 This trend is clearly reflected in Table~\ref{tab:scalability}, where increasing either the path length or the reconstruction threshold results in an approximately linear increase in execution time.
 
 Overall, the evaluation highlights the trade-off introduced by DSphinx. 
