@@ -1,3 +1,6 @@
 [submodule "src/Python_Version/.benchmark/external_code"]
 	path = src/Python_Version/.benchmark/external_code
 	url = git@github.com:UCL-InfoSec/sphinx.git
+[submodule "src/Rust_Version"]
+	path = src/Rust_Version
+	url = https://gitlab.com/manuelmotadias/master_thesis.git

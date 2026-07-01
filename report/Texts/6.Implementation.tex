@@ -1,9 +1,8 @@
 \section{Performance Evaluation}\label{sec:evaluation}
-\todo{Anonymous github link}
 
 We evaluate the computational overhead introduced by DSphinx and its scalability with respect to the two protocol parameters that dominate its computational cost: the path length $m$ and the reconstruction threshold $d$.
 
-We implemented DSphinx in Python and Rust. 
+We implemented DSphinx in Python and Rust\footnote{\artifact}. 
 The evaluation presented in this section uses the Python prototype, benchmarked on a laptop equipped with a 13th Gen Intel Core i7-13700HX CPU (3.70 GHz) and 32 GB of RAM.
 The benchmark considers a network of 100 nodes, 50 STTPs, and 40 clients, where each client constructs a single DSphinx packet using the decentralized route-sampling protocol. 
 We vary the path length $m \in \{3,4,5,6,7\}$ and the reconstruction threshold $d \in \{3,5,10,20\}$, resulting in 20 benchmark configurations. 
