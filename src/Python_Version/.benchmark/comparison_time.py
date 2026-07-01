@@ -36,7 +36,7 @@ def add_aggregate_function(df, new_name, functions, keep=False):
     return pd.concat([df, agg], ignore_index=True)
     
 
-ORIGINAL_RESULTS = ".benchmark/data/original_sphinx_time.csv"
+# ORIGINAL_RESULTS = ".benchmark/data/original_sphinx_time.csv"
 OUR_RESULTS = ".benchmark/data/timing.csv"
 
 df = pd.read_csv(OUR_RESULTS)
@@ -51,90 +51,104 @@ df = df[['entity', 'entity_id', 'function', 'time', 'PATH_LENGTH', 'THRESHOLD', 
 df = add_aggregate_function(df,"route sampling", ['query_route', 'aggregate_shares', 'shared_secret_rerandomization'])
 df = add_aggregate_function(df,"client", ["build", "route sampling"], keep=True)
 
-df = df[df['PATH_LENGTH'] >= 3]
-df = df[df['PATH_LENGTH'] <= 7]
-df = df[df['THRESHOLD'] <= 20]
+#############
+## boxplot ##
+#############
 
-client_df = df[df['function']=='client']
+def avg_store_share(sttp):
+    store = sttp[sttp['function'] == 'store_share']
+    store = store.sort_index().reset_index(drop=True)
+    # regroup by 100 (because receive 100 shares and after sort them)
+    store['entity_id'] = store.index // 100
+    store = store.groupby(['entity','entity_id','function','PATH_LENGTH','THRESHOLD']).sum().reset_index()
+
+    store['entity']='STTP'
+    store['function']='setup'
+    
+    return pd.concat([store, sttp[sttp['function'] == 'send_share']], ignore_index=True)
+
+
+df = df[['entity','entity_id','function','time','PATH_LENGTH','THRESHOLD']]
+
+client = df[df['entity']=='CLIENT']
+sttp   = df[df['entity']=='STTP']
+mix    = df[df['entity']=='MIX']
+
+client = client[client['function'].isin(['route sampling', 'build'])]
+sttp   = sttp[sttp['function'].isin(['store_share', 'send_share'])]
+mix    = mix[mix['function'].isin(['setup', 'process_header'])]
+
+sttp = avg_store_share(sttp)
+
+client['role'] = 'Client'
+mix['role'] = 'Node'
+sttp['role'] = 'STTP'
+
+
+plot_df = pd.concat([
+    client[['role','function','time','PATH_LENGTH','THRESHOLD']],
+    mix[['role','function','time','PATH_LENGTH','THRESHOLD']],
+    sttp[['role','function','time','PATH_LENGTH','THRESHOLD']]
+], ignore_index=True)
+
+plot_df.replace({'function': {'route sampling': 'Route', 'build': 'Packet', 'setup': 'Setup', 'process_header': 'Process', 'send_share': 'Route'}}, inplace=True)
+
+sns.set_theme(style="whitegrid", context="paper", font_scale=1.8)
+
+g = sns.catplot(
+    data=plot_df,
+    kind="box",
+    col="role",        
+    x="function",
+    y="time",
+    sharex=False,
+    sharey=True,        # IMPORTANT for log comparison
+    height=4,
+    aspect=1,
+    showfliers=False
+)
+
+g.set_axis_labels("", "Execution time (ms)")
+g.set_titles("{col_name}")
+
+# Apply log scale + styling per subplot
+for ax in g.axes.flat:
+    ax.set_yscale("log")
+    ax.tick_params(axis='x', rotation=0)  # horizontal labels
+    ax.set_xlabel("")  # remove repeated "function" label
+
+plt.tight_layout()
+plt.savefig(".benchmark/results/boxplot.png")
+plt.clf()
+
+##############
+## lineplot ##
+##############
+
+client = df[df['entity']=='CLIENT']
+client_time = client[client['function']=='client']
+sns.set_theme(style="whitegrid", context="paper", font_scale=1.8)
 
 # Path Length
 x, hue = "PATH_LENGTH", 'THRESHOLD'
-sns.lineplot(data=client_df, x=x, y="time", hue=hue)
-plt.xticks(list(set(client_df[x])))
-plt.ylabel("time (ms)")
+sns.lineplot(data=client_time, x=x, y="time", hue=hue, marker="o", linewidth=2)
+plt.xticks(range(3,8))
+plt.xlabel("Route length $m$ (hops)")
+plt.ylabel("Client execution time (ms)")
+plt.legend(title="Threshold $d$")
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
 plt.savefig(".benchmark/results/path_length.png")
-
 plt.clf()
 
 # Threshold
 x, hue = 'THRESHOLD', "PATH_LENGTH"
-sns.lineplot(data=client_df, x=x, y="time", hue=hue)
-plt.xticks(list(set(client_df[x])))
-plt.ylabel("time (ms)")
+sns.lineplot(data=client_time, x=x, y="time", hue=hue, marker="o", linewidth=2)
+plt.xticks([3, 5, 10, 15, 20])
+plt.xlabel("Reconstruction threshold $d$")
+plt.ylabel("Client execution time (ms)")
+plt.legend(title="Route length $m$")
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
 plt.savefig(".benchmark/results/threshold.png")
-
-client_df = client_df[['time', 'PATH_LENGTH', 'THRESHOLD']]
-
-client_df=client_df.groupby(['PATH_LENGTH', 'THRESHOLD']).mean().reset_index()
-client_df = client_df.pivot(
-    index="PATH_LENGTH",
-    columns="THRESHOLD",
-    values="time"
-)
-# latex = client_df.to_latex(
-#     index=True,
-#     float_format="%.3f"
-# )
-
-# print(latex)
-
-
-## PROPORTION ##
-################
-
-df = df[['entity','function','time','PATH_LENGTH','THRESHOLD']]
-client = df[df['entity']=='CLIENT']
-sttp = df[df['entity']=='STTP']
-mix = df[df['entity']=='MIX']
-mix = mix[mix['function'].isin(['setup', 'process_header'])]
-
-### client
-print("\n Client")
-build_means = client[client['function']=='build'].groupby(['entity','function','THRESHOLD', 'PATH_LENGTH'])['time'].mean()
-route_means = client[client['function']=='route sampling'].groupby(['entity','function','THRESHOLD', 'PATH_LENGTH'])['time'].mean()
-print(f"Build time: {build_means.min()} - {build_means.max()}")
-print(f"Route time: {route_means.min()} - {route_means.max()}")
-#sttp.groupby(['entity','function','PATH_LENGTH','THRESHOLD']).mean()
-
-grouped = client.groupby(['entity','function','PATH_LENGTH', 'THRESHOLD']).mean()
-df_pivot = grouped.reset_index().pivot_table(
-    index=['entity','PATH_LENGTH','THRESHOLD'],
-    columns='function',
-    values='time'
-)
-df_pivot['route sampling %'] = df_pivot['route sampling'] / df_pivot['client'] * 100
-df_pivot['build %'] = df_pivot['build'] / df_pivot['client'] * 100
-
-tot_build = sum(client[client['function']=="build"]['time'])
-tot_route = sum(client[client['function']=="route sampling"]['time'])
-print(f"Packet construction: {round(100 * tot_build / (tot_build + tot_route))} % of client time")
-print(f"Route sampling: {round(100 * tot_route / (tot_build + tot_route))} % of client time")
-
-
-
-### Nodes
-print("\n Nodes")
-setup_means = mix[mix['function']=='setup'].groupby(['entity','function','THRESHOLD', 'PATH_LENGTH'])['time'].mean()
-process_means = mix[mix['function']=='process_header'].groupby(['entity','function','THRESHOLD', 'PATH_LENGTH'])['time'].mean()
-print(f"Setup time: {setup_means.min()} - {setup_means.max()}")
-print(f"Header processing: {process_means.min()} - {process_means.max()}")
-#mix.groupby(['entity','function','PATH_LENGTH','THRESHOLD']).mean()
-
-
-### STTP
-print("\n STTP")
-setup_means = sttp[sttp['function']=='send_share'].groupby(['entity','function','THRESHOLD', 'PATH_LENGTH'])['time'].mean()
-route_means = sttp[sttp['function']=='store_share'].groupby(['entity','function','THRESHOLD', 'PATH_LENGTH'])['time'].mean()
-print(f"STTP Setup time: {setup_means.min()} - {setup_means.max()}")
-print(f"STTP Route time: {route_means.min()} - {route_means.max()}")
-#sttp.groupby(['entity','function','PATH_LENGTH','THRESHOLD']).mean()
+plt.clf()
