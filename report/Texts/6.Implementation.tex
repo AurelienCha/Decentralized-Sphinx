@@ -8,6 +8,7 @@ The benchmark considers a network of 100 nodes, 50 STTPs, and 40 clients, where 
 We vary the path length $m \in \{3,4,5,6,7\}$ and the reconstruction threshold $d \in \{3,5,10,20\}$, resulting in 20 benchmark configurations. 
 Network latency and communication overhead are intentionally excluded so that the measurements isolate the computational cost of the protocol.
 
+\begin{comment}
 \begin{table}[t]
 \centering
 \caption{Client-side execution time (ms) of DSphinx, including packet construction and decentralized route sampling, under varying path length ($m$) and reconstruction threshold ($d$).}
@@ -26,19 +27,37 @@ Network latency and communication overhead are intentionally excluded so that th
 \bottomrule
 \end{tabular}
 \end{table}
+\end{comment}
 
-\todo[inline]{Figure instead of table (and box plot for table 2) + adapt  text accordingly}
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Images/path_length.png}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Images/threshold.png}
+    \end{subfigure}
+    \caption{Client-side execution time (ms) of DSphinx, including packet construction and decentralized route sampling, under varying path length ($m$) and reconstruction threshold ($d$).}
+    \label{fig:scalability}
+\end{figure}
 
-Table~\ref{tab:scalability} reports the total client-side runtime required for decentralized route sampling and packet construction. 
-Depending on the parameter configuration, the runtime ranges from 2.84 ms to 53.12 ms, compared with approximately 0.5-2 ms for the original Sphinx. 
-As expected, the execution time increases with both the path length and the reconstruction threshold.
+Figure~\ref{fig:scalability} reports the total client-side runtime required for packet construction and decentralized route sampling. 
+Depending on the parameter configuration, the runtime ranges from approximately 3 ms to 50 ms, compared to 0.5--2 ms for the original Sphinx.
+The measured runtimes are consistent with the theoretical complexity of the protocol. 
+In particular, the dominant cost arises from decentralized route sampling, whose threshold reconstruction requires $\mathcal{O}(d \log d)$ operations for each of the $m$ routing hops, yielding an overall client-side complexity of $\mathcal{O}(md \log d)$. 
+This trend is clearly reflected in Figure~\ref{fig:scalability}, where increasing either the path length or the reconstruction threshold results in an approximately linear increase in execution time.
 
-Table~\ref{tab:runtime} summarizes the execution time of the main protocol phases. 
-Client-side execution is dominated by decentralized route sampling, which accounts for approximately 86\% of the total runtime, whereas DSphinx packet construction contributes only about 14\%. 
-On the network side, packet processing remains lightweight, requiring between 0.49 ms and 0.80 ms per packet (approximately 0.15 ms for Sphinx). while the setup phase is executed only once during initialization. 
-Similarly, STTPs introduce negligible computational cost, requiring at most 0.007 ms to process a route-sampling request. 
-Their setup phase (network node and STTP) is expensive but is performed only once.
+Figure~\ref{fig:runtime} summarizes the execution times of the main protocol phases and illustrates their dependence on the path length ($m$) or reconstruction threshold ($d$).
+On the client side, execution is dominated by decentralized route sampling, which accounts for approximately 86\% (approximately 2--50 ms) of the total runtime, whereas DSphinx packet construction contributes only the remaining 14\% (approximately 0.5--4.5 ms). 
+On the network side, packet processing remains lightweight, requiring only 0.5--0.8 ms per packet, compared with approximately 0.15 ms for Sphinx. 
+Although the node setup phase is the most computationally expensive operation (approximately 15--100 ms), it is performed only once during initialization.
+Similarly, STTPs introduce only negligible computational overhead. 
+Processing a route-sampling request requires approximately 0.3--0.7 ms, while the one-time setup phase completes in approximately 0.3 ms.
 
+\begin{comment}
 \begin{table}[t]
 \centering
 \caption{Observed execution times (ms) for DSphinx client, node, and STTP operations, including setup and runtime phases.}
@@ -84,17 +103,21 @@ ccc
 2.08 &\hspace{-1mm}-&\hspace{-1mm}48.90 \hspace{2mm}&
 16.44 &\hspace{-1mm}-&\hspace{-1mm}103.85 \hspace{2mm}&
 0.49 &\hspace{-1mm}-&\hspace{-1mm}0.80 \hspace{2mm}&
-32.16 &\hspace{-1mm}-&\hspace{-1mm}107.55 \hspace{2mm}&
-0.003 &\hspace{-1mm}-&\hspace{-1mm}0.007 \\
+0.32 &\hspace{-1mm}-&\hspace{-1mm}1.07 \hspace{2mm}&
+0.3 &\hspace{-1mm}-&\hspace{-1mm}0.7 \\
 \bottomrule
 \end{tabular}
 \end{table}
+\end{comment}
 
-The measured runtimes are consistent with the theoretical complexity of the protocol. 
-In particular, the dominant cost arises from decentralized route sampling, whose threshold reconstruction requires $\mathcal{O}(d \log d)$ operations for each of the $m$ routing hops, yielding an overall client-side complexity of $\mathcal{O}(md \log d)$. 
-This trend is clearly reflected in Table~\ref{tab:scalability}, where increasing either the path length or the reconstruction threshold results in an approximately linear increase in execution time.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{Images/boxplot.png}
+    \caption{Execution times (ms) for DSphinx client, node, and STTP operations under varying path length $m$ and reconstruction threshold $d$.}
+    \label{fig:runtime}
+\end{figure}
 
 Overall, the evaluation highlights the trade-off introduced by DSphinx. 
 Although decentralized route sampling increases the client-side computational cost compared with Sphinx, the absolute overhead remains modest in the context of deployed anonymous communication systems. 
-Recent measurements of the Nym mixnet report end-to-end latencies of approximately 500-800 ms, largely dominated by mixing delays (around 50 ms per hop) and network propagation rather than cryptographic processing \cite{diaz2024reliability}. 
-In comparison, the additional overhead introduced by DSphinx remains below 50 ms for the complete client-side protocol, making it unlikely to dominate end-to-end communication latency in practice.
+Recent measurements of the Nym mixnet report end-to-end latencies of approximately 500--800 ms, largely dominated by mixing delays (around 50 ms per hop) and network propagation rather than cryptographic processing \cite{diaz2024reliability}. 
+In comparison, the additional overhead introduced by DSphinx remains below 50 ms, making it unlikely to dominate end-to-end communication latency in practice.
