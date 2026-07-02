@@ -11,7 +11,7 @@ By contrast, DSphinx derives routes through a decentralized sampling procedure, 
 Although an adversary may repeatedly query the sampling mechanism until obtaining a desirable route, this is substantially more costly than arbitrary route construction.
 Once a route is sampled, it may be reused multiple times by re-randomizing $\A{}$ and the per-hop shared secrets. 
 Furthermore, repeated reuse of the same sampled route may create observable traffic patterns, making route-manipulation attacks easier to detect.
-
+\begin{comment}
 \smallskip
 \noindent\textbf{Fully decentralized packet construction.}
 DSphinx was originally designed to support a broader architecture in which STTPs participate not only in route sampling but also in packet-header construction. 
@@ -20,10 +20,12 @@ In principle, the integrity mechanism can be adapted so that STTPs collaborative
 While this extension would enable fully decentralized packet construction, we do not currently identify an application where its additional complexity would justify the extra communication cost. 
 We therefore leave this direction for future work.
 
+\end{comment}
+
 \smallskip
 \noindent\textbf{Limitations and Future Work.}
-DSphinx has several limitations. 
-First, a significant deployment challenge is establishing a sufficiently large, diverse, and independent set of STTP operators. 
+DSphinx has few limitations. 
+First, a deployment challenge in establishing a sufficiently large, diverse, and independent set of STTP operators. 
 Second, it relies on a threshold trust assumption: compromise of at least $d$ STTPs breaks header confidentiality and enables full path reconstruction. 
 Third, decentralizing route sampling introduces additional computation (less than 50 ms in our evaluation) and communication overhead. 
 Although modest compared with the end-to-end latency of deployed mixnets, these costs should be considered in latency-sensitive settings.

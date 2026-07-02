@@ -1,7 +1,5 @@
 \section{Protocol Description}\label{sec:scheme}
 
-\todo[inline]{Notation table}
-
 % Overview
 The proposed decentralized protocol distributes path sampling across a threshold number of semi-trusted third parties (STTPs), in order to mitigate client-side route biasing attacks. 
 Fig.~\ref{fig:overall_schema} illustrates the protocol, which is divided into three phases: 
@@ -35,6 +33,7 @@ Likewise, all honest STTPs execute the same deterministic procedure and therefor
 Any deviation results in inconsistent shares that cannot be reconstructed by the client, which queries at least d STTPs and reconstructs the route from any consistent subset of d responses. 
 Furthermore, STTPs observe only node pseudonyms and therefore cannot associate sampled routes with physical nodes without additional collusion.
 
+
 \subsection{Setup}
 
 Each network node $i$ samples a random identifier $r_i$ and constructs two random polynomials $f_i$ and $g_i$ of degree $d-1$, such that:
@@ -64,7 +63,7 @@ and returns its identifier together with the selected shares and partial shared 
 \begin{equation*}
     \left(t,\; \{N_{it}\}_{_{i=1}}^{^{m}},\; \{S_{it}\}_{_{i=1}}^{^{m}}\right)
 \end{equation*}
-
+Note that the path sampling scheme proposed in this work is designed for uniform random selection of routing nodes. While the Lightning Network implements different variants of shortest-path algorithms such as LND~\cite{lnd2020} and eclair~\cite{eclair2020} and c-lightning~\cite{clightning2020}, prior research has shown that random route selection offers stronger privacy guarantees~\cite{sharma2022anonymity,kumble2021lightning,tochner2019hijacking}. Similarly, in mixnet-based systems, the routing strategy that maximizes privacy is uniform random selection of mixes across layers~\cite{benguirat2022mixnet,benguirat2021mixim}.
 \subsection{Aggregation}
 
 Upon receiving responses from at least $d$ STTPs, the client reconstructs node addresses and shared secrets via Lagrange interpolation as in \eqref{eq:lagrange_reconstruction},
