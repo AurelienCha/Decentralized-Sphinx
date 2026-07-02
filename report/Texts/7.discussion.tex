@@ -11,6 +11,7 @@ By contrast, DSphinx derives routes through a decentralized sampling procedure, 
 Although an adversary may repeatedly query the sampling mechanism until obtaining a desirable route, this is substantially more costly than arbitrary route construction.
 Once a route is sampled, it may be reused multiple times by re-randomizing $\A{}$ and the per-hop shared secrets. 
 Furthermore, repeated reuse of the same sampled route may create observable traffic patterns, making route-manipulation attacks easier to detect.
+
 \begin{comment}
 \smallskip
 \noindent\textbf{Fully decentralized packet construction.}
@@ -19,7 +20,6 @@ In the present design, packet construction remains client-side to keep the proto
 In principle, the integrity mechanism can be adapted so that STTPs collaboratively construct partial packet headers, which are subsequently aggregated by the client. 
 While this extension would enable fully decentralized packet construction, we do not currently identify an application where its additional complexity would justify the extra communication cost. 
 We therefore leave this direction for future work.
-
 \end{comment}
 
 \smallskip

@@ -63,7 +63,10 @@ and returns its identifier together with the selected shares and partial shared 
 \begin{equation*}
     \left(t,\; \{N_{it}\}_{_{i=1}}^{^{m}},\; \{S_{it}\}_{_{i=1}}^{^{m}}\right)
 \end{equation*}
-Note that the path sampling scheme proposed in this work is designed for uniform random selection of routing nodes. While the Lightning Network implements different variants of shortest-path algorithms such as LND~\cite{lnd2020}, eclair~\cite{eclair2020} and c-lightning~\cite{clightning2020}, prior research has shown that random route selection offers stronger privacy guarantees~\cite{sharma2022anonymity,kumble2021lightning,tochner2019hijacking}. Similarly, in mixnet-based systems, the routing strategy that maximizes privacy is uniform random selection of mixes across layers~\cite{benguirat2022mixnet,benguirat2021mixim}.Hence, this work focuses on random path sampling, leaving alternative routing algorithms for future work.
+Note that the path sampling scheme proposed in this work is designed for uniform random selection of routing nodes. 
+While the Lightning Network implements variants of shortest-path algorithms such as LND~\cite{lnd2020}, eclair~\cite{eclair2020} and c-lightning~\cite{clightning2020}, prior research has shown that random route selection offers stronger privacy guarantees~\cite{sharma2022anonymity,kumble2021lightning,tochner2019hijacking}. 
+Similarly, in mixnet-based systems, the routing strategy that maximizes privacy is uniform random selection of mixes across layers~\cite{benguirat2022mixnet,benguirat2021mixim}. 
+Hence, this work focuses on random path sampling, leaving alternative routing algorithms for future work.
 \subsection{Aggregation}
 
 Upon receiving responses from at least $d$ STTPs, the client reconstructs node addresses and shared secrets via Lagrange interpolation as in \eqref{eq:lagrange_reconstruction},
