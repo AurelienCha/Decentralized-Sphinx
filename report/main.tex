@@ -82,13 +82,16 @@
 \maketitle
 
 \begin{abstract}
-%
-Sphinx packet format provides strong security and privacy guarantees against passive and active adversaries whose goal is to de-anonymize traffic by correlating input and output packets based on size and format. While is widely used in decentralized networks such as Nym, Katzenpost, and the Lightning Network it remains vulnerable to malicious clients that deviate from the prescribed routing protocol to launch flooding, jamming, and $(N-1)$ attacks in order to de-anonymize communications in mixnets and transactions in Lightning Network.
+Sphinx packet is the foundation of many privacy-preserving decentralized systems, including mixnets and the Lightning Network, providing strong guarantees of unlinkability, confidentiality, and integrity. 
+However, because clients independently select routing paths, malicious clients can deviate from the prescribed routing algorithm to launch attacks such as route biasing, jamming, and targeted deanonymization.
 
-In this paper, we propose DSphinx, a decentralized variant of the Sphinx packet format that distributes path selection among multiple semi-trusted third parties in order mitigate client-side attacks. We provide a formal analysis of the security properties of our DSphinx packet format in the presence of network adversaries, corrupted routing nodes and semi-trusted third parties. Additionally, we provide a benchmark evaluating the latency and computational overhead of our scheme. Our empirical results show that the cost is negligible relative to the inherent overhead of decentralized networks.
-
+We present \emph{DSphinx}, a decentralized path-selection protocol that distributes route sampling across multiple semi-trusted third parties. 
+Using threshold secret sharing and elliptic-curve cryptography, DSphinx prevents clients from arbitrarily selecting routes while preserving the compact packet structure and security guarantees of Sphinx. 
+We provide a formal security analysis showing that DSphinx preserves unlinkability, integrity protection, replay resistance, and collusion resistance under standard cryptographic assumptions. 
+A prototype implementation demonstrates that the additional computational overhead remains modest, introducing less than 50 ms of client-side latency. 
+Our approach reduces client control over route selection while maintaining the efficiency and privacy guarantees of Sphinx.
 \keywords{Sphinx \and Decentralized networks \and Mixnet \and Lightning.}
-\end{abstract}\todo{Update Abstract}
+\end{abstract}
 
 % TODO change artifact
 \newcommand{\artifact}[0]{\url{https://anonymous.4open.science/r/DSphinx-Decentralized_Route_sampling/}}
