@@ -12,6 +12,11 @@ git clone --recurse-submodules https://github.com/your-org/your-repo.git
 - What is the difference between your two implementations of DSphinx?
 -  In general, the path sampling and aggregation part could be better explained.
 
+## Typos
+
+- You have an error ("Lightening") in the last sentence of sec 2.1, another in 2.2 "Routing algorithms in decentralized is chosen [...]" and another in the last sentence of sec 6.
+- page 5: maclicious -> malicious
+
 ## Discussion
 
 - Additionally, and this is something that the authors acknowledge as a limitation, while random path selection may benefit privacy, it is worth considering how DSphinx can be made more viable for a network like Lightning.
