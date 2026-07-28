@@ -1,7 +1,7 @@
 \section{Background and Related Work}\label{sec:related}
 
 \subsection{Decentralized Networks}
-Since Chaum’s seminal work on untraceable email in 1981~\cite{chaum-mix}, there has been a great amount of research related to mixnet design~\cite{piotrowska2017loopix, van2015vuvuzela, kwon2020xrd, lazar2018karaoke, cottrell1995mixmaster, alexopoulos2017MCMIX, chaum2016cmix, chaum-mix, danezis2003mixminion}. 
+Since Chaum's seminal work on untraceable email in 1981~\cite{chaum-mix}, there has been a great amount of research related to mixnet design~\cite{piotrowska2017loopix, van2015vuvuzela, kwon2020xrd, lazar2018karaoke, cottrell1995mixmaster, alexopoulos2017MCMIX, chaum2016cmix, chaum-mix, danezis2003mixminion}. 
 A mixnet is a network of nodes that delay and shuffle packets as they traverse a sequence of hops before reaching their final destination, preventing adversaries from correlating input and output traffic.
 
 Mixnets have been known to resist powerful adversaries typically called global passive adversaries whose goal is to deanonymize clients and trace message through traffic analysis techniques. 
@@ -17,7 +17,7 @@ Although the Lightning Network was initially introduced to address Bitcoin's sca
 In particular adversaries should not be able to identify the sender or receiver of a transaction. 
 Additionally an intermediate node should not know whether their predecessor is the transaction's originator or whether their successor is the transaction's recipient. 
 
-These privacy guarantees, both in mixnets and in the Lightening Network, are achieved using the Sphinx packet format~\cite{sphinx}.
+These privacy guarantees, both in mixnets and in the Lightning Network, are achieved using the Sphinx packet format~\cite{sphinx}.
 \begin{comment}
 \begin{figure}
 	\hspace{-9mm}
@@ -41,7 +41,8 @@ This ensures that adversaries cannot tamper with routes or perform active attack
 This is achieved by using fixed-size headers and payloads and by re-randomizing cryptographic elements at every hop.
 Each hop transforms the packet into a fresh, uniformly distributed header, preventing an adversary from linking an incoming packet to its outgoing counterpart. These guarantees have made Sphinx the de facto standard for privacy-preserving routing in modern decentralized systems such as the Lightning Network~\cite{poon2016bitcoin} and mixnet-based architectures like Nym~\cite{nym} and Katzenpost~\cite{infeld2025echomix}.
 
-However, in all these systems, the Sphinx packet format must be fully constructed by the client, which introduces vulnerabilities when malicious clients deviate from the prescribed routing algorithm. Routing algorithms in decentralized networks is chosen carefully balancing latency with strong privacy guarantees. Preventing malicious clients from deviating from the routing algorithm, without relying on a central authority and while preserving unlinkability between packets and clients has been a challenging open problem. A malicious client can intentionally deviate from the routing protocol to launch attacks, either against the functioning of the system, against specific clients, or against the overall privacy provided by the system. For example, in the Lightning Network, a malicious client can route payments through long paths specifically to launch jamming attacks, freeze funds, or infer activity patterns of nodes through response times~\cite{Rohrer2019paymentchannels,kappos2021empirical}. In Nym, nodes should be chosen uniformly across layers to maximize anonymity~\cite{benguirat2022mixnet}; therefore, an attacker can bias route selection either to reduce the overall anonymity of the system or to target specific clients and messages.
+However, in all these systems, the Sphinx packet format must be fully constructed by the client, which introduces vulnerabilities when malicious clients deviate from the prescribed routing algorithm. 
+Routing algorithms in decentralized networks are chosen carefully balancing latency with strong privacy guarantees. Preventing malicious clients from deviating from the routing algorithm, without relying on a central authority and while preserving unlinkability between packets and clients has been a challenging open problem. A malicious client can intentionally deviate from the routing protocol to launch attacks, either against the functioning of the system, against specific clients, or against the overall privacy provided by the system. For example, in the Lightning Network, a malicious client can route payments through long paths specifically to launch jamming attacks, freeze funds, or infer activity patterns of nodes through response times~\cite{Rohrer2019paymentchannels,kappos2021empirical}. In Nym, nodes should be chosen uniformly across layers to maximize anonymity~\cite{benguirat2022mixnet}; therefore, an attacker can bias route selection either to reduce the overall anonymity of the system or to target specific clients and messages.
 
 \begin{comment}
 In addition, enforcing policies such as accountability and legitimacy verification (exit policy) remains inherently challenging in decentralized networks\cite{oram2001peer,diaz2007accountable, naylor2014balancing,mirkovic2008building, backes2014backref, xu2012accountable}.
