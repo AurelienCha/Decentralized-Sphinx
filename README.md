@@ -3,7 +3,7 @@
 DSphinx is a decentralized path-selection protocol for privacy-preserving networks based on the Sphinx packet format. Instead of allowing the client to choose the complete route, DSphinx distributes route sampling across multiple semi-trusted third parties (STTPs).
 
 The design is described in **“DSphinx: A Decentralized Path Selection for Decentralized Networks”** by Aurélien Chassagne, Manuel Mota Leal Dias, Iness Ben Guirat, Jan Tobias Mühlberg, and Jean-Michel Dricot.
-[![Paper](https://img.shields.io/badge/paper-DSphinx-blue)](./report/main.pdf)
+[![Paper](https://img.shields.io/badge/paper-DSphinx-blue)](./article.pdf)
 
 > **Research prototype:** this repository implements a research protocol and should not be treated as production-ready anonymous networking software. The security properties described in the paper depend on the stated cryptographic and threshold assumptions. The Python implementation uses the `mclbn256` library for BN254 elliptic-curve operations.
 
