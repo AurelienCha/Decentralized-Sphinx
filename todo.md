@@ -1,21 +1,15 @@
 git clone --recurse-submodules https://github.com/your-org/your-repo.git
 
 
-# TODO
-- Workshop registration
+# CBT feedback
 
-##  Possible Improvment (CBT feedback)
+##  Possible Improvment
 
 - The main concern is practicality. It is not clear where the trusted third parties responsible for route selection are expected to come from.
 - The latency overhead should also be discussed in the limitations.
 - The paper would also benefit from a stronger motivation for the decentralised construction. Client-controlled route selection also gives clients control over how their messages are routed and can be desirable.
 - What is the difference between your two implementations of DSphinx?
 -  In general, the path sampling and aggregation part could be better explained.
-
-## Typos
-
-- You have an error ("Lightening") in the last sentence of sec 2.1, another in 2.2 "Routing algorithms in decentralized is chosen [...]" and another in the last sentence of sec 6.
-- page 5: maclicious -> malicious
 
 ## Discussion
 
