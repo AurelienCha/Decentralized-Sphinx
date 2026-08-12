@@ -130,29 +130,9 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
 \end{enumerate}
 
 %\newpage
-\vspace*{-11mm}
-\begin{figure}[H]
-\centering
-\begin{minipage}{0.47\linewidth}
-\begin{algorithm}[H]
-\small
-\input{schema/code_filler_chunks_small.tex}
-\label{algo:preprocessing}
-\end{algorithm}
-\end{minipage}
-\hfill
-\begin{minipage}{0.47\linewidth}
-\begin{algorithm}[H]
-\small
-\input{schema/code_sttp_small.tex}
-\label{algo:sttp}
-\end{algorithm}
-\end{minipage}
-\end{figure}
-\vspace*{-10mm}
+\vspace*{-4mm}
 \begin{figure}[H]
     \centering
-
     % -------- Left figure (b) --------
     % \setcounter{sub\@captype}{1}
     \begin{subfigure}[b]{0.48\linewidth}
@@ -192,6 +172,26 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
     \caption{Overview of chunk-wise header processing for a path of length $m=3$. Circled numbers \raisebox{1pt}{\eq[\color{red}\scriptsize x]} refers to Equation x in the paper.}
     \label{fig:chunkwise-overview}
 \end{figure}
+\vspace*{-17mm}
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.47\linewidth}
+        \begin{algorithm}[H]
+        \small
+        \input{schema/code_filler_chunks_small.tex}
+        \label{algo:preprocessing}
+        \end{algorithm}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.47\linewidth}
+        \begin{algorithm}[H]
+        \small
+        \input{schema/code_sttp_small.tex}
+        \label{algo:sttp}
+        \end{algorithm}
+    \end{minipage}
+\end{figure}
+
 
 
 \subsection{Network Nodes Processing}

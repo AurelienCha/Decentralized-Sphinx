@@ -7,15 +7,14 @@ However, despite its strengths, the Sphinx packet format is constructed entirely
 For example, in mixnets, a client may bias route selection by violating the routing algorithm, thereby reducing the number of messages mixed at a specific node in order to target an honest client or degrade the system's overall anonymity~\cite{benguirat2022mixnet}.
 
 In the Lightning Network, a malicious client can launch a jamming attack by sending payments through honest nodes and deliberately never resolving them, locking their channels and freezing liquidity. Additionally, by repeatedly routing through specific nodes and observing response times, the attacker can infer their current payment load and activity patterns~\cite{Rohrer2019paymentchannels, kappos2021empirical}.
-%We therefore argue that decentralizing path selection is crucial for achieving more robust, verifiable, and flexible anonymous communication systems and decentralized networks.
 
-In this work, we introduce DSphinx, a \emph{decentralized Sphinx path-selection scheme} that distributes the computation across multiple independent semi-trusted third parties (STTPs).
+In this work, we introduce DSphinx, a \emph{decentralized Sphinx path-selection scheme} in which multiple independent semi-trusted third parties (STTPs) collaboratively derive the packet's route from a client-provided nonce.
 
-Achieving decentralized route selection while preserving Sphinx's security guarantees raises several challenges. 
+Decentralizing route selection while preserving Sphinx's guarantees raises several challenges.
 First, the protocol must prevent individual STTPs, or coalitions of corrupted STTPs, from learning routing information or recovering cryptographic secrets. 
 Second, routing nodes should learn no more than in the original Sphinx design: each node learns only its own shared secret and the identity of the previous and next hop. 
 Third, unlinkability must be preserved against a global passive adversary capable of observing all network traffic. 
-Finally, decentralizing route selection must not introduce trapdoors or structural weaknesses that would allow any adversary to bias the sampling process or correlate packets across hops.
+Finally, decentralization must not introduce weaknesses that enable adversaries to bias sampling or correlate packets across hops.
 
 DSphinx addresses these challenges by combining threshold secret sharing with elliptic-curve cryptography to decentralize route sampling while preserving the compact packet format and per-hop processing model of Sphinx. 
 Route selection is deterministically derived from a client-provided nonce and collaboratively computed by STTPs, preventing clients from arbitrarily selecting routes. 
@@ -25,12 +24,7 @@ By reducing client control over path selection while preserving Sphinx's efficie
 \medskip
 \noindent In summary, our main contributions are as follows:
 \begin{itemize}[topsep=1pt, itemsep=1pt]
-	%
 	\item We design \emph{DSphinx}, the first \emph{decentralized Sphinx} path-selection scheme that prevents malicious clients from deviating from the routing protocol.
-	%
 	\item We provide a detailed security analysis of \emph{DSphinx}, considering passive and active network adversaries, corrupted routing nodes, and colluding STTPs.
-	%
 	\item We release a benchmark\footnote{\artifact} for measuring latency and computational overhead, implemented in both Rust and Python.
 \end{itemize}
-
-%This paper is organized as follows. In Section~\ref{sec:related}, we review related work. Section~\ref{sec:sys_model} introduces our threat model and outlines the desired security properties. In Section~\ref{sec:scheme}, we describe our protocol for DSphinx. Section~\ref{sec:security} provides a detailed security analysis, and Section~\ref{sec:evaluation} presents the evaluation of our design. We discuss the limitations of our design and directions for future work in Section~\ref{sec:discussion}, and conclude in Section~\ref{sec:conclusion}.
