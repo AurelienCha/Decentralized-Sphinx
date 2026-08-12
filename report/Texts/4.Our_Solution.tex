@@ -5,9 +5,9 @@ The proposed decentralized protocol distributes path sampling across a threshold
 Fig.~\ref{fig:overall_schema} illustrates the protocol, which is divided into three phases: 
 a one-time setup phase (Step 0), a decentralized path sampling phase (Steps 1-3), and a header construction phase (Step 4).
 
-\begin{figure}%[t]
+\begin{figure}
     \centering
-    \resizebox{0.9\linewidth}{!}{\input{schema/schema_overview.tex}}
+    \resizebox{0.9\linewidth}{!}{\input{Schemes/overview.tex}}
     \caption{Overview of decentralized path selection.
     (0) Setup, (1) client nonce, (2) path sampling, (3) aggregation, (4) header construction, (5) packet forwarding.}
     \label{fig:overall_schema}
@@ -90,7 +90,7 @@ Those shared secrets are derived iteratively in cascade, where each hop incorpor
 Given the reconstructed route $\{N_i\}_{i=1}^{m}$ and per-hop shared secrets $\{s_i\}_{i=1}^{m}$, the client constructs the DSphinx header for destination $\D{}$ (encoded in $\mathbb{G}$).
 The header construction proceeds in two phases; 
 a preprocessing phase (Alg.~\ref{algo:preprocessing}, Fig.~\ref{fig:chunk-preprocessing}) that generates filler chunks, 
-followed by a layer-by-layer encryption phase (Alg.~\ref{algo:sttp}, Fig.~\ref{fig:chunk-encryption}) applied in reverse order, from the last hop to the first.
+followed by a layer-by-layer encryption phase (Alg.~\ref{algo:encryption}, Fig.~\ref{fig:chunk-encryption}) applied in reverse order, from the last hop to the first.
 To ensure unlinkability, encryption is performed using a set of independently derived generators $\{G_j\}_{j=1}^{n}$, one per chunk in the header, such that no scalar relationship between any pair of generators is known.
 
 % Preprocessing
@@ -109,7 +109,7 @@ An example for $m=3$ is illustrated in Fig.~\ref{fig:chunk-preprocessing}.
 \noindent{\textbf{Layered Encryption Phase.}}
 The header is initialized by concatenating the destination chunk $\D{}$ with the filler chunks $\phi$, producing a $n$-chunks header.
 Encryption is then applied iteratively in reverse path order, from $i=m$ down to $i=1$, 
-as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo:sttp}.
+as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo:encryption}.
 \begin{enumerate}
     \item \textbf{Chunk encryption:}
     Each chunk $j$ is encrypted according Eq.~\eqref{eq:layer_i}.
@@ -138,7 +138,7 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
     \begin{subfigure}[b]{0.48\linewidth}
         \setcounter{subfigure}{1} % forces next to be (b)
         % \centering
-        \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_encryption.tex}}
+        \resizebox{\linewidth}{!}{\input{Schemes/header_encryption.tex}}
         \caption{Encryption (client)}
         \label{fig:chunk-encryption}
     \end{subfigure}
@@ -151,7 +151,7 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
         \begin{subfigure}[t]{\linewidth}
             \setcounter{subfigure}{0} % forces next to be (a)
             \centering
-            \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_preprocessing.tex}}
+            \resizebox{\linewidth}{!}{\input{Schemes/header_preprocessing.tex}}
             \caption{Preprocessing (client)}
             \label{fig:chunk-preprocessing}
         \end{subfigure}
@@ -162,7 +162,7 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
         \begin{subfigure}[b]{\linewidth}
             \setcounter{subfigure}{2} % forces next to be (c)
             \centering
-            \resizebox{\linewidth}{!}{\input{Appendices/chunkwise_decryption.tex}}
+            \resizebox{\linewidth}{!}{\input{Schemes/header_decryption.tex}}
             \caption{Decryption (network node)}
             \label{fig:chunk-decryption}
         \end{subfigure}
@@ -178,7 +178,7 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
     \begin{minipage}{0.47\linewidth}
         \begin{algorithm}[H]
         \small
-        \input{schema/code_filler_chunks_small.tex}
+        \input{Pseudocodes/header_preprocessing.tex}
         \label{algo:preprocessing}
         \end{algorithm}
     \end{minipage}
@@ -186,8 +186,8 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
     \begin{minipage}{0.47\linewidth}
         \begin{algorithm}[H]
         \small
-        \input{schema/code_sttp_small.tex}
-        \label{algo:sttp}
+        \input{Pseudocodes/header_encryption.tex}
+        \label{algo:encryption}
         \end{algorithm}
     \end{minipage}
 \end{figure}
@@ -206,8 +206,8 @@ The first decrypted chunk $\BB{i}{1}$ reveals the next hop $\N{i+1}$.
 The second chunk $\BB{i}{2}$ contains the integrity tag $\C{i+1}$ for the next hop, while the remaining chunks form the next encrypted routing information $\B{i+1}{}$.
 Finally, the node updates the cryptographic element according to \eqref{eq:update_alpha} and forwards the packet to the next hop.
 \begin{align}
-\s{i} &= \text{HashToScalar}\!\left(\sk{i} \, \A{i}\right) \label{eq:derive_secret} \\
-\C{i} &\overset{\text{?}}{=} \text{HMAC}\!\left(\B{i}{}, \s{i}\right) \label{eq:integrity_check} \\
-\BB{i}{j} &= \B{i}{j} - \sG{i}{j} \label{eq:decrypt} \\
-\A{i+1} &= s_i \, \A{i} \label{eq:update_alpha} 
+    \s{i}     &=                     \text{HashToScalar}\!\left(\sk{i} \, \A{i}\right)  \label{eq:derive_secret} \\
+    \C{i}     &\overset{\text{?}}{=} \text{HMAC}\!\left(\B{i}{}, \s{i}\right)           \label{eq:integrity_check} \\
+    \BB{i}{j} &=                     \B{i}{j} - \sG{i}{j}                               \label{eq:decrypt} \\
+    \A{i+1}   &=                     s_i \, \A{i}                                       \label{eq:update_alpha} 
 \end{align}
