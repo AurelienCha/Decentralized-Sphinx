@@ -23,49 +23,9 @@ This repository contains:
 
 - The paper **“DSphinx: A Decentralized Path Selection for Decentralized Networks”**, submitted to the **CBT Workshop 2026 of ESORICS**.
 - A **Python implementation** of DSphinx, together with its benchmark, developed by Aurélien Chassagne as a PhD student.
-- A **Rust implementation**, provided as a [GitLab submodule](https://gitlab.com/manuelmotadias/master_thesis.git), together with its benchmark for validating the results, developed by Manuel Mota Leal Dias as a master's student.
+- A [**Rust implementation**](https://gitlab.com/manuelmotadias/master_thesis.git), provided as a submodule, together with its benchmark for validating the results, developed by Manuel Mota Leal Dias as a master's student.
 - **Benchmarking** and comparison tools for evaluating the different implementations.
-- The **original** [**Sphinx implementation**](https://github.com/UCL-InfoSec/sphinx.git), included as a Git submodule and used as a baseline for comparison.
-
-```text
-.
-├── README.md
-├── requirements.txt
-├── .gitmodules
-├── report/
-│
-└── src/
-    ├── Python_Version/
-    │   ├── Client/
-    │   │   ├── client.py
-    │   │   ├── ECC.py
-    │   │   ├── crypto.py
-    │   │   ├── header.py
-    │   │   ├── network.py
-    │   │   └── main.py
-    │   │
-    │   ├── Mixnode/
-    │   │   ├── mixnode.py
-    │   │   ├── ECC.py
-    │   │   ├── crypto.py
-    │   │   ├── header.py
-    │   │   ├── network.py
-    │   │   └── main.py
-    │   │
-    │   ├── STTP/
-    │   │   ├── node.py
-    │   │   ├── ECC.py
-    │   │   └── network.py
-    │   │
-    │   ├── config.py
-    │   ├── run.sh
-    │   ├── bench.sh
-    │   └── .benchmark/
-    │
-    └── Rust_Version/
-```
-
-The repository uses Git submodules for the Rust implementation and the original Sphinx benchmark code. Clone the repository recursively.
+- The [**original Sphinx implementation**](https://github.com/UCL-InfoSec/sphinx.git), included as a submodule and used as a baseline for comparison.
 
 ## 3. Installation
 
