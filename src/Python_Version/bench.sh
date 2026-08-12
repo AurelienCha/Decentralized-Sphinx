@@ -24,7 +24,7 @@ for p in "${PATH_LENGTH[@]}"; do  # PATH_LENGTH
                 for c in "${CLIENTS[@]}"; do  # NBR_CLIENTS
                     i=$((i + 1))
                     echo "Run: $i / $total_runs"
-                    ./script.sh -p $p -t $t -m $m -s $s -c $c -v 0
+                    ./run.sh -p $p -t $t -m $m -s $s -c $c -v 0
                     dir=.benchmark/data/.logs/p${p}_t${t}_m${m}_s${s}_c${c}
                     mkdir $dir
                     mv .logs/* -t $dir
