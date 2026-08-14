@@ -17,27 +17,25 @@ a one-time setup phase (Step 0), a decentralized path sampling phase (Steps 1-3)
 % Header structure - Chunks
 The current protocol is based on an adaptation of the Sphinx packet format that we called DSphinx.
 The key distinction is that each header element is independently encoded as an elliptic curve (EC) point. 
-Consequently, the DSphinx header is structured as a sequence of fixed-size chunks, as illustrated in Fig.~\ref{fig:chunkwise-overview}, where each chunk corresponds to a single header element represented by an EC point.
+Consequently, the DSphinx header is a sequence of fixed-size chunks, as illustrated in Fig.~\ref{fig:chunkwise-overview}, with each chunk representing a single header element as an EC point.
 Each network node along the packet route contributes for two chunks: one encoding its address and another encoding a per-hop integrity tag. 
-Therefore, a route of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per network node and one additional chunk corresponding to the final destination.
-Some routing information, such as IP addresses, must be reversibly encoded as elliptic curve points. 
+Thus, a route of length $m$ is represented by $n = 2m + 1$ chunks, accounting for two chunks per network node and one additional chunk for the final destination.
+Some routing information, such as IP addresses, must be reversibly encoded as EC points. 
 To this end, DSphinx uses the Elligator mapping~\cite{bernstein2013elligator}, which produces points computationally indistinguishable from randomly sampled group elements.
 
 \smallskip
 \noindent\textbf{Design rationale.}
-DSphinx decentralizes route sampling across multiple STTPs to prevent both clients and STTPs from manipulating path selection.
-Clients contribute only a nonce $w$, which is deterministically mapped to the curve point $\A{}$ using a hash-to-curve function.
-The routing path is then deterministically derived from the tuple $(\A{},\text{timestamp},i)$, where the timestamp ensures different sampled paths over time, and the hop index $i$ ensures independent node selection across hops.
-Since hash-to-curve is non-invertible, influencing the sampled route reduces to repeated trial over the nonce space.
-Likewise, all honest STTPs execute the same deterministic procedure and therefore produce identical routing decisions from the same nonce. 
-Any deviation results in inconsistent shares that cannot be reconstructed by the client, which queries at least d STTPs and reconstructs the route from any consistent subset of d responses. 
-Furthermore, STTPs observe only node pseudonyms and therefore cannot associate sampled routes with physical nodes without additional collusion.
-
+DSphinx decentralizes route sampling across multiple STTPs to prevent manipulation by both clients and STTPs. 
+The client provides only a nonce $w$, which is deterministically mapped to a curve point $\A{}$ using a hash-to-curve function. 
+Each STTP then derives the same route from $(\A{},\text{timestamp},i)$, where the timestamp provides time-dependent randomness and $i$ hop-dependent randomness. 
+Since the mapping from $w$ to $\A{}$ is non-invertible, a client seeking to influence the resulting path must repeatedly sample different nonces. 
+Honest STTPs therefore make identical routing decisions for the same input and return consistent shares, while deviations produce inconsistent shares that cannot be reconstructed from the responses of at least $d$ STTPs. 
+Finally, STTPs observe only node pseudonyms and cannot directly associate sampled routes with physical nodes.
 
 \subsection{Setup}
 
 Each network node $i$ samples a random identifier $r_i$ and constructs two random polynomials $f_i$ and $g_i$ of degree $d-1$, such that:
-$f_i(0) = k_i$ and $g_i(0) = N_i$, where $k_i$ denotes the node's secret key, $N_i$ its encoded address in $\mathbb{G}$, and $d$ the reconstruction threshold.
+$f_i(0) = k_i$ and $g_i(0) = N_i$, where $N_i$ denotes its encoded address in $\mathbb{G}$, $k_i$ its secret key, and $d$ the reconstruction threshold.
 
 Each STTP is identified by a value $t$, computed as the hash of its address. 
 For each STTP $t$, network node $i$ evaluates $f_i(t)$ and $g_i(t)$ and securely transmits the corresponding shares together with $r_i$ to the STTP $t$ as in \eqref{eq:sttp_share}.
@@ -56,17 +54,18 @@ However, changing the threshold $d$ requires reinitializing the entire setup.
 
 To sample a routing path, the client sends a nonce $w$ to at least $d$ STTPs. 
 Each STTP maps this nonce to the curve point $\A{}$ using a hash-to-curve function.
-
-For each hop $i$, the STTP computes $r'_i = \text{hash}\!\left(\A{}, \text{timestamp}, i\right)$, and selects the network node share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$.
-The STTP then computes the partial Diffie-Hellman shared secret $S_{it} = k_{it}\A{}$, 
-and returns its identifier together with the selected shares and partial shared secrets to the client:
+Then for each hop $i\in{1,\ldots,m}$, the STTP computes $r'_i = \text{hash}\!\left(\A{}, \text{timestamp}, i\right)$, and selects its network node share $(r_i, k_{it}, N_{it})$ whose identifier $r_i$ is closest to $r'_i$.
+The STTP computes the partial Diffie-Hellman shared secret $S_{it} = k_{it}\A{}$.
+It then returns its identifier $t$, with the $m$ partial nodes and shared secrets:
 \begin{equation*}
     \left(t,\; \{N_{it}\}_{_{i=1}}^{^{m}},\; \{S_{it}\}_{_{i=1}}^{^{m}}\right)
 \end{equation*}
+
 Note that the path sampling scheme proposed in this work is designed for uniform random selection of routing nodes. 
 While the Lightning Network implements variants of shortest-path algorithms such as LND~\cite{lnd2020}, eclair~\cite{eclair2020} and c-lightning~\cite{clightning2020}, prior research has shown that random route selection offers stronger privacy guarantees~\cite{sharma2022anonymity,kumble2021lightning,tochner2019hijacking}. 
 Similarly, in mixnet-based systems, the routing strategy that maximizes privacy is uniform random selection of mixes across layers~\cite{benguirat2022mixnet,benguirat2021mixim}. 
 Hence, this work focuses on random path sampling, leaving alternative routing algorithms for future work.
+
 \subsection{Aggregation}
 
 Upon receiving responses from at least $d$ STTPs, the client reconstructs node addresses and shared secrets via Lagrange interpolation as in \eqref{eq:lagrange_reconstruction},
@@ -91,17 +90,17 @@ Given the reconstructed route $\{N_i\}_{i=1}^{m}$ and per-hop shared secrets $\{
 The header construction proceeds in two phases; 
 a preprocessing phase (Alg.~\ref{algo:preprocessing}, Fig.~\ref{fig:chunk-preprocessing}) that generates filler chunks, 
 followed by a layer-by-layer encryption phase (Alg.~\ref{algo:encryption}, Fig.~\ref{fig:chunk-encryption}) applied in reverse order, from the last hop to the first.
-To ensure unlinkability, encryption is performed using a set of independently derived generators $\{G_j\}_{j=1}^{n}$, one per chunk in the header, such that no scalar relationship between any pair of generators is known.
+To ensure unlinkability, encryption is performed using a set of independently derived generators $\{G_j\}_{j=1}^{n}$, one per chunk, such that no scalar relationship between any pair of generators is known.
 
 % Preprocessing
 \smallskip
 \noindent\textbf{Preprocessing Phase.}
 The preprocessing phase prepares a vector of filler chunks $\phi$ according to \eqref{eq:preprocessing}.
 These filler chunks ensure that after each encryption layer the last two chunks evaluate to the identity element and can thus be safely truncated, ensuring a constant header size and reversibility when processed by the network nodes. 
-The detailed procedure is specified in Alg.~\ref{algo:preprocessing}, which takes as input the set of shared secrets $\{s_i\}$ and the set of chunk generators $\{G_j\}$, and outputs $n-1$ filler chunks, where $n = 2m+1$ is the header size for a path of length $m$. 
+The detailed procedure is specified in Alg.~\ref{algo:preprocessing}, which takes as input the set of shared secrets $\{s_i\}_{i=1}^{m}$ and the set of chunk generators $\{G_j\}_{j=1}^{n}$, and outputs $n-1$ filler chunks, where $n = 2m+1$ is the header size for a path of length $m$. 
 An example for $m=3$ is illustrated in Fig.~\ref{fig:chunk-preprocessing}.
 \begin{equation}
-    \phi_j = - \sum_{i=1}^{m} s_i\, G_{\,n+j-2i}, \qquad 1 \le j \le n-1 .
+    \phi_j = - \sum_{i=1}^{m} s_i\, G_{\,j+n-2i}, \qquad 1 \le j \le n-1 .
 \label{eq:preprocessing}
 \end{equation}
 
@@ -112,8 +111,8 @@ Encryption is then applied iteratively in reverse path order, from $i=m$ down to
 as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo:encryption}.
 \begin{enumerate}
     \item \textbf{Chunk encryption:}
-    Each chunk $j$ is encrypted according Eq.~\eqref{eq:layer_i}.
-    The last two chunks evaluate to the identity element due to the preprocessing phase and may therefore be discarded while preserving subsequent processing.
+    Each chunk $j$ is encrypted according Eq.~\eqref{eq:layer_i}, where $H_i$ represents the concatenation of $N_i$, $\C{i}$ and $\B{i}{}$ chunks.
+    Due to the preprocessing phase, the last two chunks evaluate to the identity element and may therefore be discarded while preserving subsequent processing.
     \begin{equation}
         H_{ij} = H_{(i+1,\,j)} + \sG{i}{j}
         \label{eq:layer_i}
@@ -130,8 +129,27 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
 \end{enumerate}
 
 %\newpage
-\vspace*{-4mm}
-\begin{figure}[H]
+\begin{figure}
+    \centering
+    \begin{minipage}{0.49\linewidth}
+        \begin{algorithm}[H]
+        \small
+        \input{Pseudocodes/header_preprocessing.tex}
+        \label{algo:preprocessing}
+        \end{algorithm}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.49\linewidth}
+        \begin{algorithm}[H]
+        \small
+        \input{Pseudocodes/header_encryption.tex}
+        \label{algo:encryption}
+        \end{algorithm}
+    \end{minipage}
+\end{figure}
+
+
+\begin{figure}
     \centering
     % -------- Left figure (b) --------
     % \setcounter{sub\@captype}{1}
@@ -169,29 +187,9 @@ as illustrated in Fig.~\ref{fig:chunk-encryption} and detailed in Alg.~\ref{algo
 
     \end{subfigure}
 
-    \caption{Overview of chunk-wise header processing for a path of length $m=3$. Circled numbers \raisebox{1pt}{\eq[\color{red}\scriptsize x]} refers to Equation x in the paper.}
+    \caption{DSphinx header construction (client) and its processing (network node) for a path of length $m=3$. Circled numbers \raisebox{1pt}{\eq[\color{red}\scriptsize x]} refers to Equation x in the paper.}
     \label{fig:chunkwise-overview}
 \end{figure}
-\vspace*{-17mm}
-\begin{figure}[H]
-    \centering
-    \begin{minipage}{0.47\linewidth}
-        \begin{algorithm}[H]
-        \small
-        \input{Pseudocodes/header_preprocessing.tex}
-        \label{algo:preprocessing}
-        \end{algorithm}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.47\linewidth}
-        \begin{algorithm}[H]
-        \small
-        \input{Pseudocodes/header_encryption.tex}
-        \label{algo:encryption}
-        \end{algorithm}
-    \end{minipage}
-\end{figure}
-
 
 
 \subsection{Network Nodes Processing}

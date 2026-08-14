@@ -13,16 +13,14 @@ This guarantees that every mixnode learns only its immediate predecessor and suc
 The Lightning Network~\cite{poon2016bitcoin} is a payment-channel that allow two users to send off-chain transactions without continuously interacting with the Bitcoin blockchain. 
 In this design, even users who do not have a direct channel may still transact by routing payments through intermediate peers. 
 When a node wants to pay another node without having a direct channel, the transaction originator first computes the shortest path to the recipient and then encrypts the routing information multiple times, where each cryptographic layer corresponds to a hop along the path.
-Although the Lightning Network was initially introduced to address Bitcoin's scalability, it also addresses the privacy issues introduced by peer-to-peer networks~\cite{sharma2022anonymity}. 
-In particular adversaries should not be able to identify the sender or receiver of a transaction. 
-Additionally an intermediate node should not know whether their predecessor is the transaction's originator or whether their successor is the transaction's recipient. 
+Although the Lightning Network was initially introduced to address Bitcoin's scalability issues, it also mitigates some of the privacy issues inherent to peer-to-peer networks~\cite{sharma2022anonymity}. 
+In particular, its onion-routing mechanism is designed to prevent intermediate nodes from identifying both the sender and receiver of a transaction.
 
 These privacy guarantees, both in mixnets and in the Lightning Network, are achieved using the Sphinx packet format~\cite{sphinx}.
 
 
 \subsection{Sphinx Packet Format}
 The \emph{Sphinx} packet format provides three essential security properties: per-hop confidentiality, per-hop integrity protection, and strong unlinkability.
-
 First, Sphinx ensures \emph{per-hop confidentiality} by encrypting routing information in layers, similar to classical onion routing.  
 Each mixnode learns only its immediate predecessor and successor, but gains no knowledge about the overall path, the sender, or the final destination. Second, Sphinx provides \emph{per-hop integrity protection} through a cryptographic tag embedded in each layer of the header. These tags prevent adversaries from tampering with routing information.  Any modification results in an integrity-tag verification failure at the routing node, causing the packet to be discarded.
 This ensures that adversaries cannot tamper with routes or perform active attacks such as header tagging in order to target specific messages or clients. Third, Sphinx offers \emph{strong unlinkability} by ensuring that packets entering and leaving a mixnode are computationally indistinguishable.  

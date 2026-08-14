@@ -15,10 +15,10 @@ Furthermore, repeated reuse of the same sampled route may create observable traf
 \smallskip
 \noindent\textbf{Limitations and Future Work.}
 DSphinx has few limitations. 
-First, a deployment challenge in establishing a sufficiently large, diverse, and independent set of STTP operators. 
-Second, it relies on a threshold trust assumption: compromise of at least $d$ STTPs breaks header confidentiality and enables full path reconstruction. 
-Third, decentralizing route sampling introduces additional computation and communication overhead. 
-Although modest (less than 50 ms in our evaluation) compared with the end-to-end latency of decentralized networks such as the Lightning Network and mixnets, these costs should be considered in latency-sensitive settings.
+First, a deployment challenge lies in establishing a sufficiently large, diverse, and independent set of STTP operators from different organizations or infrastructure providers.
+Second, DSphinx introduces additional computation and communication overhead, primarily due to decentralized route sampling. 
+Although modest, this overhead may be a practical consideration in latency-sensitive applications.
+Third, it relies on a threshold trust assumption: compromise of at least $d$ STTPs breaks header confidentiality and enables full path reconstruction.
 
 Finally, the current design focuses on \emph{random} route sampling, making it directly applicable to anonymous communication systems such as mixnets, where uniformly random paths are desirable. 
 Extending the approach to routing algorithms based on optimization objectives, such as shortest-path, minimum-cost, or congestion-aware routing used in payment-channel networks like Lightning, remains an open research direction.

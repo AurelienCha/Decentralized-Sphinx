@@ -64,12 +64,11 @@
 
 \begin{abstract}
 Sphinx packet is the foundation of many privacy-preserving decentralized systems, including mixnets and the Lightning Network, providing strong guarantees of unlinkability, confidentiality, and integrity. 
-However, because clients independently select routing paths, malicious clients can deviate from the prescribed routing algorithm to launch attacks such as route biasing, jamming, and targeted deanonymization.
-
+However, since clients select routing paths, malicious clients can deviate from the prescribed routing algorithm to launch attacks such as route biasing, jamming, and targeted deanonymization.
 We present \emph{DSphinx}, a decentralized path-selection protocol that distributes route sampling across multiple semi-trusted third parties. 
 Using threshold secret sharing and elliptic-curve cryptography, DSphinx prevents clients from arbitrarily selecting routes while preserving the compact packet structure and security guarantees of Sphinx. 
 We provide a formal security analysis showing that DSphinx preserves unlinkability, integrity protection, replay resistance, and collusion resistance under standard cryptographic assumptions. 
-A prototype implementation demonstrates that the additional computational overhead remains modest, introducing less than 50 ms of client-side latency. 
+A prototype implementation demonstrates that the computational overhead remains modest, introducing less than 50 ms of client-side latency. 
 Our approach reduces client control over route selection while maintaining the efficiency and privacy guarantees of Sphinx.
 \keywords{Sphinx \and Decentralized networks \and Mixnet \and Lightning.}
 \end{abstract}
