@@ -1,0 +1,153 @@
+\begin{frame}{Setup Procedure}
+    \begin{columns}[T,onlytextwidth]
+
+        % ============================================================
+        % LEFT: Mixnode point of view
+        % ============================================================
+        \begin{column}{0.5\textwidth}
+
+            \vspace{-2mm}
+            \begin{center}
+                \textbf{Mixnode} $i$\\[-2pt]
+                {\small Shamir Secret Sharing}
+            \end{center}
+
+          
+            \begin{tikzpicture}
+                \begin{axis}[width=\textwidth, height=6.3cm,axis lines=left,
+                    ymin=0, ymax=9, xmin=0, xmax=6.1, 
+                    ytick=\empty, xtick=\empty, 
+                    tick label style={font=\scriptsize},
+                    clip=false,  
+                    samples=100,
+                ]
+
+                    % ------------------------------------------------------------
+                    % Cubic polynomial Functions
+                    % ------------------------------------------------------------
+                    \addplot[on=3, domain=0:6, thick] {1.0 + 1*x - 0.55*x^2 + 0.1*x^3}; 
+                    \addplot[on=3, domain=0:6, thick, dashed] {7 - 0.8*x + 0.2*x^2 - 0.04*x^3}; % (4, 4.44)
+
+                    % ------------------------------------------------------------
+                    % Selected STTP: t = 4, f(t)=2.6, g(t)=4.44
+                    % ------------------------------------------------------------
+                    \draw[on=4,dotted, thick] (axis cs:4,0) -- (axis cs:4,4.44);    % vertical
+                    \draw[on=5,dotted, thick] (axis cs:4,2.60) -- (axis cs:0,2.60); % horizontal
+                    \draw[on=5,dotted, thick] (axis cs:4,4.44) -- (axis cs:0,4.44); % horizontal
+                    \node[on=4,circle, draw, thick, minimum size=9pt, inner sep=0pt] at (axis cs:4,2.60) {};
+                    \node[on=4,circle, draw, thick, minimum size=9pt, inner sep=0pt] at (axis cs:4,4.44) {};
+
+                    % ------------------------------------------------------------
+                    % Text
+                    % ------------------------------------------------------------
+                    \node[on=3, anchor=west, font=\small] at (axis cs:5.5,6.5) {$f_i(x)$}; % polynome
+                    \node[on=3, anchor=west, font=\small] at (axis cs:5.5,2.5) {$g_i(x)$}; % polynome
+
+
+                    \node[on=2, anchor=east, font=\small] at (axis cs:0,1) {$N_i$}; % y-axis
+                    \node[on=2, anchor=east, font=\small] at (axis cs:0,7) {$k_i$}; % y-axis
+                    \node[on=2,circle, draw, thick, minimum size=2pt, inner sep=0pt] at (axis cs:0,1) {};
+                    \node[on=2,circle, draw, thick, minimum size=2pt, inner sep=0pt] at (axis cs:0,7) {};
+
+                    \node[on=4, below,  font=\small\bfseries] at (axis cs:4,0) {$t$}; % x-axis
+                    \node[on=5, anchor=east, font=\small] at (axis cs:0,2.60) {$N_{it}$}; % y-intersection
+                    \node[on=5, anchor=east, font=\small] at (axis cs:0,4.44) {$k_{it}$}; % y-intersection
+
+                    \node[on=4, anchor=east, font=\small, yshift=-7pt] at (axis cs:6.45,0) {STTPs};
+                \end{axis}
+            \end{tikzpicture}
+            
+            \vspace{-1mm}
+            \only<2>{
+                \begin{center}
+                    \color{alerted text.fg}
+                    \small
+                    Mixnode $i$ 
+                    $\left\{
+                    \begin{tabular}{cl}
+                        \text{random identifier} & $r_i$ \\
+                        \text{secret key}        & $k_i$ \\
+                        \text{encoded address}   & $N_i$ \\
+                    \end{tabular}
+                    \right.$
+                \end{center}
+            }
+            \only<3->{
+                \begin{center}
+                    \color{LightHighlight}
+                    \small
+                    Mixnode $i$ 
+                    $\left\{
+                    \begin{tabular}{cl}
+                        \text{random identifier} & $r_i$ \\
+                        \text{secret key}        & $k_i$ \\
+                        \text{encoded address}   & $N_i$ \\
+                    \end{tabular}
+                    \right.$
+                \end{center}
+            }
+
+        \end{column}
+
+
+        % ================================================================
+        % MIDDLE: MESSAGE
+        % ================================================================
+        \begin{column}{0.1\textwidth}
+            
+            \vspace{3.3cm}
+            \begin{tikzpicture}
+                \node[on=6, single arrow, draw, 
+                    minimum width=1cm,
+                    minimum height=2cm,
+                    font=\scriptsize,
+                ] {$\left(r_i,\;k_{it},\;N_{it}\right)$};
+            \end{tikzpicture}
+
+        \end{column}
+
+
+
+        % ============================================================
+        % RIGHT: STTP point of view
+        % ============================================================
+        \begin{column}{0.40\textwidth}
+
+            \vspace{-2mm}
+            \begin{center}
+                \onslide<6>{
+                    \textbf{STTP $t$}\\[-2pt]
+                    \small Storing shares
+                }
+            \end{center}
+
+            \begin{center}
+                \onslide<6>{
+                \renewcommand{\arraystretch}{1.45}
+                \setlength{\tabcolsep}{7pt}
+                \begin{tabular}{c c c}
+                    \toprule
+                    \textbf{idx} & \textbf{$f_i(t)$} & \textbf{$g_i(t)$} \\
+                    \midrule
+                    $r_1$ & $k_{1t}$ & $N_{1t}$ \\
+                    $\vdots$ & $\vdots$ & $\vdots$ \\
+                    \color{alerted text.fg}$r_i$ & \color{alerted text.fg}$k_{it}$ & \color{alerted text.fg}$N_{it}$\\
+                    $\vdots$ & $\vdots$ & $\vdots$ \\
+                    $r_m$ & $k_{mt}$ & $N_{mt}$ \\
+                    \bottomrule
+                \end{tabular}
+                }
+            \end{center}
+
+            % \vspace{1mm}
+            % \begin{center}
+            %     \begin{tikzpicture}
+            %         \color{gray}
+            %         \node[draw, rounded corners=3pt, inner sep=8pt, align=center, font=\small] {Sort shares from\\ all the $m$ mixnodes};
+            %     \end{tikzpicture}
+            % \end{center}
+
+        \end{column}
+
+    \end{columns}
+\end{frame}

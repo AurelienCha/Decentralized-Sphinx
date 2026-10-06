@@ -1,0 +1,274 @@
+% ============================================================
+% Beamer theme for the ULB Cybersecurity Research Center
+% By Oscar Van Slijpe,  2026
+%
+% Usage in your .tex file:
+%   \usetheme{ULB_CRC.sty}
+%
+% For the title frame:
+%   {
+%       \setbeamertemplate{background}{\titleframebackground}
+%       \begin{frame}
+%           \titlepage
+%       \end{frame}
+%   }
+% ============================================================
+
+\ProvidesPackage{ulb_crc_theme}[2026 ULB CRC Theme]
+
+\RequirePackage{tikz}
+\RequirePackage{graphicx}
+\usetikzlibrary{calc}
+
+% ============================================================
+% COLORS
+% ============================================================
+
+\definecolor{ThemePrimary}{RGB}{0, 61, 124}      % deep blue — adjust to your brand
+\definecolor{ThemeAccent}{RGB}{0, 120, 215}       % lighter blue for accents
+\definecolor{ThemeDarkGray}{RGB}{50, 50, 50}       % muted gray for secondary text
+\definecolor{ThemeLightGray}{RGB}{100, 100, 100}       % muted gray for secondary text
+
+\setbeamercolor{title}{fg=ThemePrimary}
+\setbeamercolor{subtitle}{fg=ThemeAccent}
+\setbeamercolor{conference}{fg=ThemeDarkGray}
+\setbeamercolor{author}{fg=ThemeDarkGray}
+\setbeamercolor{date}{fg=ThemeLightGray}
+\setbeamercolor{institute}{fg=ThemeLightGray}
+\setbeamercolor{frametitle}{fg=ThemePrimary}
+\setbeamercolor{normal text}{fg=black}
+\setbeamercolor{footline}{fg=ThemeLightGray}
+\setbeamercolor{structure}{fg=ThemePrimary}       % bullets, items, blocks
+
+\NewCommandCopy\oldtextbf\textbf
+\renewcommand{\textbf}[1]{\textcolor{ThemePrimary}{\oldtextbf{#1}}}
+
+% ============================================================
+% FONTS & Co
+% ============================================================
+
+\setbeamerfont{title}{size=\Large, series=\bfseries}
+\setbeamerfont{subtitle}{size=\large, series=\normalfont}
+\setbeamerfont{conference}{size=\large}
+\setbeamerfont{author}{size=\large}
+\setbeamerfont{date}{size=\small}
+\setbeamerfont{institute}{size=\small}
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
+\setbeamerfont{caption}{size=\footnotesize}
+\setbeamerfont{footline}{size=\Tiny}
+
+\setbeamertemplate{itemize item}{%
+    \tikz\draw[fill=ThemePrimary, draw=none] (0,0) circle (3pt);
+}
+\setbeamertemplate{itemize subitem}{%
+    \tikz\draw[fill=ThemePrimary, draw=none] (0,0) rectangle (4pt,4pt);
+}
+\setbeamertemplate{itemize subsubitem}{%
+    \raise0.1ex\hbox{\donotcoloroutermaths$\blacktriangleright$}
+}
+
+% ============================================================
+% REMOVE DEFAULT BEAMER DECORATIONS
+%    (prevents conflicts with our custom templates below)
+% ============================================================
+
+\setbeamertemplate{navigation symbols}{}   % remove nav icons bottom-right
+\setbeamertemplate{headline}{}             % remove default headline bar
+
+% ============================================================
+% REUSABLE LOGO NODES
+% ============================================================
+
+% Wide logo — used on title frame, top left
+\newcommand{\insertCRCLongLogoTopLeft}{
+    \node[anchor=north west, inner sep=0pt, opacity=0.3]
+        at ($(0, \the\paperheight) + (0.2cm, -0.2cm)$)
+        {\includegraphics[
+            height=.12\textheight,,
+            keepaspectratio
+        ]{theme/logo_wide.jpg}};
+}
+
+% Square logo — used on title frames, top right
+\newcommand{\insertEPBLongLogoTopRight}{
+    \node[anchor=north east, inner sep=0pt]
+        at ($(\the\paperwidth, \the\paperheight) + (-0.2cm, -0.2cm)$)
+        {\includegraphics[
+            height=.12\textheight,
+            keepaspectratio
+        ]{theme/beams_logo}
+        \hspace{0.1cm}
+        \includegraphics[
+            height=.12\textheight,
+            keepaspectratio
+        ]{theme/EPB.png}};
+}
+
+% Square logo — used on normal frames, top right
+\newcommand{\insertCRCSquareLogoTopRight}{
+    \node[anchor=north east, inner sep=0pt, opacity=0.35]
+        at ($(\the\paperwidth, \the\paperheight) + (-0.1cm, -0.1cm)$)
+        {\includegraphics[
+            width=.1\textwidth,
+            height=.1\textwidth,
+            keepaspectratio
+        ]{theme/crc.png}
+        };
+}
+
+% Transparent watermark logo — used on normal frames, bottom right
+\newcommand{\insertULBWatermarkBottomRight}{
+    \node[anchor=south east, inner sep=0pt, opacity=0.15]
+        at ($(\the\paperwidth, 0) + (1cm, -1cm)$)
+        {\includegraphics[
+            width=.4\textwidth,
+            height=.4\textheight,
+            keepaspectratio
+        ]{theme/ulb_vincere.jpg}};
+}
+
+% ============================================================
+% 5. BACKGROUND TEMPLATES
+% ============================================================
+
+% --- Title frame background ---
+\newcommand{\titleframebackground}{
+    \begin{tikzpicture}
+        \useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+        \fill[white] (0,0) rectangle(\the\paperwidth,\the\paperheight);
+
+        \insertCRCLongLogoTopLeft
+        \insertEPBLongLogoTopRight
+    \end{tikzpicture}
+}
+
+% --- Normal frame background (default) ---
+\newcommand{\normalframebackground}{
+    \begin{tikzpicture}
+        \useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+        \fill[white] (0,0) rectangle(\the\paperwidth,\the\paperheight);
+
+        %\insertCRCSquareLogoTopRight
+        %\insertULBWatermarkBottomRight
+    \end{tikzpicture}
+}
+
+% --- Empty frame background ---
+\newcommand{\emptyframebackground}{
+    \begin{tikzpicture}
+        \useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+        \fill[white] (0,0) rectangle(\the\paperwidth,\the\paperheight);
+    \end{tikzpicture}
+}
+
+% Register normal frame background as the default
+\setbeamertemplate{background}{\normalframebackground}
+
+% ============================================================
+% 6. TITLE PAGE
+%
+% Vertical spacing is calibrated so content sits below the
+% wide logo (which occupies ~15% of height at the top).
+% ============================================================
+
+\setbeamertemplate{title page}{
+    \vspace{1.6cm}   % clear the wide logo height + breathing room
+
+    % Title
+    \begin{beamercolorbox}[leftskip=0.8cm]{title}
+        \usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle
+    \end{beamercolorbox}
+
+    \vspace{0.3cm}
+
+    % Subtitle
+    \begin{beamercolorbox}[leftskip=0.8cm]{subtitle}
+        \usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle
+    \end{beamercolorbox}
+
+    \vspace{0.4cm}
+
+    % Thin horizontal rule as a separator
+    \hspace{0.8cm}
+    \textcolor{ThemeAccent}{\rule{0.85\textwidth}{0.4pt}}
+
+    \vspace{0.5cm}
+
+    % Author
+    \begin{beamercolorbox}[leftskip=0.8cm]{author}
+        \usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor
+    \end{beamercolorbox}
+
+    \vspace{0.2cm}
+
+    % Institute (only if defined)
+    \ifx\insertinstitute\empty\else
+        \begin{beamercolorbox}[leftskip=0.8cm]{institute}
+            \usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute
+        \end{beamercolorbox}
+        
+        \vspace{0.15cm}
+    \fi
+
+    % Date
+    \begin{beamercolorbox}[leftskip=0.8cm]{date}
+        \usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate
+    \end{beamercolorbox}
+}
+
+% ============================================================
+% 7. FRAMETITLE
+%
+% Left-aligned, with top and left margins calibrated to avoid
+% overlapping the square logo in the top-right corner.
+% text width is constrained to leave room for the logo.
+% ============================================================
+
+\setbeamertemplate{frametitle}{
+    \vspace{0.25cm}
+    \begin{beamercolorbox}[leftskip=0cm,wd=0.82\textwidth]{frametitle}
+        \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}%
+        \insertframetitle
+    \end{beamercolorbox}
+    % Optional thin underline below frametitle
+    \hspace{0cm}\textcolor{ThemeAccent}{\rule{0.92\textwidth}{0.4pt}}
+}
+
+% ============================================================
+% 8. FOOTLINE
+%
+% Left:  short author name
+% Center: short title
+% Right: slide number / total
+% ============================================================
+
+\setbeamertemplate{footline}{
+    \leavevmode
+    \hbox{%
+        % Left block — author
+        %\begin{beamercolorbox}[wd=.33\paperwidth,ht=2.5ex, dp=1.5ex,leftskip=0.2cm]{footline}
+        %    \usebeamerfont{footline}\usebeamercolor[fg]{footline}%
+        %    \insertshortauthor
+        %\end{beamercolorbox}%
+        % Center block — short title
+        %\begin{beamercolorbox}[wd=.34\paperwidth,ht=2.5ex, dp=1.5ex,center]{footline}
+        %    \usebeamerfont{footline}\usebeamercolor[fg]{footline}%
+        %    \insertshorttitle
+        %\end{beamercolorbox}%
+        % Right block — frame number
+        \begin{beamercolorbox}[
+            wd=\paperwidth,
+            ht=2.5ex, dp=1.5ex,
+            rightskip=0.4cm,
+            right
+        ]{footline}
+            \usebeamerfont{footline}\usebeamercolor[fg]{footline}%
+            \insertframenumber\,/\,\inserttotalframenumber\hspace{0.2cm}
+        \end{beamercolorbox}%
+    }
+    \vskip0pt
+}
+
+% ============================================================
+% End of beamerthemeULB_CRC.sty
+% ============================================================

@@ -1,0 +1,99 @@
+\begin{frame}{Aggregation}
+
+    \begin{columns}[T]
+
+        % ============================================================
+        % LEFT: Lagrange interpolation
+        % ============================================================
+        \begin{column}{0.48\textwidth}
+
+            \begin{center}
+                \textbf{Lagrange Polynomial Interpolation}
+            \end{center}
+
+            \centering
+            \vspace{2mm}
+
+            \fcolorbox{LightHighlight}{white}{\parbox{\textwidth}{
+            \begin{columns}
+                \hfill
+                \begin{column}{0.4\textwidth}
+                    $\begin{aligned}
+                    N_i &= \sum_{t=1}^{d} \: \lambda_t \, N_{it}\\
+                    S_i &= \sum_{t=1}^{d} \: \lambda_t \, S_{it}\\
+                    \end{aligned}$
+                \end{column}
+                \begin{column}{0.35\textwidth}
+                    \small\color{LightHighlight}
+                    $\forall i \in \{1,\ldots,\ell\}$
+                \end{column}
+            \end{columns}
+            }}
+
+            \vspace{2mm}
+
+            \begin{center}
+            \begin{tikzpicture}[node distance=0.35cm,
+                every node/.style={font=\small}]
+
+                \node (s1) [draw, rounded corners] {$\left(N_{i1},S_{i1}\right)$};
+                \node (s2) [draw, rounded corners, right=of s1] 
+                    {$\left(N_{i2},S_{i2}\right)$};
+                \node (dots) [right=of s2] {$\cdots$};
+                \node (sd) [draw, rounded corners, right=of dots] 
+                    {$\left(N_{id},S_{id}\right)$};
+
+                \node (agg) [draw, rounded corners, below=0.55cm of dots]
+                    {$\left(N_i,S_i\right)$};
+
+                \draw[->] (s1) -- (agg);
+                \draw[->] (s2) -- (agg);
+                \draw[->] (sd) -- (agg);
+
+            \end{tikzpicture}
+            \end{center}
+
+            \vspace{2mm} 
+
+            \pause
+            \alert{Shared secrets $S_i$ are independent}
+            \pause
+
+        \end{column}
+
+
+        % ============================================================
+        % RIGHT: Cascade derivation
+        % ============================================================
+        \begin{column}{0.48\textwidth}
+
+            \begin{center}
+                \textbf{Cascade Derivation} \color{LightHighlight}(in Sphinx)
+            \end{center}
+
+            \small
+            \centering
+            \vspace{2mm}
+
+            % In Sphinx, \alert{cascade derivation} \vspace{2mm}\\
+            $ s_1 \;\longrightarrow\; s_2 \;\longrightarrow\; \cdots \;\longrightarrow\; s_\ell $
+
+            \vspace{1mm}
+
+            \setlength{\fboxsep}{3mm}
+            $$\color{LightHighlight}\boxed{\color{black} s_i = \textsf{Hash}\left(  r \: S_i \prod_{j=1}^{i-1} s_j  \right)}$$ %, \qquad i=1,\ldots,\ell $$
+
+            \vspace{4mm}\pause
+
+            Where $r$ is a nonce to rerandomize $\A{}$
+            $$ \A{}' = r \: \A{} $$
+
+            \vspace{2mm}
+           
+            \alert{ Fresh nonce $r$ \quad$\Rightarrow$\quad unlinkability}
+
+        \end{column}
+
+    \end{columns}
+
+\end{frame}

@@ -1,0 +1,48 @@
+\begin{frame}{Computation Time Across Protocol Stages}
+
+    \vspace{7mm}
+    \centering
+    \includegraphics[width=\textwidth]{pictures/_boxplot.png}
+
+    \vspace{8mm}
+
+    \begin{center}
+        \begin{tabular}{c@{\quad}c}
+        \textbf{Overhead}
+        &
+        $\left\{
+        \begin{minipage}{10cm}
+            \begin{tabular}{cc}
+                \textbf{Shamir secret sharing} & {\color{lightgray}(Mixnode Setup)} \\
+                \textbf{Lagrange interpolation} & {\color{lightgray}(Client Aggregation)} \\ 
+            \end{tabular}
+        \end{minipage}
+        \right.$
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Scalability with Respect to System Parameters}
+
+    \vspace{3mm}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \textbf{Route length}
+            
+            \includegraphics[width=\linewidth]{pictures/_path_length.png}
+        \end{column}
+
+        \begin{column}{0.5\textwidth}
+            \centering
+            \textbf{STTP threshold}
+            
+            \includegraphics[width=\linewidth]{pictures/_threshold.png}
+        \end{column}
+    \end{columns}
+
+    \vspace{5mm}
+
+    \centering
+    {\color{Highlight}Overhead remains moderate {\scriptsize\color{MidHighlight}(50 ms)} vs. end-to-end mixnet latency {\scriptsize\color{MidHighlight}(500-800 ms)}}
+\end{frame}

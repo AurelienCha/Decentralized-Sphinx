@@ -1,0 +1,65 @@
+% As many privacy-preserving networks, mixnet rely on honest clients.
+% Few researchs evaluate the impact of malicious clients on the system-wide anonymity of the network and their contermeasures.
+
+\begin{frame}{The Client Controls Route Selection}
+
+    \vspace{2mm}
+
+    \centering
+
+    \begin{tikzpicture}[
+        box/.style={
+            draw,
+            rounded corners,
+            minimum width=3cm,
+            minimum height=1.2cm,
+            align=center
+        }
+    ]
+
+        \node[box] (client) {\textbf{\only<2->{\alert{Malicious}} Client}\\chooses route};
+
+        \onslide<2->{
+            \color{alerted text.fg}
+
+            \node[box, right=2.5cm of client] (route) {
+                \textbf{Route-based}\\
+                \textbf{Attacks}
+            };
+
+            \draw[-{Latex[length=3mm]}, thick]
+                (client) -- (route);
+        }
+
+    \end{tikzpicture}
+
+    \vspace{7mm}
+
+    \onslide<3->{
+        \begin{tabular}{cc}
+            \color{MidHighlight} Anonymity-set reduction & \\
+            \color{MidHighlight} Packet tracing & {\color{LightHighlight} ($N-1$ attack)} \\
+            \color{MidHighlight} Targeting specific mixnodes & {\color{LightHighlight} (DoS, reputation attack)} \\
+        \end{tabular}
+    }
+
+    \vspace{4mm}
+
+    \onslide<4->{
+        \begin{center}
+            \begin{minipage}{\textwidth}
+                \begin{block}{Research Question}
+                    {How to prevent route manipulation without compromising privacy?}
+                \end{block}
+            \end{minipage}
+        \end{center}
+    }
+
+    \vspace{4mm}
+
+    \onslide<5->{
+        \textbf{Our approach:}\quad
+        \alert{Decentralize route sampling across STTPs}
+    }
+
+\end{frame}

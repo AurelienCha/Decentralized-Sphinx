@@ -1,0 +1,11 @@
+\def\inserttotalpartframenumber{%
+    %\pgfmathparse{(\insertpartendframe-\insertpartstartframe+1)}%
+    %\pgfmathprintnumber[fixed,precision=2]{\pgfmathresult}%
+    \fpeval{\insertpartendframe-\insertpartstartframe+1}%
+}
+
+\def\insertpartframenumber{%
+    %\pgfmathparse{(\insertframenumber-\insertpartstartframe+1)}%
+    %\pgfmathprintnumber[fixed,precision=2]{\pgfmathresult}%
+    \fpeval{\insertframenumber-\insertpartstartframe+1}%
+}

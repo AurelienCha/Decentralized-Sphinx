@@ -1,0 +1,234 @@
+% Copyright 2020 by Junwei Wang <i.junwei.wang@gmail.com>
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+
+%\newcommand{\ar}{43}
+\newcommand{\ar}{1610}
+\documentclass[compress,aspectratio=\ar]{beamer}
+%\documentclass[handout,compress,aspectratio=\ar]{beamer} % disable \pause temporarily
+
+\usepackage[english]{babel}
+\usepackage{csquotes}
+%\usepackage[dvipsnames]{xcolor}
+\usepackage{metalogo}
+\usepackage{fontspec}
+\usepackage{hyperref}
+ 
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{booktabs}
+\usepackage{wasysym}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{xfp}
+
+\usepackage{fontawesome5} %for icons 
+
+\usepackage{multirow}
+
+\usepackage{tikz}
+\usepackage{tikzpeople} 
+\usepackage{pgfplots} \pgfplotsset{compat=1.18}
+\input{tikzsettings}
+\input{tikz-preamble}
+\usetikzlibrary{arrows.meta, positioning, backgrounds, shapes.arrows}
+\usetikzlibrary{decorations.pathreplacing,calc} % TODO ?
+\usetikzlibrary{fit}
+%\usetheme{Nord}
+\usetheme[style=light]{Nord}
+ 
+\setmainfont{Yanone Kaffeesatz}
+\setsansfont{Andika New Basic}
+\setmonofont{DejaVu Sans Mono}
+
+\newcommand{\server}[1]{
+  \begin{tikzpicture}[scale=0.7]
+    \foreach \y in {0, -0.6, -1.2} {
+        \draw[fill=#1!20] (0,\y) rectangle (2,\y-0.5); % rectangle
+        \draw (0.2,\y-0.25) circle (0.05); % power/status LED
+    }
+  \end{tikzpicture}
+}
+\newcommand{\client}[1]{
+  \begin{tikzpicture}[scale=0.4]
+    % Monitor screen
+    \draw[fill=#1!20, draw=black, rounded corners=4pt] (0,0) rectangle (4,2.5);
+    % Inner bezel
+    \draw[fill=white, draw=none, rounded corners=3pt] (0.2,0.2) rectangle (3.8,2.3);
+    % Stand
+    \draw[fill=#1!40, draw=black] (1.75,-0.7) rectangle (2.25,0);
+    % Base
+    \draw[fill=#1!40, draw=black, rounded corners=2pt] (0.8,-1) rectangle (3.2,-0.7);
+  \end{tikzpicture}
+}
+\tikzset{  
+    innerLink/.style={-, densely dotted, shorten <= 1pt, shorten >= 2pt},  
+    outerLink/.style={->, shorten <= 10pt, shorten >= 10pt, >=Latex},
+    packet/.style={circle, minimum size=3mm, inner sep=0.2pt, fill=#1!35},
+    mixnode/.style={draw, thick, circle, minimum size=1.6cm},
+}
+
+
+
+\definecolor{LightHighlight}{HTML}{AEC0D5} 
+\definecolor{MidHighlight}{HTML}{5E81AC}
+\definecolor{Highlight}{HTML}{204B82}
+\setbeamercolor{block title}{
+    fg=Highlight,
+    bg=MidHighlight!50
+}
+
+\setbeamercolor{block body}{
+    fg=black,
+    bg=LightHighlight!50
+}
+
+
+% \AtBeginSection[]
+% {
+%   \begin{frame}[c,noframenumbering,plain,sectionbackground]
+%     \tableofcontents[sectionstyle=show/shaded,subsectionstyle=hide]
+%   \end{frame}
+% }
+
+\AtBeginSection[]{
+  \nordnavoff
+  \begin{frame}[c,noframenumbering,plain,sectionbackground]
+    \tableofcontents[
+      sectionstyle=show/shaded,
+      subsectionstyle=hide
+    ]
+  \end{frame}
+  \nordnavon
+}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}[c,noframenumbering,plain,sectionbackground]
+    \tableofcontents[sectionstyle=show/hide,subsectionstyle=show/shaded/hide]
+  \end{frame}
+}
+
+
+\makeatletter
+\input{makeatletter/content.tex}
+\makeatother
+\input{makeatletter/defs.tex}
+
+
+
+\title{DSphinx: A Decentralized Path Selection \newline for Decentralized Networks} 
+% \subtitle{Subtitle}
+\author{Aurélien Chassagne}
+\date{\today}
+  
+
+%\newcommand\highlight[1]{\textbf{\textcolor{ColorStructure}{#1}}}
+\newcommand\highlight[1]{\textcolor{ColorStructure}{#1}}
+
+\lstset{
+frame               = single,
+%framexleftmargin    = 15pt,
+%tabsize             = 4,
+breaklines          = true,
+%breakatwhitespace   = true,
+%numbers             = left,
+%    numberstyle     = \tiny,
+basicstyle          = \ttfamily\tiny,
+%keywordstyle        = \lst@ifdisplaystyle\bfseries\fi\color{blue!70},
+%commentstyle        = \color{comment-green}\upshape,
+%stringstyle         = \color{red},
+%identifierstyle     = \color[rgb]{0.1,0.1,0.1},
+%rulecolor           = \color{black}
+}
+
+
+\newcommand\arrowitem{\smallskip\item[$\rightarrow$]}
+\newcommand\triangleitem{\smallskip\item[$\blacktriangleright$]}
+%different skips: \smallskip, \medskip, \bigskip
+
+\newcommand{\mycomment}[1]{}
+\newcommand\mathacro[1]{\mathrm{\mathit{#1}}}
+
+\newcommand\cred[1]{\textcolor{red}{#1}}
+\newcommand\cgreen[1]{\textcolor{green}{#1}}
+\newcommand\OK{\cgreen{\faIcon{check}}}
+\newcommand\notOK{\cred{\faIcon{times}}}
+
+\newcommand\hlg[1]{\colorbox{gray!25}{#1}}
+\newcommand\hlgl[1]{\colorbox{gray!15}{#1}}
+
+\begin{document}
+
+%%% part 1
+\part{} % used to clean ToC later
+\def\slidepart{0}
+\begin{frame}[plain,noframenumbering,titlebackground]
+    \maketitle
+\end{frame}
+
+\begin{frame}[plain,noframenumbering,sectionbackground]%{Table of Contents}
+    \tableofcontents[subsectionstyle=hide]
+\end{frame}
+
+\section{Problem Statement} 
+\input{slides/1.motivation}
+\input{slides/2.mixnet}
+\input{slides/4.problem}
+
+\section{Decentralized Route Selection}
+\input{slides/3.sphinx}
+\input{slides/5.overview}
+\input{slides/6.setup}
+\input{slides/7.path_sampling}
+\input{slides/8.aggregation}
+\input{slides/9.results}
+
+\section{Conclusion}
+\input{slides/10.futur_work}
+
+\part{} % used to clean ToC later
+\def\slidepart{0}
+\begin{frame}[plain,noframenumbering,titlebackground]
+    \maketitle
+\end{frame}
+
+
+%%% appendix
+% \appendix
+
+% \begin{frame}[plain, noframenumbering,nobackground]
+% \begin{center}
+% \LARGE Thank you for your attention.
+% \vfill
+% \LARGE Any Question?
+% \end{center}
+% \end{frame}
+
+\end{document}
+
+
+% My current works for my PhD are:
+
+% 1) Decentralizing the route sampling procedure in mixnet to prevent malicious client from doing biased route based attacks to reduce anonymity of the system.
+% 2) Extending and adapting the Sphinx packet format (used in mixnets) with Anonymous Destination-bound credential which allowed to verify at any mixnode that 
+% the layered encrypted destination contained inside the packet is valid and authorized without leaking the source or final destination of the packet.
+% This prevent abuse of the system to reach illegal / illicite web activities.
+
+% As futur work, I would like to do one extra-work which would be focus en improving/enhancing those credentials.
+% As for now, the credentials are only linked to a destination (and randomizable) but there is nothing to anonymously link it to a user, or prevent from "transferability" (i.e. copying and distributing the credential).
+% Thus it makes to credential not yet interesting in practise (real-world scenario).
+% Moreover, another problem in mixnet are unlimited client throughput. Imagine that a client can flood the system with lots of packets.
+% Then he can DoS honest mixnodes, reduce the anonimity set of honest packets, and so on... 
+% And in addition, it can make the first contribution less interesting (i.e. can ask random routes until having the route he wanted...).
+% Therefore, to solve both the "non-transferability" and "flooding" problems, I would like to extend the credential with some kind of quota (i.e. rate-limiting, throughput regulation, maximal usages) without compromising privacy.
+
+
+

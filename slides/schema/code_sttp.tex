@@ -1,0 +1,99 @@
+\noindent
+\colorbox{LightHighlight}{%
+\parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+\vspace{1.5pt}
+\hspace{4pt}
+{\scriptsize\color{white}\bfseries STTP $t$}
+\hspace{8pt}
+{\scriptsize\color{white}\textit{Partial Route Sampling}}
+\vspace{1.5pt}
+}%
+}
+
+\vspace{3.5pt}
+
+{\small
+\begin{algorithmic}%[1] 
+
+\only<1>{\color{alerted text.fg}}
+\only<2->{\color{black}}
+\Statex \textbf{Input:} $w$
+\hfill {\footnotesize\color{LightHighlight}\textit{Client nonce}}
+
+\vspace{10pt}
+
+\onslide<2->{
+    \only<2>{\color{alerted text.fg}}
+    \only<3->{\color{black}}
+    \State $\ell \gets \textsf{routeLength}$
+    \vspace{2pt}
+    \State $\A{} \gets \textsf{Hash}(w)$
+}
+
+\vspace{5pt}
+
+\onslide<3->{
+    \only<3>{\color{alerted text.fg}}
+    \only<4->{\color{black}}
+    \For{$i = 1$ \textbf{to} $\ell$}
+}
+
+\vspace{2pt}
+
+\onslide<4->{
+    \only<4>{\color{alerted text.fg}}
+    \only<5->{\color{black}}
+    \State $r_i' \gets \textsf{Hash}(w,\textsf{timestamp},i)$
+    \hfill {\footnotesize\color{LightHighlight}\textit{Pseudorandom seed}}
+}
+
+\vspace{2pt}
+
+\onslide<5->{
+    \only<5>{\color{alerted text.fg}}
+    \only<6->{\color{black}}
+    \State $(k_{it},N_{it}) \gets \textsf{ClosestRow}(r_i')$
+    \hfill {\footnotesize\color{LightHighlight}\textit{Deterministic lookup}}
+}
+
+\vspace{2pt}
+
+\onslide<6->{
+    \only<6>{\color{alerted text.fg}}
+    \only<7->{\color{black}}
+    \State $S_{it} \gets k_{it} \cdot \A{}$
+    \hfill {\footnotesize\color{LightHighlight}\textit{Partial shared secret}}
+}
+
+\vspace{2pt}
+
+\onslide<3->{
+    \only<3>{\color{alerted text.fg}}
+    \only<4->{\color{black}}
+    \EndFor
+}
+
+\vspace{7pt}
+
+\onslide<7->{
+    \only<7>{\color{alerted text.fg}}
+    \Statex \textbf{Output:} ${(N_{it},S_{it})}_{i=1}^{\ell}$
+    \hfill {\footnotesize\color{LightHighlight}\textit{Partial route information}}
+}
+
+\end{algorithmic}
+}
+
+
+% \noindent
+% \colorbox{black!8}{%
+% \parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+% \vspace{2pt}
+% \hspace{4pt}
+% {\scriptsize\bfseries Key idea:}
+% \hspace{4pt}
+% {\footnotesize\color{LightHighlight}
+% Deterministic derivation from a shared seed}
+% \vspace{2pt}
+% }%
+% }

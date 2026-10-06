@@ -1,0 +1,139 @@
+
+\begin{frame}{Sphinx Packet}
+
+\centering
+\resizebox{0.8\linewidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    box/.style={draw, minimum height=0.72cm, align=center, inner sep=5pt},
+    alpha/.style={box, minimum width=0.85cm},
+    beta/.style={box, minimum width=3.25cm},
+    gamma/.style={box, minimum width=1.05cm},
+    payload/.style={box, minimum width=2.25cm},
+]
+
+
+% ------------------------------------------------------------------
+% Boxes and Functions
+% ------------------------------------------------------------------
+
+%% --- Top layer ---
+\onslide<1-3>{\node[highlight=3, alpha] (a) at (0,0) {$\alpha$};}
+\onslide<4->{\node[highlight=6, alpha] (a) at (0,0) {$\alpha$};}
+\node[highlight=5, beta, right=3pt of a] (b) {$\beta$};
+\node[highlight=4, gamma, right=3pt of b] (c) {$\gamma$};
+\node[highlight=7, payload, right=3pt of c] (d) {$\delta$};
+
+%% --- Middle layer ---
+\onslide<2>{\node[box, color=white]   (secret)  at (-1.5,-1.5) {$S_i$};}
+\node[eq, appears=4, fill=white, minimum height=9mm] (integrity) at (c |- secret) {\tiny Verify};
+\node[eq, appears=5, fill=white, minimum height=9mm] (xor) at (b |- secret) {\tiny Decrypt};
+\node[eq, appears=6, fill=white, minimum height=9mm]   (blind)   at (a |- secret) {\tiny Blind};
+\node[eq, appears=7, fill=white, minimum height=9mm]  (decrypt)  at (d |- secret) {\tiny Decrypt};
+
+%% --- Bottom layer ---
+\node (bot) at (0, -3) {};
+\node[alpha, appears=6] (aa) at (a|-bot) {$\alpha'$};
+\node[beta, appears=5] (bb) at (b|-bot) {$\beta'$};
+\node[gamma, appears=5] (cc) at (c|-bot) {$\gamma'$};
+\node[payload, appears=7] (dd) at (d|-bot) {$\delta'$};
+
+%% --- Mixnode ---
+\node[yshift=-5mm] (mix_top) at (d.south east) {};
+\node[yshift=5mm] (mix_bot) at (dd.north east) {};
+
+% ------------------------------------------------------------------
+% Mixnode
+% ------------------------------------------------------------------
+
+\node[draw, appears=2, dashed, fit=(secret) (mix_top) (mix_bot)] (mixnode) {};  % inner ysep=5mm
+\node[appears=2, anchor=south west] at (mixnode.north west) {\tiny Mixnode $i$};
+
+\onslide<2-3>{
+    \node[box, color=alerted text.fg] (key) at (b |- secret) {$k_i$};
+    \node[anchor=west, xshift=2mm] at (key.east) {\color{LightHighlight}\footnotesize Mixnode's secret key};
+}
+\onslide<3>{
+    \node[eq, color=alerted text.fg, fill=white] (dh) at (a |- secret) {\scriptsize DH};
+    \draw[->, color=alerted text.fg] (a.south) -- (dh.north);
+    \draw[->, color=alerted text.fg] (key.west) -- (dh.east);
+    \draw[->, color=alerted text.fg] (dh.west) -- (secret.east);
+}
+\onslide<3-7>{\node[box, color=alerted text.fg]   (secret)  at (-1.5,-1.5) {$S_i$};}
+\onslide<8>{\node[box, color=LightHighlight]   (secret)  at (-1.5,-1.5) {$S_i$};}
+
+\node[appears=5, anchor=east, left=3pt of aa] (next) at (aa.west) {\color{white}\scriptsize Next};
+\node[appears=5, anchor=east, left=3pt of aa, yshift=1.5mm] (next1) at (aa.west) {\scriptsize Next};
+\node[appears=5, anchor=east, left=3pt of aa, yshift=1.5mm, xshift=-0.6mm] (next2) at (aa.south west) {\scriptsize hop};
+
+% ------------------------------------------------------------------
+% Arrows
+% ------------------------------------------------------------------
+
+\begin{pgfonlayer}{background}
+    \draw[->, appears=4] (secret.east) -- (integrity.west);
+    \draw[->, appears=5] (secret.east) -- (xor.west);
+    \draw[->, appears=6] (secret.east) -- (blind.west);
+    \draw[->, appears=7] (secret.east) -- (decrypt.west);
+
+    \draw[->, appears=4] (c.south) -- (integrity.north);
+    \draw[->, appears=5] (b.south) -- (xor.north);
+    \draw[->, appears=6] (a.south) -- (blind.north);
+    \draw[->, appears=7] (d.south) -- (decrypt.north);
+
+    \draw[->, appears=5] (xor.south) |- ($(xor)!0.5!(cc)$) -| (cc.north);
+    \draw[->, appears=5, shorten >= 2mm] (xor.south) |- ($(xor)!0.5!(next)$) -| ($(next.north)-(0,1mm)$);
+    \draw[->, appears=5] (xor.south) -- (bb.north);
+    \draw[->, appears=6] (blind.south) -- (aa.north);
+    \draw[->, appears=7] (decrypt.south) -- (dd.north);
+\end{pgfonlayer}
+
+
+% ------------------------------------------------------------------
+% Decorations & Textual
+% ------------------------------------------------------------------
+
+\draw[decorate, decoration={brace, amplitude=5pt}, color=LightHighlight] ($(a.north west)+(0,0.10)$) -- ($(c.north east)+(0,0.10)$) node[midway, above=7pt] {\footnotesize Sphinx Header};
+\draw[decorate, decoration={brace, amplitude=5pt}, color=LightHighlight] ($(d.north west)+(0,0.10)$) -- ($(d.north east)+(0,0.10)$) node[midway, above=7pt] {\footnotesize Payload};
+
+\node[visible=1, yshift=-10mm, xshift=10mm] at (mixnode) {%
+  \begin{minipage}{7cm}
+      \begin{tabular}{ccl}
+        $\alpha$&:& Cryptographic element\vspace{3mm}\\
+        $\beta$&:& Encrypted routing information\vspace{3mm}\\
+        $\gamma$&:& Integrity check\vspace{3mm}\\
+        $\delta$&:& Payload\vspace{3mm}\\
+      \end{tabular}
+  \end{minipage}%
+};
+
+\node[visible=6, box, dashed, color=alerted text.fg, anchor=north, yshift=-7mm] at (aa.south)  {Cascade Derivation};
+
+\node[visible=8, anchor=north, yshift=-5mm, xshift=10mm] at (bb.south) {%
+  \begin{minipage}{7cm}
+    \scriptsize 
+    \color{Highlight}
+    \begin{tabular}{c@{\quad}c}
+    \textbf{Properties}
+    &
+    $\left\{
+    \begin{minipage}{5cm}
+      \begin{itemize}
+        \item \color{Highlight} Per-hop Confidentiality
+        \item \color{Highlight} Per-hop Integrity
+        \item \color{Highlight} Fixed-Size
+      \end{itemize}
+    \end{minipage}
+    \right.$
+    \end{tabular}
+  \end{minipage}%
+};
+
+
+\onslide<8>{\node[] at (0,0) {};} % To display to reach slides #6 in the animation
+\end{tikzpicture}%
+}
+
+\end{frame}
+
+

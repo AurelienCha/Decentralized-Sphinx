@@ -1,0 +1,67 @@
+\begin{frame}{Route Sampling}
+
+    
+    \begin{columns}
+
+    
+        % ============================================================
+        % LEFT: STTP pseudocode
+        % ============================================================
+        \begin{column}{0.65\textwidth}
+
+            \input{schema/code_sttp.tex}
+
+        \end{column}
+
+        % ============================================================
+        % MIDDLE: MESSAGE
+        % ============================================================
+        \begin{column}{0.15\textwidth}
+
+                \vspace{5mm}
+                \begin{tikzpicture}
+                    \node[on_MidHighlight=1, single arrow, draw, font=\scriptsize, shape border rotate=180,
+                        minimum width=1cm, minimum height=2.2cm,
+                    ] {nonce $w$};
+                \end{tikzpicture}
+
+                \vspace{15mm}
+                \onslide<7->{
+                    \begin{tikzpicture}
+                        \node[on_MidHighlight=7, single arrow, draw, font=\scriptsize,
+                            minimum width=1cm, minimum height=2.2cm,
+                        ] {$\left(N_{it},\;S_{it}\right)_{i=1}^{\ell}$};
+                    \end{tikzpicture}
+                }
+
+        \end{column}
+
+        % ============================================================
+        % RIGHT: Client figure
+        % ============================================================
+        \begin{column}{0.18\textwidth}
+
+            \vspace{2mm}
+
+            \resizebox{1.2\linewidth}{!}{
+                \begin{tikzpicture}
+                \onslide<1,7>{
+                        \node[xshift=-4mm] (im) at (0,0) {\client{alerted text.fg}};
+                        \node[xshift=-4.5mm, yshift=2mm] (txt) at (0,0) {\color{alerted text.fg!50} Client};
+
+                }
+                \onslide<2-6>{
+                % \begin{tikzpicture}
+                    \node[xshift=-4mm] (im) at (0,0) {\client{blue!70!gray}};
+                    \node[xshift=-4.5mm, yshift=2mm] (txt) at (0,0) {\color{blue!33} Client};
+                % \end{tikzpicture}
+                }                    
+                \end{tikzpicture}
+            }
+            
+        \end{column}
+
+
+    \end{columns}
+ 
+\end{frame}   

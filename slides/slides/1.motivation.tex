@@ -1,0 +1,54 @@
+\begin{frame}{Introduction}
+
+\vspace{8mm}
+
+\resizebox{\linewidth}{!}{
+  \begin{tikzpicture}
+      \def\dx{4}
+      \def\high{-1}
+      \def\low{-3}
+
+  %------------------------------------------------
+  % LEFT COLUMN — CLIENTS
+  %------------------------------------------------
+  \node (C1) at (0,\high) {\client{blue}};
+  \node (C2) at (0,\low) {\client{orange}};
+
+  \node at (0,0) {Clients};
+
+  %------------------------------------------------
+  % RIGHT COLUMN — SERVICES
+  %------------------------------------------------
+  \node (S1) at (4*\dx,\high) {\server{blue}};
+  \node (S2) at (4*\dx,\low) {\server{orange}};
+
+  \node[xshift=-1mm] at (4*\dx,0) {Services};
+
+
+  %------------------------------------------------
+  % Packets
+  %------------------------------------------------
+  \draw[outerLink] (C1.east) -- 
+    node[pos=0.3,packet=blue]{\Large 3}  
+    node[pos=0.5,packet=blue]{\Large 2}  
+    node[pos=0.7,packet=blue]{\Large 1}  
+    (S1.west); 
+
+  \draw[outerLink] (C2.east) -- 
+    node[pos=0.3,packet=orange]{\Large 3}  
+    node[pos=0.5,packet=orange]{\Large 2}  
+    node[pos=0.7,packet=orange]{\Large 1}  
+    (S2.west); 
+
+  \end{tikzpicture}
+}
+
+\vspace{10mm}
+
+\begin{center}
+  \textbf{Despite encryption, metadata reveals who is communicating to whom}
+\end{center}
+
+
+
+\end{frame}

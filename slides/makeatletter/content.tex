@@ -1,0 +1,113 @@
+%% reset ToC
+\@addtoreset{section}{part}
+
+%% reset frame number
+% source: https://tex.stackexchange.com/questions/278873/how-to-reset-frame-number-in-beamer-correctly-when-using-parts
+\newcount\beamer@partstartframe
+\beamer@partstartframe=1
+\apptocmd{\beamer@part}{\addtocontents{nav}{\protect\headcommand{%
+    \protect\beamer@partframes{\the\beamer@partstartframe}{\the\c@framenumber}}}}{}{}
+\apptocmd{\beamer@part}{\beamer@partstartframe=\c@framenumber\advance\beamer@partstartframe by1\relax}{}{}
+\AtEndDocument{\immediate\write\@auxout{\string\@writefile{nav}%
+    {\noexpand\headcommand{\noexpand\beamer@partframes{\the\beamer@partstartframe}{\the\c@framenumber}}}}}{}{}
+\def\beamer@startframeofpart{1}
+\def\beamer@endframeofpart{1}
+\def\beamer@partframes#1#2{%
+    \ifnum\c@framenumber<#1%
+    \else%
+    \ifnum\c@framenumber>#2%
+    \else%
+    \gdef\beamer@startframeofpart{#1}%
+    \gdef\beamer@endframeofpart{#2}%
+    \fi%
+    \fi%
+}
+\newcommand\insertpartstartframe{\beamer@startframeofpart}
+\newcommand\insertpartendframe{\beamer@endframeofpart}
+
+
+%% Do not add section-TOC frames to the Nord navigation/smoothbar
+\let\beamer@writeslidentry@normal=\beamer@writeslidentry
+
+\def\beamer@writeslidentry@nonav{%
+    \expandafter\beamer@ifempty\expandafter{\beamer@framestartpage}{}%
+    {%
+        \clearpage
+        \beamer@notesactions
+    }%
+}
+
+\newcommand{\nordnavoff}{%
+    \let\beamer@writeslidentry=\beamer@writeslidentry@nonav
+}
+
+\newcommand{\nordnavon}{%
+    \let\beamer@writeslidentry=\beamer@writeslidentry@normal
+}
+
+\tikzset{
+  appears/.style args={#1}{
+    color/.expanded={
+      \ifnum\beamer@slideinframe<#1
+        white%
+      \else\ifnum\beamer@slideinframe=#1
+        alerted text.fg%
+      \else
+        LightHighlight%
+      \fi\fi
+    },
+    opacity/.expanded={
+      \ifnum\beamer@slideinframe<#1
+        0%
+      \else\ifnum\beamer@slideinframe=#1
+        1%
+      \else
+        1%
+      \fi\fi
+    }
+  },
+  highlight/.style args={#1}{
+    color/.expanded={
+      \ifnum\beamer@slideinframe<#1
+        black%
+      \else\ifnum\beamer@slideinframe=#1
+        alerted text.fg%
+      \else
+        LightHighlight%
+      \fi\fi
+    }
+  },
+  visible/.style args={#1}{
+    opacity/.expanded={
+      \ifnum\beamer@slideinframe<#1
+        0%
+      \else\ifnum\beamer@slideinframe=#1
+        1%
+      \else
+        0%
+      \fi\fi
+    }
+  },
+  on/.style args={#1}{
+    color/.expanded={
+      \ifnum\beamer@slideinframe<#1
+        white%
+      \else\ifnum\beamer@slideinframe=#1
+        alerted text.fg%
+      \else
+        black%
+      \fi\fi
+    }
+  },
+  on_MidHighlight/.style args={#1}{
+    color/.expanded={
+      \ifnum\beamer@slideinframe<#1
+        white%
+      \else\ifnum\beamer@slideinframe=#1
+        alerted text.fg%
+      \else
+        MidHighlight%
+      \fi\fi
+    }
+  },
+}

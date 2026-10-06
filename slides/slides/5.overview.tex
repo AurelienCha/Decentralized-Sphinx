@@ -1,0 +1,29 @@
+\tikzset{    
+    fleche/.style={-Latex, shorten <= 2pt, shorten >= 3pt},
+}
+
+\begin{frame}{Overview}
+    \begin{figure}
+        \centering
+        \resizebox{0.8\linewidth}{!}{\input{schema/overview.tex}}
+        \caption{Overview of decentralized route sampling architecture.}
+    \end{figure}
+
+    \vspace{-1mm}
+
+    \begin{columns}
+        \begin{column}{0.1\textwidth}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \onslide<2->{
+            \begin{enumerate}
+                \item \textbf{Setup} stage {\color{LightHighlight}(once)}
+                \item \textbf{Route sampling} request
+                \item \textbf{Aggregation} of sampled routes
+                % \item Build and send the packet
+            \end{enumerate}
+            }
+        \end{column}
+    \end{columns}
+
+\end{frame}
